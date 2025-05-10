@@ -1,26 +1,105 @@
 .sidebar-nav {
   background: #153060;
   color: #fff;
-  min-height: 100vh;
-  border-right: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 100vh;
+  width: 260px;
+  padding: 1.5rem 0.5rem 0.5rem 0.5rem;
+  box-shadow: 0 4px 32px 0 rgba(21, 48, 96, 0.10);
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  border-radius: 0 1.5rem 1.5rem 0;
+  margin: 0;
+  transition: width 0.2s, border-radius 0.2s, background 0.2s;
+  z-index: 1050;
 }
 
-.nav-link {
+.sidebar-nav.collapsed {
+  width: 70px;
+  align-items: center;
+  border-radius: 0 2.5rem 2.5rem 0;
+  padding-left: 0.2rem;
+  padding-right: 0.2rem;
+}
+
+.sidebar-top-row {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 0.5rem;
+}
+
+.sidebar-link {
   color: #e0e6ed;
   font-weight: 500;
-  border-radius: 0.375rem;
-  transition: background 0.2s, color 0.2s;
+  border-radius: 1rem;
+  padding: 0.7rem 1.1rem;
+  margin-bottom: 0.2rem;
+  display: flex;
+  align-items: center;
+  font-size: 1rem;
+  transition: background 0.18s, color 0.18s, box-shadow 0.18s, padding 0.18s;
+  border: none;
+  position: relative;
+  white-space: nowrap;
+  overflow: hidden;
+  gap: 0.8rem;
 }
 
-.nav-link.active, .nav-link:focus, .nav-link:hover {
+.sidebar-link .bi {
+  font-size: 1.35rem;
+  min-width: 1.7rem;
+  text-align: center;
+  color: #e0e6ed;
+  transition: color 0.18s;
+}
+
+.sidebar-link.active, .sidebar-link:focus, .sidebar-link:hover {
   background: #2351a2;
   color: #fff !important;
+  font-weight: 700;
+  box-shadow: 0 2px 8px 0 rgba(79, 140, 255, 0.08);
+}
+.sidebar-link.active .bi, .sidebar-link:focus .bi, .sidebar-link:hover .bi {
+  color: #fff;
 }
 
-.nav-link .bi {
-  font-size: 1.2rem;
+.sidebar-label {
+  flex: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
-.nav-link.fw-bold {
-  font-size: 1.1rem;
+.sidebar-nav.collapsed .sidebar-link {
+  justify-content: center;
+  padding: 0.7rem 0.2rem;
+}
+
+.sidebar-nav.collapsed .sidebar-link .sidebar-label {
+  display: none;
+}
+
+.sidebar-toggle-btn {
+  background: #e0e6ed;
+  border: none;
+  color: #2351a2;
+  font-size: 1.5rem;
+  cursor: pointer;
+  outline: none;
+  border-radius: 50%;
+  width: 38px;
+  height: 38px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.18s, color 0.18s;
+}
+
+.sidebar-toggle-btn:hover {
+  background: #2351a2;
+  color: #fff;
 } 

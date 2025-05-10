@@ -1,8 +1,8 @@
-<div class="d-flex" style="min-height: 100vh;">
-  <app-sidebar></app-sidebar>
-  <div class="flex-grow-1 d-flex flex-column">
+<div class="dashboard-layout" [class.sidebar-collapsed]="collapsed">
+  <app-sidebar (collapsedChange)="collapsed = $event"></app-sidebar>
+  <div class="main-content-wrapper">
     <app-header [user]="auth.getUser()"></app-header>
-    <main class="flex-grow-1 p-4 bg-light">
+    <main class="dashboard-main-content">
       <h2>Welcome, {{ auth.getUser()?.name }}</h2>
       <p>This is your dashboard. (Add dashboard widgets here)</p>
     </main>

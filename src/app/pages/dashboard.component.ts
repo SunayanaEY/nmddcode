@@ -13,5 +13,6 @@ import { SidebarComponent } from './sidebar.component';
   styleUrls: ['./dashboard.component.css']
 })
 export class DashboardComponent {
+  collapsed = false;
   constructor(public auth: AuthService) {}
 } 
