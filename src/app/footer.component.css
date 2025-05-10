@@ -1,0 +1,11 @@
+.footer {
+  position: relative;
+  width: 100%;
+  bottom: 0;
+  background: #fff;
+  border-top: 2px solid #e0e6ed;
+}
+.footer span {
+  color: #7a869a;
+  font-size: 1rem;
+} 

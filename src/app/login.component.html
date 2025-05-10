@@ -1,0 +1,19 @@
+<app-header></app-header>
+<div class="container d-flex flex-column justify-content-center align-items-center" style="min-height: 80vh;">
+  <div class="card shadow-sm p-4" style="max-width: 350px; width: 100%;">
+    <h4 class="mb-3 text-center">Login</h4>
+    <form (ngSubmit)="login()">
+      <div class="mb-3">
+        <label for="username" class="form-label">Username</label>
+        <input id="username" class="form-control" [(ngModel)]="username" name="username" required>
+      </div>
+      <div class="mb-3">
+        <label for="password" class="form-label">Password</label>
+        <input id="password" type="password" class="form-control" [(ngModel)]="password" name="password" required>
+      </div>
+      <div *ngIf="error" class="alert alert-danger py-1">{{ error }}</div>
+      <button class="btn btn-primary w-100" type="submit">Login</button>
+    </form>
+  </div>
+</div>
+<app-footer></app-footer> 

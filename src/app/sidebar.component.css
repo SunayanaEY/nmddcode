@@ -1,0 +1,26 @@
+.sidebar-nav {
+  background: #153060;
+  color: #fff;
+  min-height: 100vh;
+  border-right: none;
+}
+
+.nav-link {
+  color: #e0e6ed;
+  font-weight: 500;
+  border-radius: 0.375rem;
+  transition: background 0.2s, color 0.2s;
+}
+
+.nav-link.active, .nav-link:focus, .nav-link:hover {
+  background: #2351a2;
+  color: #fff !important;
+}
+
+.nav-link .bi {
+  font-size: 1.2rem;
+}
+
+.nav-link.fw-bold {
+  font-size: 1.1rem;
+} 

@@ -1,0 +1,11 @@
+<div class="d-flex" style="min-height: 100vh;">
+  <app-sidebar></app-sidebar>
+  <div class="flex-grow-1 d-flex flex-column">
+    <app-header [user]="auth.getUser()"></app-header>
+    <main class="flex-grow-1 p-4 bg-light">
+      <h2>Welcome, {{ auth.getUser()?.name }}</h2>
+      <p>This is your dashboard. (Add dashboard widgets here)</p>
+    </main>
+    <app-footer></app-footer>
+  </div>
+</div> 
