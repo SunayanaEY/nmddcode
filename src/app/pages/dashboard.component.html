@@ -5,6 +5,13 @@
     <main class="dashboard-main-content">
       <h2>Welcome, {{ auth.getUser()?.name }}</h2>
       <p>This is your dashboard. (Add dashboard widgets here)</p>
+      <div class="stateMap-chart" style="margin-top:20px">
+          <h3>India Map</h3>
+          <div class="gauge-chart">
+            <div id="map">
+            </div>
+          </div>
+        </div>
     </main>
     <app-footer></app-footer>
   </div>
