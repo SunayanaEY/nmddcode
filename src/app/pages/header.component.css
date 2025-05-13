@@ -1,0 +1,20 @@
+.navbar {
+  min-height: 64px;
+  background: #fff;
+  border-bottom: 2px solid #e0e6ed;
+  box-shadow: 0 2px 4px rgba(21, 48, 96, 0.03);
+}
+.navbar-brand {
+  font-size: 1.4rem;
+  font-weight: 700;
+  color: #153060 !important;
+  letter-spacing: 0.02em;
+}
+.ms-auto span {
+  font-weight: 600;
+  color: #153060;
+}
+img.rounded-circle {
+  object-fit: cover;
+  border: 2px solid #2351a2;
+} 

@@ -1,0 +1,34 @@
+<app-header></app-header>
+<div class="login-container">
+  <div class="login-left">
+    <div class="login-image-bg">
+      <img src="https://images.unsplash.com/photo-1596733430284-f7437764b1a9?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D" alt="Cow in field" />
+      <div class="login-gradient"></div>
+      <div class="login-welcome-text">
+        <h2>National Dairy Monitoring System</h2>
+        <p>Empowering government agencies to monitor, manage, and optimize the dairy sector with a secure, unified national portal.</p>
+      </div>
+    </div>
+  </div>
+  <div class="login-right">
+    <div class="login-card">
+      <div class="login-logo mb-3">
+        <span class="logo-circle">D</span>
+        <span class="logo-text">Dairy Dashboard</span>
+      </div>
+      <h3 class="mb-1">Welcome Back</h3>
+      <p class="mb-4 text-muted">Please login to your account</p>
+      <form (ngSubmit)="login()">
+        <div class="mb-3">
+          <input id="username" class="form-control" [(ngModel)]="username" name="username" placeholder="Email" required />
+        </div>
+        <div class="mb-3">
+          <input id="password" type="password" class="form-control" [(ngModel)]="password" name="password" placeholder="Password" required />
+        </div>
+        <div *ngIf="error" class="alert alert-danger py-1">{{ error }}</div>
+        <button class="btn btn-primary w-100 mb-3" type="submit">Login</button>
+      </form>
+    </div>
+  </div>
+</div>
+<app-footer></app-footer> 
