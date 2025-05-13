@@ -1,0 +1,17 @@
+<nav class="navbar navbar-expand-lg navbar-light bg-white border-bottom px-3">
+  <a class="navbar-brand fw-bold" href="#">
+    <i class="bi bi-speedometer2 me-2"></i> Dairy Dashboard
+  </a>
+  <div class="ms-auto d-flex align-items-center">
+    <ng-container *ngIf="user; else guest">
+      <span class="me-2">{{ user.name }}</span>
+      <img *ngIf="user.avatarUrl; else defaultAvatar" [src]="user.avatarUrl" class="rounded-circle" width="36" height="36" alt="User avatar">
+      <ng-template #defaultAvatar>
+        <i class="bi bi-person-circle fs-3"></i>
+      </ng-template>
+    </ng-container>
+    <ng-template #guest>
+      <i class="bi bi-person-circle fs-3"></i>
+    </ng-template>
+  </div>
+</nav> 
