@@ -1,0 +1,26 @@
+
+.charts-root{
+  display: flex;
+  flex-direction: row;
+}
+
+
+.highcharts-series-0 .highcharts-point {
+  fill: #7cb5ec;
+  stroke: #7cb5ec;
+}
+
+.highcharts-series-1 .highcharts-point {
+  fill: #434348;
+  stroke: #434348;
+}
+
+.highcharts-series-2 .highcharts-point {
+  fill: #90ed7d;
+  stroke: #90ed7d;
+}
+
+
+.row {
+  display: flex;
+}
