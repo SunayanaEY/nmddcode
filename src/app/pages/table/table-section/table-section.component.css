@@ -81,3 +81,18 @@ td.header-text {
 {
   margin-top: -11rem !important;
 }
+.checkbox-field{
+  font-size: 150%;
+  margin-top: 35px;
+  margin-left: 5px;
+}
+.large-checkbox {
+  width: 25px;
+  height: 25px;
+}
+/*::ng-deep*/
+ .ng-dropdown-panel {
+  border: 1px solid #28a745 !important;
+  border-radius: 5px !important;
+  background-color: aliceblue !important;
+}

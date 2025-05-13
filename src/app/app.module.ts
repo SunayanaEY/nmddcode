@@ -14,6 +14,7 @@ import { HighchartsChartModule,HighchartsChartComponent } from 'highcharts-angul
 import { TableSectionComponent } from './pages/table/table-section/table-section.component';
 import { TableSearchPipe } from './pages/helpers/table-search.pipe';
 import { ExcelService } from './_services/Excel/excel.service';
+import { NgSelectModule } from '@ng-select/ng-select';
 //import * as highcharts from highcharts;
 
 
@@ -28,6 +29,7 @@ import { ExcelService } from './_services/Excel/excel.service';
    //HighchartsChartComponent,
    FormsModule,
    RouterOutlet,
+   NgSelectModule,
   // NgxPaginationModule
 
 

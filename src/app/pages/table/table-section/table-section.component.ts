@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, ViewEncapsulation } from '@angular/core';
 import { PaginationModule } from 'ngx-bootstrap/pagination';
 import { NgxPaginationModule } from 'ngx-pagination';
 import { RouterModule } from '@angular/router';
@@ -6,9 +6,10 @@ import { CommonModule } from '@angular/common';
 import { NgxSpinnerModule, NgxSpinnerService } from 'ngx-spinner';
 import { TableSearchPipe } from '../../helpers/table-search.pipe';
 import { SortPipe } from '../../helpers/sort.pipe';
-import { FormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import jsPDF from 'jspdf';
 import { autoTable,applyPlugin } from 'jspdf-autotable';
+import { NgSelectModule } from '@ng-select/ng-select';
 applyPlugin(jsPDF);
 
 import { ExcelService } from '../../../_services/Excel/excel.service';
@@ -21,10 +22,11 @@ import { ExcelService } from '../../../_services/Excel/excel.service';
   //standalone: false,
  imports: [PaginationModule,NgxPaginationModule,
   RouterModule,CommonModule,NgxSpinnerModule,SortPipe,TableSearchPipe,
-  FormsModule
+  FormsModule,NgSelectModule,ReactiveFormsModule
  ],
   templateUrl: './table-section.component.html',
-  styleUrl: './table-section.component.css'
+  styleUrl: './table-section.component.css',
+  encapsulation: ViewEncapsulation.None
 })
 export class TableSectionComponent {
 
@@ -41,6 +43,8 @@ export class TableSectionComponent {
   pdfHeaders: Array<string> = [];
   pdfData: Array<any> = [];
   public columnKeys: Array<string> = [];
+
+
   staticData = [
 
     {
@@ -283,7 +287,71 @@ export class TableSectionComponent {
     },
   ];
 
+  filters = { mcc_code:'',state: '', district: '', block: '' ,village:'',
+    collection_date:'',milk_qty:'',fat_per:'',snf_per:'', milk_type:'',
+    sync_status:'',entry_method:''
+  };
+  filteredData = [...this.staticData];
+  uniqueValuesMccCode(): any[] {
 
+    return [...new Set(this.staticData.map(item => item['mcc_code']))];
+
+  }
+  uniqueValuesstate(): any[] {
+
+    return [...new Set(this.staticData.map(item => item['state']))];
+
+  }
+  uniqueValuesdistrict(): any[] {
+
+    return [...new Set(this.staticData.map(item => item['district']))];
+
+  }
+  uniqueValuesblock(): any[] {
+
+    return [...new Set(this.staticData.map(item => item['block']))];
+
+  }
+  uniqueValuesvillage(): any[] {
+
+    return [...new Set(this.staticData.map(item => item['village']))];
+
+  }
+  uniqueValuescollection_date(): any[] {
+
+    return [...new Set(this.staticData.map(item => item['collection_date']))];
+
+  }
+  uniqueValuesmilk_qty(): any[] {
+
+    return [...new Set(this.staticData.map(item => item['milk_qty']))];
+
+  }
+  uniqueValuesfat_per(): any[] {
+
+    return [...new Set(this.staticData.map(item => item['fat_per']))];
+
+  }
+  uniqueValuessnf_per(): any[] {
+
+    return [...new Set(this.staticData.map(item => item['snf_per']))];
+
+  }
+  uniqueValuesmilk_type(): any[] {
+
+    return [...new Set(this.staticData.map(item => item['milk_type']))];
+
+  }
+  uniqueValuessync_status(): any[] {
+
+    return [...new Set(this.staticData.map(item => item['sync_status']))];
+
+  }
+  uniqueValuesentry_method(): any[] {
+
+    return [...new Set(this.staticData.map(item => item['entry_method']))];
+
+  }
 
   constructor(
     private spinner: NgxSpinnerService,
@@ -308,6 +376,28 @@ export class TableSectionComponent {
       this.pdfData = this.staticData;
     }
 
+    applyFilters(): void {
+      this.filteredData = this.staticData.filter(row => {
+        return (
+          (!this.filters.mcc_code || row.mcc_code === this.filters.mcc_code) &&
+          (!this.filters.state || row.state === this.filters.state) &&
+          (!this.filters.district || row.district === this.filters.district) &&
+          (!this.filters.block || row.block === this.filters.block) &&
+          (!this.filters.village || row.village === this.filters.village) &&
+          (!this.filters.collection_date || row.collection_date === this.filters.collection_date) &&
+          (!this.filters.milk_qty || row.milk_qty.toString() === this.filters.milk_qty.toString()) &&
+          (!this.filters.fat_per || row.fat_per.toString() === this.filters.fat_per.toString()) &&
+          (!this.filters.snf_per || row.snf_per.toString() === this.filters.snf_per.toString()) &&
+          (!this.filters.milk_type || row.milk_type === this.filters.milk_type) &&
+          (!this.filters.sync_status || row.sync_status.toString() === this.filters.sync_status.toString()) &&
+          (!this.filters.entry_method || row.entry_method === this.filters.entry_method)
+        );
+      });
+
+      this.filteredData.forEach(ele => {
+        console.log(ele.mcc_code);
+      })
+    }
 
   createPdf() {
     let headers = [this.pdfHeaders];

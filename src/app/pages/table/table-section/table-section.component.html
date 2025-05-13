@@ -81,6 +81,10 @@
                 <tr>
                   <td scope="col" class="header-text">{{'SR. NO'}}</td>
                   <td scope="col" class="header-text">{{'MCC/BMC Code'}}</td>
+                  <!--- <select [(ngModel)]="filters.mcc_code" (change)="applyFilters()">
+            <option value="">All</option>
+            <option *ngFor="let mcc_code of uniqueValues('mcc_code')" [value]="mcc_code">{{ mcc_code }}</option>
+          </select>-->
                   <td scope="col" class="header-text">{{"STATE"}}</td>
                   <td scope="col" class="header-text">{{"DISTRICT"}}</td>
                   <td scope="col" class="header-text">{{"BLOCK"}}</td>
@@ -95,10 +99,236 @@
 
 
                 </tr>
+                <tr>
+                  <th></th>
+                  <th>
+
+                    <ng-select placeholder="Filter By code" [(ngModel)]="filters.mcc_code" style="height: 100%;
+                    width: 100%;
+                    font-weight: 400;
+                    line-height: 1.5;
+                    color: #121213;
+                    background-color: #fff;
+                    background-clip: padding-box;
+                    box-shadow: none;" (change)="applyFilters()">
+
+                      <ng-option value="" disabled="true">{{'Filter By code'}}</ng-option>
+                      <ng-option *ngFor="let name of uniqueValuesMccCode()" [value]="name">{{name}}</ng-option>
+
+
+                    </ng-select>
+
+                    <!--<select [(ngModel)]="filters.mcc_code" (change)="applyFilters()">
+            <option value="">All</option>
+            <option *ngFor="let name of uniqueValuesMccCode()" [value]="name">{{ name }}</option>
+          </select>-->
+                  </th>
+                  <th>
+
+                    <ng-select placeholder="Filter By State" [(ngModel)]="filters.state" style="height: 100%;
+width: 100%;
+font-weight: 400;
+line-height: 1.5;
+color: #121213;
+background-color: #fff;
+background-clip: padding-box;
+box-shadow: none;" (change)="applyFilters()">
+
+                      <ng-option value="" disabled="true">{{'Filter By State'}}</ng-option>
+                      <ng-option *ngFor="let name of uniqueValuesstate()" [value]="name">{{name}}</ng-option>
+
+
+                    </ng-select>
+
+                  </th>
+                  <th>
+
+                    <ng-select placeholder="Filter By District" [(ngModel)]="filters.district" style="height: 100%;
+width: 100%;
+font-weight: 400;
+line-height: 1.5;
+color: #121213;
+background-color: #fff;
+background-clip: padding-box;
+box-shadow: none;" (change)="applyFilters()">
+
+                      <ng-option value="" disabled="true">{{'Filter By District'}}</ng-option>
+                      <ng-option *ngFor="let name of uniqueValuesdistrict()" [value]="name">{{name}}</ng-option>
+
+
+                    </ng-select>
+
+                  </th>
+                  <th>
+
+                    <ng-select placeholder="Filter By Block" [(ngModel)]="filters.block" style="height: 100%;
+width: 100%;
+font-weight: 400;
+line-height: 1.5;
+color: #121213;
+background-color: #fff;
+background-clip: padding-box;
+box-shadow: none;" (change)="applyFilters()">
+
+                      <ng-option value="" disabled="true">{{'Filter By Block'}}</ng-option>
+                      <ng-option *ngFor="let name of uniqueValuesblock()" [value]="name">{{name}}</ng-option>
+
+
+                    </ng-select>
+
+                  </th>
+                  <th>
+
+                    <ng-select placeholder="Filter By Village" [(ngModel)]="filters.village" style="height: 100%;
+width: 100%;
+font-weight: 400;
+line-height: 1.5;
+color: #121213;
+background-color: #fff;
+background-clip: padding-box;
+box-shadow: none;" (change)="applyFilters()">
+
+                      <ng-option value="" disabled="true">{{'Filter By Village'}}</ng-option>
+                      <ng-option *ngFor="let name of uniqueValuesvillage()" [value]="name">{{name}}</ng-option>
+
+
+                    </ng-select>
+
+                  </th>
+                  <th>
+
+                    <ng-select placeholder="Filter By Entry Date" [(ngModel)]="filters.collection_date" style="height: 100%;
+width: 100%;
+font-weight: 400;
+line-height: 1.5;
+color: #121213;
+background-color: #fff;
+background-clip: padding-box;
+box-shadow: none;" (change)="applyFilters()">
+
+                      <ng-option value="" disabled="true">{{'Filter By Entry Date'}}</ng-option>
+                      <ng-option *ngFor="let name of uniqueValuescollection_date()" [value]="name">{{name}}</ng-option>
+
+
+                    </ng-select>
+
+                  </th>
+                  <th>
+
+                    <ng-select placeholder="Filter By Milk Quantity" [(ngModel)]="filters.milk_qty" style="height: 100%;
+width: 100%;
+font-weight: 400;
+line-height: 1.5;
+color: #121213;
+background-color: #fff;
+background-clip: padding-box;
+box-shadow: none;" (change)="applyFilters()">
+
+                      <ng-option value="" disabled="true">{{'Filter By Milk Quantity'}}</ng-option>
+                      <ng-option *ngFor="let name of uniqueValuesmilk_qty()" [value]="name">{{name}}</ng-option>
+
+
+                    </ng-select>
+
+                  </th>
+                  <th>
+
+                    <ng-select placeholder="Filter By Fat Percent" [(ngModel)]="filters.fat_per" style="height: 100%;
+width: 100%;
+font-weight: 400;
+line-height: 1.5;
+color: #121213;
+background-color: #fff;
+background-clip: padding-box;
+box-shadow: none;" (change)="applyFilters()">
+
+                      <ng-option value="" disabled="true">{{'Filter By Fat Percent'}}</ng-option>
+                      <ng-option *ngFor="let name of uniqueValuesfat_per()" [value]="name">{{name}}</ng-option>
+
+
+                    </ng-select>
+
+                  </th>
+                  <th>
+
+<ng-select placeholder="Filter By SNF Percent" [(ngModel)]="filters.snf_per" style="height: 100%;
+width: 100%;
+font-weight: 400;
+line-height: 1.5;
+color: #121213;
+background-color: #fff;
+background-clip: padding-box;
+box-shadow: none;" (change)="applyFilters()">
+
+  <ng-option value="" disabled="true">{{'Filter By SNF Percent'}}</ng-option>
+  <ng-option *ngFor="let name of uniqueValuessnf_per()" [value]="name">{{name}}</ng-option>
+
+
+</ng-select>
+
+</th>
+<th>
+
+<ng-select placeholder="Filter By Milk Type" [(ngModel)]="filters.milk_type" style="height: 100%;
+width: 100%;
+font-weight: 400;
+line-height: 1.5;
+color: #121213;
+background-color: #fff;
+background-clip: padding-box;
+box-shadow: none;" (change)="applyFilters()">
+
+  <ng-option value="" disabled="true">{{'Filter By Milk Type'}}</ng-option>
+  <ng-option *ngFor="let name of uniqueValuesmilk_type()" [value]="name">{{name}}</ng-option>
+
+
+</ng-select>
+
+</th>
+<th>
+
+<ng-select placeholder="Filter By Sync Status" [(ngModel)]="filters.sync_status" style="height: 100%;
+width: 100%;
+font-weight: 400;
+line-height: 1.5;
+color: #121213;
+background-color: #fff;
+background-clip: padding-box;
+box-shadow: none;" (change)="applyFilters()">
+
+  <ng-option value="" disabled="true">{{'Filter By Sync Status'}}</ng-option>
+  <ng-option *ngFor="let name of uniqueValuessync_status()" [value]="name">
+    <img *ngIf="name"  src="assets/table-icons/tick.png" class="logo-image mr-2">
+    <img *ngIf="!name"  src="assets/table-icons/cross.png" class="logo-image mr-2">
+    </ng-option>
+
+
+</ng-select>
+
+</th>
+<th>
+
+<ng-select placeholder="Filter By Entry Method" [(ngModel)]="filters.entry_method" style="height: 100%;
+width: 100%;
+font-weight: 400;
+line-height: 1.5;
+color: #121213;
+background-color: #fff;
+background-clip: padding-box;
+box-shadow: none;" (change)="applyFilters()">
+
+  <ng-option value="" disabled="true">{{'Filter By Entry Method'}}</ng-option>
+  <ng-option *ngFor="let name of uniqueValuesentry_method()" [value]="name">{{name}}</ng-option>
+
+
+</ng-select>
+
+</th>
+                </tr>
               </thead>
 
-              <tbody *ngIf="staticData.length == 0 && isApiCalled">
-                <tr *ngIf="staticData.length == 0 && isApiCalled">
+              <tbody *ngIf="filteredData.length == 0 && isApiCalled">
+                <tr *ngIf="filteredData.length == 0 && isApiCalled">
                   <td class="nofounddata text-center" colspan="6">{{'No Data Found'}}</td>
                 </tr>
               </tbody>
@@ -108,7 +338,7 @@
               </ngx-spinner>-->
               <tbody>
                 <tr
-                  *ngFor="let data of staticData | tableSearch:searchTextActive | sort:orderByActive | paginate: { id: 'pagination2',itemsPerPage: 10, currentPage: p }; index as i"
+                  *ngFor="let data of filteredData | tableSearch:searchTextActive | sort:orderByActive | paginate: { id: 'pagination2',itemsPerPage: 10, currentPage: p }; index as i"
                   [ngStyle]="{'background-color': (i%2 ==0 ) ? 'white' : '#eee9e9' }">
                   <td>
                     {{(p-1) * 10 + i + 1}}
@@ -151,7 +381,9 @@
                     {{data.milk_type}}
                   </td>
                   <td>
-                    {{data.sync_status}}
+
+                    <img *ngIf="data.sync_status"  src="assets/table-icons/tick.png" class="logo-image mr-2">
+                    <img *ngIf="!data.sync_status"  src="assets/table-icons/cross.png" class="logo-image mr-2">
                   </td>
                   <td>
                     {{data.entry_method}}
