@@ -5,13 +5,33 @@
     <main class="dashboard-main-content">
       <h2>Welcome, {{ auth.getUser()?.name }}</h2>
       <p>This is your dashboard. (Add dashboard widgets here)</p>
-      <div class="stateMap-chart" style="margin-top:20px">
+      <div class="row">
+        <div class="col-8 stateMap-chart" style="margin-top:20px">
           <h3>India Map</h3>
           <div class="gauge-chart">
             <div id="map">
             </div>
           </div>
         </div>
+        <div class="col-3 stateMap-chart ms-3 alert-section" style="margin-top:20px">
+          <div class="alerts">
+            <h6>Alerts and Notifications</h6>
+          </div>
+          <div class="alerts">
+            <span class="alert_icon">1</span>SNF too low: MCC: 45 (District a)
+          </div>
+          <div class="alerts">
+            <span class="alert_icon">2</span>Spiked Milk Volume: MCC-78 (Low Population Area)
+          </div>
+          <div class="alerts">
+            <span class="alert_icon">3</span>Manual data entries: 23 (Today)
+          </div>
+          <div class="alerts">
+            <span class="alert_icon">4</span>Unverified MCCs and BMCs: 6 
+          </div>
+        </div>
+      </div>
+      
     </main>
     <app-footer></app-footer>
   </div>
