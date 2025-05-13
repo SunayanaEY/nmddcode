@@ -138,3 +138,116 @@ p {
   background-color: rgb(108, 108, 108);
   color:white
 }
+
+/* Metric Cards Styles */
+.metric-cards-container {
+  margin-bottom: 30px;
+}
+
+.metric-card {
+  margin-bottom: 20px;
+}
+
+.metric-card .card {
+  border-radius: 10px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  height: 100%;
+  border: none;
+  padding: 15px;
+  background-color: white;
+}
+
+.metric-card .card-subtitle {
+  font-size: 14px;
+  margin-bottom: 15px;
+  color: #6c757d;
+}
+
+.metric-card .card-title {
+  font-size: 28px;
+  font-weight: 700;
+  margin-bottom: 0;
+  color: #153060;
+}
+
+.metric-card .card-text {
+  font-size: 14px;
+  color: #6c757d;
+  margin-top: 5px;
+}
+
+/* FAT Range Styles */
+.fat-range {
+  display: flex;
+  align-items: center;
+  margin-top: 10px;
+}
+
+.min-fat, .max-fat {
+  font-size: 14px;
+  font-weight: 600;
+  color: #153060;
+}
+
+.fat-progress {
+  flex: 1;
+  margin: 0 10px;
+}
+
+.progress {
+  height: 8px;
+  background-color: #e9ecef;
+  border-radius: 4px;
+}
+
+.progress-bar {
+  background-color: #2489ce;
+  border-radius: 4px;
+}
+
+/* Circular Progress Chart Styles */
+.circular-progress {
+  width: 100px;
+  height: 100px;
+  margin: 0 auto;
+}
+
+.circular-chart {
+  display: block;
+  margin: 0 auto;
+  max-width: 100%;
+}
+
+.circle-bg {
+  fill: none;
+  stroke: #e9ecef;
+  stroke-width: 3;
+}
+
+.circle {
+  fill: none;
+  stroke: #2489ce;
+  stroke-width: 3;
+  stroke-linecap: round;
+  animation: progress 1s ease-out forwards;
+}
+
+.percentage {
+  fill: #153060;
+  font-size: 6px;
+  text-anchor: middle;
+  font-weight: 600;
+}
+
+@keyframes progress {
+  0% {
+    stroke-dasharray: 0 100;
+  }
+}
+
+.active-mccs, .sync-status {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 10px;
+}
