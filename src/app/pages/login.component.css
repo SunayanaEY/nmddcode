@@ -13,6 +13,12 @@
   justify-content: center;
   gap: 3rem;
   margin: 0 auto;
+  background-image: url('/assets/login/cow2.jpg');
+  background-size: cover;
+  background-position: center;
+  height: 100vh;
+ /* filter: opacity(0.5);*/
+  backdrop-filter: opacity(0.5);
 }
 
 .login-left {
@@ -212,4 +218,4 @@
     right: 1.2rem;
     top: 10%;
   }
-} 
+}
