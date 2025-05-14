@@ -1205,7 +1205,7 @@ this.chartOptionsDonutChart = {
      text: 'State Wise contribution of Milk'
   },
   tooltip : {
-     pointFormat: '{series.name}: <b>{point.percentage:.1f}%</b><br><span>Total Quantity: </span><b>{point.y}</b>'
+     pointFormat: '{series.name}: <b>{point.percentage:.1f}%</b><br><span>Total Quantity: </span><b>{point.y} Ltr</b>'
   },
   plotOptions : {
      pie: {
