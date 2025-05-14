@@ -108,7 +108,8 @@ padding-left: 274px;padding-top: 12px;
           </div>
         </div>
         <!--state selected-->
-        <!--<div
+
+     <!--   <div
         class="col-2 stateMap-chart ms-3 alert-section"
         style="margin-top: 20px"
       >
@@ -124,7 +125,7 @@ padding-left: 274px;padding-top: 12px;
     </div>-->
 
         <div
-          class="col-2 stateMap-chart ms-3 alert-section"
+          class="col-3 stateMap-chart ms-3 alert-section"
           style="margin-top: 20px"
         >
           <div class="alerts">
@@ -144,6 +145,7 @@ padding-left: 274px;padding-top: 12px;
             <span class="alert_icon">4</span>Unverified MCCs and BMCs: 6
           </div>
         </div>
+
       </div>
       </div>
       </div>
@@ -167,8 +169,8 @@ padding-left: 274px;padding-top: 12px;
       </div>
       <div *ngIf="selectedState != undefined" class="modal-body">
         <div>Milk Quantity : {{selectedState.milk_qty}}</div>
-        <div>Fat Quantity : {{selectedState.fat_per}}</div>
-        <div>Snf Quantity : {{selectedState.snf_per}}</div>
+        <div>FAT% : {{selectedState.fat_per}}</div>
+        <div>SNF% : {{selectedState.snf_per}}</div>
         <div>Milk Type : {{selectedState.milk_type}}</div>
         <div>Source Center : {{selectedState.source_centre}}</div>
         <div>MCC Code : {{selectedState.mcc_code}}</div>
