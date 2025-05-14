@@ -5,6 +5,11 @@ import Highcharts from 'highcharts';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { SeriesForStackBar } from './chart-model';
+import { AuthService } from '../../../services/auth.service';
+
+import { FooterComponent } from '../../footer.component';
+import { HeaderComponent } from '../../header.component';
+import { SidebarComponent } from '../../sidebar.component';
 //import Timeline from 'highcharts/modules/timeline';
 //Timeline(Highcharts);
 
@@ -12,7 +17,9 @@ import { SeriesForStackBar } from './chart-model';
 @Component({
   //standalone: false,
   selector: 'app-chart-section',
- imports: [HighchartsChartModule,FormsModule,CommonModule],
+ imports: [HighchartsChartModule,FormsModule,CommonModule
+
+ ],
   templateUrl: './chart-section.component.html',
   styleUrl: './chart-section.component.css'
 })
@@ -271,7 +278,7 @@ fatPercentData:any = [];
 StateList:any=[];
 milkQuantityByState:any=[];
 
-
+collapsed = false;
 ngOnInit(){
   //this.getLineChartByState("Bihar");
   this.getLineChartforAll();
@@ -1379,7 +1386,7 @@ chartOptionsDonutChart:Highcharts.Options = {
 };*/
 
 
-  constructor(){
+  constructor( public auth: AuthService){
 
   }
 
