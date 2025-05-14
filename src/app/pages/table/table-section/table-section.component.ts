@@ -389,7 +389,7 @@ export class TableSectionComponent {
           (!this.filters.fat_per || row.fat_per.toString() === this.filters.fat_per.toString()) &&
           (!this.filters.snf_per || row.snf_per.toString() === this.filters.snf_per.toString()) &&
           (!this.filters.milk_type || row.milk_type === this.filters.milk_type) &&
-          (!this.filters.sync_status.toString() || row.sync_status.toString() === this.filters.sync_status.toString()) &&
+          (((this.filters.sync_status!=null)?!this.filters.sync_status.toString():!this.filters.sync_status) || row.sync_status.toString() === this.filters.sync_status.toString()) &&
           (!this.filters.entry_method || row.entry_method === this.filters.entry_method)
         );
       });
