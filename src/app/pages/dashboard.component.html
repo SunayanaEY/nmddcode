@@ -1,8 +1,12 @@
-<div class="dashboard-layout" [class.sidebar-collapsed]="collapsed">
+<!--<div class="dashboard-layout" [class.sidebar-collapsed]="collapsed">
   <app-sidebar (collapsedChange)="collapsed = $event"></app-sidebar>
   <div class="main-content-wrapper">
     <app-header [user]="auth.getUser()"></app-header>
-    <main class="dashboard-main-content">
+    <main class="dashboard-main-content">-->
+      <div class="home-container"style="
+padding-left: 274px;padding-top: 12px;
+">
+  <div class="container-fluid text-center">
       <div class="metric-cards-container row">
         <!-- Total Milk Collected Card -->
         <div class="col-md-3 metric-card">
@@ -103,8 +107,24 @@
             <div id="map"></div>
           </div>
         </div>
+        <!--state selected-->
+        <!--<div
+        class="col-2 stateMap-chart ms-3 alert-section"
+        style="margin-top: 20px"
+      >
+      <h5>{{selectedDistrict}}</h5>
+      <div *ngIf="selectedState != undefined">
+        <div>Milk Quantity : {{selectedState.milk_qty}}</div>
+      <div>Fat Quantity : {{selectedState.fat_per}}</div>
+      <div>Snf Quantity : {{selectedState.snf_per}}</div>
+      <div>Milk Type : {{selectedState.milk_type}}</div>
+      <div>Source Center : {{selectedState.source_centre}}</div>
+      <div>MCC Code : {{selectedState.mcc_code}}</div>
+      </div>
+    </div>-->
+
         <div
-          class="col-3 stateMap-chart ms-3 alert-section"
+          class="col-2 stateMap-chart ms-3 alert-section"
           style="margin-top: 20px"
         >
           <div class="alerts">
@@ -125,10 +145,12 @@
           </div>
         </div>
       </div>
-    </main>
+      </div>
+      </div>
+   <!-- </main>
     <app-footer></app-footer>
   </div>
-</div>
+</div>-->
 
 <div class="modal fade" #exampleModal id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
   <div class="modal-dialog modal-sm">

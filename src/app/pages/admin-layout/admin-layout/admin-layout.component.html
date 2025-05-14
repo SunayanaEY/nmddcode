@@ -1,0 +1,10 @@
+<div class="dashboard-layout" [class.sidebar-collapsed]="collapsed">
+  <app-sidebar (collapsedChange)="collapsed = $event"></app-sidebar>
+  <div class="main-content-wrapper">
+    <app-header [user]="auth.getUser()"></app-header>
+    <main class="dashboard-main-content">
+      <router-outlet></router-outlet>
+    </main>
+    <app-footer></app-footer>
+  </div>
+</div>
