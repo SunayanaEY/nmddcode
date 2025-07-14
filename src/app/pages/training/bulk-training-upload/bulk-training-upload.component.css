@@ -1,0 +1,163 @@
+.bulk-upload-container {
+  padding: 2rem;
+  background-color: #f8f9fa;
+  transition: margin-left 0.3s ease;
+}
+
+
+
+:host-context(.dashboard-layout.sidebar-collapsed) .bulk-upload-container {
+  margin-left: 70px;
+}
+
+.page-title {
+  font-size: 22px;
+  font-weight: 500;
+  margin-bottom: 1.5rem;
+}
+
+h2 {
+  font-size: 18px;
+  font-weight: 400;
+  margin-bottom: 1rem;
+}
+
+.template-section,
+.upload-section,
+.progress-section,
+.report-section {
+  margin-bottom: 1.5rem;
+}
+
+.template-card,
+.upload-box {
+  border: 1px solid #e0e0e0;
+  border-radius: 10px;
+  padding: 1rem;
+  background-color: #fff;
+}
+
+.template-card {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  max-width: 480px;
+}
+
+.template-card i {
+  font-size: 36px;
+  color: #476c84;
+}
+
+.template-info h3 {
+  font-size: 15px;
+  font-weight: 500;
+  margin: 0;
+}
+
+.template-info p {
+  font-size: 14px;
+  font-weight: 300;
+  margin: 0;
+  color: #6c757d;
+}
+
+.upload-box {
+  border-style: dashed;
+  text-align: center;
+  padding: 2rem;
+}
+
+.upload-box i {
+  font-size: 40px;
+  color: #476c84;
+  margin-bottom: 0.5rem;
+}
+
+.upload-box p {
+  margin: 0.25rem 0;
+  font-size: 15px;
+}
+
+.upload-box a {
+  color: #007bff;
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+.upload-box .file-types {
+  font-size: 14px;
+  font-weight: 300;
+  color: #6c757d;
+  margin-top: 0.25rem;
+}
+
+.progress-bar-container {
+  width: 100%;
+  height: 12px;
+  background-color: #eef5ff;
+  border-radius: 12px;
+  overflow: hidden;
+  margin-bottom: 0.5rem;
+}
+
+.progress-bar {
+  height: 100%;
+  background-color: #005588;
+  border-radius: 12px;
+  transition: width 0.3s ease;
+}
+
+.progress-info {
+  display: flex;
+  justify-content: flex-start;
+  gap: 1rem;
+  font-size: 18px;
+}
+
+.progress-info .error-info {
+  font-weight: 400;
+}
+
+.report-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+
+.report-header h2 {
+  font-size: 18px;
+}
+
+.btn-reupload {
+  background-color: #edf3f6;
+  color: #005588;
+  border: none;
+  border-radius: 8px;
+  padding: 0.4rem 1.2rem;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.form-actions {
+  display: flex;
+  justify-content: center;
+  gap: 1.5rem;
+  margin-top: 2rem;
+}
+
+.form-actions .btn {
+  padding: 11px 20px;
+  font-size: 18px;
+  border-radius: 8px;
+}
+
+.form-actions .btn-primary {
+  font-weight: 600;
+}
+
+.form-actions .btn-outline-secondary {
+  font-weight: 500;
+}

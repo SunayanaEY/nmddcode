@@ -1,0 +1,43 @@
+<div class="approved-certificate-container">
+  <app-breadcrumb [items]="breadcrumbItems"></app-breadcrumb>
+
+  <div class="page-header">
+    <h2>Approved Certificate</h2>
+  </div>
+
+  <div class="filter-container">
+    <div class="filter-controls">
+      <input type="text" class="form-control" placeholder="dd mm yy - dd mm yy">
+      <input type="text" class="form-control" placeholder="Search by Training Title">
+      <select class="form-control">
+        <option>State</option>
+      </select>
+      <select class="form-control">
+        <option>District</option>
+      </select>
+      <select class="form-control">
+        <option>Block</option>
+      </select>
+      <div class="form-check">
+        <input class="form-check-input" type="checkbox" id="approvedOnly" checked>
+        <label class="form-check-label" for="approvedOnly">Approved Only</label>
+      </div>
+    </div>
+    <div class="action-buttons">
+      <button class="btn btn-outline-primary"><i class="bi bi-upload"></i> Export as Excel</button>
+      <button class="btn btn-primary"><i class="bi bi-download"></i> Download Zip</button>
+    </div>
+  </div>
+
+  <div class="trainings-summary">
+    <h4>Approved Trainings</h4>
+    <span class="badge bg-secondary">{{ tableData.length }} Approved Trainings</span>
+  </div>
+
+  <app-table 
+    [columns]="tableColumns" 
+    [data]="tableData" 
+    [actions]="tableActions"
+    (actionClick)="handleTableAction($event)">
+  </app-table>
+</div>

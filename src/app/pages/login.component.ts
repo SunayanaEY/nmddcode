@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { Router } from '@angular/router';
 import { AuthService } from '../services/auth.service';
-import { FormsModule } from '@angular/forms';
+import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { HeaderComponent } from './header.component';
 import { FooterComponent } from './footer.component';
@@ -9,22 +9,52 @@ import { FooterComponent } from './footer.component';
 @Component({
   selector: 'app-login',
   standalone: true,
-  imports: [CommonModule, FormsModule, HeaderComponent, FooterComponent],
+  imports: [CommonModule, ReactiveFormsModule],
   templateUrl: './login.component.html',
   styleUrls: ['./login.component.css']
 })
 export class LoginComponent {
-  username = '';
-  password = '';
-  error = '';
+  registerForm: FormGroup;
+  submitted = false;
+  credentialdata = '';
+  showPassword = false;
 
-  constructor(private auth: AuthService, private router: Router) {}
+  constructor(
+    private formBuilder: FormBuilder,
+    private auth: AuthService, 
+    private router: Router
+  ) {
+    this.registerForm = this.formBuilder.group({
+      usename: ['', [Validators.required, Validators.email]],
+      password: ['', Validators.required]
+    });
+  }
 
-  login() {
-    if (this.auth.login(this.username, this.password)) {
+  // Convenience getter for easy access to form fields
+  get f() { 
+    return this.registerForm.controls; 
+  }
+
+  togglePassword() {
+    this.showPassword = !this.showPassword;
+  }
+
+  onSubmit() {
+    this.submitted = true;
+    this.credentialdata = '';
+
+    // Stop if form is invalid
+    if (this.registerForm.invalid) {
+      return;
+    }
+
+    const username = this.registerForm.value.usename;
+    const password = this.registerForm.value.password;
+
+    if (this.auth.login(username, password)) {
       this.router.navigate(['/dashboard']);
     } else {
-      this.error = 'Invalid credentials';
+      this.credentialdata = 'Invalid credentials. Please try again.';
     }
   }
-} 
+}

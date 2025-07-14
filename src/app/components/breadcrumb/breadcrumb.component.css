@@ -1,0 +1,27 @@
+.breadcrumb {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+  font-size: 0.9rem;
+  color: #64748b;
+}
+
+.breadcrumb-item {
+  cursor: pointer;
+  transition: color 0.2s ease;
+}
+
+.breadcrumb-item:not(.active):hover {
+  color: #3b82f6;
+}
+
+.breadcrumb-item.active {
+  color: #1e293b;
+  font-weight: 600;
+  cursor: default;
+}
+
+.bi-chevron-right {
+  color: #64748b;
+} 

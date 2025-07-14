@@ -1,0 +1,27 @@
+<div class="table-container">
+  <div class="table-responsive">
+    <table class="table table-striped w-100">
+      <thead>
+        <tr>
+          <th scope="col">#</th>
+          <th *ngFor="let col of columns" scope="col">{{ col.header }}</th>
+          <th *ngIf="actions.length > 0" scope="col">Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let item of data; let i = index" [class.odd-row]="i % 2 === 0">
+          <td>{{ formatSerialNumber(i) }}</td>
+          <td *ngFor="let col of columns">{{ item[col.key] }}</td>
+          <td *ngIf="actions.length > 0">
+            <div class="action-buttons">
+              <button *ngFor="let action of actions" type="button" class="btn btn-action {{ action.class }}"
+                (click)="onActionClick(action.name, item, i)" [title]="action.title">
+                <i class="bi {{ action.icon }}"></i>
+              </button>
+            </div>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div> 

@@ -1,221 +1,713 @@
-.container {
-  min-height: 80vh;
-}
-.card {
-  border-radius: 1rem;
+/* Login Container - Full screen layout */
+.login-container {
+  position: relative;
+  width: 100vw;
+  height: 100vh;
+  overflow: hidden;
+  font-family: 'Poppins', sans-serif;
 }
 
-.login-container {
-  display: flex;
-  min-height: 81vh;
-  background: #f6f8fa;
-  align-items: center;
-  justify-content: center;
-  gap: 3rem;
-  margin: 0 auto;
-  background-image: url('/assets/login/cow2.jpg');
+/* Background Image */
+.bg-photo {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-image: url('/assets/login/BG Photo.png');
   background-size: cover;
   background-position: center;
-  height: 100vh;
- /* filter: opacity(0.5);*/
-  backdrop-filter: opacity(0.5);
-}
-
-.login-left {
-  flex: none;
-  display: flex;
-  align-items: center;
-  justify-content: flex-end;
-  min-width: 320px;
-  max-width: 440px;
-  width: 400px;
-  height: 440px;
-}
-
-.login-image-bg {
-  position: relative;
-  width: 100%;
-  height: 100%;
-  border-radius: 2.5rem;
-  overflow: hidden;
-  box-shadow: 0 8px 32px 0 rgba(21, 48, 96, 0.10);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-.login-image-bg img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  display: block;
-}
-.login-gradient {
-  position: absolute;
-  inset: 0;
-  background: linear-gradient(135deg, #3b5bdb 60%, #a084ee 100%);
-  opacity: 0.85;
+  background-repeat: no-repeat;
   z-index: 1;
 }
-.login-welcome-text {
+
+.bg-photo::after {
+  content: '';
   position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.21);
   z-index: 2;
-  color: #fff;
-  left: 2rem;
-  right: 2rem;
-  top: 20%;
-  text-align: left;
-}
-.login-welcome-text h2 {
-  font-size: 2rem;
-  font-weight: 700;
-  margin-bottom: 1rem;
-}
-.login-welcome-text p {
-  font-size: 1rem;
-  font-weight: 400;
-  opacity: 0.95;
 }
 
-.login-right {
-  flex: none;
+/* Government Logo Header */
+.goi-logo {
+  position: absolute;
+  top: 40px;
+  right: 25px;
+  width: 550px;
+  height: 100px;
+  background: rgba(255, 255, 255, 0.6);
+  border-radius: 8px;
+  z-index: 10;
   display: flex;
   align-items: center;
-  justify-content: flex-start;
-  min-width: 320px;
-  width: 340px;
-  height: 440px;
+  padding: 6px 8px;
 }
 
-.login-card {
-  background: #fff;
-  border-radius: 2.5rem;
-  box-shadow: 0 8px 32px 0 rgba(21, 48, 96, 0.10);
-  padding: 2rem 1.5rem 1.5rem 1.5rem;
+.goi-logo .goi-logo-content {
+  display: flex;
+  align-items: center;
+  gap: 15px;
   width: 100%;
-  max-width: 320px;
+}
+
+.goi-logo .emblem {
+  width: 55px;
+  height: 85px;
+  flex-shrink: 0;
+}
+
+.goi-logo .emblem img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+.goi-logo .text-content {
+  flex: 1;
+}
+
+.goi-logo .text-content .government-text {
+  display: flex;
+  align-items: center;
+  margin-bottom: 8px;
+}
+
+.goi-logo .text-content .government-text .hindi-text {
+  font-family: 'Times New Roman', serif;
+  font-weight: 700;
+  font-size: 18px;
+  line-height: 1.15;
+  color: #000000;
+  margin-right: 8px;
+}
+
+.goi-logo .text-content .government-text .separator-lines {
   display: flex;
   flex-direction: column;
-  align-items: stretch;
-}
-.login-logo {
-  display: flex;
-  align-items: center;
-  gap: 0.7rem;
-  font-size: 1.2rem;
-  font-weight: 700;
-  color: #3b5bdb;
-}
-.logo-circle {
-  background: #3b5bdb;
-  color: #fff;
-  border-radius: 50%;
-  width: 2rem;
-  height: 2rem;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 1.1rem;
-  font-weight: 700;
-}
-.logo-text {
-  font-size: 1.1rem;
-  font-weight: 700;
-}
-.login-card h3 {
-  font-size: 1.5rem;
-  font-weight: 700;
-  margin-bottom: 0.5rem;
-}
-.login-card p {
-  font-size: 1rem;
-  margin-bottom: 1.2rem;
-}
-.form-control {
-  border-radius: 0.8rem;
-  font-size: 1rem;
-  padding: 0.7rem 1rem;
-  border: 1px solid #e0e6ed;
-  margin-bottom: 0.5rem;
-}
-.btn-primary {
-  background: #3b5bdb;
-  border: none;
-  border-radius: 0.8rem;
-  font-size: 1rem;
-  font-weight: 600;
-  padding: 0.8rem 0;
-  transition: background 0.18s;
-}
-.btn-primary:hover {
-  background: #274bb6;
-}
-.login-divider {
-  text-align: center;
-  color: #b0b8c9;
-  font-size: 1rem;
-  position: relative;
-}
-.login-divider:before, .login-divider:after {
-  content: '';
-  display: inline-block;
-  width: 40px;
-  height: 1px;
-  background: #e0e6ed;
-  vertical-align: middle;
   margin: 0 10px;
 }
-.login-social-buttons .btn {
-  border-radius: 0.8rem;
-  font-size: 0.98rem;
-  font-weight: 600;
-  padding: 0.6rem 0;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+
+.goi-logo .text-content .government-text .separator-lines .line {
+  width: 1px;
+  height: 15px;
+  background: #000000;
+  margin: 2px 0;
 }
-.btn-outline-primary {
-  border: 1.5px solid #3b5bdb;
-  color: #3b5bdb;
-  background: #fff;
+
+.goi-logo .text-content .government-text .english-text {
+  font-family: 'Times New Roman', serif;
+  font-weight: 700;
+  font-size: 18px;
+  line-height: 1.15;
+  color: #000000;
 }
-.btn-outline-primary:hover {
-  background: #3b5bdb;
-  color: #fff;
+
+.goi-logo .text-content .department-text .hindi-dept {
+  font-family: 'Times New Roman', serif;
+  font-weight: 700;
+  font-size: 16px;
+  line-height: 1.15;
+  color: #000000;
+  margin-bottom: 3px;
 }
-.btn-outline-danger {
-  border: 1.5px solid #ea4335;
-  color: #ea4335;
-  background: #fff;
+
+.goi-logo .text-content .department-text .english-dept {
+  font-family: 'Times New Roman', serif;
+  font-weight: 700;
+  font-size: 16px;
+  line-height: 1.15;
+  color: #000000;
 }
-.btn-outline-danger:hover {
-  background: #ea4335;
-  color: #fff;
+
+/* Small mobile phones (Pixel 7, iPhone SE, etc.) */
+@media (max-width: 480px) {
+  .login-container {
+    padding: 10px;
+    justify-content: flex-start;
+    padding-top: 5vh;
+  }
+  
+  .goi-logo {
+    width: 98%;
+    max-width: 350px;
+    padding: 15px;
+    margin-bottom: 20px;
+  }
+  
+  .goi-logo .emblem {
+    width: 60px;
+    height: 75px;
+  }
+  
+  .goi-logo .text-content .government-text .hindi-text,
+  .goi-logo .text-content .government-text .english-text {
+    font-size: 18px;
+    line-height: 1.1;
+  }
+  
+  .goi-logo .text-content .department-text .hindi-dept,
+  .goi-logo .text-content .department-text .english-dept {
+    font-size: 15px;
+    line-height: 1.2;
+  }
+  
+  .login-form-container {
+    width: 98%;
+    max-width: 350px;
+    height: 400px;
+  }
+  
+  .login-form-container .login-form-blur {
+    padding: 30px 20px;
+    border-radius: 20px;
+  }
+  
+  .login-form-container .login-form-content .login-title {
+    font-size: 28px;
+    margin-bottom: 30px;
+  }
+  
+  .login-form-container .login-form-content .form-group {
+    margin-bottom: 20px;
+  }
+  
+  .login-form-container .login-form-content .form-group .form-label {
+    font-size: 15px;
+    margin-bottom: 6px;
+  }
+  
+  .login-form-container .login-form-content .form-group .input-container {
+    height: 48px;
+  }
+  
+  .login-form-container .login-form-content .form-group .input-container .form-input {
+    font-size: 16px;
+    padding: 12px 16px;
+    border-radius: 6px;
+  }
+  
+  .login-form-container .login-form-content .forgot-password {
+    margin: 8px 0 25px 0;
+  }
+  
+  .login-form-container .login-form-content .forgot-password a {
+    font-size: 13px;
+  }
+  
+  .login-form-container .login-form-content .signin-button {
+    height: 48px;
+    font-size: 16px;
+    border-radius: 6px;
+    font-weight: 600;
+  }
 }
+
+/* Extra small screens (Galaxy Fold, etc.) */
+@media (max-width: 360px) {
+  .login-container {
+    padding: 8px;
+  }
+  
+  .goi-logo {
+    padding: 12px;
+  }
+  
+  .goi-logo .emblem {
+    width: 55px;
+    height: 70px;
+  }
+  
+  .goi-logo .text-content .government-text .hindi-text,
+  .goi-logo .text-content .government-text .english-text {
+    font-size: 16px;
+  }
+  
+  .goi-logo .text-content .department-text .hindi-dept,
+  .goi-logo .text-content .department-text .english-dept {
+    font-size: 14px;
+  }
+  
+  .login-form-container .login-form-blur {
+    padding: 25px 15px;
+  }
+  
+  .login-form-container .login-form-content .login-title {
+    font-size: 24px;
+    margin-bottom: 25px;
+  }
+  
+  .login-form-container .login-form-content .form-group {
+    margin-bottom: 18px;
+  }
+  
+  .login-form-container .login-form-content .form-group .form-label {
+    font-size: 14px;
+  }
+  
+  .login-form-container .login-form-content .form-group .input-container {
+    height: 44px;
+  }
+  
+  .login-form-container .login-form-content .form-group .input-container .form-input {
+    font-size: 15px;
+    padding: 10px 14px;
+  }
+  
+  .login-form-container .login-form-content .signin-button {
+    height: 44px;
+    font-size: 15px;
+  }
+}
+
+/* Login Form Container */
+.login-form-container {
+  position: absolute;
+  top: 170px;
+  right: 130px;
+  width: 400px;
+  height: 400px;
+  z-index: 10;
+  box-shadow: 0px 4px 50px 0px rgba(0, 0, 0, 0.1);
+}
+
+.login-form-container .login-form-blur {
+  width: 100%;
+  height: 100%;
+  background: rgba(255, 255, 255, 0.3);
+  backdrop-filter: blur(30px);
+  border-radius: 30px;
+  position: relative;
+}
+
+.login-form-container .login-form-content {
+  position: absolute;
+  top: 30px;
+  left: 20px;
+  width: 360px;
+  height: 420px;
+  box-sizing: border-box;
+}
+
+.login-form-container .login-form-content .login-title {
+  font-family: 'Poppins', sans-serif;
+  font-weight: 500;
+  font-size: 24px;
+  line-height: 1.4;
+  color: #02073F;
+  text-align: center;
+  margin: 0 0 20px 0;
+  width: 100%;
+  height: auto;
+}
+
+.login-form-container .login-form-content .error-message {
+  color: #dc3545;
+  font-size: 14px;
+  margin-bottom: 15px;
+  text-align: center;
+}
+
+.login-form-container .login-form-content .form-group {
+  margin-bottom: 15px;
+}
+
+.login-form-container .login-form-content .form-group .form-label {
+  font-family: 'Poppins', sans-serif;
+  font-weight: 400;
+  font-size: 16px;
+  line-height: 1.5;
+  color: #02073F;
+  margin-bottom: 3px;
+  display: block;
+}
+
+.login-form-container .login-form-content .form-group .input-container {
+  position: relative;
+  width: 100%;
+  height: 42px;
+  box-sizing: border-box;
+}
+
+.login-form-container .login-form-content .form-group .input-container .form-input {
+  width: 95%;
+  height: 100%;
+  background: #FFFFFF;
+  border: none;
+  border-radius: 5px;
+  padding: 10px 15px;
+  font-family: 'Poppins', sans-serif;
+  font-weight: 400;
+  font-size: 16px;
+  line-height: 1.5;
+  color: #BCBEC0;
+  outline: none;
+  box-sizing: border-box;
+}
+
+.login-form-container .login-form-content .form-group .input-container .form-input:focus {
+  color: #02073F;
+  box-shadow: 0 0 0 2px rgba(78, 95, 113, 0.2);
+}
+
+.login-form-container .login-form-content .form-group .input-container .form-input.is-invalid {
+  border: 1px solid #dc3545;
+}
+
+.login-form-container .login-form-content .form-group .input-container.password-container .password-toggle {
+  position: absolute;
+  right: 20px;
+  top: 50%;
+  transform: translateY(-50%);
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 5px;
+}
+
+.login-form-container .login-form-content .form-group .input-container.password-container .password-toggle .eye-icon {
+  width: 23px;
+  height: 23px;
+  background: #C7D2D6;
+  border-radius: 50%;
+  display: block;
+  position: relative;
+}
+
+.login-form-container .login-form-content .form-group .input-container.password-container .password-toggle .eye-icon::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 14px;
+  height: 11px;
+  background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="%23666" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>') no-repeat center;
+  background-size: contain;
+}
+
+.login-form-container .login-form-content .form-group .input-container.password-container .password-toggle .eye-icon.show::before {
+  background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="%23666" stroke-width="2"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"/><line x1="1" y1="1" x2="23" y2="23"/></svg>') no-repeat center;
+  background-size: contain;
+}
+
+.login-form-container .login-form-content .form-group .invalid-feedback {
+  color: #dc3545;
+  font-size: 14px;
+  margin-top: 5px;
+}
+
+.login-form-container .login-form-content .forgot-password {
+  margin: 3px 0 12px 1px;
+}
+
+.login-form-container .login-form-content .forgot-password a {
+  font-family: 'Poppins', sans-serif;
+  font-weight: 400;
+  font-size: 14px;
+  line-height: 1.5;
+  color: #02073F;
+  text-decoration: none;
+}
+
+.login-form-container .login-form-content .forgot-password a:hover {
+  text-decoration: underline;
+}
+
+.login-form-container .login-form-content .signin-button {
+  width: 95%;
+  height: 42px;
+  background: #4E5F71;
+  border: none;
+  border-radius: 5px;
+  font-family: 'Poppins', sans-serif;
+  font-weight: 700;
+  font-size: 18px;
+  line-height: 1.5;
+  color: #FFFFFF;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  margin: 0;
+  box-sizing: border-box;
+}
+
+.login-form-container .login-form-content .signin-button:hover {
+  background: #3d4a59;
+}
+
+.login-form-container .login-form-content .signin-button:active {
+  background: #2c3640;
+}
+
+/* Responsive Design */
+@media (max-width: 1400px) {
+  .goi-logo {
+    right: 20px;
+    width: 480px;
+  }
+  
+  .login-form-container {
+    right: 40px;
+    width: 380px;
+  }
+}
+
+@media (max-width: 1200px) {
+  .goi-logo {
+    position: relative;
+    top: 20px;
+    right: auto;
+    margin: 0 auto;
+    width: 90%;
+    max-width: 480px;
+  }
+  
+  .login-form-container {
+    position: relative;
+    top: 30px;
+    right: auto;
+    margin: 0 auto;
+    width: 90%;
+    max-width: 350px;
+  }
+}
+
+/* Tablet landscape and small desktop */
+@media (max-width: 1024px) {
+  .login-container {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: 40px 20px;
+  }
+  
+  .goi-logo {
+    position: relative;
+    top: 0;
+    right: auto;
+    width: 80%;
+    max-width: 500px;
+    margin-bottom: 40px;
+  }
+  
+  .goi-logo .text-content .government-text .hindi-text,
+  .goi-logo .text-content .government-text .english-text {
+    font-size: 20px;
+  }
+  
+  .goi-logo .text-content .department-text .hindi-dept,
+  .goi-logo .text-content .department-text .english-dept {
+    font-size: 18px;
+  }
+  
+  .login-form-container {
+    position: relative;
+    top: 0;
+    right: auto;
+    width: 80%;
+    max-width: 450px;
+    height: auto;
+  }
+}
+
+/* Tablet portrait */
 @media (max-width: 900px) {
   .login-container {
+    padding: 30px 15px;
+  }
+  
+  .goi-logo {
+    width: 90%;
+    max-width: 450px;
+    padding: 25px 20px;
+  }
+  
+  .goi-logo .emblem {
+    width: 65px;
+    height: 85px;
+  }
+  
+  .goi-logo .text-content .government-text .hindi-text,
+  .goi-logo .text-content .government-text .english-text {
+    font-size: 18px;
+  }
+  
+  .goi-logo .text-content .department-text .hindi-dept,
+  .goi-logo .text-content .department-text .english-dept {
+    font-size: 16px;
+  }
+  
+  .login-form-container {
+    width: 90%;
+    max-width: 420px;
+  }
+  
+  .login-form-container .login-form-content .login-title {
+    font-size: 30px;
+    margin-bottom: 35px;
+  }
+}
+
+@media (max-width: 768px) {
+  .bg-photo {
+    background-image: url('https://dahddashboard.ndlm.co.in/assets/imgs/background/login.jpg');
+    background-size: cover;
+    background-position: center;
+    background-attachment: fixed;
+  }
+  
+  .bg-photo::after {
+    background: rgba(0, 0, 0, 0.3);
+  }
+  
+  .login-container {
+    min-height: 100vh;
+    min-height: 100dvh; /* Dynamic viewport height for mobile */
+    display: flex;
     flex-direction: column;
-    padding: 1rem 0;
-    gap: 1.5rem;
-    max-width: 100vw;
-  }
-  .login-left, .login-right {
-    min-width: 100%;
-    max-width: 100%;
-    width: 100%;
-    height: 320px;
     justify-content: center;
+    align-items: center;
+    padding: 15px;
+    overflow-y: auto;
   }
-  .login-card {
-    border-radius: 1.2rem;
-    padding: 1.5rem 1rem 1rem 1rem;
-    max-width: 95vw;
+  
+  .goi-logo {
+    position: relative;
+    top: 0;
+    right: auto;
+    width: 95%;
+    max-width: 400px;
+    height: auto;
+    padding: 20px;
+    margin-bottom: 30px;
+    background: rgba(255, 255, 255, 0.9);
+    border-radius: 15px;
   }
-  .login-image-bg {
-    border-radius: 1.2rem;
+  
+  .goi-logo .goi-logo-content {
+    flex-direction: column;
+    text-align: center;
+    gap: 15px;
   }
-  .login-welcome-text {
-    left: 1.2rem;
-    right: 1.2rem;
-    top: 10%;
+  
+  .goi-logo .emblem {
+    width: 70px;
+    height: 90px;
+    margin: 0 auto;
+  }
+  
+  .goi-logo .text-content .government-text {
+    flex-direction: column;
+    align-items: center;
+    margin-bottom: 10px;
+  }
+  
+  .goi-logo .text-content .government-text .hindi-text,
+  .goi-logo .text-content .government-text .english-text {
+    font-size: 22px;
+    line-height: 1.2;
+  }
+  
+  .goi-logo .text-content .government-text .separator-lines {
+    display: none;
+  }
+  
+  .goi-logo .text-content .department-text .hindi-dept,
+  .goi-logo .text-content .department-text .english-dept {
+    font-size: 20px;
+    text-align: center;
+    line-height: 1.3;
+  }
+  
+  .login-form-container {
+    position: relative;
+    top: 0;
+    right: auto;
+    width: 95%;
+    max-width: 400px;
+    height: auto;
+    min-height: 500px;
+  }
+  
+  .login-form-container .login-form-blur {
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(20px);
+    border-radius: 25px;
+    padding: 40px 30px;
+  }
+  
+  .login-form-container .login-form-content {
+    position: relative;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: auto;
+  }
+  
+  .login-form-container .login-form-content .login-title {
+    font-size: 32px;
+    width: 100%;
+    margin: 0 0 40px 0;
+    text-align: center;
+    color: #02073F;
+    font-weight: 600;
+  }
+  
+  .login-form-container .login-form-content .form-group {
+    margin-bottom: 25px;
+  }
+  
+  .login-form-container .login-form-content .form-group .form-label {
+    font-size: 16px;
+    margin-bottom: 8px;
+    color: #02073F;
+    font-weight: 500;
+  }
+  
+  .login-form-container .login-form-content .form-group .input-container {
+    width: 100%;
+    height: 50px;
+  }
+  
+  .login-form-container .login-form-content .form-group .input-container .form-input {
+    font-size: 16px;
+    padding: 15px 20px;
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+  }
+  
+  .login-form-container .login-form-content .form-group .input-container .form-input:focus {
+    border-color: #4E5F71;
+    box-shadow: 0 0 0 3px rgba(78, 95, 113, 0.1);
+  }
+  
+  .login-form-container .login-form-content .forgot-password {
+    margin: 10px 0 30px 0;
+  }
+  
+  .login-form-container .login-form-content .forgot-password a {
+    font-size: 14px;
+    color: #4E5F71;
+  }
+  
+  .login-form-container .login-form-content .signin-button {
+    width: 100%;
+    height: 50px;
+    font-size: 18px;
+    margin: 0;
+    border-radius: 8px;
+    background: #4E5F71;
+    transition: all 0.3s ease;
+  }
+  
+  .login-form-container .login-form-content .signin-button:hover {
+    background: #3d4a59;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 15px rgba(78, 95, 113, 0.3);
   }
 }

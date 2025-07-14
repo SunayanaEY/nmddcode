@@ -1,0 +1,54 @@
+<div class="bulk-upload-container">
+  <app-breadcrumb [items]="breadcrumbItems"></app-breadcrumb>
+
+  <h1 class="page-title">Bulk Upload</h1>
+
+  <div class="template-section">
+    <h2>Template</h2>
+    <div class="template-card">
+      <i class="bi bi-file-earmark-spreadsheet"></i>
+      <div class="template-info">
+        <h3>Download Excel Template</h3>
+        <p>Includes Mandatory fields and Validation Rules</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="upload-section">
+    <h2>Upload Your File</h2>
+    <app-file-upload 
+      [acceptedFileTypes]="'.xlsx, .xls, .csv'" 
+      [maxFileSizeMB]="5" 
+      [uploadText]="'Drag & drop your Excel file here'"
+      [subText]="'or'"
+      [buttonText]="'browse to upload'"
+      [showFileInfo]="false"
+      (fileSelected)="onFileSelected($event)">
+    </app-file-upload>
+  </div>
+
+  <div *ngIf="showValidationReport" class="progress-section">
+    <div class="progress-bar-container">
+      <div class="progress-bar" [style.width.%]="uploadProgress"></div>
+    </div>
+    <div class="progress-info">
+      <span>Uploading...... {{ uploadProgress }}%</span>
+      <span class="error-info">{{ errorCount }} errors found in {{ errorRowCount }}
+        rows</span>
+    </div>
+  </div>
+
+  <div *ngIf="showValidationReport" class="report-section">
+    <div class="report-header">
+      <h2>Validation Report with Error</h2>
+      <button class="btn btn-reupload" (click)="reUploadFile()">Re-Upload File</button>
+    </div>
+    <app-table [data]="validationErrors" [columns]="tableColumns" [actions]="tableActions"
+      (actionClick)="handleTableAction($event)"></app-table>
+  </div>
+
+  <div class="form-actions">
+    <button type="button" class="btn btn-outline-secondary">Save Draft</button>
+    <button type="button" class="btn btn-primary">Submit for Verification</button>
+  </div>
+</div>

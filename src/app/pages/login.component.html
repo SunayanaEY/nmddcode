@@ -1,34 +1,86 @@
-<app-header></app-header>
 <div class="login-container">
-  <div class="login-left">
-    <div class="login-image-bg">
-      <img src="/assets/login/cowfields.jpg" alt="Cow in field" />
-      <div class="login-gradient"></div>
-      <div class="login-welcome-text">
-        <h2>National Dairy Monitoring System</h2>
-        <p>Empowering government agencies to monitor, manage, and optimize the dairy sector with a secure, unified national portal.</p>
+  <!-- Background Image -->
+  <div class="bg-photo"></div>
+  
+  <!-- Government Logo Header -->
+  <div class="goi-logo">
+    <div class="goi-logo-content">
+      <div class="emblem">
+          <img src="assets/login/emblem.png" alt="Government Emblem">
+      </div>
+      <div class="text-content">
+        <div class="government-text">
+          <span class="hindi-text">भारत सरकार</span>
+          <div class="separator-lines">
+            <div class="line"></div>
+            <div class="line"></div>
+          </div>
+          <span class="english-text">GOVERNMENT OF INDIA</span>
+        </div>
+        <div class="department-text">
+          <div class="hindi-dept">पशुपालन और डेयरी विभाग</div>
+          <div class="english-dept">DEPARTMENT OF ANIMAL HUSBANDRY AND DAIRYING</div>
+        </div>
       </div>
     </div>
   </div>
-  <div class="login-right">
-    <div class="login-card">
-      <div class="login-logo mb-3">
-        <span class="logo-circle">D</span>
-        <span class="logo-text">Dairy Dashboard</span>
+  
+  <!-- Login Form -->
+  <div class="login-form-container">
+    <div class="login-form-blur">
+      <div class="login-form-content">
+        <h1 class="login-title">Dashboard Sign In</h1>
+        
+        <form [formGroup]="registerForm" (ngSubmit)="onSubmit()">
+          <div class="error-message" *ngIf="credentialdata">
+            {{credentialdata}}
+          </div>
+          
+          <div class="form-group">
+            <label class="form-label">Email Address</label>
+            <div class="input-container">
+              <input 
+                id="inputUsename" 
+                type="text" 
+                formControlName="usename"
+                [ngClass]="{ 'is-invalid': submitted && f['usename'].errors }" 
+                placeholder="Enter Email"
+                class="form-input">
+            </div>
+            <div *ngIf="submitted && f['usename'].errors" class="invalid-feedback">
+              <div *ngIf="f['usename'].errors?.['required']">Email is required</div>
+              <div *ngIf="f['usename'].errors?.['email']">Email must be a valid</div>
+            </div>
+          </div>
+          
+          <div class="form-group">
+            <label class="form-label">Password</label>
+            <div class="input-container password-container">
+              <input 
+                id="inputPassword" 
+                [type]="showPassword ? 'text' : 'password'" 
+                formControlName="password"
+                [ngClass]="{ 'is-invalid': submitted && f['password'].errors }" 
+                placeholder="Password"
+                class="form-input">
+              <button type="button" class="password-toggle" (click)="togglePassword()">
+                <i class="eye-icon" [class.show]="showPassword"></i>
+              </button>
+            </div>
+            <div *ngIf="submitted && f['password'].errors" class="invalid-feedback">
+              <div *ngIf="f['password'].errors?.['required']">Password is required</div>
+            </div>
+          </div>
+          
+          <div class="forgot-password">
+            <a href="#">Forgot Password?</a>
+          </div>
+          
+          <button type="submit" class="signin-button">
+            Sign in
+          </button>
+        </form>
       </div>
-      <h3 class="mb-1">Welcome Back</h3>
-      <p class="mb-4 text-muted">Please login to your account</p>
-      <form (ngSubmit)="login()">
-        <div class="mb-3">
-          <input id="username" class="form-control" [(ngModel)]="username" name="username" placeholder="Email" required />
-        </div>
-        <div class="mb-3">
-          <input id="password" type="password" class="form-control" [(ngModel)]="password" name="password" placeholder="Password" required />
-        </div>
-        <div *ngIf="error" class="alert alert-danger py-1">{{ error }}</div>
-        <button class="btn btn-primary w-100 mb-3" type="submit">Login</button>
-      </form>
     </div>
   </div>
 </div>
-<app-footer></app-footer>

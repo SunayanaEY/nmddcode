@@ -1,23 +1,24 @@
 import { Routes } from "@angular/router";
-import { ChartSectionComponent } from "../../charts/chart-section/chart-section.component";
-import { TableSectionComponent } from "../../table/table-section/table-section.component";
-import { DashboardComponent } from "../../dashboard.component";
+import { TrainingSectionComponent } from "../../training/training-section/training-section.component";
+import { TrainingCertificateGenerationComponent } from "../../training/training-certificate-generation/training-certificate-generation.component";
+import { ManualTrainingUploadComponent } from "../../training/manual-training-upload/manual-training-upload.component";
+import { BulkTrainingUploadComponent } from "../../training/bulk-training-upload/bulk-training-upload.component";
+import { ApprovedCertificateComponent } from "../../approved-certificate/approved-certificate.component";
 
 export const AdminLayoutRoutes: Routes = [
   {
-    path: 'dashboard/charts', component: ChartSectionComponent
+    path: 'training-module', component: TrainingSectionComponent
   },
   {
-    path: 'charts', component: ChartSectionComponent
+    path: 'training-certificate-generation', component: TrainingCertificateGenerationComponent
   },
   {
-    path:'dashboard/table-data',component: TableSectionComponent
-
+    path: 'manual-training-upload', component: ManualTrainingUploadComponent
   },
   {
-    path:'table-data',component: TableSectionComponent
-
+    path: 'bulk-training-upload', component: BulkTrainingUploadComponent
   },
-
-  { path: 'dashboard', component: DashboardComponent },
+  {
+    path: 'approved-certificate', component: ApprovedCertificateComponent
+  },
 ];

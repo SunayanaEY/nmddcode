@@ -1,0 +1,361 @@
+/* Container Styles */
+.container-fluid {
+  padding: 20px;
+  background-color: #f8f9fa;
+  min-height: 100vh;
+  transition: all 0.3s ease;
+  width: 100%;
+  max-width: 100%;
+}
+
+/* Responsive container for sidebar changes */
+.main-content {
+  transition: margin-left 0.3s ease, width 0.3s ease;
+  width: 100%;
+}
+
+/* Breadcrumb Styles */
+.breadcrumb {
+  background-color: transparent;
+  padding: 0;
+  margin-bottom: 20px;
+  font-size: 14px;
+}
+
+.breadcrumb-item {
+  color: #6c757d;
+}
+
+.breadcrumb-item.active {
+  color: #495057;
+  font-weight: 500;
+}
+
+.breadcrumb-item + .breadcrumb-item::before {
+  content: ">";
+  color: #6c757d;
+}
+
+/* Header Section */
+.header-section {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  margin-bottom: 20px;
+  width: 100%;
+  transition: all 0.3s ease;
+}
+
+.header-left {
+  flex: 1;
+}
+
+.header-right {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.page-title {
+  font-size: 24px;
+  font-weight: 600;
+  color: #212529;
+  margin: 0;
+}
+
+/* New Row Button */
+.btn-new-row {
+  background-color: #007bff;
+  border: none;
+  color: white;
+  padding: 10px 20px;
+  border-radius: 6px;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  transition: all 0.2s ease;
+}
+
+.btn-new-row:hover {
+  background-color: #0056b3;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 8px rgba(0, 123, 255, 0.3);
+}
+
+.btn-new-row i {
+  font-size: 16px;
+}
+
+/* Bottom Action Buttons */
+.bottom-actions {
+  display: flex;
+  gap: 15px;
+  justify-content: center;
+  margin-top: 30px;
+}
+
+.btn-save-draft {
+  background-color: #6c757d;
+  border: none;
+  color: white;
+  padding: 12px 30px;
+  border-radius: 6px;
+  font-weight: 500;
+  transition: all 0.2s ease;
+}
+
+.btn-save-draft:hover {
+  background-color: #5a6268;
+  transform: translateY(-1px);
+}
+
+.btn-submit {
+  background-color: #007bff;
+  border: none;
+  color: white;
+  padding: 12px 30px;
+  border-radius: 6px;
+  font-weight: 500;
+  transition: all 0.2s ease;
+}
+
+.btn-submit:hover {
+  background-color: #0056b3;
+  transform: translateY(-1px);
+}
+
+/* Modal Styles */
+.modal-content {
+  border-radius: 12px;
+  border: none;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+}
+
+.modal-header {
+  background-color: #f8f9fa;
+  border-bottom: 1px solid #dee2e6;
+  border-radius: 12px 12px 0 0;
+  padding: 20px;
+}
+
+.modal-title {
+  font-size: 18px;
+  font-weight: 600;
+  color: #212529;
+}
+
+.modal-body {
+  padding: 25px;
+}
+
+.modal-footer {
+  border-top: 1px solid #dee2e6;
+  padding: 20px;
+  background-color: #f8f9fa;
+  border-radius: 0 0 12px 12px;
+}
+
+/* Form Styles */
+.form-group {
+  margin-bottom: 20px;
+}
+
+.form-label {
+  font-weight: 500;
+  color: #495057;
+  margin-bottom: 8px;
+  display: block;
+}
+
+.form-control {
+  border: 1px solid #ced4da;
+  border-radius: 6px;
+  padding: 10px 12px;
+  font-size: 14px;
+  transition: all 0.2s ease;
+}
+
+.form-control:focus {
+  border-color: #007bff;
+  box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+}
+
+.form-select {
+  border: 1px solid #ced4da;
+  border-radius: 6px;
+  padding: 10px 12px;
+  font-size: 14px;
+  background-color: white;
+  transition: all 0.2s ease;
+}
+
+.form-select:focus {
+  border-color: #007bff;
+  box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+}
+
+/* Form Row Styles */
+.row {
+  margin-left: -10px;
+  margin-right: -10px;
+}
+
+.row .col-md-6 {
+  padding-left: 10px;
+  padding-right: 10px;
+}
+
+/* Modal Button Styles */
+.btn-cancel {
+  background-color: #6c757d;
+  border: none;
+  color: white;
+  padding: 10px 25px;
+  border-radius: 6px;
+  font-weight: 500;
+  transition: all 0.2s ease;
+}
+
+.btn-cancel:hover {
+  background-color: #5a6268;
+}
+
+.btn-submit-modal {
+  background-color: #007bff;
+  border: none;
+  color: white;
+  padding: 10px 25px;
+  border-radius: 6px;
+  font-weight: 500;
+  transition: all 0.2s ease;
+}
+
+.btn-submit-modal:hover {
+  background-color: #0056b3;
+}
+
+/* Sidebar responsive adjustments */
+.manual-training-container {
+  transition: margin-left 0.3s ease;
+}
+
+:host-context(.sidebar-collapsed) .manual-training-container {
+  margin-left: 80px; /* Margin for collapsed sidebar */
+}
+
+/* Responsive Design */
+@media (max-width: 1200px) {
+  .table-container {
+    overflow-x: auto;
+  }
+  
+  .table {
+    min-width: 900px;
+  }
+}
+
+@media (max-width: 768px) {
+  .header-section {
+    flex-direction: column;
+    gap: 15px;
+    align-items: flex-start;
+    justify-content: flex-start;
+  }
+  
+  .header-right {
+    width: 100%;
+    justify-content: center;
+  }
+  
+  .table-container {
+    overflow-x: auto;
+  }
+  
+  .table {
+    min-width: 800px;
+  }
+  
+  .bottom-actions {
+    flex-direction: column;
+    align-items: center;
+  }
+  
+  .btn-save-draft,
+  .btn-submit {
+    width: 200px;
+  }
+  
+  .sidebar-expanded .manual-training-container,
+  .sidebar-collapsed .manual-training-container,
+  .manual-training-container {
+    width: 100% !important;
+    margin-left: 0 !important;
+  }
+}
+
+/* Additional responsive utilities */
+.w-100 {
+  width: 100% !important;
+}
+
+.flex-responsive {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+/* Smooth transitions for all responsive changes */
+* {
+  box-sizing: border-box;
+}
+
+.container-fluid,
+.table-container,
+.header-section {
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Validation Styles */
+.form-control.is-invalid {
+  border-color: #dc3545;
+}
+
+.form-control.is-valid {
+  border-color: #28a745;
+}
+
+.invalid-feedback {
+  display: block;
+  color: #dc3545;
+  font-size: 12px;
+  margin-top: 5px;
+}
+
+.valid-feedback {
+  display: block;
+  color: #28a745;
+  font-size: 12px;
+  margin-top: 5px;
+}
+
+/* Loading States */
+.btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* Animation for smooth transitions */
+.fade-in {
+  animation: fadeIn 0.3s ease-in;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
