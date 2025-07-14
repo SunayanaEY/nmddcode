@@ -11,10 +11,6 @@
   transition: margin-left 0.2s, width 0.2s;
 }
 
-.dashboard-layout.sidebar-collapsed .main-content-wrapper {
-  margin-left: 70px;
-  width: calc(100vw - 70px);
-}
 
 app-header {
   position: fixed;
@@ -59,7 +55,6 @@ app-footer {
 
 @media (max-width: 900px) {
   .main-content-wrapper, app-header, app-footer {
-    margin-left: 70px;
     left: 70px;
     width: calc(100vw - 70px);
   }

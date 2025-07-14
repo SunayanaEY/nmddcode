@@ -6,10 +6,6 @@
 
 
 
-:host-context(.dashboard-layout.sidebar-collapsed) .bulk-upload-container {
-  margin-left: 70px;
-}
-
 .page-title {
   font-size: 22px;
   font-weight: 500;

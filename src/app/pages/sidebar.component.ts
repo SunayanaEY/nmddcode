@@ -40,6 +40,14 @@ export class SidebarComponent {
     this.collapsed = !this.collapsed;
     this.collapsedChange.emit(this.collapsed);
   }
+
+  logout() {
+    // Add your logout logic here
+    // For example: clear session, redirect to login, etc.
+    console.log('Logout clicked');
+    // Example: this.router.navigate(['/login']);
+    // Example: this.authService.logout();
+  }
   onSubmit() {
     this.submitted = true;
     if (this.registerForm.invalid) {

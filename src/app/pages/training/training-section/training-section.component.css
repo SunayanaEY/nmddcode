@@ -156,12 +156,6 @@
 
 
 
-
-
-:host-context(.dashboard-layout.sidebar-collapsed) .certificate-container {
-  margin-left: 70px;
-}
-
 /* Responsive Design */
 @media (max-width: 1024px) {
   .certificate-container {

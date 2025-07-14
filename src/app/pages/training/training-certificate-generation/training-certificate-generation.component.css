@@ -9,10 +9,6 @@
 
 
 
-:host-context(.dashboard-layout.sidebar-collapsed) .certificate-form-container {
-  margin-left: 70px;
-}
-
 /* Header Section */
 .form-header {
   margin-bottom: 2rem;

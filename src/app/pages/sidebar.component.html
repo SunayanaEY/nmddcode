@@ -1,54 +1,82 @@
 <div class="sidebar-nav" [class.collapsed]="collapsed">
-  <!-- Top Row: Collapse Button Left -->
-  <div class="sidebar-top-row d-flex align-items-center justify-content-start mb-4 mt-2">
-    <button class="sidebar-toggle-btn me-2" (click)="toggleSidebar()" aria-label="Toggle sidebar">
+  <!-- Brand Section -->
+  <div class="sidebar-brand" *ngIf="!collapsed">
+    <div class="brand-logo">
+      <i class="bi bi-shield-check"></i>
+    </div>
+    <div class="brand-text">
+      <h6 class="brand-title">NMDD Portal</h6>
+      <small class="brand-subtitle">Dairy Dashboard</small>
+    </div>
+  </div>
+  
+  <!-- Collapsed Brand -->
+  <div class="sidebar-brand-collapsed" *ngIf="collapsed">
+    <div class="brand-logo-small">
+      <i class="bi bi-shield-check"></i>
+    </div>
+  </div>
+
+  <!-- Top Row: Collapse Button -->
+  <div class="sidebar-top-row d-flex align-items-center justify-content-start">
+    <button class="sidebar-toggle-btn" (click)="toggleSidebar()" aria-label="Toggle sidebar">
       <i class="bi" [ngClass]="collapsed ? 'bi-chevron-double-right' : 'bi-chevron-double-left'"></i>
     </button>
   </div>
 
   <!-- Menu Items -->
-  <nav class="flex-grow-1">
-    <a class="sidebar-link d-flex align-items-center mb-2 fw-bold"
-       [routerLink]="['dashboard']" routerLinkActive="active"
-       [attr.title]="collapsed ? 'Dashboard' : null">
-      <i class="bi bi-speedometer2 me-2"></i>
-      <span class="sidebar-label" *ngIf="!collapsed">Dashboard</span>
-    </a>
-    <a class="sidebar-link d-flex align-items-center mb-2"
-       routerLink="/performance" routerLinkActive="active"
-       [attr.title]="collapsed ? 'Performance' : null">
-      <i class="bi bi-bar-chart-line me-2"></i>
-      <span class="sidebar-label" *ngIf="!collapsed">Performance</span>
-    </a>
-    <a class="sidebar-link d-flex align-items-center mb-2"
-       [routerLink]="['charts']" routerLinkActive="active"
-       [attr.title]="collapsed ? 'Analytics & Trends' : null">
-      <i class="bi bi-graph-up-arrow me-2"></i>
-      <span class="sidebar-label" *ngIf="!collapsed">Analytics & Trends</span>
-    </a>
-    <a class="sidebar-link d-flex align-items-center mb-2"
-       routerLink="/geo-mapping" routerLinkActive="active"
-       [attr.title]="collapsed ? 'Geo Mapping' : null">
-      <i class="bi bi-geo-alt me-2"></i>
-      <span class="sidebar-label" *ngIf="!collapsed">Geo Mapping</span>
-    </a>
-    <a class="sidebar-link d-flex align-items-center mb-2"
-       [routerLink]="['table-data']" routerLinkActive="active"
-       [attr.title]="collapsed ? 'Reports & Exp' : null">
-      <i class="bi bi-file-earmark-bar-graph me-2"></i>
-      <span class="sidebar-label" *ngIf="!collapsed">Reports & Exp</span>
-    </a>
-    <a class="sidebar-link d-flex align-items-center mb-2"
-       [routerLink]="['training-module']" routerLinkActive="active"
-       [attr.title]="collapsed ? 'Training Module' : null">
-      <i class="bi bi-book me-2"></i>
-      <span class="sidebar-label" *ngIf="!collapsed">Training Module</span>
-    </a>
-    <a class="sidebar-link d-flex align-items-center mt-2"
-       routerLink="/system" routerLinkActive="active"
-       [attr.title]="collapsed ? 'System Management' : null">
-      <i class="bi bi-gear me-2"></i>
-      <span class="sidebar-label" *ngIf="!collapsed">System Management</span>
-    </a>
-  </nav>
+  <div class="nav-container">
+    <nav class="flex-grow-1">
+      <a class="sidebar-link d-flex align-items-center mb-2"
+         [routerLink]="['training-module']" routerLinkActive="active"
+         [attr.title]="collapsed ? 'Training Module' : null">
+        <i class="bi bi-book me-2"></i>
+        <span class="sidebar-label" *ngIf="!collapsed">Training Module</span>
+      </a>
+      <a class="sidebar-link d-flex align-items-center mb-2 fw-bold"
+         [routerLink]="['dashboard']" routerLinkActive="active"
+         [attr.title]="collapsed ? 'Dashboard' : null">
+        <i class="bi bi-speedometer2 me-2"></i>
+        <span class="sidebar-label" *ngIf="!collapsed">Dashboard</span>
+      </a>
+      <a class="sidebar-link d-flex align-items-center mb-2"
+         routerLink="/performance" routerLinkActive="active"
+         [attr.title]="collapsed ? 'Performance' : null">
+        <i class="bi bi-bar-chart-line me-2"></i>
+        <span class="sidebar-label" *ngIf="!collapsed">Performance</span>
+      </a>
+      <a class="sidebar-link d-flex align-items-center mb-2"
+         [routerLink]="['charts']" routerLinkActive="active"
+         [attr.title]="collapsed ? 'Analytics & Trends' : null">
+        <i class="bi bi-graph-up-arrow me-2"></i>
+        <span class="sidebar-label" *ngIf="!collapsed">Analytics & Trends</span>
+      </a>
+      <a class="sidebar-link d-flex align-items-center mb-2"
+         routerLink="/geo-mapping" routerLinkActive="active"
+         [attr.title]="collapsed ? 'Geo Mapping' : null">
+        <i class="bi bi-geo-alt me-2"></i>
+        <span class="sidebar-label" *ngIf="!collapsed">Geo Mapping</span>
+      </a>
+      <a class="sidebar-link d-flex align-items-center mb-2"
+         [routerLink]="['table-data']" routerLinkActive="active"
+         [attr.title]="collapsed ? 'Reports & Exp' : null">
+        <i class="bi bi-file-earmark-bar-graph me-2"></i>
+        <span class="sidebar-label" *ngIf="!collapsed">Reports & Exp</span>
+      </a>
+      <a class="sidebar-link d-flex align-items-center mt-2"
+         routerLink="/system" routerLinkActive="active"
+         [attr.title]="collapsed ? 'System Management' : null">
+        <i class="bi bi-gear me-2"></i>
+        <span class="sidebar-label" *ngIf="!collapsed">System Management</span>
+      </a>
+    </nav>
+  </div>
+
+  <!-- Logout Section -->
+  <div class="sidebar-logout">
+    <button class="logout-btn" (click)="logout()" [title]="collapsed ? 'Logout' : ''">
+      <i class="bi bi-box-arrow-right"></i>
+      <span *ngIf="!collapsed" class="logout-text">Logout</span>
+    </button>
+  </div>
 </div>
