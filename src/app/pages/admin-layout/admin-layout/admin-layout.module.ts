@@ -13,6 +13,8 @@ import { NgxPaginationModule } from 'ngx-pagination';
 
 import { ExcelService } from '../../../_services/Excel/excel.service';
 import { ApprovedCertificateComponent } from '../../approved-certificate/approved-certificate.component';
+import { CertificateApprovalComponent } from '../../certificate-approval/certificate-approval.component';
+
 
 @NgModule({
   imports: [
@@ -23,6 +25,8 @@ import { ApprovedCertificateComponent } from '../../approved-certificate/approve
     NgbModule,
     NgxPaginationModule,
     ApprovedCertificateComponent,
+    CertificateApprovalComponent,
+    
   ],
   declarations: [],
   providers: [ExcelService],

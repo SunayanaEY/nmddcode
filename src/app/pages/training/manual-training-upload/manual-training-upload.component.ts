@@ -26,8 +26,8 @@ export class ManualTrainingUploadComponent implements OnInit {
   participants: Participant[] = [];
   editingIndex: number = -1;
   breadcrumbItems: BreadcrumbItem[] = [
-    { label: 'Training Institute Login', url: '/training-module' },
-    { label: 'Training Certificate generation', url: '/training-certificate-generation' },
+    { label: 'Training Module', url: '/dashboard/training-module' },
+    { label: 'Training Certificate Generation', url: '/dashboard/training-certificate-generation' },
     { label: 'Manual Training Upload' }
   ];
   tableColumns: TableColumn[] = [

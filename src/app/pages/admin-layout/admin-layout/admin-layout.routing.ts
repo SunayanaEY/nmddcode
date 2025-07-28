@@ -4,8 +4,16 @@ import { TrainingCertificateGenerationComponent } from "../../training/training-
 import { ManualTrainingUploadComponent } from "../../training/manual-training-upload/manual-training-upload.component";
 import { BulkTrainingUploadComponent } from "../../training/bulk-training-upload/bulk-training-upload.component";
 import { ApprovedCertificateComponent } from "../../approved-certificate/approved-certificate.component";
+import { CertificateApprovalComponent } from "../../certificate-approval/certificate-approval.component";
+
 
 export const AdminLayoutRoutes: Routes = [
+  {
+    path: 'certificate-approval', component: CertificateApprovalComponent
+  },
+  {
+    path: 'user-profile-creation', loadComponent: () => import('../../user-profile-creation/user-profile-creation.component').then(m => m.UserProfileCreationComponent)
+  },
   {
     path: 'training-module', component: TrainingSectionComponent
   },

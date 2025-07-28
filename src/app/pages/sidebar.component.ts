@@ -42,11 +42,8 @@ export class SidebarComponent {
   }
 
   logout() {
-    // Add your logout logic here
-    // For example: clear session, redirect to login, etc.
-    console.log('Logout clicked');
-    // Example: this.router.navigate(['/login']);
-    // Example: this.authService.logout();
+    this.authService.logout();
+    this.router.navigate(['/login']);
   }
   onSubmit() {
     this.submitted = true;

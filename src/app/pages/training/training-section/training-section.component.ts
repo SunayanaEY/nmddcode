@@ -1,6 +1,7 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
+import { AuthService } from '../../../services/auth.service';
 
 @Component({
   selector: 'app-training-section',
@@ -9,13 +10,21 @@ import { Router } from '@angular/router';
   templateUrl: './training-section.component.html',
   styleUrl: './training-section.component.css'
 })
-export class TrainingSectionComponent {
+export class TrainingSectionComponent implements OnInit {
+  userRole: number = 0;
   
-  constructor(private router: Router) {}
+  constructor(private router: Router, private authService: AuthService) {}
+
+  ngOnInit(): void {
+    const user = this.authService.getUser();
+    if (user) {
+      this.userRole = user.role;
+    }
+  }
   
   navigateToTrainingCertificate() {
     console.log('Navigating to Training Certificate Generation');
-    this.router.navigate(['/training-certificate-generation']);
+    this.router.navigate(['/dashboard/training-certificate-generation']);
   }
   
   navigateToResumeCertificate() {
@@ -26,12 +35,20 @@ export class TrainingSectionComponent {
   
   navigateToApprovedCertificates() {
     console.log('Navigating to Approved Certificates');
-    this.router.navigate(['/approved-certificate']);
+    this.router.navigate(['/dashboard/approved-certificate']);
   }
   
   navigateToPendingApproval() {
     console.log('Navigating to Pending Approval');
     // Implement navigation to pending approval page
     // this.router.navigate(['/pending-approval']);
+  }
+
+  navigateToCertificateApproval() {
+    this.router.navigate(['/dashboard/certificate-approval']);
+  }
+
+  navigateToUserProfileCreation() {
+    this.router.navigate(['/dashboard/user-profile-creation']);
   }
 }

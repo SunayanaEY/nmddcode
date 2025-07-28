@@ -40,16 +40,16 @@
             <label class="form-label">Email Address</label>
             <div class="input-container">
               <input 
-                id="inputUsename" 
+                id="inputEmail" 
                 type="text" 
-                formControlName="usename"
-                [ngClass]="{ 'is-invalid': submitted && f['usename'].errors }" 
+                formControlName="email"
+                [ngClass]="{ 'is-invalid': submitted && f['email'].errors }" 
                 placeholder="Enter Email"
                 class="form-input">
             </div>
-            <div *ngIf="submitted && f['usename'].errors" class="invalid-feedback">
-              <div *ngIf="f['usename'].errors?.['required']">Email is required</div>
-              <div *ngIf="f['usename'].errors?.['email']">Email must be a valid</div>
+            <div *ngIf="submitted && f['email'].errors" class="invalid-feedback">
+              <div *ngIf="f['email'].errors?.['required']">Email is required</div>
+              <div *ngIf="f['email'].errors?.['email']">Email must be a valid</div>
             </div>
           </div>
           

@@ -3,8 +3,33 @@
   <div class="container-fluid">
     <!-- Certificate Generation Cards -->
     <div class="certificate-grid">
+      <!-- Certificate Approval -->
+      <div class="certificate-card" (click)="navigateToCertificateApproval()" *ngIf="userRole === 1">
+        <div class="certificate-icon">
+          <svg width="48" height="48" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M12 2C13.1 2 14 2.9 14 4C14 5.1 13.1 6 12 6C10.9 6 10 5.1 10 4C10 2.9 10.9 2 12 2ZM21 9V7L15 1H5C3.89 1 3 1.89 3 3V21C3 22.11 3.89 23 5 23H11V21H5V3H13V9H21ZM16.5 18.5L19.36 15.64L20.78 17.06L16.5 21.34L13.14 17.98L14.56 16.56L16.5 18.5Z" fill="currentColor"/>
+          </svg>
+        </div>
+        <div class="certificate-content">
+          <h3 class="certificate-title">Certificate Approval</h3>
+          <p class="certificate-description">Approve or reject generated certificates</p>
+        </div>
+      </div>
+
+      <!-- User Profile Creation -->
+      <div class="certificate-card" (click)="navigateToUserProfileCreation()" *ngIf="userRole === 1">
+        <div class="certificate-icon">
+          <svg width="48" height="48" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M12 12C14.21 12 16 10.21 16 8C16 5.79 14.21 4 12 4C9.79 4 8 5.79 8 8C8 10.21 9.79 12 12 12ZM12 14C9.33 14 4 15.34 4 18V20H20V18C20 15.34 14.67 14 12 14Z" fill="currentColor"/>
+          </svg>
+        </div>
+        <div class="certificate-content">
+          <h3 class="certificate-title">User Profile Creation</h3>
+          <p class="certificate-description">Create and manage user profiles</p>
+        </div>
+      </div>
       <!-- Training Certificate Generation -->
-      <div class="certificate-card" (click)="navigateToTrainingCertificate()">
+      <div class="certificate-card" (click)="navigateToTrainingCertificate()" *ngIf="userRole === 2">
         <div class="certificate-icon">
           <svg width="48" height="48" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
             <path d="M12 2L13.09 8.26L20 9L13.09 9.74L12 16L10.91 9.74L4 9L10.91 8.26L12 2Z" fill="currentColor"/>
@@ -19,7 +44,7 @@
       </div>
 
       <!-- Resume Certificate Generation -->
-      <div class="certificate-card" (click)="navigateToResumeCertificate()">
+      <div class="certificate-card" (click)="navigateToResumeCertificate()" *ngIf="userRole === 2">
         <div class="certificate-icon">
           <svg width="48" height="48" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
             <path d="M8 2V6H16V2H18V6H20C21.1 6 22 6.9 22 8V20C22 21.1 21.1 22 20 22H4C2.9 22 2 21.1 2 20V8C2 6.9 2.9 6 4 6H6V2H8ZM4 10V20H20V10H4ZM6 12H18V14H6V12ZM6 16H14V18H6V16Z" fill="currentColor"/>
@@ -32,7 +57,7 @@
       </div>
 
       <!-- Approved Certificate -->
-      <div class="certificate-card" (click)="navigateToApprovedCertificates()">
+      <div class="certificate-card" (click)="navigateToApprovedCertificates()" *ngIf="userRole === 2">
         <div class="certificate-icon">
           <svg width="48" height="48" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
             <path d="M12 2C13.1 2 14 2.9 14 4C14 5.1 13.1 6 12 6C10.9 6 10 5.1 10 4C10 2.9 10.9 2 12 2ZM21 9V7L15 1H5C3.89 1 3 1.89 3 3V21C3 22.11 3.89 23 5 23H11V21H5V3H13V9H21ZM16.5 18.5L19.36 15.64L20.78 17.06L16.5 21.34L13.14 17.98L14.56 16.56L16.5 18.5Z" fill="currentColor"/>
@@ -45,7 +70,7 @@
       </div>
 
       <!-- Pending for Approval -->
-      <div class="certificate-card" (click)="navigateToPendingApproval()">
+      <div class="certificate-card" (click)="navigateToPendingApproval()" *ngIf="userRole === 2">
         <div class="certificate-icon">
           <svg width="48" height="48" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
             <path d="M12 2C6.48 2 2 6.48 2 12S6.48 22 12 22 22 17.52 22 12 17.52 2 12 2ZM13 17H11V15H13V17ZM13 13H11V7H13V13Z" fill="currentColor"/>

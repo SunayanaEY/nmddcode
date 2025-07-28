@@ -1,33 +1,27 @@
-<div class="main-content-wrapper">
-  <div class="manual-training-container">
-  <div class="main-content">
-    <div class="container-fluid">
-      <app-breadcrumb [items]="breadcrumbItems"></app-breadcrumb>
+<div class="manual-training-container">
+  <app-breadcrumb [items]="breadcrumbItems"></app-breadcrumb>
 
-      <!-- Header Section -->
-      <div class="header-section">
-        <div class="header-left">
-          <h1 class="page-title">Manual Training Upload</h1>
-        </div>
-        <div class="header-right">
-          <button type="button" class="btn btn-new-row" (click)="openAddModal()">
-            <i class="bi bi-plus"></i>
-            New Row
-          </button>
-        </div>
-      </div>
-
-      <!-- Data Table -->
-      <app-table [data]="participants" [columns]="tableColumns" [actions]="tableActions"
-        (actionClick)="handleTableAction($event)"></app-table>
-
-      <!-- Action Buttons -->
-      <div class="form-actions">
-        <button type="button" class="btn btn-outline-secondary btn-lg me-3">Save Draft</button>
-        <button type="button" class="btn btn-primary btn-lg">Submit for Verification</button>
-      </div>
+  <!-- Header Section -->
+  <div class="header-section">
+    <div class="header-left">
+      <h1 class="page-title">Manual Training Upload</h1>
     </div>
+    <div class="header-right">
+      <button type="button" class="btn btn-new-row" (click)="openAddModal()">
+        <i class="bi bi-plus"></i>
+        New Row
+      </button>
     </div>
+  </div>
+
+  <!-- Data Table -->
+  <app-table [data]="participants" [columns]="tableColumns" [actions]="tableActions"
+    (actionClick)="handleTableAction($event)"></app-table>
+
+  <!-- Action Buttons -->
+  <div class="form-actions">
+    <button type="button" class="btn btn-outline-secondary btn-lg me-3">Save Draft</button>
+    <button type="button" class="btn btn-primary btn-lg">Submit for Verification</button>
   </div>
 </div>
 

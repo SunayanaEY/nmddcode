@@ -1,17 +1,48 @@
-<nav class="navbar navbar-expand-lg navbar-light bg-white border-bottom px-3">
-  <a class="navbar-brand fw-bold" href="#">
-    <i class="bi bi-speedometer2 me-2"></i> Dairy Dashboard
-  </a>
-  <div class="ms-auto d-flex align-items-center">
-    <ng-container *ngIf="user; else guest">
-      <span class="me-2">{{ user.name }}</span>
-      <img *ngIf="user.avatarUrl; else defaultAvatar" [src]="user.avatarUrl" class="rounded-circle" width="36" height="36" alt="User avatar">
-      <ng-template #defaultAvatar>
-        <i class="bi bi-person-circle fs-3"></i>
-      </ng-template>
-    </ng-container>
-    <ng-template #guest>
-      <i class="bi bi-person-circle fs-3"></i>
-    </ng-template>
+<nav class="navbar navbar-expand-lg custom-navbar px-4">
+  <div class="navbar-brand-container">
+    <a class="navbar-brand" href="#">
+      <div class="brand-icon">
+        <i class="bi bi-award-fill"></i>
+      </div>
+      <div class="brand-text">
+        <span class="brand-title">National Dairy Development</span>
+        <span class="brand-subtitle">Training Management System</span>
+      </div>
+    </a>
   </div>
-</nav> 
+  
+  <div class="navbar-actions ms-auto">
+    <div class="user-profile-section">
+      <ng-container *ngIf="user; else guest">
+        <div class="user-info">
+          <div class="user-details">
+            <span class="user-name">{{ user.username || 'User' }}</span>
+            <span class="user-role">{{ user.email }}</span>
+          </div>
+          <div class="user-avatar">
+            <div class="default-avatar">
+              <i class="bi bi-person-fill"></i>
+            </div>
+          </div>
+        </div>
+      </ng-container>
+      <ng-template #guest>
+        <div class="guest-profile">
+          <div class="default-avatar">
+            <i class="bi bi-person-fill"></i>
+          </div>
+        </div>
+      </ng-template>
+    </div>
+    
+    <div class="header-actions">
+      <button class="action-btn notification-btn" title="Notifications">
+        <i class="bi bi-bell"></i>
+        <span class="notification-badge">3</span>
+      </button>
+      <button class="action-btn settings-btn" title="Settings">
+        <i class="bi bi-gear"></i>
+      </button>
+    </div>
+  </div>
+</nav>

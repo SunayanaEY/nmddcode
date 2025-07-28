@@ -3,15 +3,20 @@ import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { FileUploadComponent } from '../../../components/file-upload/file-upload.component';
+import { BreadcrumbComponent, BreadcrumbItem } from '../../../components/breadcrumb/breadcrumb.component';
 
 @Component({
   selector: 'app-training-certificate-generation',
   standalone: true,
-  imports: [CommonModule, FormsModule, ReactiveFormsModule, FileUploadComponent],
+  imports: [CommonModule, FormsModule, ReactiveFormsModule, FileUploadComponent, BreadcrumbComponent],
   templateUrl: './training-certificate-generation.component.html',
   styleUrl: './training-certificate-generation.component.css'
 })
 export class TrainingCertificateGenerationComponent {
+  breadcrumbItems: BreadcrumbItem[] = [
+    { label: 'Training Module', url: '/dashboard/training-module' },
+    { label: 'Training Certificate Generation' }
+  ];
   trainingForm: FormGroup;
   signatures: any[] = [{
     file: null,
@@ -72,15 +77,15 @@ export class TrainingCertificateGenerationComponent {
   }
 
   onManualUpload() {
-    this.router.navigate(['/manual-training-upload']);
+    this.router.navigate(['/dashboard/manual-training-upload']);
   }
 
   onBulkUpload() {
-    this.router.navigate(['/bulk-training-upload']);
+    this.router.navigate(['/dashboard/bulk-training-upload']);
   }
 
   goBack() {
-    this.router.navigate(['/training-module']);
+    this.router.navigate(['/dashboard/training-module']);
   }
 
   onSignatureNameChange(event: Event, index: number) {

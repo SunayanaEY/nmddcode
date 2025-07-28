@@ -1,21 +1,17 @@
 /* Main Container */
 .certificate-container {
-  min-height: 100vh;
   background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
-  padding: 2rem;
-  margin-left: 0;
+  padding: 1rem;
   transition: margin-left 0.3s ease;
+  overflow-x: hidden;
 }
 
 /* Certificate Grid */
 .certificate-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-  gap: 2rem;
-  margin-bottom: 3rem;
-  max-width: 1200px;
-  margin-left: auto;
-  margin-right: auto;
+  gap: 1.5rem;
+  margin-bottom: 2rem;
 }
 
 /* Certificate Cards */

@@ -25,7 +25,7 @@ export class LoginComponent {
     private router: Router
   ) {
     this.registerForm = this.formBuilder.group({
-      usename: ['', [Validators.required, Validators.email]],
+      email: ['', [Validators.required, Validators.email]],
       password: ['', Validators.required]
     });
   }
@@ -48,13 +48,15 @@ export class LoginComponent {
       return;
     }
 
-    const username = this.registerForm.value.usename;
+    const email = this.registerForm.value.email;
     const password = this.registerForm.value.password;
 
-    if (this.auth.login(username, password)) {
-      this.router.navigate(['/dashboard']);
-    } else {
-      this.credentialdata = 'Invalid credentials. Please try again.';
-    }
+    this.auth.login(email, password).subscribe(success => {
+      if (success) {
+        this.router.navigate(['/dashboard']);
+      } else {
+        this.credentialdata = 'Invalid credentials. Please try again.';
+      }
+    });
   }
 }

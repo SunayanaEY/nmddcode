@@ -1,0 +1,35 @@
+<div class="certificate-approval-container">
+  <app-breadcrumb [items]="breadcrumbItems"></app-breadcrumb>
+
+  <div class="page-header">
+    <h2>Certificate Approval</h2>
+  </div>
+
+  <div class="filter-container">
+    <div class="filter-controls">
+      <input type="text" class="form-control" placeholder="dd mm yy - dd mm yy">
+      <input type="text" class="form-control" placeholder="Search by Training Title">
+      <select class="form-control">
+        <option>State</option>
+      </select>
+      <select class="form-control">
+        <option>District</option>
+      </select>
+      <select class="form-control">
+        <option>Block</option>
+      </select>
+    </div>
+  </div>
+
+  <div class="trainings-summary">
+    <h4>Pending Approvals</h4>
+    <span class="badge bg-warning">{{ tableData.length }} Pending Approvals</span>
+  </div>
+
+  <app-table 
+    [columns]="tableColumns" 
+    [data]="tableData" 
+    [actions]="tableActions"
+    (actionClick)="handleTableAction($event)">
+  </app-table>
+</div>

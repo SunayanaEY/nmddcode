@@ -13,8 +13,8 @@ import { FileUploadComponent } from '../../../components/file-upload/file-upload
 })
 export class BulkTrainingUploadComponent implements OnInit {
   breadcrumbItems: BreadcrumbItem[] = [
-    { label: 'Training Institute Login', url: '/training-module' },
-    { label: 'Training Certificate generation', url: '/training-certificate-generation' },
+    { label: 'Training Module', url: '/dashboard/training-module' },
+    { label: 'Training Certificate Generation', url: '/dashboard/training-certificate-generation' },
     { label: 'Bulk Upload' }
   ];
 
