@@ -29,4 +29,7 @@ export const AdminLayoutRoutes: Routes = [
   {
     path: 'approved-certificate', component: ApprovedCertificateComponent
   },
+  {
+    path: 'training-centre', loadComponent: () => import('../../training/training-centre/training-centre.component').then(m => m.TrainingCentreComponent)
+  },
 ];

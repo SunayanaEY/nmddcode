@@ -1,0 +1,209 @@
+<!-- Modal Backdrop -->
+<div class="modal-backdrop" *ngIf="show" [class.show]="show" (click)="onBackdropClick($event)"></div>
+
+<!-- Modal -->
+<div class="modal" *ngIf="show" [class.show]="show" (click)="onBackdropClick($event)">
+  <div class="modal-dialog" [ngClass]="getSizeClass()">
+    <div class="modal-content">
+      
+      <!-- Modal Header -->
+      <div class="modal-header">
+        <h5 class="modal-title">{{ config.title }}</h5>
+        <button 
+          *ngIf="config.showCloseButton !== false" 
+          type="button" 
+          class="btn-close" 
+          (click)="onClose()"
+          aria-label="Close">
+          <i class="bi bi-x-lg"></i>
+        </button>
+      </div>
+
+      <!-- Modal Body -->
+      <div class="modal-body">
+        
+        <!-- Custom Content -->
+        <div *ngIf="config.content && !config.fields" [innerHTML]="config.content"></div>
+        
+        <!-- View Mode - Display Data -->
+        <div *ngIf="mode === 'view' && data && !config.fields" class="view-mode">
+          <div class="row" *ngFor="let item of data | keyvalue">
+            <div class="col-4">
+              <strong>{{ (item.key?.toString() || '') | titlecase }}:</strong>
+            </div>
+            <div class="col-8">
+              <span class="form-control-plaintext">{{ formatDisplayValue(item.value) }}</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Form Fields -->
+        <div *ngIf="config.fields" class="form-fields">
+          <!-- View Mode -->
+          <div *ngIf="mode === 'view'">
+            <div class="mb-3" *ngFor="let field of config.fields">
+              <div class="row">
+                <div class="col-4">
+                  <strong>{{ field.label }}:</strong>
+                </div>
+                <div class="col-8">
+                  <span class="form-control-plaintext">{{ formatDisplayValue(getDisplayValue(field.id), field.type) }}</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Edit/Create Mode with Responsive Grid -->
+          <div *ngIf="mode !== 'view'" class="row">
+            <div class="col-12 col-md-6 mb-3" *ngFor="let field of config.fields">
+              <label [for]="field.id" class="form-label">
+                {{ field.label }}
+                <span *ngIf="field.required" class="text-danger">*</span>
+              </label>
+
+              <!-- Text Input -->
+              <input 
+                *ngIf="field.type === 'text' || field.type === 'email' || field.type === 'password' || field.type === 'tel'"
+                [type]="field.type"
+                [id]="field.id"
+                class="form-control"
+                [placeholder]="field.placeholder || ''"
+                [required]="field.required || false"
+                [disabled]="field.disabled || false"
+                [pattern]="field.pattern || ''"
+                [(ngModel)]="formData[field.id]"
+                (ngModelChange)="onFieldChange(field.id, $event)">
+
+              <!-- Number Input -->
+              <input 
+                *ngIf="field.type === 'number'"
+                type="number"
+                [id]="field.id"
+                class="form-control"
+                [placeholder]="field.placeholder || ''"
+                [required]="field.required || false"
+                [disabled]="field.disabled || false"
+                [min]="field.min || null"
+                [max]="field.max || null"
+                [(ngModel)]="formData[field.id]"
+                (ngModelChange)="onFieldChange(field.id, $event)">
+
+              <!-- Date Input -->
+              <input 
+                *ngIf="field.type === 'date'"
+                type="date"
+                [id]="field.id"
+                class="form-control"
+                [required]="field.required || false"
+                [disabled]="field.disabled || false"
+                [(ngModel)]="formData[field.id]"
+                (ngModelChange)="onFieldChange(field.id, $event)">
+
+              <!-- Textarea -->
+              <textarea 
+                *ngIf="field.type === 'textarea'"
+                [id]="field.id"
+                class="form-control"
+                [placeholder]="field.placeholder || ''"
+                [required]="field.required || false"
+                [disabled]="field.disabled || false"
+                [rows]="field.rows || 3"
+                [(ngModel)]="formData[field.id]"
+                (ngModelChange)="onFieldChange(field.id, $event)"></textarea>
+
+              <!-- File Input -->
+              <input 
+                *ngIf="field.type === 'file'"
+                type="file"
+                [id]="field.id"
+                class="form-control"
+                [accept]="field.accept || ''"
+                [multiple]="field.multiple || false"
+                [required]="field.required || false"
+                [disabled]="field.disabled || false"
+                (change)="onFileChange(field.id, $event)">
+
+              <!-- Select Dropdown -->
+              <select 
+                *ngIf="field.type === 'select'"
+                [id]="field.id"
+                class="form-control"
+                [required]="field.required || false"
+                [disabled]="field.disabled || false"
+                [multiple]="field.multiple || false"
+                [(ngModel)]="formData[field.id]"
+                (ngModelChange)="onFieldChange(field.id, $event)">
+                <option value="" disabled>{{ field.placeholder || 'Select an option' }}</option>
+                <option *ngFor="let option of field.options" [value]="option.value">
+                  {{ option.label }}
+                </option>
+              </select>
+
+              <!-- Checkbox -->
+              <div *ngIf="field.type === 'checkbox'" class="form-check">
+                <input 
+                  type="checkbox"
+                  [id]="field.id"
+                  class="form-check-input"
+                  [required]="field.required || false"
+                  [disabled]="field.disabled || false"
+                  [(ngModel)]="formData[field.id]"
+                  (ngModelChange)="onFieldChange(field.id, $event)">
+                <label class="form-check-label" [for]="field.id">
+                  {{ field.placeholder || field.label }}
+                </label>
+              </div>
+
+              <!-- Radio Buttons -->
+              <div *ngIf="field.type === 'radio'" class="radio-group">
+                <div class="form-check" *ngFor="let option of field.options">
+                  <input 
+                    type="radio"
+                    [id]="field.id + '_' + option.value"
+                    [name]="field.id"
+                    class="form-check-input"
+                    [value]="option.value"
+                    [required]="field.required || false"
+                    [disabled]="field.disabled || false"
+                    [(ngModel)]="formData[field.id]"
+                    (ngModelChange)="onFieldChange(field.id, $event)">
+                  <label class="form-check-label" [for]="field.id + '_' + option.value">
+                    {{ option.label }}
+                  </label>
+                </div>
+              </div>
+
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Modal Footer -->
+      <div class="modal-footer" *ngIf="config.showFooter !== false">
+        <button 
+          *ngIf="config.secondaryButtonText" 
+          type="button" 
+          class="btn btn-outline-secondary"
+          (click)="onSecondaryAction()">
+          {{ config.secondaryButtonText }}
+        </button>
+        <button 
+          *ngIf="config.primaryButtonText" 
+          type="button" 
+          class="btn btn-primary"
+          (click)="onPrimaryAction()">
+          {{ config.primaryButtonText }}
+        </button>
+        <button 
+          *ngIf="!config.primaryButtonText && !config.secondaryButtonText" 
+          type="button" 
+          class="btn btn-primary"
+          (click)="onClose()">
+          Close
+        </button>
+      </div>
+
+    </div>
+  </div>
+</div>

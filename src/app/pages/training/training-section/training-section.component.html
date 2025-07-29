@@ -28,6 +28,19 @@
           <p class="certificate-description">Create and manage user profiles</p>
         </div>
       </div>
+
+      <!-- Training Centre Data -->
+      <div class="certificate-card" (click)="navigateToTrainingCentre()" *ngIf="userRole === 1">
+        <div class="certificate-icon">
+          <svg width="48" height="48" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M12 3L2 12H5V20H19V12H22L12 3ZM12 5.69L18 10.19V18H15V13H9V18H6V10.19L12 5.69ZM11 14H13V16H11V14Z" fill="currentColor"/>
+          </svg>
+        </div>
+        <div class="certificate-content">
+          <h3 class="certificate-title">Training Centre Data</h3>
+          <p class="certificate-description">View and manage training centres across different locations</p>
+        </div>
+      </div>
       <!-- Training Certificate Generation -->
       <div class="certificate-card" (click)="navigateToTrainingCertificate()" *ngIf="userRole === 2">
         <div class="certificate-icon">

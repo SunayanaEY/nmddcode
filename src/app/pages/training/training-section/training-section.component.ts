@@ -51,4 +51,8 @@ export class TrainingSectionComponent implements OnInit {
   navigateToUserProfileCreation() {
     this.router.navigate(['/dashboard/user-profile-creation']);
   }
+
+  navigateToTrainingCentre() {
+    this.router.navigate(['/dashboard/training-centre']);
+  }
 }
