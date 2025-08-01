@@ -14,11 +14,7 @@
     <input #fileInput type="file" hidden (change)="onFileChange($event)" [accept]="acceptedFileTypes">
   </div>
 
-  <!-- Error Message Display -->
-  <div class="error-message" *ngIf="errorMessage">
-    <i class="bi bi-exclamation-triangle"></i>
-    <span>{{ errorMessage }}</span>
-  </div>
+  
 
   <div class="file-info" *ngIf="selectedFile && showFileInfo">
     <div class="file-details">
@@ -32,3 +28,8 @@
     </button>
   </div>
 </div>
+<!-- Error Message Display -->
+  <div class="error-message" *ngIf="errorMessage">
+    <i class="bi bi-exclamation-triangle"></i>
+    <span>{{ errorMessage }}</span>
+  </div>

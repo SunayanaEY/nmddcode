@@ -229,12 +229,28 @@ export class FormModalComponent {
     this.modalConfig.title = 'Edit User';
     this.modalConfig.primaryButtonText = 'Update';
     
-    // Pre-populate form fields
-    this.modalConfig.fields?.forEach(field => {
-      field.value = user[field.id];
-    });
+    // Pre-populate form fields with existing data
+    this.modalConfig.fields = this.modalConfig.fields?.map(field => ({
+      ...field,
+      value: this.getFieldValue(user, field.id)
+    })) || [];
     
     this.showModal = true;
+  }
+
+  // Helper method for field mapping
+  getFieldValue(data: any, fieldId: string): any {
+    const fieldMapping: { [key: string]: string } = {
+      'name': 'fullName',
+      'email': 'emailAddress',
+      'age': 'userAge',
+      'gender': 'userGender',
+      'bio': 'biography',
+      'newsletter': 'subscribeNewsletter'
+    };
+    
+    const mappedField = fieldMapping[fieldId] || fieldId;
+    return data[mappedField] || '';
   }
 
   onPrimaryAction(formData: any) {
@@ -561,6 +577,137 @@ export class RadioModalComponent {
   box-shadow: 0 0 0 0.2rem rgba(102, 126, 234, 0.25);
 }
 ```
+
+## Data Population for Edit Mode
+
+When opening a modal in edit mode, it's crucial to properly populate the form fields with existing data. The modal component supports automatic data population through the `data` input and field value mapping.
+
+### Basic Data Population
+
+```typescript
+// Simple approach - when field IDs match data properties
+openEditModal(item: any) {
+  this.modalMode = 'edit';
+  this.modalConfig.title = 'Edit Item';
+  this.modalConfig.primaryButtonText = 'Update';
+  
+  // Direct field population when IDs match
+  this.modalConfig.fields = this.modalConfig.fields?.map(field => ({
+    ...field,
+    value: item[field.id] || ''
+  })) || [];
+  
+  this.showModal = true;
+}
+```
+
+### Advanced Field Mapping
+
+When your data structure doesn't match the field IDs, use a mapping approach:
+
+```typescript
+export class TrainingCentreComponent {
+  editTrainingCentre(centre: any) {
+    this.modalMode = 'edit';
+    this.selectedCentre = { ...centre };
+    this.modalConfig.title = 'Edit Training Centre';
+    this.modalConfig.primaryButtonText = 'Update';
+    
+    // Map data to form fields using helper method
+    this.modalConfig.fields = this.modalConfig.fields?.map(field => ({
+      ...field,
+      value: this.getFieldValue(centre, field.id)
+    })) || [];
+    
+    this.showModal = true;
+  }
+
+  // Field mapping helper method
+  getFieldValue(data: any, fieldId: string): any {
+    const fieldMapping: { [key: string]: string } = {
+      'trainingInstituteName': 'name',
+      'scheme': 'schemeName',
+      'state': 'stateName',
+      'district': 'districtName',
+      'block': 'blockName',
+      'contactPersonName': 'contactPerson',
+      'contactNumber': 'phone',
+      'emailId': 'email',
+      'designation': 'position',
+      'registrationId': 'regId'
+    };
+    
+    const mappedField = fieldMapping[fieldId] || fieldId;
+    return data[mappedField] || '';
+  }
+
+  // Handle form submission for updates
+  onModalPrimaryAction(formData: any) {
+    if (this.modalMode === 'edit') {
+      this.updateTrainingCentre(formData);
+    }
+  }
+
+  updateTrainingCentre(formData: any) {
+    const updatedData = {
+      ...this.selectedCentre,
+      ...formData
+    };
+    
+    this.adminService.updateTrainingInstitute(this.selectedCentre.id, updatedData)
+      .subscribe({
+        next: (response) => {
+          // Update local data
+          const index = this.trainingCentres.findIndex(c => c.id === this.selectedCentre.id);
+          if (index !== -1) {
+            this.trainingCentres[index] = { ...this.trainingCentres[index], ...formData };
+          }
+          this.closeModal();
+        },
+        error: (error) => {
+          console.error('Error updating training centre:', error);
+        }
+      });
+  }
+}
+```
+
+### View-Only Mode
+
+For read-only modals, simply set the mode to 'view':
+
+```typescript
+viewTrainingCentre(centre: any) {
+  this.selectedCentre = centre;
+  this.modalConfig.title = 'Training Centre Details';
+  this.modalMode = 'view';
+  
+  // Data is automatically displayed in view mode
+  // No need to populate form fields
+  this.showModal = true;
+}
+```
+
+### Template Configuration
+
+```html
+<app-modal
+  [show]="showModal"
+  [config]="modalConfig"
+  [data]="selectedCentre"
+  [mode]="modalMode"
+  (close)="closeModal()"
+  (primaryAction)="onModalPrimaryAction($event)">
+</app-modal>
+```
+
+### Key Points for Data Population
+
+1. **Always create a copy** of the original data to avoid unintended mutations
+2. **Use field mapping** when data structure differs from form field IDs
+3. **Handle missing values** with fallbacks (empty strings, default values)
+4. **Validate data types** to ensure compatibility with form controls
+5. **Update local state** after successful API calls to maintain consistency
 
 ## Best Practices
 

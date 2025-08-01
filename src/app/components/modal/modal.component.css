@@ -100,7 +100,7 @@
   align-items: center;
   justify-content: space-between;
   padding: 1.5rem 2rem 1rem;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background-color: #1a237e; /* Dark blue theme color */
   color: white;
   border-bottom: none;
   flex-shrink: 0;
@@ -217,23 +217,54 @@
   opacity: 0.7;
 }
 
-/* View Mode Styles */
-.view-mode .row,
-.form-fields .row {
-  margin-bottom: 1rem;
-  align-items: center;
+/* View Mode Specific Styles */
+.view-mode .row {
+  align-items: center; /* Vertically align items */
 }
 
-.form-control-plaintext {
-  padding: 0.5rem 1rem;
-  background: white;
-  border: 1px solid #e9ecef;
-  border-radius: 6px;
-  color: #495057;
-  font-size: 0.95rem;
-  min-height: 38px;
+.view-mode .col-12 {
+  padding-left: 10px;
+  padding-right: 10px;
+}
+
+.view-mode .col-5,
+.view-mode .col-7 {
   display: flex;
-  align-items: center;
+  align-items: center; /* Align label and value */
+}
+
+.view-mode strong {
+  font-weight: 600;
+  color: #495057; /* Slightly darker text for labels */
+}
+
+.view-mode .form-control-plaintext {
+  padding: 0.5rem 0;
+  border-bottom: 1px solid #e9ecef; /* Subtle separator */
+  width: 100%;
+}
+
+/* Responsive adjustments */
+@media (max-width: 767.98px) {
+  .view-mode .col-12 {
+    margin-bottom: 0.75rem; /* Space between items on small screens */
+  }
+
+  .view-mode .row {
+    flex-direction: column; /* Stack items on small screens */
+    align-items: flex-start;
+  }
+
+  .view-mode .col-5,
+  .view-mode .col-7 {
+    width: 100%;
+    padding-left: 0;
+    padding-right: 0;
+  }
+
+  .view-mode .col-5 {
+    margin-bottom: 0.25rem; /* Space between label and value */
+  }
 }
 
 /* Checkbox and Radio Styles */
@@ -311,9 +342,9 @@ input[type="file"].form-control:hover {
 }
 
 .btn-primary {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: #3f51b5; /* Primary button color from theme */
   color: white;
-  box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+  box-shadow: 0 4px 12px rgba(63, 81, 181, 0.3);
 }
 
 .btn-primary:hover {
@@ -322,9 +353,9 @@ input[type="file"].form-control:hover {
 }
 
 .btn-outline-secondary {
-  background: transparent;
-  color: #6c757d;
-  border: 2px solid #6c757d;
+  background-color: #e8eaf6; /* Lighter shade for secondary button */
+  color: #3f51b5;
+  border: 2px solid #c5cae9;
 }
 
 .btn-outline-secondary:hover {

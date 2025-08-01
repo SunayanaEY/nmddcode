@@ -8,23 +8,7 @@
 
     <!-- Form Content -->
     <div class="form-content">
-      <!-- Success Message -->
-      <div *ngIf="successMessage" class="alert alert-success" role="alert">
-        <i class="fas fa-check-circle"></i>
-        {{ successMessage }}
-        <button type="button" class="btn-close" (click)="clearMessages()" aria-label="Close">
-          <span aria-hidden="true">&times;</span>
-        </button>
-      </div>
 
-      <!-- Error Message -->
-      <div *ngIf="errorMessage" class="alert alert-danger" role="alert">
-        <i class="fas fa-exclamation-circle"></i>
-        {{ errorMessage }}
-        <button type="button" class="btn-close" (click)="clearMessages()" aria-label="Close">
-          <span aria-hidden="true">&times;</span>
-        </button>
-      </div>
 
       <form [formGroup]="profileForm" (ngSubmit)="onSubmit()">
         <!-- Institute Details Section -->

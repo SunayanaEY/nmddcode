@@ -1,5 +1,6 @@
 /* You can add global styles to this file, and also import other style files */
 @charset "UTF-8";
+@import 'ngx-toastr/toastr';
 /*!
 
 =========================================================
@@ -15944,7 +15945,7 @@ textarea[resize=horizontal] {
 }
 .modal-success .modal-header,
 .modal-success .modal-footer {
-  border-color: rgba(255, 255, 255, 0.075);
+  /* border-color: rgba(255, 255, 255, 0.075); */
 }
 .modal-success .modal-content {
   background-color: #2dce89;
