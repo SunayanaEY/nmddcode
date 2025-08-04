@@ -1,0 +1,140 @@
+<div class="approved-certificate-container">
+  <app-breadcrumb [items]="breadcrumbItems"></app-breadcrumb>
+
+  <div class="page-header">
+    <h2>All Registered Trainings</h2>
+  </div>
+<div style="
+
+    height: 34px;
+"> <span><h3>Filter By</h3></span>
+    <br></div>
+
+  <div class="filter-container">
+
+    <div class="filter-controls">
+
+      <!-- <input type="text" class="form-control" placeholder="dd mm yy - dd mm yy">
+      <input type="text" class="form-control" placeholder="Search by Training Title">
+      <select class="form-control">
+        <option>State</option>
+      </select> -->
+      <ng-select class="custom-ng-select form-control" placeholder="Title" [(ngModel)]="filters.trainingTitle" style="height: 100%;
+                    width: 100%;
+                    font-weight: 400;
+                    line-height: 1.5;
+                    color: #121213;
+                    background-color: #fff;
+                    background-clip: padding-box;
+                    box-shadow: none;" (change)="applyFilters()">
+
+                      <!-- <ng-option value="" disabled="true">{{'Select Title'}}</ng-option> -->
+                      <ng-option class="cutom-option" *ngFor="let name of uniqueValuesTrainingTitle()" [value]="name">{{name}}</ng-option>
+                      <!-- <ng-template ng-option-tmp let-item="item" let-index="index">
+    <div class="custom-option">
+      {{ item.name }}
+    </div>
+  </ng-template> -->
+
+                    </ng-select>
+
+      <ng-select class="custom-ng-select form-control" placeholder="Date" [(ngModel)]="filters.date" style="height: 100%;
+                    width: 100%;
+                    font-weight: 400;
+                    line-height: 1.5;
+                    color: #121213;
+                    background-color: #fff;
+                    background-clip: padding-box;
+                    box-shadow: none;" (change)="applyFilters()">
+
+                      <!-- <ng-option value="" disabled="true">{{'Select Date'}}</ng-option> -->
+                      <ng-option *ngFor="let name of uniqueValuesDate()" [value]="name">{{name}}</ng-option>
+
+
+                    </ng-select>
+      <ng-select class=" custom-ng-select form-control" placeholder="Scheme" [(ngModel)]="filters.scheme" style="height: 100%;
+                    width: 100%;
+                    font-weight: 400;
+                    line-height: 1.5;
+                    color: #121213;
+                    background-color: #fff;
+                    background-clip: padding-box;
+                    box-shadow: none;" (change)="applyFilters()">
+
+                      <!-- <ng-option value="" disabled="true">{{'Select Sceme'}}</ng-option> -->
+                      <ng-option *ngFor="let name of uniqueValuesScheme()" [value]="name">{{name}}</ng-option>
+
+
+                    </ng-select>
+
+                    <ng-select class="custom-ng-select form-control" placeholder="Location" [(ngModel)]="filters.location" style="height: 100%;
+                    width: 100%;
+                    font-weight: 400;
+                    line-height: 1.5;
+                    color: #121213;
+                    background-color: #fff;
+                    background-clip: padding-box;
+                    box-shadow: none;" (change)="applyFilters()">
+
+                      <!-- <ng-option value="" disabled="true">{{'Select Sceme'}}</ng-option> -->
+                      <ng-option *ngFor="let name of uniqueValuesocation()" [value]="name">{{name}}</ng-option>
+
+
+                    </ng-select>
+                    <ng-select class="custom-ng-select form-control" placeholder="Submission Date" [(ngModel)]="filters.submittedOn" style="height: 100%;
+                    width: 100%;
+                    font-weight: 400;
+                    line-height: 1.5;
+                    color: #121213;
+                    background-color: #fff;
+                    background-clip: padding-box;
+                    box-shadow: none;" (change)="applyFilters()">
+
+                      <!-- <ng-option value="" disabled="true">{{'Select Sceme'}}</ng-option> -->
+                      <ng-option *ngFor="let name of uniqueValuesSubmittedON()" [value]="name">{{name}}</ng-option>
+
+
+                    </ng-select>
+
+                    <ng-select class="custom-ng-select form-control" placeholder="Status" [(ngModel)]="filters.status" style="height: 100%;
+                    width: 100%;
+                    font-weight: 400;
+                    line-height: 1.5;
+                    color: #121213;
+                    background-color: #fff;
+                    background-clip: padding-box;
+                    box-shadow: none;" (change)="applyFilters()">
+
+                      <!-- <ng-option value="" disabled="true">{{'Select Sceme'}}</ng-option> -->
+                      <ng-option class="form-control" *ngFor="let name of uniqueValuesStatus()" [value]="name">{{name}}</ng-option>
+
+
+                    </ng-select>
+
+
+      <!-- <select class="form-control">
+        <option>District</option>
+      </select>
+      <select class="form-control">
+        <option>Block</option>
+      </select> -->
+
+    </div>
+    <!-- <div class="action-buttons">
+      <button class="btn btn-outline-primary"><i class="bi bi-upload"></i> Export as Excel</button>
+      <button class="btn btn-primary"><i class="bi bi-download"></i> Download Zip</button>
+    </div> -->
+  </div>
+
+  <div class="trainings-summary">
+    <h4>All Trainings</h4>
+    <span class="badge bg-secondary">Total - {{ tableData.length }} Trainings</span>
+  </div>
+
+  <app-table
+    [columns]="tableColumns"
+    [data]="filteredData"
+    [actions]="tableActions"
+    (actionClick)="handleTableAction($event)">
+  </app-table>
+</div>

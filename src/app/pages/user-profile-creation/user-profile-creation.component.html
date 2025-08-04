@@ -8,7 +8,25 @@
 
     <!-- Form Content -->
     <div class="form-content">
-      <form [formGroup]="profileForm">
+      <!-- Success Message -->
+      <div *ngIf="successMessage" class="alert alert-success" role="alert">
+        <i class="fas fa-check-circle"></i>
+        {{ successMessage }}
+        <button type="button" class="btn-close" (click)="clearMessages()" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+
+      <!-- Error Message -->
+      <div *ngIf="errorMessage" class="alert alert-danger" role="alert">
+        <i class="fas fa-exclamation-circle"></i>
+        {{ errorMessage }}
+        <button type="button" class="btn-close" (click)="clearMessages()" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+
+      <form [formGroup]="profileForm" (ngSubmit)="onSubmit()">
         <!-- Institute Details Section -->
         <div class="form-section">
           <h3 class="section-title">Institute Details</h3>
@@ -159,7 +177,14 @@
         </div>
 
         <div class="form-actions">
-          <button type="submit" class="btn btn-primary btn-lg">Edit Details</button>
+          <button 
+            type="submit" 
+            class="btn btn-primary btn-lg"
+            [disabled]="isLoading || profileForm.invalid"
+          >
+            <span *ngIf="isLoading" class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
+            {{ isLoading ? 'Submitting...' : 'Submit' }}
+          </button>
         </div>
       </form>
     </div>

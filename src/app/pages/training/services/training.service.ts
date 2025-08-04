@@ -17,6 +17,10 @@ export class TrainingService {
       `${this.apiUrl}/auth/login`,
       credentials
     );
+    return this.http.post<LoginResponse>(
+      `${this.apiUrl}api/auth/login`,
+      credentials
+    );
   }
   downloadExcelFile(): Observable<Blob> {
     const url = `${this.apiUrl}/trainees/download-trainee-template`;
