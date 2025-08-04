@@ -1,6 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { Component } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import { ToastrService } from 'ngx-toastr';
 import { BreadcrumbComponent, BreadcrumbItem } from '../../components/breadcrumb/breadcrumb.component';
 import { UserProfileService } from './services/user-profile.service';
 import { RegisterInstituteRequest } from './models/user-profile.model';
@@ -15,8 +16,6 @@ import { RegisterInstituteRequest } from './models/user-profile.model';
 export class UserProfileCreationComponent {
   profileForm: FormGroup;
   isLoading = false;
-  successMessage = '';
-  errorMessage = '';
   breadcrumbItems: BreadcrumbItem[] = [
     { label: 'Dashboard', url: '/dashboard/training-module' },
     { label: 'User Profile', url: '' },
@@ -24,7 +23,8 @@ export class UserProfileCreationComponent {
 
   constructor(
     private fb: FormBuilder,
-    private userProfileService: UserProfileService
+    private userProfileService: UserProfileService,
+    private toastr: ToastrService
   ) {
     this.profileForm = this.fb.group({
       instituteName: [
@@ -46,8 +46,6 @@ export class UserProfileCreationComponent {
   onSubmit() {
     if (this.profileForm.valid) {
       this.isLoading = true;
-      this.successMessage = '';
-      this.errorMessage = '';
 
       const formData: RegisterInstituteRequest = {
         trainingInstituteName: this.profileForm.value.instituteName,
@@ -66,15 +64,16 @@ export class UserProfileCreationComponent {
         next: (response) => {
           this.isLoading = false;
           if (response.success) {
-            this.successMessage = response.message || 'Institute registered successfully!';
+            this.toastr.success(response.message || 'Institute registered successfully!', 'Success');
             this.profileForm.reset();
           } else {
-            this.errorMessage = response.message || 'Registration failed. Please try again.';
+            this.toastr.error(response.message || 'Registration failed. Please try again.', 'Error');
           }
         },
         error: (error) => {
           this.isLoading = false;
-          this.errorMessage = error.error?.message || 'An error occurred. Please try again.';
+          const errorMessage = error.error?.message || 'An error occurred. Please try again.';
+          this.toastr.error(errorMessage, 'Error');
           console.error('Registration error:', error);
         }
       });
@@ -90,8 +89,5 @@ export class UserProfileCreationComponent {
     });
   }
 
-  clearMessages() {
-    this.successMessage = '';
-    this.errorMessage = '';
-  }
+
 }

@@ -215,33 +215,98 @@
 
 
 /* Responsive Design */
+/* Loading and Error States */
+.loading-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 60px 20px;
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  margin-bottom: 30px;
+}
+
+.loading-spinner {
+  width: 40px;
+  height: 40px;
+  border: 4px solid #f3f3f3;
+  border-top: 4px solid #007bff;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  margin-bottom: 16px;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+.loading-container p {
+  color: #6c757d;
+  font-size: 16px;
+  margin: 0;
+}
+
+.error-container {
+  display: flex;
+  justify-content: center;
+  padding: 20px;
+  margin-bottom: 30px;
+}
+
+.error-message {
+  background: white;
+  border-radius: 12px;
+  padding: 40px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  text-align: center;
+  border-left: 4px solid #dc3545;
+}
+
+.error-message svg {
+  color: #dc3545;
+  margin-bottom: 16px;
+}
+
+.error-message p {
+  color: #6c757d;
+  font-size: 16px;
+  margin: 0 0 20px 0;
+}
+
+.error-message .btn {
+  margin-top: 10px;
+}
+
 @media (max-width: 768px) {
   .training-centre-container {
-    padding: 16px;
+    padding: 15px;
   }
-  
+
   .stats-grid {
     grid-template-columns: 1fr;
-    gap: 16px;
+    gap: 15px;
   }
-  
+
   .stat-card {
     padding: 20px;
   }
-  
-  .page-header h2 {
-    font-size: 24px;
-  }
-  
+
   .action-buttons {
     flex-direction: column;
+    gap: 10px;
   }
-  
-  .btn {
-    justify-content: center;
-  }
-  
 
+  .btn {
+    width: 100%;
+  }
+
+  .loading-container,
+  .error-message {
+    padding: 30px 20px;
+  }
 }
 
 @media (max-width: 480px) {

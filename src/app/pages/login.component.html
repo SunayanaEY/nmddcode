@@ -1,86 +1,219 @@
 <div class="login-container">
-  <!-- Background Image -->
-  <div class="bg-photo"></div>
-  
-  <!-- Government Logo Header -->
-  <div class="goi-logo">
-    <div class="goi-logo-content">
-      <div class="emblem">
-          <img src="assets/login/emblem.png" alt="Government Emblem">
-      </div>
-      <div class="text-content">
-        <div class="government-text">
-          <span class="hindi-text">भारत सरकार</span>
-          <div class="separator-lines">
-            <div class="line"></div>
-            <div class="line"></div>
-          </div>
-          <span class="english-text">GOVERNMENT OF INDIA</span>
-        </div>
-        <div class="department-text">
-          <div class="hindi-dept">पशुपालन और डेयरी विभाग</div>
-          <div class="english-dept">DEPARTMENT OF ANIMAL HUSBANDRY AND DAIRYING</div>
-        </div>
-      </div>
-    </div>
+  <!-- Background Image Section -->
+  <div class="background-section">
+    <div class="background-overlay"></div>
   </div>
   
-  <!-- Login Form -->
-  <div class="login-form-container">
-    <div class="login-form-blur">
-      <div class="login-form-content">
-        <h1 class="login-title">Dashboard Sign In</h1>
-        
-        <form [formGroup]="registerForm" (ngSubmit)="onSubmit()">
-          <div class="error-message" *ngIf="credentialdata">
-            {{credentialdata}}
-          </div>
-          
+  <!-- Form Section -->
+  <div class="form-section">
+    <!-- Government Logo Header -->
+    <div class="government-logo">
+      <img src="assets/login/emblem.png" alt="Government Emblem" class="logo-image">
+      <div class="logo-text">
+        भारत सरकार | GOVERNMENT OF INDIA
+      </div>
+      <div class="logo-subtext">
+        पशुपालन और डेयरी विभाग<br>
+        DEPARTMENT OF ANIMAL HUSBANDRY AND DAIRYING
+      </div>
+    </div>
+    
+    <!-- Form Container -->
+    <div class="form-container">
+      <!-- Toggle Container -->
+      <div class="toggle-container">
+        <button class="toggle-btn" (click)="isSignUp = false" [class.active]="!isSignUp">Sign In</button>
+        <button class="toggle-btn" (click)="isSignUp = true" [class.active]="isSignUp">Sign Up</button>
+      </div>
+
+      <!-- Sign In Form -->
+      <div *ngIf="!isSignUp" class="form-content">
+        <h1 class="form-title">Sign In</h1>
+        <form [formGroup]="signInForm" (ngSubmit)="onSignIn()">
           <div class="form-group">
-            <label class="form-label">Email Address</label>
-            <div class="input-container">
-              <input 
-                id="inputEmail" 
-                type="text" 
-                formControlName="email"
-                [ngClass]="{ 'is-invalid': submitted && f['email'].errors }" 
-                placeholder="Enter Email"
-                class="form-input">
-            </div>
-            <div *ngIf="submitted && f['email'].errors" class="invalid-feedback">
-              <div *ngIf="f['email'].errors?.['required']">Email is required</div>
-              <div *ngIf="f['email'].errors?.['email']">Email must be a valid</div>
+            <label>Email Address</label>
+            <input type="email" formControlName="email" placeholder="Enter Email" 
+                   [class.error]="signInForm.get('email')?.invalid && signInForm.get('email')?.touched">
+            <div class="error-message" *ngIf="signInForm.get('email')?.invalid && signInForm.get('email')?.touched">
+              <span *ngIf="signInForm.get('email')?.errors?.['required']">Email is required</span>
+              <span *ngIf="signInForm.get('email')?.errors?.['email']">Please enter a valid email</span>
             </div>
           </div>
-          
           <div class="form-group">
-            <label class="form-label">Password</label>
-            <div class="input-container password-container">
-              <input 
-                id="inputPassword" 
-                [type]="showPassword ? 'text' : 'password'" 
-                formControlName="password"
-                [ngClass]="{ 'is-invalid': submitted && f['password'].errors }" 
-                placeholder="Password"
-                class="form-input">
+            <label>Password</label>
+            <div style="position: relative;">
+              <input [type]="showPassword ? 'text' : 'password'" formControlName="password" placeholder="Password"
+                     [class.error]="signInForm.get('password')?.invalid && signInForm.get('password')?.touched">
               <button type="button" class="password-toggle" (click)="togglePassword()">
-                <i class="eye-icon" [class.show]="showPassword"></i>
+                <div class="eye-icon">
+                  <svg *ngIf="!showPassword" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path>
+                  </svg>
+                  <svg *ngIf="showPassword" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.878 9.878L3 3m6.878 6.878L21 21"></path>
+                  </svg>
+                </div>
               </button>
             </div>
-            <div *ngIf="submitted && f['password'].errors" class="invalid-feedback">
-              <div *ngIf="f['password'].errors?.['required']">Password is required</div>
+            <div class="error-message" *ngIf="signInForm.get('password')?.invalid && signInForm.get('password')?.touched">
+              <span *ngIf="signInForm.get('password')?.errors?.['required']">Password is required</span>
+              <span *ngIf="signInForm.get('password')?.errors?.['minlength']">Password must be at least 6 characters</span>
             </div>
           </div>
-          
           <div class="forgot-password">
             <a href="#">Forgot Password?</a>
           </div>
           
-          <button type="submit" class="signin-button">
-            Sign in
+          <!-- Error Message -->
+          <div *ngIf="errorMessage" class="error-message">
+            {{ errorMessage }}
+          </div>
+          
+          <button type="submit" class="sign-in-btn" [disabled]="isLoading || signInForm.invalid">
+            <span *ngIf="!isLoading">Sign in</span>
+            <span *ngIf="isLoading">
+              <i class="fas fa-spinner fa-spin"></i> Signing in...
+            </span>
           </button>
         </form>
       </div>
-    </div>
-  </div>
-</div>
+
+       <!-- Sign Up Form -->
+       <div *ngIf="isSignUp" class="form-content">
+         <h1 class="form-title">Create Account</h1>
+         <form [formGroup]="signUpForm" (ngSubmit)="onSignUp()">
+           <div class="form-group">
+             <label>Institute Name</label>
+             <input type="text" formControlName="instituteName" placeholder="Enter Institute Name"
+                    [class.error]="signUpForm.get('instituteName')?.invalid && signUpForm.get('instituteName')?.touched">
+             <div class="error-message" *ngIf="signUpForm.get('instituteName')?.invalid && signUpForm.get('instituteName')?.touched">
+               <span *ngIf="signUpForm.get('instituteName')?.errors?.['required']">Institute name is required</span>
+               <span *ngIf="signUpForm.get('instituteName')?.errors?.['minlength']">Institute name must be at least 3 characters</span>
+             </div>
+           </div>
+           <div class="location-row">
+             <div class="form-group">
+               <label>State</label>
+               <input type="text" formControlName="state" placeholder="State"
+                      [class.error]="signUpForm.get('state')?.invalid && signUpForm.get('state')?.touched">
+               <div class="error-message" *ngIf="signUpForm.get('state')?.invalid && signUpForm.get('state')?.touched">
+                 <span *ngIf="signUpForm.get('state')?.errors?.['required']">State is required</span>
+               </div>
+             </div>
+             <div class="form-group">
+               <label>District</label>
+               <input type="text" formControlName="district" placeholder="District"
+                      [class.error]="signUpForm.get('district')?.invalid && signUpForm.get('district')?.touched">
+               <div class="error-message" *ngIf="signUpForm.get('district')?.invalid && signUpForm.get('district')?.touched">
+                 <span *ngIf="signUpForm.get('district')?.errors?.['required']">District is required</span>
+               </div>
+             </div>
+             <div class="form-group">
+               <label>Block</label>
+               <input type="text" formControlName="block" placeholder="Block"
+                      [class.error]="signUpForm.get('block')?.invalid && signUpForm.get('block')?.touched">
+               <div class="error-message" *ngIf="signUpForm.get('block')?.invalid && signUpForm.get('block')?.touched">
+                 <span *ngIf="signUpForm.get('block')?.errors?.['required']">Block is required</span>
+               </div>
+             </div>
+           </div>
+           <div class="form-row">
+             <div class="form-group">
+               <label>Contact Person Name</label>
+               <input type="text" formControlName="contactPersonName" placeholder="Enter Contact Person Name"
+                      [class.error]="signUpForm.get('contactPersonName')?.invalid && signUpForm.get('contactPersonName')?.touched">
+               <div class="error-message" *ngIf="signUpForm.get('contactPersonName')?.invalid && signUpForm.get('contactPersonName')?.touched">
+                 <span *ngIf="signUpForm.get('contactPersonName')?.errors?.['required']">Contact person name is required</span>
+                 <span *ngIf="signUpForm.get('contactPersonName')?.errors?.['minlength']">Name must be at least 2 characters</span>
+               </div>
+             </div>
+             <div class="form-group">
+               <label>Designation</label>
+               <input type="text" formControlName="designation" placeholder="Enter Designation"
+                      [class.error]="signUpForm.get('designation')?.invalid && signUpForm.get('designation')?.touched">
+               <div class="error-message" *ngIf="signUpForm.get('designation')?.invalid && signUpForm.get('designation')?.touched">
+                 <span *ngIf="signUpForm.get('designation')?.errors?.['required']">Designation is required</span>
+               </div>
+             </div>
+           </div>
+           <div class="form-row">
+             <div class="form-group">
+               <label>Contact Number</label>
+               <input type="tel" formControlName="contactNumber" placeholder="Enter Contact Number"
+                      [class.error]="signUpForm.get('contactNumber')?.invalid && signUpForm.get('contactNumber')?.touched">
+               <div class="error-message" *ngIf="signUpForm.get('contactNumber')?.invalid && signUpForm.get('contactNumber')?.touched">
+                 <span *ngIf="signUpForm.get('contactNumber')?.errors?.['required']">Contact number is required</span>
+                 <span *ngIf="signUpForm.get('contactNumber')?.errors?.['pattern']">Please enter a valid 10-digit phone number</span>
+               </div>
+             </div>
+             <div class="form-group">
+               <label>Email ID</label>
+               <input type="email" formControlName="email" placeholder="Enter Email ID"
+                      [class.error]="signUpForm.get('email')?.invalid && signUpForm.get('email')?.touched">
+               <div class="error-message" *ngIf="signUpForm.get('email')?.invalid && signUpForm.get('email')?.touched">
+                 <span *ngIf="signUpForm.get('email')?.errors?.['required']">Email is required</span>
+                 <span *ngIf="signUpForm.get('email')?.errors?.['email']">Please enter a valid email</span>
+               </div>
+             </div>
+           </div>
+           <div class="form-group">
+             <label>Password</label>
+             <div style="position: relative;">
+               <input [type]="showSignUpPassword ? 'text' : 'password'" formControlName="password" placeholder="Create Password"
+                      [class.error]="signUpForm.get('password')?.invalid && signUpForm.get('password')?.touched">
+               <button type="button" class="password-toggle" (click)="toggleSignUpPassword()">
+                 <div class="eye-icon">
+                   <svg *ngIf="!showSignUpPassword" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path>
+                   </svg>
+                   <svg *ngIf="showSignUpPassword" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.878 9.878L3 3m6.878 6.878L21 21"></path>
+                   </svg>
+                 </div>
+               </button>
+             </div>
+             <div class="error-message" *ngIf="signUpForm.get('password')?.invalid && signUpForm.get('password')?.touched">
+               <span *ngIf="signUpForm.get('password')?.errors?.['required']">Password is required</span>
+               <span *ngIf="signUpForm.get('password')?.errors?.['minlength']">Password must be at least 8 characters</span>
+               <span *ngIf="signUpForm.get('password')?.errors?.['pattern']">Password must contain uppercase, lowercase, number and special character</span>
+             </div>
+           </div>
+           <div class="image-upload-container">
+             <label>Image of Training Institute</label>
+             <div class="image-upload-area" 
+                  (click)="triggerFileInput()"
+                  (dragover)="onDragOver($event)"
+                  (dragleave)="onDragLeave($event)"
+                  (drop)="onDrop($event)"
+                  [class.drag-over]="isDragOver">
+               <div *ngIf="!selectedImagePreview" class="upload-placeholder">
+                 <svg class="upload-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"></path>
+                 </svg>
+                 <p>Drag and drop an image here or click to select</p>
+                 <span class="file-types">PNG, JPG, JPEG up to 5MB</span>
+               </div>
+               <div *ngIf="selectedImagePreview" class="image-preview">
+                 <img [src]="selectedImagePreview" alt="Preview" class="preview-image">
+                 <button type="button" class="remove-image" (click)="removeImage($event)">
+                   <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                   </svg>
+                 </button>
+               </div>
+               <input #fileInput type="file" accept="image/*" (change)="onFileSelected($event)" style="display: none;">
+             </div>
+           </div>
+           <button type="submit" class="sign-up-btn" [disabled]="isLoading || signUpForm.invalid">
+             <span *ngIf="!isLoading">Sign Up</span>
+             <span *ngIf="isLoading">
+               <i class="fas fa-spinner fa-spin"></i> Creating account...
+             </span>
+           </button>
+         </form>
+       </div>
+      </div>
+   </div>
+ </div>
