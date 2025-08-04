@@ -1,4 +1,13 @@
-import { Component, EventEmitter, Input, Output } from '@angular/core';
+import {
+  Component,
+  EventEmitter,
+  Input,
+  Output,
+  SimpleChanges,
+  OnChanges,
+  ViewChild,
+  ElementRef,
+} from '@angular/core';
 import { CommonModule } from '@angular/common';
 
 @Component({
@@ -6,9 +15,9 @@ import { CommonModule } from '@angular/common';
   standalone: true,
   imports: [CommonModule],
   templateUrl: './file-upload.component.html',
-  styleUrls: ['./file-upload.component.css']
+  styleUrls: ['./file-upload.component.css'],
 })
-export class FileUploadComponent {
+export class FileUploadComponent implements OnChanges {
   @Input() acceptedFileTypes = '.png,.jpg,.jpeg';
   @Input() maxFileSizeMB = 2;
   @Input() uploadText = 'Drag and Drop the file here';
@@ -16,20 +25,37 @@ export class FileUploadComponent {
   @Input() buttonText = 'Select file';
   @Input() showFileInfo = true;
 
+  @Input() resetTrigger: boolean = false;
+
   @Output() fileSelected = new EventEmitter<File>();
   @Output() fileRemoved = new EventEmitter<void>();
+
+  @ViewChild('fileInputRef') fileInputRef!: ElementRef<HTMLInputElement>;
 
   selectedFile: File | null = null;
   isDragOver = false;
   errorMessage: string = '';
+
+  ngOnChanges(changes: SimpleChanges): void {
+    if (changes['resetTrigger'] && changes['resetTrigger'].currentValue) {
+      this.resetFileInput();
+    }
+  }
+
+  resetFileInput(): void {
+    this.selectedFile = null;
+    this.errorMessage = '';
+    if (this.fileInputRef) {
+      this.fileInputRef.nativeElement.value = '';
+    }
+  }
 
   onFileChange(event: any): void {
     const files = event.target.files;
     if (files.length > 0) {
       this.handleFile(files[0]);
     }
-    // Reset the input value to allow selecting the same file again
-    event.target.value = '';
+    event.target.value = ''; // Allows selecting same file again
   }
 
   onFileDrop(event: DragEvent): void {
@@ -52,23 +78,22 @@ export class FileUploadComponent {
 
   handleFile(file: File): void {
     this.errorMessage = '';
-    
-    // Validate file type
-    const allowedTypes = this.acceptedFileTypes.split(',').map(type => type.trim().toLowerCase());
+
+    const allowedTypes = this.acceptedFileTypes
+      .split(',')
+      .map((type) => type.trim().toLowerCase());
     const fileExtension = '.' + file.name.split('.').pop()?.toLowerCase();
-    
+
     if (!allowedTypes.includes(fileExtension)) {
       this.errorMessage = `Invalid file type. Please select a file with one of these formats: ${this.acceptedFileTypes}`;
       return;
     }
-    
-    // Validate file size
+
     if (file.size > this.maxFileSizeMB * 1024 * 1024) {
       this.errorMessage = `File size exceeds the maximum limit of ${this.maxFileSizeMB}MB. Please select a smaller file.`;
       return;
     }
-    
-    // File is valid
+
     this.selectedFile = file;
     this.fileSelected.emit(this.selectedFile);
   }
@@ -76,6 +101,9 @@ export class FileUploadComponent {
   removeFile(): void {
     this.selectedFile = null;
     this.errorMessage = '';
+    if (this.fileInputRef) {
+      this.fileInputRef.nativeElement.value = '';
+    }
     this.fileRemoved.emit();
   }
 

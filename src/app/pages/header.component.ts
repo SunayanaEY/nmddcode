@@ -6,10 +6,12 @@ import { CommonModule } from '@angular/common';
   standalone: true,
   imports: [CommonModule],
   templateUrl: './header.component.html',
-  styleUrls: ['./header.component.css']
+  styleUrls: ['./header.component.css'],
 })
 export class HeaderComponent implements OnInit {
-  @Input() user: { username: string, email: string,role:number } | null = null;
+  @Input() user: { username: string; email: string; role: number } | null =
+    null;
+  currentLanguage: 'en' | 'hi' = 'en';
 
   ngOnInit(): void {
     const userData = sessionStorage.getItem('user');
@@ -28,4 +30,12 @@ export class HeaderComponent implements OnInit {
   //     return 'Guest';
   //   }
   // }
+  toggleLanguage(event: Event): void {
+    const isChecked = (event.target as HTMLInputElement).checked;
+    this.currentLanguage = isChecked ? 'hi' : 'en';
+    console.log('Language switched to:', this.currentLanguage);
+
+    // Optional: if using ngx-translate
+    // this.translateService.use(this.currentLanguage);
+  }
 }

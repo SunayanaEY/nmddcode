@@ -31,7 +31,11 @@
     <button type="button" class="btn btn-outline-secondary btn-lg me-3">
       Save Draft
     </button>
-    <button type="button" class="btn btn-primary btn-lg">
+    <button
+      type="button"
+      class="btn btn-primary btn-lg"
+      (click)="submitTraineesData()"
+    >
       Submit for Verification
     </button>
   </div>
@@ -269,5 +273,14 @@
         </button>
       </div>
     </div>
+  </div>
+</div>
+<div *ngIf="isSpinning" class="spinner-overlay">
+  <div
+    class="spinner-border text-primary"
+    role="status"
+    style="width: 3rem; height: 3rem"
+  >
+    <span class="visually-hidden">Loading...</span>
   </div>
 </div>

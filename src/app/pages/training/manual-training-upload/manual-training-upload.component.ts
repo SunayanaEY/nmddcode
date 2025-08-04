@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { ToastrService } from 'ngx-toastr';
 import {
   ReactiveFormsModule,
   FormBuilder,
@@ -16,6 +17,7 @@ import {
   TableColumn,
   TableAction,
 } from '../../../components/table/table.component';
+import { TrainingService } from '../../../pages/training/services/training.service';
 
 interface Participant {
   name: string;
@@ -46,6 +48,7 @@ export class ManualTrainingUploadComponent implements OnInit {
   aadharError: boolean = false;
   emailError: boolean = false;
   selectedParticipant: Participant | null = null;
+  isSpinning: boolean = false;
 
   breadcrumbItems: BreadcrumbItem[] = [
     { label: 'Training Module', url: '/dashboard/training-module' },
@@ -69,7 +72,12 @@ export class ManualTrainingUploadComponent implements OnInit {
     { name: 'view', icon: 'bi-eye', class: 'btn-view', title: 'View' },
   ];
 
-  constructor(private fb: FormBuilder, private modalService: NgbModal) {
+  constructor(
+    private fb: FormBuilder,
+    private modalService: NgbModal,
+    private trainingService: TrainingService,
+    private toastr: ToastrService
+  ) {
     this.initializeForm();
     this.loadSampleData();
   }
@@ -307,6 +315,26 @@ export class ManualTrainingUploadComponent implements OnInit {
       const modal = new (window as any).bootstrap.Modal(modalElement);
       modal.show();
     }
+  }
+  submitTraineesData() {
+    const trainingId = 10;
+    const payload = this.participants.map((participant) => ({
+      ...participant,
+      trainingId: trainingId,
+    }));
+
+    this.isSpinning = true;
+
+    this.trainingService.submitTrainees(payload).subscribe({
+      next: (response) => {
+        this.isSpinning = false;
+        // this.toastr.success('Participants submitted successfully!', 'Success');
+      },
+      error: (error) => {
+        this.isSpinning = false;
+        // this.toastr.error('Failed to submit participants.', 'Error');
+      },
+    });
   }
 
   private closeModal(): void {

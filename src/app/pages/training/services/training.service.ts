@@ -8,7 +8,7 @@ import { LoginResponse } from '../models/training.model';
   providedIn: 'root',
 })
 export class TrainingService {
-  private apiUrl = environment.apiUrl;
+  private apiUrl = environment.apiUrl + 'api';
 
   constructor(private http: HttpClient) {}
 
@@ -36,5 +36,9 @@ export class TrainingService {
     formData.append('trainingId', trainingId.toString());
 
     return this.http.post(url, formData);
+  }
+  submitTrainees(participants: any[]): Observable<any> {
+    const url = `${this.apiUrl}/trainees/manual-upload`;
+    return this.http.post(url, participants);
   }
 }
