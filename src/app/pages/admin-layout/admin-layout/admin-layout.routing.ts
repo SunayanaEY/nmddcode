@@ -5,6 +5,7 @@ import { ManualTrainingUploadComponent } from "../../training/manual-training-up
 import { BulkTrainingUploadComponent } from "../../training/bulk-training-upload/bulk-training-upload.component";
 import { ApprovedCertificateComponent } from "../../approved-certificate/approved-certificate.component";
 import { CertificateApprovalComponent } from "../../certificate-approval/certificate-approval.component";
+import { AllTrainingsComponent } from "../../training/all-trainings/all-trainings.component";
 
 
 export const AdminLayoutRoutes: Routes = [
@@ -28,6 +29,9 @@ export const AdminLayoutRoutes: Routes = [
   },
   {
     path: 'approved-certificate', component: ApprovedCertificateComponent
+  },
+   {
+    path: 'all-trainings', component: AllTrainingsComponent
   },
   {
     path: 'training-centre', loadComponent: () => import('../../training/training-centre/training-centre.component').then(m => m.TrainingCentreComponent)

@@ -12,7 +12,7 @@ import { AuthService } from '../../../services/auth.service';
 })
 export class TrainingSectionComponent implements OnInit {
   userRole: number = 0;
-  
+
   constructor(private router: Router, private authService: AuthService) {}
 
   ngOnInit(): void {
@@ -21,23 +21,29 @@ export class TrainingSectionComponent implements OnInit {
       this.userRole = user.role;
     }
   }
-  
+
   navigateToTrainingCertificate() {
     console.log('Navigating to Training Certificate Generation');
     this.router.navigate(['/dashboard/training-certificate-generation']);
   }
-  
+
   navigateToResumeCertificate() {
     console.log('Navigating to Resume Certificate Generation');
     // Implement navigation to resume certificate generation page
     // this.router.navigate(['/resume-certificate-generation']);
   }
-  
+
   navigateToApprovedCertificates() {
     console.log('Navigating to Approved Certificates');
     this.router.navigate(['/dashboard/approved-certificate']);
   }
-  
+
+  navigateToAllTrainings() {
+    console.log('Navigating to Approved Certificates');
+    this.router.navigate(['/dashboard/all-trainings']);
+  }
+
+
   navigateToPendingApproval() {
     console.log('Navigating to Pending Approval');
     // Implement navigation to pending approval page

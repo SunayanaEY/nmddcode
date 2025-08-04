@@ -1,0 +1,95 @@
+.approved-certificate-container {
+  padding: 20px;
+}
+
+.page-header h2 {
+  font-size: 24px;
+  font-weight: bold;
+  margin-bottom: 20px;
+}
+
+.filter-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 18px;
+  background-color: #f8f9fa;
+  padding: 5px;
+  border-radius: 8px;
+  height: 46px;
+}
+
+.filter-controls {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+
+.filter-controls .form-control {
+  height: 38px;
+}
+
+.filter-controls .form-check {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.action-buttons {
+  display: flex;
+  gap: 10px;
+}
+
+.trainings-summary {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+
+.trainings-summary h4 {
+  margin: 0;
+  font-size: 18px;
+}
+
+.trainings-summary .badge {
+  font-size: 14px;
+}
+
+.custom-ng-select .custom-option {
+  color: #4caf50; /* Green text */
+  font-weight: bold;
+  padding: 5px;
+}
+
+.custom-ng-select .custom-option:hover {
+  background-color: #f0f0f0; /* Light gray on hover */
+}
+
+::ng-deep .custom-ng-select .ng-dropdown-panel{
+
+
+  width: auto;
+    z-index: 1050;
+    border: 1px solid lightgrey;
+    border-radius: 2.5px;
+    background: white;
+    height: auto;
+    overflow: hidden;
+    overflow-y: scroll;
+    scroll-behavior: smooth;
+    scrollbar-width: none;
+
+}
+.custom-ng-select.ng-option{
+  background-color: #f0f0f0;
+  width: 100px;
+}
+.ng-option-label{
+   background-color: #f0f0f0;
+  width: 100px;
+}
+
+::ng-deep .custom-ng-select .ng-dropdown-panel .ng-option {
+border: 1px solid whitesmoke;
+}
