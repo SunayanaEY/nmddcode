@@ -12,7 +12,5 @@ export class TrainingService {
 
   constructor(private http: HttpClient) { }
 
-  login(credentials: any): Observable<LoginResponse> {
-    return this.http.post<LoginResponse>(`${this.apiUrl}api/auth/login`, credentials);
-  }
+  
 }
