@@ -24,8 +24,8 @@ export class LoginComponent {
   errorMessage = '';
 
   constructor(
-    private fb: FormBuilder, 
-    private authService: AuthService, 
+    private fb: FormBuilder,
+    private authService: AuthService,
     private router: Router,
     private toastr: ToastrService
   ) {
@@ -43,7 +43,7 @@ export class LoginComponent {
       designation: ['', Validators.required],
       contactNumber: ['', [Validators.required, Validators.pattern(/^[0-9]{10}$/)]],
       email: ['', [Validators.required, Validators.email]],
-      password: ['', [Validators.required, Validators.minLength(8), Validators.pattern(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]/)]] 
+      password: ['', [Validators.required, Validators.minLength(8), Validators.pattern(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]/)]]
     });
   }
 
@@ -53,17 +53,19 @@ export class LoginComponent {
       this.toastr.error('Please fill in all required fields correctly', 'Validation Error');
       return;
     }
-    
+
     this.isLoading = true;
     this.errorMessage = '';
-    
+
     const { email, password } = this.signInForm.value;
-    
+
     this.authService.login(email, password).subscribe({
       next: (response) => {
         this.isLoading = false;
         if (response && response.data) {
           this.toastr.success('Login successful!', 'Welcome');
+          localStorage.setItem("username",response.data.username);
+          localStorage.setItem("roleId",response.data.role.toString());
           this.router.navigate(['/dashboard']);
         } else {
           this.errorMessage = 'Invalid email or password';
@@ -85,16 +87,16 @@ export class LoginComponent {
       this.toastr.error('Please fill in all required fields correctly', 'Validation Error');
       return;
     }
-    
+
     this.isLoading = true;
     this.errorMessage = '';
-    
+
     // Handle sign-up logic here
     console.log('Sign Up:', this.signUpForm.value);
     if (this.selectedFile) {
       console.log('Selected file:', this.selectedFile.name);
     }
-    
+
     // Simulate API call
     setTimeout(() => {
       this.isLoading = false;
@@ -107,21 +109,21 @@ export class LoginComponent {
     const input = event.target as HTMLInputElement;
     if (input.files && input.files[0]) {
       const file = input.files[0];
-      
+
       // Validate file type
       if (!file.type.startsWith('image/')) {
         alert('Please select an image file (PNG, JPG, JPEG)');
         return;
       }
-      
+
       // Validate file size (5MB)
       if (file.size > 5 * 1024 * 1024) {
         alert('File size must be less than 5MB');
         return;
       }
-      
+
       this.selectedFile = file;
-      
+
       // Create preview
       const reader = new FileReader();
       reader.onload = (e) => {
@@ -152,25 +154,25 @@ export class LoginComponent {
     event.preventDefault();
     event.stopPropagation();
     this.isDragOver = false;
-    
+
     const files = event.dataTransfer?.files;
     if (files && files[0]) {
       const file = files[0];
-      
+
       // Validate file type
       if (!file.type.startsWith('image/')) {
         alert('Please select an image file (PNG, JPG, JPEG)');
         return;
       }
-      
+
       // Validate file size (5MB)
       if (file.size > 5 * 1024 * 1024) {
         alert('File size must be less than 5MB');
         return;
       }
-      
+
       this.selectedFile = file;
-      
+
       // Create preview
       const reader = new FileReader();
       reader.onload = (e) => {
@@ -185,7 +187,7 @@ export class LoginComponent {
     event.stopPropagation();
     this.selectedFile = null;
     this.selectedImagePreview = null;
-    
+
     // Reset file input
     const fileInput = document.querySelector('input[type="file"]') as HTMLInputElement;
     if (fileInput) {

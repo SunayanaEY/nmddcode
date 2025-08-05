@@ -7,6 +7,7 @@ import { TableSearchPipe } from "../../pages/helpers/table-search.pipe";
 import { autoTable,applyPlugin } from 'jspdf-autotable';
 import { NgxPaginationModule } from 'ngx-pagination';
 import { PaginationModule } from 'ngx-bootstrap/pagination';
+import { ToastrService } from 'ngx-toastr';
 applyPlugin(jsPDF);
 //require('jspdf-autotable');
 export interface TableColumn {
@@ -32,6 +33,8 @@ export interface TableAction {
 })
 export class TableComponent {
   @Input() data: any[] = [];
+  @Input() tableName: string= "";
+  schemesTableString:string = "schemes";
   @Input() columns: TableColumn[] = [];
   @Input() actions: TableAction[] = [];
   @Input()  pdfHeaders: Array<string> = [];
@@ -46,7 +49,9 @@ export class TableComponent {
   p:number = 1;
   @Output() actionClick = new EventEmitter<{ action: string, item: any, index: number }>();
 
-  constructor( private excelService:ExcelService){
+  constructor( private excelService:ExcelService,
+    private toatsr: ToastrService
+  ){
 
   }
   onActionClick(action: string, item: any, index: number): void {
@@ -177,5 +182,14 @@ export class TableComponent {
     this.excelService.exportAsExcelFile(this.excelData, this.fileName +'_'+ new Date().getFullYear() +
     String(Number(new Date().getMonth())+1) +
     new Date().getDate());
+  }
+
+  addNewScheme(len:number){
+    this.data.push({ schemeId: ++len, schemeTitle: '' ,editable:true,actions:[
+
+        { name: 'save', icon: 'bi bi-save-fill', class: 'btn-info', title: 'Save' },
+        { name: 'delete', icon: 'bi bi-trash', class: 'btn-info', title: 'Delete' },
+        // { name: 'download', icon: 'bi bi-download', class: 'btn-success', title: 'Download' },
+      ]})
   }
   }

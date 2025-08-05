@@ -18,6 +18,9 @@
               <button *ngIf="isExportPDF" class="btn btn-primary text-right mb-2" (click)="createPdf()">{{'Export PDF'}}</button>
               <button class="btn btn-warning text-right mb-2" *ngIf="isExportCSV" (click)="exportExcel()">{{'Export Excel'}}</button>
               <button class="btn btn-primary" *ngIf="isBulkCertDownload"><i class="bi bi-download"></i> {{'Download Certificates'}}</button>
+              <button type="button" *ngIf="tableName==schemesTableString" class="btn btn-link add-more-btn" (click)="addNewScheme(data.length)">
+            <i class="bi bi-plus-circle"></i> Add New Scheme
+          </button>
             </div>
             <div>
             </div>
@@ -34,13 +37,41 @@
       <tbody>
         <tr *ngFor="let item of data |  tableSearch:searchTextActive | paginate: { id: 'pagination2',itemsPerPage: 10, currentPage: p }; let i = index " [class.odd-row]="i % 2 === 0 ">
           <td>{{ formatSerialNumber(i) }}</td>
+          <ng-container *ngIf="tableName==schemesTableString && item.editable">
+            <td *ngFor="let col of columns">
+                   <input  [(ngModel)]="item[col.key]" (change)="onActionClick('save', item, i)" class="form-control" required="true"/>
+              <!-- {{ item[col.key] }} -->
+            </td>
+          </ng-container>
+          <ng-container *ngIf="tableName==schemesTableString && !item.editable">
           <td *ngFor="let col of columns">{{ item[col.key] }}</td>
-          <td *ngIf="actions.length > 0">
+          </ng-container>
+          <ng-container *ngIf="tableName!=schemesTableString">
+          <td *ngFor="let col of columns">{{ item[col.key] }}</td>
+          </ng-container>
+
+          <td *ngIf="tableName!=schemesTableString && actions.length > 0">
             <div class="action-buttons">
+
+
               <button *ngFor="let action of actions" type="button" class="btn btn-action {{ action.class }}"
+
                 (click)="onActionClick(action.name, item, i)" [title]="action.title">
                 <i class="bi {{ action.icon }}"></i>
               </button>
+
+            </div>
+          </td>
+          <td *ngIf="tableName==schemesTableString && item.actions.length > 0">
+            <div class="action-buttons">
+
+
+              <button *ngFor="let action of item.actions" type="button" class="btn btn-action {{ action.class }}"
+
+                (click)="onActionClick(action.name, item, i)" [title]="action.title">
+                <i class="bi {{ action.icon }}"></i>
+              </button>
+
             </div>
           </td>
         </tr>

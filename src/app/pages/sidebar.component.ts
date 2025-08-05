@@ -16,7 +16,7 @@ import { AuthService } from '../services/auth.service';
 export class SidebarComponent {
   @Output() collapsedChange = new EventEmitter<boolean>();
   collapsed = false;
-  
+
   userLoginArray: any = new Array()
   loginUserData: any = new Array()
   credentialdata: any
@@ -29,9 +29,10 @@ export class SidebarComponent {
   registerForm: any = FormGroup;
   submitted = false;
 
+
   //Add user form actions
   get f() { return this.registerForm.controls; }
-  
+
   togglePassword() {
     this.showPassword = !this.showPassword;
   }
@@ -57,7 +58,7 @@ export class SidebarComponent {
       ///TODO - 111
       const username = this.registerForm.value.usename;
       const password = this.registerForm.value.password;
-      
+
       if (this.authService.login(username, password)) {
         // For now, just navigate to dashboard since AuthService returns boolean
         this.router.navigateByUrl("/dashboard");
@@ -73,6 +74,7 @@ export class SidebarComponent {
 
   ///TODO - 111
   ngOnInit(): void {
+    this.adminRole = localStorage.getItem("roleId")=='1';
     this.registerForm = this.formBuilder.group({
       usename: new FormControl('', [Validators.required]),
       password: new FormControl('', [Validators.required]),
