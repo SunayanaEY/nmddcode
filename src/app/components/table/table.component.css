@@ -207,17 +207,17 @@
   .table {
     font-size: 13px;
   }
-  
+
   .table thead th {
     padding: 12px 6px;
     font-size: 12px;
   }
-  
+
   .table tbody td {
     padding: 10px 6px;
     font-size: 13px;
   }
-  
+
   .btn-action {
     width: 28px;
     height: 28px;
@@ -229,51 +229,57 @@
   .table {
     font-size: 12px;
   }
-  
+
   .table thead th {
     padding: 10px 4px;
     font-size: 11px;
   }
-  
+
   .table tbody td {
     padding: 8px 4px;
     font-size: 12px;
   }
-  
+
   .btn-action {
     width: 26px;
     height: 26px;
     font-size: 10px;
   }
-  
+
   .action-buttons {
     gap: 4px;
   }
-  
+
   /* Reduce column widths for mobile */
   .table thead th:nth-child(2), .table tbody td:nth-child(2) { /* NAME */
     min-width: 120px;
     max-width: 150px;
   }
-  
+
   .table thead th:nth-child(5), .table tbody td:nth-child(5) { /* CONTACT NUMBER */
     min-width: 110px;
     max-width: 130px;
   }
-  
+
   .table thead th:nth-child(6), .table tbody td:nth-child(6) { /* AADHAR */
     min-width: 120px;
     max-width: 140px;
   }
-  
+
   .table thead th:nth-child(7), .table tbody td:nth-child(7) { /* EMAIL */
     min-width: 150px;
     max-width: 180px;
   }
-  
+
   .table thead th:last-child, .table tbody td:last-child { /* ACTIONS */
     width: 100px;
     min-width: 100px;
     max-width: 100px;
   }
-} 
+}
+
+.search {
+  width: 25%;
+  margin-left: 2%;
+
+}

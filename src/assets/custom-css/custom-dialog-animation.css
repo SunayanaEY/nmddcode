@@ -1,0 +1,109 @@
+.modal-dialog
+    {
+      animation: bouncein 0.5s ease forwards;
+    }
+    @keyframes bouncein {
+  0% {
+    opacity: 0;
+    transform: scale(0);
+  }
+  70% {
+    transform: scale(1.1);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+/* css for table paginations to come in single line  I am writting this css here bebecause this is to be implemented
+globally and this page is used globally, I tried using it in styles.css but it was not working
+from there so I used this here 😏
+*/
+.ngx-pagination
+{
+  padding-left: 0px !important;
+}
+.custom-pagination-align {
+  padding-left: 0px !important;
+  padding-right: 0px !important;
+}
+/* notification modal css  */
+/* Add these to your CSS file */
+.notification-modal-custom {
+  position: absolute !important;
+  top: auto !important;
+  left: auto !important;
+  transform: none !important;
+  margin-top: 10px !important;
+}
+
+.notification-modal-custom .modal-dialog {
+  margin: 0;
+  position: fixed;
+  right: 20px; /* Adjust to align with your notification icon */
+  top: 60px; /* Adjust based on your header height and icon position */
+  max-width: 400px; /* Adjust width as needed */
+  transform: none !important;
+}
+
+.notification-modal-custom .modal-content {
+  height: 80vh;
+  overflow-y: hidden;
+  border-radius: 10px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+}
+
+.notification-modal-custom .modal-body {
+  height: calc(80vh - 120px); /* Adjust based on header/footer height */
+  padding: 20px;
+  overflow-y: auto;
+  /* Hide scrollbar but keep functionality */
+  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none; /* IE and Edge */
+}
+
+.notification-backdrop {
+  opacity: 0.3;
+}
+
+.notification-content
+{
+  border: 1px solid grey;
+  padding: 10px;
+  margin-bottom: 5px;
+  border-radius: 5px;
+  background-color: #f1cc5a2b;
+}
+
+.notification-content>p
+{
+  margin-bottom: 0;
+}
+.notification-content>p>strong
+{
+  font-weight: 600;
+}
+
+/* Arrow pointing to notification icon */
+.notification-modal-custom .modal-content:before {
+  content: '';
+  position: absolute;
+  top: -10px;
+  right: 24px; /* Adjust based on icon position */
+  border-left: 10px solid transparent;
+  border-right: 10px solid transparent;
+  border-bottom: 10px solid white;
+}
+.see-all-arrow-icon
+{
+  margin-left: 0 !important;
+  margin-right: auto !important;
+  font-weight: 500;
+  cursor: pointer;
+}
+
+.notification-container::-webkit-scrollbar {
+  display: none;
+}
+
