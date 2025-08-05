@@ -42,15 +42,15 @@
         </div>
 
         <!-- Form Fields -->
-        <div *ngIf="config.fields" class="form-fields">
+        <div *ngIf="config.fields" class="form-fields" [class.view-mode]="mode === 'view'">
           <!-- View Mode -->
-          <div *ngIf="mode === 'view'">
-            <div class="mb-3" *ngFor="let field of config.fields">
+          <div *ngIf="mode === 'view'" class="row">
+            <div class="col-12 col-md-6 mb-3" *ngFor="let field of config.fields">
               <div class="row">
-                <div class="col-4">
+                <div class="col-5">
                   <strong>{{ field.label }}:</strong>
                 </div>
-                <div class="col-8">
+                <div class="col-7">
                   <span class="form-control-plaintext">{{ formatDisplayValue(getDisplayValue(field.id), field.type) }}</span>
                 </div>
               </div>
@@ -185,27 +185,40 @@
 
       <!-- Modal Footer -->
       <div class="modal-footer" *ngIf="config.showFooter !== false">
-        <button 
-          *ngIf="config.secondaryButtonText" 
-          type="button" 
-          class="btn btn-outline-secondary"
-          (click)="onSecondaryAction()">
-          {{ config.secondaryButtonText }}
-        </button>
-        <button 
-          *ngIf="config.primaryButtonText" 
-          type="button" 
-          class="btn btn-primary"
-          (click)="onPrimaryAction()">
-          {{ config.primaryButtonText }}
-        </button>
-        <button 
-          *ngIf="!config.primaryButtonText && !config.secondaryButtonText" 
-          type="button" 
-          class="btn btn-primary"
-          (click)="onClose()">
-          Close
-        </button>
+        <!-- View Mode Footer - Only Close Button -->
+        <ng-container *ngIf="mode === 'view'">
+          <button 
+            type="button" 
+            class="btn btn-secondary"
+            (click)="onClose()">
+            Close
+          </button>
+        </ng-container>
+        
+        <!-- Edit/Create Mode Footer - Action Buttons -->
+        <ng-container *ngIf="mode !== 'view'">
+          <button 
+            *ngIf="config.secondaryButtonText" 
+            type="button" 
+            class="btn btn-outline-secondary"
+            (click)="onSecondaryAction()">
+            {{ config.secondaryButtonText }}
+          </button>
+          <button 
+            *ngIf="config.primaryButtonText" 
+            type="button" 
+            class="btn btn-primary"
+            (click)="onPrimaryAction()">
+            {{ config.primaryButtonText }}
+          </button>
+          <button 
+            *ngIf="!config.primaryButtonText && !config.secondaryButtonText" 
+            type="button" 
+            class="btn btn-primary"
+            (click)="onClose()">
+            Close
+          </button>
+        </ng-container>
       </div>
 
     </div>

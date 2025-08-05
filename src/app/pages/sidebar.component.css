@@ -488,7 +488,7 @@ nav.flex-grow-1 {
 /* Responsive adjustments */
 @media (max-height: 600px) {
   .sidebar-brand {
-    padding: 1rem;
+    padding: 2rem 1rem;
     margin-bottom: 0.5rem;
   }
   
