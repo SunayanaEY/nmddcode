@@ -1,9 +1,23 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { ToastrService } from 'ngx-toastr';
+import {
+  ReactiveFormsModule,
+  FormBuilder,
+  FormGroup,
+  Validators,
+} from '@angular/forms';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
-import { BreadcrumbComponent, BreadcrumbItem } from '../../../components/breadcrumb/breadcrumb.component';
-import { TableComponent, TableColumn, TableAction } from '../../../components/table/table.component';
+import {
+  BreadcrumbComponent,
+  BreadcrumbItem,
+} from '../../../components/breadcrumb/breadcrumb.component';
+import {
+  TableComponent,
+  TableColumn,
+  TableAction,
+} from '../../../components/table/table.component';
+import { TrainingService } from '../../../pages/training/services/training.service';
 
 interface Participant {
   name: string;
@@ -17,18 +31,32 @@ interface Participant {
 @Component({
   selector: 'app-manual-training-upload',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, BreadcrumbComponent, TableComponent],
+  imports: [
+    CommonModule,
+    ReactiveFormsModule,
+    BreadcrumbComponent,
+    TableComponent,
+  ],
   templateUrl: './manual-training-upload.component.html',
-  styleUrl: './manual-training-upload.component.css'
+  styleUrl: './manual-training-upload.component.css',
 })
 export class ManualTrainingUploadComponent implements OnInit {
   participantForm!: FormGroup;
   participants: Participant[] = [];
   editingIndex: number = -1;
+  alphabetError: boolean = false;
+  aadharError: boolean = false;
+  emailError: boolean = false;
+  selectedParticipant: Participant | null = null;
+  isSpinning: boolean = false;
+
   breadcrumbItems: BreadcrumbItem[] = [
     { label: 'Training Module', url: '/dashboard/training-module' },
-    { label: 'Training Certificate Generation', url: '/dashboard/training-certificate-generation' },
-    { label: 'Manual Training Upload' }
+    {
+      label: 'Training Certificate Generation',
+      url: '/dashboard/training-certificate-generation',
+    },
+    { label: 'Manual Training Upload' },
   ];
   tableColumns: TableColumn[] = [
     { key: 'name', header: 'Name' },
@@ -36,33 +64,37 @@ export class ManualTrainingUploadComponent implements OnInit {
     { key: 'gender', header: 'Gender' },
     { key: 'contactNumber', header: 'Contact Number' },
     { key: 'aadhar', header: 'Aadhar (Masked)' },
-    { key: 'email', header: 'Email(Optional)' }
+    { key: 'email', header: 'Email(Optional)' },
   ];
   tableActions: TableAction[] = [
     { name: 'edit', icon: 'bi-pencil', class: 'btn-edit', title: 'Edit' },
     { name: 'delete', icon: 'bi-trash', class: 'btn-delete', title: 'Delete' },
-    { name: 'view', icon: 'bi-eye', class: 'btn-view', title: 'View' }
+    { name: 'view', icon: 'bi-eye', class: 'btn-view', title: 'View' },
   ];
 
   constructor(
     private fb: FormBuilder,
-    private modalService: NgbModal
+    private modalService: NgbModal,
+    private trainingService: TrainingService,
+    private toastr: ToastrService
   ) {
     this.initializeForm();
     this.loadSampleData();
   }
 
-  ngOnInit(): void {
-  }
+  ngOnInit(): void {}
 
   initializeForm(): void {
     this.participantForm = this.fb.group({
       name: ['', [Validators.required, Validators.minLength(2)]],
       age: ['', [Validators.required, Validators.min(1), Validators.max(120)]],
       gender: ['', Validators.required],
-      contactNumber: ['', [Validators.required, Validators.pattern(/^[0-9]{10}$/)]],
+      contactNumber: [
+        '',
+        [Validators.required, Validators.pattern(/^[0-9]{10}$/)],
+      ],
       aadhar: ['', [Validators.required, Validators.pattern(/^[0-9]{12}$/)]],
-      email: ['', [Validators.email]]
+      email: ['', [Validators.email]],
     });
   }
 
@@ -74,7 +106,7 @@ export class ManualTrainingUploadComponent implements OnInit {
         gender: 'Male',
         contactNumber: 'xxxxxx6484',
         aadhar: '4356xxxxxx32',
-        email: 'xxxx@gmail.com'
+        email: 'xxxx@gmail.com',
       },
       {
         name: 'Suman Devi',
@@ -82,7 +114,7 @@ export class ManualTrainingUploadComponent implements OnInit {
         gender: 'Female',
         contactNumber: 'xxxxxx6484',
         aadhar: '4356xxxxxx32',
-        email: 'xxxx@gmail.com'
+        email: 'xxxx@gmail.com',
       },
       {
         name: 'Manoj Kumar',
@@ -90,7 +122,7 @@ export class ManualTrainingUploadComponent implements OnInit {
         gender: 'Male',
         contactNumber: 'xxxxxx6484',
         aadhar: '4356xxxxxx32',
-        email: 'xxxx@gmail.com'
+        email: 'xxxx@gmail.com',
       },
       {
         name: 'Suman Devi',
@@ -98,7 +130,7 @@ export class ManualTrainingUploadComponent implements OnInit {
         gender: 'Female',
         contactNumber: 'xxxxxx6484',
         aadhar: '4356xxxxxx32',
-        email: 'xxxx@gmail.com'
+        email: 'xxxx@gmail.com',
       },
       {
         name: 'Manoj Kumar',
@@ -106,7 +138,7 @@ export class ManualTrainingUploadComponent implements OnInit {
         gender: 'Male',
         contactNumber: 'xxxxxx6484',
         aadhar: '4356xxxxxx32',
-        email: 'xxxx@gmail.com'
+        email: 'xxxx@gmail.com',
       },
       {
         name: 'Suman Devi',
@@ -114,7 +146,7 @@ export class ManualTrainingUploadComponent implements OnInit {
         gender: 'Female',
         contactNumber: 'xxxxxx6484',
         aadhar: '4356xxxxxx32',
-        email: 'xxxx@gmail.com'
+        email: 'xxxx@gmail.com',
       },
       {
         name: 'Manoj Kumar',
@@ -122,7 +154,7 @@ export class ManualTrainingUploadComponent implements OnInit {
         gender: 'Male',
         contactNumber: 'xxxxxx6484',
         aadhar: '4356xxxxxx32',
-        email: 'xxxx@gmail.com'
+        email: 'xxxx@gmail.com',
       },
       {
         name: 'Suman Devi',
@@ -130,7 +162,7 @@ export class ManualTrainingUploadComponent implements OnInit {
         gender: 'Female',
         contactNumber: 'xxxxxx6484',
         aadhar: '4356xxxxxx32',
-        email: 'xxxx@gmail.com'
+        email: 'xxxx@gmail.com',
       },
       {
         name: 'Manoj Kumar',
@@ -138,7 +170,7 @@ export class ManualTrainingUploadComponent implements OnInit {
         gender: 'Male',
         contactNumber: 'xxxxxx6484',
         aadhar: '4356xxxxxx32',
-        email: 'xxxx@gmail.com'
+        email: 'xxxx@gmail.com',
       },
       {
         name: 'Suman Devi',
@@ -146,14 +178,17 @@ export class ManualTrainingUploadComponent implements OnInit {
         gender: 'Female',
         contactNumber: 'xxxxxx6484',
         aadhar: '4356xxxxxx32',
-        email: 'xxxx@gmail.com'
-      }
+        email: 'xxxx@gmail.com',
+      },
     ];
   }
 
-  openAddModal(): void {
-    this.editingIndex = -1;
-    this.participantForm.reset();
+  openAddModal(isEdit: boolean): void {
+    if (!isEdit) {
+      this.editingIndex = -1;
+      this.participantForm.reset();
+    }
+
     const modalElement = document.getElementById('addParticipantModal');
     if (modalElement) {
       const modal = new (window as any).bootstrap.Modal(modalElement);
@@ -164,7 +199,7 @@ export class ManualTrainingUploadComponent implements OnInit {
   addParticipant(): void {
     if (this.participantForm.valid) {
       const formValue = this.participantForm.value;
-      
+
       // Mask sensitive data for display
       const participant: Participant = {
         name: formValue.name,
@@ -172,21 +207,68 @@ export class ManualTrainingUploadComponent implements OnInit {
         gender: formValue.gender,
         contactNumber: this.maskContactNumber(formValue.contactNumber),
         aadhar: this.maskAadhar(formValue.aadhar),
-        email: this.maskEmail(formValue.email)
+        email: this.maskEmail(formValue.email),
       };
 
-      if (this.editingIndex >= 0) {
-        this.participants[this.editingIndex] = participant;
-      } else {
-        this.participants.push(participant);
-      }
+      this.participants.push(participant);
 
       this.closeModal();
       this.participantForm.reset();
     }
   }
+  //update participant
+  updateParticipant(): void {
+    if (this.participantForm.valid && this.editingIndex >= 0) {
+      const formValue = this.participantForm.value;
 
-  handleTableAction(event: { action: string, item: any, index: number }): void {
+      const updatedParticipant: Participant = {
+        name: formValue.name,
+        age: formValue.age,
+        gender: formValue.gender,
+        contactNumber: this.maskContactNumber(formValue.contactNumber),
+        aadhar: this.maskAadhar(formValue.aadhar),
+        email: this.maskEmail(formValue.email),
+      };
+
+      this.participants[this.editingIndex] = updatedParticipant;
+
+      this.closeModal();
+      this.participantForm.reset();
+      this.editingIndex = -1;
+    }
+  }
+  allowOnlyNumbers(event: KeyboardEvent): void {
+    const charCode = event.which ? event.which : event.keyCode;
+    if (charCode < 48 || charCode > 57) {
+      this.alphabetError = true;
+      event.preventDefault();
+    } else {
+      this.alphabetError = false;
+    }
+  }
+  allowOnlyAadharDigits(event: KeyboardEvent): void {
+    const charCode = event.which ? event.which : event.keyCode;
+    if (charCode < 48 || charCode > 57) {
+      this.aadharError = true;
+      setTimeout(() => (this.aadharError = false), 1000); // Auto-hide in 1 sec
+      event.preventDefault();
+    }
+  }
+  validateEmail(): void {
+    const emailControl = this.participantForm.get('email');
+    const emailValue = emailControl?.value || '';
+
+    // Basic email format check (Angular already checks but we're adding real-time UX)
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+    if (emailValue && !emailRegex.test(emailValue)) {
+      this.emailError = true;
+    } else {
+      this.emailError = false;
+    }
+  }
+
+  handleTableAction(event: { action: string; item: any; index: number }): void {
     switch (event.action) {
       case 'edit':
         this.editParticipant(event.index);
@@ -203,19 +285,21 @@ export class ManualTrainingUploadComponent implements OnInit {
   editParticipant(index: number): void {
     this.editingIndex = index;
     const participant = this.participants[index];
-    
+
     // For editing, we would need to unmask the data or store original values
     // For demo purposes, using placeholder values
+    this.openAddModal(true);
+
     this.participantForm.patchValue({
       name: participant.name,
       age: participant.age,
       gender: participant.gender,
       contactNumber: '9876543210', // Original unmasked value
       aadhar: '123456789012', // Original unmasked value
-      email: participant.email.includes('xxxx') ? 'user@example.com' : participant.email
+      email: participant.email.includes('xxxx')
+        ? 'user@example.com'
+        : participant.email,
     });
-
-    this.openAddModal();
   }
 
   deleteParticipant(index: number): void {
@@ -225,8 +309,32 @@ export class ManualTrainingUploadComponent implements OnInit {
   }
 
   viewParticipant(index: number): void {
-    const participant = this.participants[index];
-    alert(`Participant Details:\n\nName: ${participant.name}\nAge: ${participant.age}\nGender: ${participant.gender}\nContact: ${participant.contactNumber}\nAadhar: ${participant.aadhar}\nEmail: ${participant.email}`);
+    this.selectedParticipant = this.participants[index];
+    const modalElement = document.getElementById('viewParticipantModal');
+    if (modalElement) {
+      const modal = new (window as any).bootstrap.Modal(modalElement);
+      modal.show();
+    }
+  }
+  submitTraineesData() {
+    const trainingId = 10;
+    const payload = this.participants.map((participant) => ({
+      ...participant,
+      trainingId: trainingId,
+    }));
+
+    this.isSpinning = true;
+
+    this.trainingService.submitTrainees(payload).subscribe({
+      next: (response) => {
+        this.isSpinning = false;
+        // this.toastr.success('Participants submitted successfully!', 'Success');
+      },
+      error: (error) => {
+        this.isSpinning = false;
+        // this.toastr.error('Failed to submit participants.', 'Error');
+      },
+    });
   }
 
   private closeModal(): void {
@@ -240,9 +348,9 @@ export class ManualTrainingUploadComponent implements OnInit {
   }
 
   private maskContactNumber(contact: string): string {
-    if (contact && contact.length >= 6) {
-      return 'xxxxxx' + contact.slice(-4);
-    }
+    // if (contact && contact.length >= 6) {
+    //   return 'xxxxxx' + contact.slice(-4);
+    // }
     return contact;
   }
 
@@ -254,10 +362,10 @@ export class ManualTrainingUploadComponent implements OnInit {
   }
 
   private maskEmail(email: string): string {
-    if (email && email.includes('@')) {
-      const [username, domain] = email.split('@');
-      return 'xxxx@' + domain;
-    }
+    // if (email && email.includes('@')) {
+    //   const [username, domain] = email.split('@');
+    //   return 'xxxx@' + domain;
+    // }
     return email;
   }
 

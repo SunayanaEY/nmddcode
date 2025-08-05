@@ -1,26 +1,41 @@
 <div class="upload-section">
-  <div class="upload-box" 
-       [class.drag-over]="isDragOver"
-       (drop)="onFileDrop($event)" 
-       (dragover)="onDragOver($event)"
-       (dragleave)="onDragLeave($event)" 
-       *ngIf="!selectedFile">
+  <div
+    class="upload-box"
+    [class.drag-over]="isDragOver"
+    (drop)="onFileDrop($event)"
+    (dragover)="onDragOver($event)"
+    (dragleave)="onDragLeave($event)"
+    *ngIf="!selectedFile"
+  >
     <div class="upload-icon">
       <i class="bi bi-cloud-upload"></i>
     </div>
     <p class="upload-text">{{ uploadText }}</p>
     <p class="upload-subtext">{{ subText }}</p>
-    <button type="button" class="btn-upload" (click)="fileInput.click()">{{ buttonText }}</button>
-    <input #fileInput type="file" hidden (change)="onFileChange($event)" [accept]="acceptedFileTypes">
-  </div>
 
-  
+    <!-- ✅ Use safe reference to input directly -->
+    <button type="button" class="btn-upload" (click)="fileInput.click()">
+      {{ buttonText }}
+    </button>
+
+    <!-- ✅ Hidden input for file selection -->
+    <input
+      #fileInput
+      type="file"
+      hidden
+      (change)="onFileChange($event)"
+      [accept]="acceptedFileTypes"
+    />
+  </div>
 
   <div class="file-info" *ngIf="selectedFile && showFileInfo">
     <div class="file-details">
       <p><strong>Accepted formats:</strong> {{ acceptedFileTypes }}</p>
       <p><strong>Max size per file:</strong> {{ maxFileSizeMB }}MB</p>
-      <p><strong>Selected file:</strong> <span class="file-name">{{ selectedFile.name }}</span></p>
+      <p>
+        <strong>Selected file:</strong>
+        <span class="file-name">{{ selectedFile.name }}</span>
+      </p>
       <p><strong>File size:</strong> {{ getFileSize(selectedFile.size) }}</p>
     </div>
     <button type="button" class="btn-remove" (click)="removeFile()">
@@ -29,7 +44,7 @@
   </div>
 </div>
 <!-- Error Message Display -->
-  <div class="error-message" *ngIf="errorMessage">
-    <i class="bi bi-exclamation-triangle"></i>
-    <span>{{ errorMessage }}</span>
-  </div>
+<div class="error-message" *ngIf="errorMessage">
+  <i class="bi bi-exclamation-triangle"></i>
+  <span>{{ errorMessage }}</span>
+</div>

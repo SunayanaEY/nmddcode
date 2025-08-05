@@ -10,45 +10,90 @@
       <div class="template-info">
         <h3>Download Excel Template</h3>
         <p>Includes Mandatory fields and Validation Rules</p>
+        <button
+          type="button"
+          class="btn btn-success mt-2"
+          (click)="downloadExcelTemplate()"
+        >
+          Download
+        </button>
       </div>
     </div>
   </div>
 
-  <div class="upload-section">
+  <div class="upload-section" ng>
     <h2>Upload Your File</h2>
-    <app-file-upload 
-      [acceptedFileTypes]="'.xlsx, .xls, .csv'" 
-      [maxFileSizeMB]="5" 
+    <app-file-upload
+      *ngIf="showFileUpload"
+      [acceptedFileTypes]="'.xlsx, .xls, .csv'"
+      [maxFileSizeMB]="5"
       [uploadText]="'Drag & drop your Excel file here'"
       [subText]="'or'"
       [buttonText]="'browse to upload'"
       [showFileInfo]="false"
-      (fileSelected)="onFileSelected($event)">
+      (fileSelected)="onFileSelected($event)"
+    >
     </app-file-upload>
   </div>
-
   <div *ngIf="showValidationReport" class="progress-section">
     <div class="progress-bar-container">
       <div class="progress-bar" [style.width.%]="uploadProgress"></div>
     </div>
     <div class="progress-info">
       <span>Uploading...... {{ uploadProgress }}%</span>
-      <span class="error-info">{{ errorCount }} errors found in {{ errorRowCount }}
-        rows</span>
+      <span class="error-info">
+        {{ errorCount }} errors found in {{ errorRowCount }} rows
+      </span>
     </div>
   </div>
 
   <div *ngIf="showValidationReport" class="report-section">
-    <div class="report-header">
-      <h2>Validation Report with Error</h2>
-      <button class="btn btn-reupload" (click)="reUploadFile()">Re-Upload File</button>
+    <div
+      class="report-header d-flex justify-content-between align-items-center"
+    >
+      <h2 class="mb-0">Validation Report with Error</h2>
+      <button class="btn btn-reupload" (click)="reUploadFile()">
+        Re-Upload File
+      </button>
     </div>
-    <app-table [data]="validationErrors" [columns]="tableColumns" [actions]="tableActions"
-      (actionClick)="handleTableAction($event)"></app-table>
-  </div>
 
-  <div class="form-actions">
-    <button type="button" class="btn btn-outline-secondary">Save Draft</button>
-    <button type="button" class="btn btn-primary">Submit for Verification</button>
+    <div class="table-responsive mt-3">
+      <table class="table table-bordered table-striped table-sm align-middle">
+        <thead class="table-light">
+          <tr>
+            <th style="width: 70px">#</th>
+            <th style="width: 100px">Row</th>
+            <th style="width: 200px">Column</th>
+            <th>Error Message</th>
+          </tr>
+        </thead>
+        <tbody>
+          <ng-container
+            *ngFor="let group of groupValidationErrorsByRow(); let i = index"
+          >
+            <ng-container *ngFor="let err of group.errors; let j = index">
+              <tr>
+                <td
+                  *ngIf="j === 0"
+                  [attr.rowspan]="group.errors.length"
+                  class="fw-bold text-primary text-center"
+                >
+                  {{ i + 1 }}
+                </td>
+                <td
+                  *ngIf="j === 0"
+                  [attr.rowspan]="group.errors.length"
+                  class="text-center"
+                >
+                  {{ group.row }}
+                </td>
+                <td>{{ err.column }}</td>
+                <td>{{ err.errorMessage }}</td>
+              </tr>
+            </ng-container>
+          </ng-container>
+        </tbody>
+      </table>
+    </div>
   </div>
 </div>

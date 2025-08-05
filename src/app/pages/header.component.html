@@ -10,13 +10,13 @@
       </div>
     </a>
   </div>
-  
+
   <div class="navbar-actions ms-auto">
     <div class="user-profile-section">
       <ng-container *ngIf="user; else guest">
         <div class="user-info">
           <div class="user-details">
-            <span class="user-name">{{ user.username || 'User' }}</span>
+            <span class="user-name">{{ user.username || "User" }}</span>
             <span class="user-role">{{ user.email }}</span>
           </div>
           <div class="user-avatar">
@@ -34,8 +34,20 @@
         </div>
       </ng-template>
     </div>
-    
-    <div class="header-actions">
+
+    <div class="header-actions d-flex align-items-center">
+      <div class="form-check form-switch ms-3 me-3">
+        <input
+          class="form-check-input"
+          type="checkbox"
+          id="languageSwitch"
+          (change)="toggleLanguage($event)"
+        />
+        <label class="form-check-label text-white" for="languageSwitch">{{
+          currentLanguage === "en" ? "EN" : "HI"
+        }}</label>
+      </div>
+
       <button class="action-btn notification-btn" title="Notifications">
         <i class="bi bi-bell"></i>
         <span class="notification-badge">3</span>
