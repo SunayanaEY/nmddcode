@@ -193,6 +193,5 @@ export class TableComponent {
         // { name: 'download', icon: 'bi bi-download', class: 'btn-success', title: 'Download' },
       ]})
   }
-  }
-
 }
+
