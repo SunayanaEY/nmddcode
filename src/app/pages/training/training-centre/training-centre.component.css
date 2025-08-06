@@ -309,6 +309,27 @@
   }
 }
 
+/* Status Column Styles */
+.status-active {
+  color: #28a745;
+  font-weight: 600;
+  background-color: #d4edda;
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-size: 12px;
+  text-transform: uppercase;
+}
+
+.status-inactive {
+  color: #dc3545;
+  font-weight: 600;
+  background-color: #f8d7da;
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-size: 12px;
+  text-transform: uppercase;
+}
+
 @media (max-width: 480px) {
   .stat-card {
     flex-direction: column;

@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable, of } from 'rxjs';
 import { catchError, map, tap } from 'rxjs/operators';
 import { environment } from '../../environments/environment';
@@ -14,6 +14,32 @@ interface LoginResponse {
   };
   message: string;
   status: number;
+}
+
+interface RegisterResponse {
+  success: boolean;
+  message: string;
+  data: {
+    id: string;
+    trainingInstituteName: string;
+    roleId: number;
+    scheme: string;
+    state: string;
+    district: string;
+    block: string | null;
+    registrationId: string;
+    contactPersonName: string;
+    designation: string;
+    contactNumber: string;
+    emailId: string;
+    userId: number;
+    instituteImageUrl: string;
+    status: string;
+    createdAt: string;
+    updatedAt: string;
+    active: boolean;
+  };
+  statusCode: number;
 }
 
 @Injectable({ providedIn: 'root' })
@@ -53,5 +79,20 @@ export class AuthService {
 
   isLoggedIn() {
     return !!sessionStorage.getItem('user');
+  }
+
+  register(formData: FormData): Observable<RegisterResponse> {
+    // Explicitly set headers to let browser handle multipart/form-data
+    const headers = new HttpHeaders();
+    // Do NOT set Content-Type - let browser set it automatically for FormData
+    
+    return this.http.post<RegisterResponse>(`${this.apiUrl}api/auth/registerInstitute`, formData, {
+      headers: headers
+    }).pipe(
+      catchError(error => {
+        console.error('Registration failed', error);
+        throw error;
+      })
+    );
   }
 }

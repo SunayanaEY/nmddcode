@@ -4,6 +4,7 @@ import { CommonModule } from '@angular/common';
 export interface TableColumn {
   key: string;
   header: string;
+  transform?: (value: any, item: any) => string;
 }
 
 export interface TableAction {
@@ -34,4 +35,4 @@ export class TableComponent {
   formatSerialNumber(index: number): string {
     return String(index + 1).padStart(2, '0');
   }
-} 
+}

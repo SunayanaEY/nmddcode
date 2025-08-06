@@ -1,6 +1,6 @@
-import { CommonModule } from '@angular/common';
 import { Component } from '@angular/core';
-import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import { CommonModule } from '@angular/common';
+import { FormBuilder, FormGroup, ReactiveFormsModule, Validators, AbstractControl } from '@angular/forms';
 import { ToastrService } from 'ngx-toastr';
 import { BreadcrumbComponent, BreadcrumbItem } from '../../components/breadcrumb/breadcrumb.component';
 import { UserProfileService } from './services/user-profile.service';
@@ -27,20 +27,13 @@ export class UserProfileCreationComponent {
     private toastr: ToastrService
   ) {
     this.profileForm = this.fb.group({
-      instituteName: [
-        '',
-        Validators.required,
-      ],
-      scheme: ['', Validators.required],
-      state: ['', Validators.required],
-      district: ['', Validators.required],
-      block: ['', Validators.required],
-      registrationId: [''],
-      contactPersonName: ['', Validators.required],
+      operatorName: ['', Validators.required],
       designation: ['', Validators.required],
-      contactNumber: ['', [Validators.required]],
+      contactNumber: ['', [Validators.required, Validators.pattern(/^[0-9]{10}$/)]],
       emailId: ['', [Validators.required, Validators.email]],
-    });
+      password: ['', [Validators.required, Validators.minLength(8)]],
+      confirmPassword: ['', Validators.required]
+    }, { validators: this.passwordMatchValidator });
   }
 
   onSubmit() {
@@ -48,16 +41,11 @@ export class UserProfileCreationComponent {
       this.isLoading = true;
 
       const formData: RegisterInstituteRequest = {
-        trainingInstituteName: this.profileForm.value.instituteName,
-        scheme: this.profileForm.value.scheme,
-        state: this.profileForm.value.state,
-        district: this.profileForm.value.district,
-        block: this.profileForm.value.block,
-        registrationId: this.profileForm.value.registrationId || '',
-        contactPersonName: this.profileForm.value.contactPersonName,
+        operatorName: this.profileForm.value.operatorName,
         designation: this.profileForm.value.designation,
         contactNumber: this.profileForm.value.contactNumber,
-        emailId: this.profileForm.value.emailId
+        emailId: this.profileForm.value.emailId,
+        password: this.profileForm.value.password
       };
 
       this.userProfileService.registerInstitute(formData).subscribe({
@@ -89,5 +77,19 @@ export class UserProfileCreationComponent {
     });
   }
 
+  private passwordMatchValidator(control: AbstractControl): { [key: string]: boolean } | null {
+    const password = control.get('password');
+    const confirmPassword = control.get('confirmPassword');
+    
+    if (!password || !confirmPassword) {
+      return null;
+    }
+    
+    return password.value === confirmPassword.value ? null : { passwordMismatch: true };
+  }
 
+  get passwordMismatch() {
+    return this.profileForm.hasError('passwordMismatch') && 
+           this.profileForm.get('confirmPassword')?.touched;
+  }
 }

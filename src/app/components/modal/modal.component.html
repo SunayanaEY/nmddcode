@@ -23,7 +23,7 @@
       <div class="modal-body">
         
         <!-- Custom Content -->
-        <div *ngIf="config.content && !config.fields" [innerHTML]="config.content"></div>
+        <div *ngIf="config.content" [innerHTML]="config.content"></div>
         
         <!-- View Mode - Display Data -->
         <div *ngIf="mode === 'view' && data && !config.fields" class="view-mode">

@@ -4,8 +4,8 @@
   
   <!-- Page Header -->
   <div class="page-header">
-    <h2>Training Centre Data</h2>
-    <p class="page-description">Manage and view all training centres across different locations</p>
+    <h2>Training Institute Admin Data</h2>
+    <p class="page-description">Manage and view all training heads across different locations</p>
   </div>
 
   <!-- Statistics Cards -->
@@ -105,4 +105,15 @@
   [mode]="modalMode"
   (close)="closeModal()"
   (primaryAction)="onModalPrimaryAction($event)">
+</app-modal>
+
+<!-- Confirmation Modal -->
+<app-modal 
+  [show]="showConfirmModal"
+  [config]="confirmModalConfig"
+  [data]="{confirmationText: confirmationText}"
+  mode="edit"
+  (close)="onCancelToggle()"
+  (primaryAction)="onConfirmToggle($event)"
+  (secondaryAction)="onCancelToggle()">
 </app-modal>

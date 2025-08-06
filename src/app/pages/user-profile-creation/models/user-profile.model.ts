@@ -1,14 +1,9 @@
 export interface RegisterInstituteRequest {
-  trainingInstituteName: string;
-  scheme: string;
-  state: string;
-  district: string;
-  block: string;
-  registrationId: string;
-  contactPersonName: string;
+  operatorName: string;
   designation: string;
   contactNumber: string;
   emailId: string;
+  password: string;
 }
 
 export interface RegisterInstituteData {
