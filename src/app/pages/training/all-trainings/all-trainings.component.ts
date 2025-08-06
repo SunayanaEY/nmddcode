@@ -1,9 +1,10 @@
-import { Component } from '@angular/core';
+import { Component, ElementRef, ViewChild } from '@angular/core';
 import { BreadcrumbComponent, BreadcrumbItem } from '../../../components/breadcrumb/breadcrumb.component';
 import { CommonModule } from '@angular/common';
 import { TableAction, TableColumn, TableComponent } from '../../../components/table/table.component';
 import { NgSelectModule } from '@ng-select/ng-select';
-import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
+import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 
 @Component({
   selector: 'app-all-trainings',
@@ -14,6 +15,20 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
   styleUrl: './all-trainings.component.css'
 })
 export class AllTrainingsComponent {
+  private bootstrap: any;
+  @ViewChild('trainingDetailsModal')
+  trainingDetailsModal!: ElementRef;
+  submitted:Boolean = false;
+   trainingForm!: FormGroup;
+  isExportCSV:Boolean =true;
+  isExportPdf:Boolean =true;
+  isBulkCertDownload:Boolean =true;
+  fileName:String = 'All_trainings_'
+  fileNameTrainees:String = 'All_trainee_List_'
+  pdfHeaders: Array<string> = [
+    'Training Title', 'Date', 'Scheme','Location','Submission Date','Status'
+  ];
+  columnKeys:Array<string> =['trainingTitle','date','scheme','location','submittedOn','status']
   breadcrumbItems: BreadcrumbItem[] = [
       { label: 'Training Module', url: '/dashboard/training-module' },
       { label: 'All Registered Trainings' }
@@ -29,7 +44,7 @@ export class AllTrainingsComponent {
 
       tableActions: TableAction[] = [
         { name: 'view', icon: 'bi bi-eye', class: 'btn-info', title: 'View' },
-        { name: 'download', icon: 'bi bi-download', class: 'btn-success', title: 'Download' },
+        // { name: 'download', icon: 'bi bi-download', class: 'btn-success', title: 'Download' },
       ];
 
       tableData: any[] = [
@@ -43,11 +58,70 @@ export class AllTrainingsComponent {
         { trainingTitle: 'ABC Training', date: '01-May-2025', scheme: 'PMKVY', location: 'Kanpur,Uttar Pradesh', submittedOn: '03-May-2025', status: 'Approved' },
         { trainingTitle: 'ABC Training', date: '01-May-2025', scheme: 'PMKVY', location: 'Kanpur', submittedOn: '03-May-2025', status: 'Approved' },
         { trainingTitle: 'ABC Training', date: '01-May-2025', scheme: 'PMKVY', location: 'Uttar Pradesh', submittedOn: '03-May-2025', status: 'Approved' },
+        { trainingTitle: 'ABC Training', date: '01-May-2025', scheme: 'PMKVY', location: 'Uttar Pradesh', submittedOn: '03-May-2025', status: 'Approved' },
       ];
+
+
+      // TRainee dummy data
+      pdfHeadersTrainee: Array<string> = [
+    'Name', 'Age', 'Gender','Aadhaar','Email','Date'
+  ];
+  columnKeysTrainee:Array<string> =['traineeName','age','gender','aadhaar','email','date']
+
+    tableColumnsTrainee: TableColumn[] = [
+        { key: 'traineeName', header: 'Name' },
+        { key: 'age', header: 'Age' },
+        { key: 'gender', header: 'Gender' },
+        { key: 'aadhaar', header: 'Aadhaar' },
+        { key: 'email', header: 'Email' },
+        { key: 'date', header: 'Date' },
+      ];
+
+      tableActionsTrainee: TableAction[] = [
+        //{ name: 'download', icon: 'bi bi-eye', class: 'btn-info', title: 'Download certificate' },
+        { name: 'download', icon: 'bi bi-download', class: 'btn-success', title: 'Download certificate' },
+      ];
+
+      tableDataTrainee: any[] = [
+        { traineeName: 'Manoj Kumar', age: 30, gender: 'M', aadhaar: 'XXXXXXXXXX25', email: 'XXXXXX5@gmail.com', date: '03-05-2025' },
+        { traineeName: 'Suman Devi', age: 44, gender: 'F', aadhaar: 'XXXXXXXXXX25', email: 'XXXXXX5@gmail.com', date: '03-05-2025' },
+        { traineeName: 'Manoj Kumar', age: 30, gender: 'M', aadhaar: 'XXXXXXXXXX25', email: 'XXXXXX5@gmail.com', date: '03-05-2025' },
+        { traineeName: 'Manoj Kumar', age: 30, gender: 'M', aadhaar: 'XXXXXXXXXX25', email: 'XXXXXX5@gmail.com', date: '03-05-2025' },
+        { traineeName: 'Suman Devi', age: 44, gender: 'F', aadhaar: 'XXXXXXXXXX25', email: 'XXXXXX5@gmail.com', date: '03-05-2025' },
+        { traineeName: 'Manoj Kumar', age: 30, gender: 'M', aadhaar: 'XXXXXXXXXX25', email: 'XXXXXX5@gmail.com', date: '03-05-2025' },
+        { traineeName: 'Manoj Kumar', age: 30, gender: 'M', aadhaar: 'XXXXXXXXXX25', email: 'XXXXXX5@gmail.com', date: '03-05-2025' },
+        { traineeName: 'Suman Devi', age: 44, gender: 'F', aadhaar: 'XXXXXXXXXX25', email: 'XXXXXX5@gmail.com', date: '03-05-2025' },
+        { traineeName: 'Manoj Kumar', age: 30, gender: 'M', aadhaar: 'XXXXXXXXXX25', email: 'XXXXXX5@gmail.com', date: '03-05-2025' },
+        { traineeName: 'Suman Devi', age: 44, gender: 'F', aadhaar: 'XXXXXXXXXX25', email: 'XXXXXX5@gmail.com', date: '03-05-2025' },
+        { traineeName: 'Manoj Kumar', age: 30, gender: 'M', aadhaar: 'XXXXXXXXXX25', email: 'XXXXXX5@gmail.com', date: '03-05-2025' },
+      ];
+
+
+      constructor(private formBuilder: FormBuilder,
+        private modalService: NgbModal,
+      ){
+
+      }
+
+      ngOnInit(): void {
+        this.trainingForm = this.formBuilder.group({
+        id: [''],
+        comment: ['', [Validators.required]],
+        status: ['', [Validators.required]]
+      });
+      }
 
       filteredData = [...this.tableData];
       handleTableAction(event: { action: string, item: any, index: number }): void {
         console.log('Action:', event.action, 'Item:', event.item);
+        // const modal = new this.bootstrap.Modal(this.trainingDetailsModal.nativeElement);
+      //modal.show();
+        this.modalService.open(this.trainingDetailsModal, {
+        size: 'xl',
+        scrollable: true,
+        backdrop: 'static',
+        keyboard: false
+      });
       }
 
       filters = { trainingTitle:null,date: null, scheme: null, location: null ,submittedOn:null,
@@ -106,6 +180,21 @@ export class AllTrainingsComponent {
   uniqueValuesStatus(): any[] {
 
     return [...new Set(this.tableData.map(item => item['status']))];
+
+  }
+
+  reset(){
+
+  }
+
+  open(){
+
+  }
+   get formControls() {
+    return this.trainingForm.controls;
+  }
+
+  keyFunc(){
 
   }
 }

@@ -6,6 +6,7 @@ import { BulkTrainingUploadComponent } from "../../training/bulk-training-upload
 import { ApprovedCertificateComponent } from "../../approved-certificate/approved-certificate.component";
 import { CertificateApprovalComponent } from "../../certificate-approval/certificate-approval.component";
 import { AllTrainingsComponent } from "../../training/all-trainings/all-trainings.component";
+import { SchemeManagementComponent } from "../scheme-management/scheme-management.component";
 
 
 export const AdminLayoutRoutes: Routes = [
@@ -36,4 +37,5 @@ export const AdminLayoutRoutes: Routes = [
   {
     path: 'training-centre', loadComponent: () => import('../../training/training-centre/training-centre.component').then(m => m.TrainingCentreComponent)
   },
+   { path: 'schemes', component: SchemeManagementComponent },
 ];

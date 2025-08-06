@@ -45,8 +45,8 @@ export class LoginComponent implements OnInit {
   }
 
   constructor(
-    private fb: FormBuilder, 
-    private authService: AuthService, 
+    private fb: FormBuilder,
+    private authService: AuthService,
     private router: Router,
     private toastr: ToastrService,
     private locationService: LocationService
@@ -134,17 +134,19 @@ export class LoginComponent implements OnInit {
       this.toastr.error('Please fill in all required fields correctly', 'Validation Error');
       return;
     }
-    
+
     this.isLoading = true;
     this.errorMessage = '';
-    
+
     const { email, password } = this.signInForm.value;
-    
+
     this.authService.login(email, password).subscribe({
       next: (response) => {
         this.isLoading = false;
         if (response && response.data) {
           this.toastr.success('Login successful!', 'Welcome');
+          localStorage.setItem("username",response.data.username);
+          localStorage.setItem("roleId",response.data.role.toString());
           this.router.navigate(['/dashboard']);
         } else {
           this.errorMessage = 'Invalid email or password';
@@ -242,21 +244,21 @@ export class LoginComponent implements OnInit {
     const input = event.target as HTMLInputElement;
     if (input.files && input.files[0]) {
       const file = input.files[0];
-      
+
       // Validate file type
       if (!file.type.startsWith('image/')) {
         alert('Please select an image file (PNG, JPG, JPEG)');
         return;
       }
-      
+
       // Validate file size (5MB)
       if (file.size > 5 * 1024 * 1024) {
         alert('File size must be less than 5MB');
         return;
       }
-      
+
       this.selectedFile = file;
-      
+
       // Create preview
       const reader = new FileReader();
       reader.onload = (e) => {
@@ -287,25 +289,25 @@ export class LoginComponent implements OnInit {
     event.preventDefault();
     event.stopPropagation();
     this.isDragOver = false;
-    
+
     const files = event.dataTransfer?.files;
     if (files && files[0]) {
       const file = files[0];
-      
+
       // Validate file type
       if (!file.type.startsWith('image/')) {
         alert('Please select an image file (PNG, JPG, JPEG)');
         return;
       }
-      
+
       // Validate file size (5MB)
       if (file.size > 5 * 1024 * 1024) {
         alert('File size must be less than 5MB');
         return;
       }
-      
+
       this.selectedFile = file;
-      
+
       // Create preview
       const reader = new FileReader();
       reader.onload = (e) => {
@@ -320,7 +322,7 @@ export class LoginComponent implements OnInit {
     event.stopPropagation();
     this.selectedFile = null;
     this.selectedImagePreview = null;
-    
+
     // Reset file input
     const fileInput = document.querySelector('input[type="file"]') as HTMLInputElement;
     if (fileInput) {

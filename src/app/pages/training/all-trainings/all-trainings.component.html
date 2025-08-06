@@ -135,6 +135,280 @@
     [columns]="tableColumns"
     [data]="filteredData"
     [actions]="tableActions"
-    (actionClick)="handleTableAction($event)">
+    (actionClick)="handleTableAction($event)"
+    [isExportCSV]="isExportCSV" [isExportPDF]="isExportPdf"
+    [pdfHeaders]="pdfHeaders" [columnKeys]="columnKeys"
+    [fileName]="fileName">
   </app-table>
 </div>
+
+<ng-template #trainingDetailsModal let-modal>
+  <!-- <div class="modal fade" #trainingDetailsModal id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-sm">
+
+    <div class="modal-content"> -->
+      <div class="modal-header bg-appColor" style="
+      background-color: #155e91;
+      color:white !important;
+  ">
+        <h3 class="my-auto text-white">{{'Training Details'}}</h3>
+        <button type="button" class="close" aria-label="Close" (click)="modal.dismiss('Cross click')">
+          <!-- <button type="button" class="close" aria-label="Close" data-bs-dismiss="modal"> -->
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div class="row">
+          <div class="col-md-6">
+            <div class="d-flex mr-4 form-group half-width">
+              <h4 class="my-auto mr-2 form-control-label detailsWidth">
+                {{'Training Title'}}:
+              </h4>
+              <!-- <p class="my-auto mb-0"> {{complaintDetail.compcreator}}</p> -->
+               <p class="my-auto mb-0 form-control"> {{'training title'}}</p>
+            </div>
+          </div>
+          <div class="col-md-6">
+            <div class="d-flex mr-4 form-group half-width">
+              <h4 class="my-auto mr-2 form-control-label detailsWidth">
+                {{'Training Type'}} :
+              </h4>
+              <!-- <p class="my-auto mb-0"> {{complaintDetail.creatormob}}</p> -->
+               <p class="my-auto mb-0 form-control">{{'xyz'}}</p>
+            </div>
+          </div>
+          <div class="col-md-6">
+            <div class="d-flex mr-4 statusColor form-group half-width">
+              <h4 class="my-auto mr-2 form-control-label detailsWidth">
+                {{'Scheme'}} :
+              </h4>
+              <!-- <p class="my-auto mb-0" [class]="complaintDetail?.finalStatus">
+                {{complaintDetail.finalStatus}}
+              </p> -->
+              <p class="my-auto mb-0 form-control" >
+                xyz
+              </p>
+            </div>
+          </div>
+          <div class="col-md-6">
+            <div class="d-flex mr-4 statusColor form-group half-width ">
+              <h4 class="my-auto mr-2 form-control-label detailsWidth">
+                {{'Trainer Name'}} :
+              </h4>
+              <!-- <p class="my-auto mb-0" [class]="complaintDetail?.finalStatus">
+                {{complaintDetail.finalStatus}}
+              </p> -->
+              <p class="my-auto mb-0 form-control" >
+                xyz
+              </p>
+            </div>
+          </div>
+          <div class="col-md-6">
+            <div class="d-flex mr-4 form-group half-width">
+              <h4 class="my-auto mr-2 form-control-label detailsWidth">
+                {{'Training Institute Name'}} :
+              </h4>
+              <!-- <p class="my-auto mb-0"> {{complaintDetail.title}}</p> -->
+               <p class="my-auto mb-0 form-control">{{'xyz training center'}} </p>
+            </div>
+          </div>
+          <div class="col-md-6">
+            <div class="d-flex mr-4 statusColor form-group half-width">
+              <h4 class="my-auto mr-2 form-control-label detailsWidth">
+                {{'Location'}} :
+              </h4>
+              <!-- <p class="my-auto mb-0" [class]="complaintDetail?.finalStatus">
+                {{complaintDetail.finalStatus}}
+              </p> -->
+              <p class="my-auto mb-0 form-control" >
+                xyz
+              </p>
+            </div>
+          </div>
+          <div class="col-md-6">
+            <div class="d-flex mr-4 statusColor form-group half-width">
+              <h4 class="my-auto mr-2 form-control-label detailsWidth">
+                {{'Training Date'}} :
+              </h4>
+              <!-- <p class="my-auto mb-0" [class]="complaintDetail?.finalStatus">
+                {{complaintDetail.finalStatus}}
+              </p> -->
+              <p class="my-auto mb-0 form-control" >
+                25-02-2025
+              </p>
+            </div>
+          </div>
+          <div class="col-md-6">
+            <div class="d-flex mr-4 statusColor form-group half-width">
+              <h4 class="my-auto mr-2 form-control-label detailsWidth">
+                {{'Duration'}} :
+              </h4>
+              <!-- <p class="my-auto mb-0" [class]="complaintDetail?.finalStatus">
+                {{complaintDetail.finalStatus}}
+              </p> -->
+              <p class="my-auto mb-0 form-control" >
+                xyz
+              </p>
+            </div>
+          </div>
+          <div class="col-md-6">
+            <div class="d-flex mr-4 statusColor form-group half-width">
+              <h4 class="my-auto mr-2 form-control-label detailsWidth">
+                {{'Mode of Training'}} :
+              </h4>
+              <!-- <p class="my-auto mb-0" [class]="complaintDetail?.finalStatus">
+                {{complaintDetail.finalStatus}}
+              </p> -->
+              <p class="my-auto mb-0 form-control" >
+                xyz
+              </p>
+            </div>
+          </div>
+          <div class="col-md-6">
+            <div class="d-flex mr-4 statusColor form-group half-width">
+              <h4 class="my-auto mr-2 form-control-label detailsWidth">
+                {{'About Training'}} :
+              </h4>
+              <!-- <p class="my-auto mb-0" [class]="complaintDetail?.finalStatus">
+                {{complaintDetail.finalStatus}}
+              </p> -->
+              <p class="my-auto mb-0 form-control" >
+                xyz
+              </p>
+            </div>
+          </div>
+          <div class="col-md-6">
+            <div class="d-flex mr-4">
+              <!-- <h4 class="my-auto mr-2">
+                {{'File'}} :
+              </h4> -->
+              <!-- <a *ngIf="complaintDetail.file_path" download href="{{complaintDetail.file_path}}" target="_blank">
+                {{complaintDetail.file_name}}
+              </a> -->
+              <!-- <a  download target="_blank">
+
+              </a> -->
+            </div>
+          </div>
+          <div class="col-md-12">
+            <div class="card mt-4">
+              <div class="card-body">
+                <ul class="timeline">
+                  <!-- <li class="OPEN">
+                    <h6 class="text-uppercase">{{'Complaint Date'}} <span
+                        class="text-muted">{{'24-07-2025'}}</span></h6>
+                    <p>{{'DESCRIPTION'}}: <span
+                        class="mb-0 text-muted">{{'complaintDetail.description'}}</span></p>
+                    <p class="mb-0">
+                      {{'Status'}}: <span class="text-muted">OPEN</span>
+                    </p>
+                  </li> -->
+                  <!-- <li [ngClass]="timeline?.compStatus ? getStatus(timeline.compStatus): getStatusOnDDA(timeline.ddaAction)" *ngFor="let timeline of complaintTimeline">
+                    <h6 class="text-uppercase">{{'Action Date'|translate}} <span class="text-muted">{{timeline.action_date | date :
+                        'medium'}}</span></h6>
+                    <p class="mb-0" *ngIf='timeline.actionTakerName'>{{'Action By'|translate}}:
+                      <span>{{timeline.actionTakerName}}</span>
+                    </p>
+                    <p class="mb-0">{{'Comment'|translate}}: <span class="mb-0 text-muted">{{timeline.actionDescription}}</span></p>
+                    <p class="mb-0" *ngIf="timeline.ddaAction != null">
+                      {{'Status'|translate}}: <span class="text-muted">{{timeline.ddaAction == 1 ? 'OPEN' :
+                        'RESOLVED'}}</span>
+                    </p>
+                    <p class="mb-0" *ngIf="timeline.ddaAction == null">
+                      {{'Status'|translate}}: <span class="text-muted">{{getStatus(timeline.compStatus)}}</span>
+                    </p>
+                    <p class="mb-0" *ngIf='timeline.assignedPersonName'>{{'Assigned Person'|translate}} : <span
+                        class="text-muted">{{timeline.assignedPersonName}}</span></p>
+                  </li> -->
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="card-header col-12 mb-4 mt-4 bg-appColor">
+          <!-- <ngx-spinner bdColor="rgba(51, 51, 51, 0.5)" size="default"  type="ball-beat" [fullScreen]="false" [name]="'dataSpinner3'"></ngx-spinner> -->
+          <h3 class="mb-0 text-white">
+            {{'Trainee List'}}
+          </h3>
+        </div>
+        <div class="card-body">
+          <app-table
+    [columns]="tableColumnsTrainee"
+    [data]="tableDataTrainee"
+    [actions]="tableActionsTrainee"
+    (actionClick)="handleTableAction($event)"
+    [isExportCSV]="isExportCSV" [isExportPDF]="isExportPdf"
+    [pdfHeaders]="pdfHeadersTrainee" [columnKeys]="columnKeysTrainee"
+    [fileName]="fileName" [isBulkCertDownload]="isBulkCertDownload">
+  </app-table>
+          <!-- <form [formGroup]="trainingForm">
+            <div class="pl-lg-0">
+              <div class="row">
+                <div class="col-lg-12">
+                  <div class="form-group">
+                    <label class="form-control-label" for="">{{'Department Comments'}}:<span
+                        class="required">*</span></label>
+                    <textarea formControlName="comment" class="form-control" id="exampleFormControlTextarea12"
+                      rows="3" (keyup)="keyFunc()" maxlength="250"></textarea>
+                      <div id="count">
+                        <span>{{0}}</span>
+                        <span>/ 250</span>
+                    </div>
+
+                    <div *ngIf="submitted && formControls['comment'].errors" class="text-danger">
+                      <div *ngIf="formControls['comment'].errors['required']">
+                        {{'department comments is required'}}</div>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-lg-12">
+                  <div class="form-group">
+                    <label class="form-control-label">{{'Change status'}}: <span
+                        class="required">*</span></label>
+
+
+                      <select class="form-control" formControlName="status">
+                      <option value="">{{'Select Status'}}</option>
+                      <option value="attended">{{'Complaint Resolved'}}</option>
+                      <option value="not_attended">{{'Cannot Resolve'}} </option>
+                    </select>
+                    <div *ngIf="submitted && formControls['status'].errors" class="text-danger">
+                      <div *ngIf="formControls['status'].errors['required']"> {{'status is required'}}</div>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="col-12 text-center">
+                  <button type="button" class="btn btn-yellow btn-primary my-2" (click)="open()" >
+                    {{'Update Status' }}
+                  </button>
+                  <button type="button" class="btn btn-warning mx-2" (click)="reset()" >
+                    {{'Reset'}}
+                  </button>
+                </div>
+                <div class="col-12 text-center" >
+                  <button type="button" class="btn btn-yellow btn-primary my-2" (click)="open()">
+
+                    {{'Update Status' }}
+                  </button>
+                  <button type="button" class="btn btn-warning mx-2" (click)="reset()">
+
+                    {{'Reset'}}
+                  </button>
+                </div>
+              </div>
+            </div>
+          </form> -->
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-primary" (click)="modal.dismiss('Close click')" style="background-color: #155e91;">
+          <!-- <button type="button" class="btn btn-primary"  data-bs-dismiss="modal"> -->
+          {{'close'}}
+        </button>
+      </div>
+    </ng-template>
+    <!-- </div>
+    </div>
+    </div> -->
