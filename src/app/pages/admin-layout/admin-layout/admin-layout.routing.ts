@@ -7,6 +7,7 @@ import { ApprovedCertificateComponent } from "../../approved-certificate/approve
 import { CertificateApprovalComponent } from "../../certificate-approval/certificate-approval.component";
 import { AllTrainingsComponent } from "../../training/all-trainings/all-trainings.component";
 import { SchemeManagementComponent } from "../scheme-management/scheme-management.component";
+import { RegisteredDataEntryOperatorsComponent } from "../../training/registered-data-entry-operators/registered-data-entry-operators.component";
 
 
 export const AdminLayoutRoutes: Routes = [
@@ -38,4 +39,8 @@ export const AdminLayoutRoutes: Routes = [
     path: 'training-centre', loadComponent: () => import('../../training/training-centre/training-centre.component').then(m => m.TrainingCentreComponent)
   },
    { path: 'schemes', component: SchemeManagementComponent },
+  {
+    path: 'training/registered-data-entry-operators',
+    component: RegisteredDataEntryOperatorsComponent
+  },
 ];

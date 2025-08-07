@@ -4,7 +4,7 @@ import { FormBuilder, FormGroup, ReactiveFormsModule, Validators, AbstractContro
 import { ToastrService } from 'ngx-toastr';
 import { BreadcrumbComponent, BreadcrumbItem } from '../../components/breadcrumb/breadcrumb.component';
 import { UserProfileService } from './services/user-profile.service';
-import { RegisterInstituteRequest } from './models/user-profile.model';
+import { RegisterInstituteRequest, RegisterDataEntryOperatorRequest } from './models/user-profile.model';
 
 @Component({
   selector: 'app-user-profile-creation',
@@ -40,19 +40,42 @@ export class UserProfileCreationComponent {
     if (this.profileForm.valid) {
       this.isLoading = true;
 
-      const formData: RegisterInstituteRequest = {
+      // Get trainingHeadId from session storage
+      const sessionData = sessionStorage.getItem('user');
+      let trainingHeadId = '';
+      
+      if (sessionData) {
+        try {
+          const userData = JSON.parse(sessionData);
+          trainingHeadId = userData.trainingHeadId || '';
+        } catch (error) {
+          console.error('Error parsing session data:', error);
+          this.toastr.error('Session data error. Please login again.', 'Error');
+          this.isLoading = false;
+          return;
+        }
+      }
+
+      if (!trainingHeadId) {
+        this.toastr.error('Training Head ID not found. Please login again.', 'Error');
+        this.isLoading = false;
+        return;
+      }
+
+      const formData: RegisterDataEntryOperatorRequest = {
         operatorName: this.profileForm.value.operatorName,
         designation: this.profileForm.value.designation,
         contactNumber: this.profileForm.value.contactNumber,
         emailId: this.profileForm.value.emailId,
-        password: this.profileForm.value.password
+        password: this.profileForm.value.password,
+        trainingHeadId: trainingHeadId
       };
 
-      this.userProfileService.registerInstitute(formData).subscribe({
+      this.userProfileService.registerDataEntryOperator(formData).subscribe({
         next: (response) => {
           this.isLoading = false;
           if (response.success) {
-            this.toastr.success(response.message || 'Institute registered successfully!', 'Success');
+            this.toastr.success(response.message || 'Data Entry Operator registered successfully!', 'Success');
             this.profileForm.reset();
           } else {
             this.toastr.error(response.message || 'Registration failed. Please try again.', 'Error');

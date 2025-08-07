@@ -233,8 +233,9 @@ export class LoginComponent implements OnInit {
       },
       error: (error) => {
         this.isLoading = false;
-        this.errorMessage = 'Registration failed. Please try again.';
-        this.toastr.error('Registration failed. Please check your details and try again.', 'Error');
+        const errorMessage = error.error?.message || 'Registration failed. Please try again.';
+        this.errorMessage = errorMessage;
+        this.toastr.error(errorMessage, 'Error');
         console.error('Registration error:', error);
       }
     });
