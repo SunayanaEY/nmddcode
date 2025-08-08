@@ -38,20 +38,7 @@
 
                     </ng-select>
 
-      <ng-select class="custom-ng-select form-control" placeholder="Date" [(ngModel)]="filters.date" style="height: 100%;
-                    width: 100%;
-                    font-weight: 400;
-                    line-height: 1.5;
-                    color: #121213;
-                    background-color: #fff;
-                    background-clip: padding-box;
-                    box-shadow: none;" (change)="applyFilters()">
 
-                      <!-- <ng-option value="" disabled="true">{{'Select Date'}}</ng-option> -->
-                      <ng-option *ngFor="let name of uniqueValuesDate()" [value]="name">{{name}}</ng-option>
-
-
-                    </ng-select>
       <ng-select class=" custom-ng-select form-control" placeholder="Scheme" [(ngModel)]="filters.scheme" style="height: 100%;
                     width: 100%;
                     font-weight: 400;
@@ -66,6 +53,34 @@
 
 
                     </ng-select>
+                    <ng-select class="custom-ng-select form-control" placeholder="Institute Name" [(ngModel)]="filters.trainingInstituteName" style="height: 100%;
+                    width: 100%;
+                    font-weight: 400;
+                    line-height: 1.5;
+                    color: #121213;
+                    background-color: #fff;
+                    background-clip: padding-box;
+                    box-shadow: none;" (change)="applyFilters()">
+
+                      <!-- <ng-option value="" disabled="true">{{'Select Date'}}</ng-option> -->
+                      <ng-option *ngFor="let name of uniqueValuesInstituteName()" [value]="name">{{name}}</ng-option>
+
+
+                    </ng-select>
+                    <ng-select class="custom-ng-select form-control" placeholder="Trainer Name" [(ngModel)]="filters.trainerName" style="height: 100%;
+                    width: 100%;
+                    font-weight: 400;
+                    line-height: 1.5;
+                    color: #121213;
+                    background-color: #fff;
+                    background-clip: padding-box;
+                    box-shadow: none;" (change)="applyFilters()">
+
+                      <!-- <ng-option value="" disabled="true">{{'Select Date'}}</ng-option> -->
+                      <ng-option *ngFor="let name of uniqueValuesTrainerName()" [value]="name">{{name}}</ng-option>
+
+
+                    </ng-select>
 
                     <ng-select class="custom-ng-select form-control" placeholder="Location" [(ngModel)]="filters.location" style="height: 100%;
                     width: 100%;
@@ -77,11 +92,11 @@
                     box-shadow: none;" (change)="applyFilters()">
 
                       <!-- <ng-option value="" disabled="true">{{'Select Sceme'}}</ng-option> -->
-                      <ng-option *ngFor="let name of uniqueValuesocation()" [value]="name">{{name}}</ng-option>
+                      <ng-option *ngFor="let name of uniqueValueslocation()" [value]="name">{{name}}</ng-option>
 
 
                     </ng-select>
-                    <ng-select class="custom-ng-select form-control" placeholder="Submission Date" [(ngModel)]="filters.submittedOn" style="height: 100%;
+                    <ng-select class="custom-ng-select form-control" placeholder="Training Date" [(ngModel)]="filters.trainingDate" style="height: 100%;
                     width: 100%;
                     font-weight: 400;
                     line-height: 1.5;
@@ -90,11 +105,12 @@
                     background-clip: padding-box;
                     box-shadow: none;" (change)="applyFilters()">
 
-                      <!-- <ng-option value="" disabled="true">{{'Select Sceme'}}</ng-option> -->
-                      <ng-option *ngFor="let name of uniqueValuesSubmittedON()" [value]="name">{{name}}</ng-option>
+                      <!-- <ng-option value="" disabled="true">{{'Select Date'}}</ng-option> -->
+                      <ng-option *ngFor="let name of uniqueValuesTrainingDate()" [value]="name">{{name}}</ng-option>
 
 
                     </ng-select>
+
 
                     <ng-select class="custom-ng-select form-control" placeholder="Status" [(ngModel)]="filters.status" style="height: 100%;
                     width: 100%;
@@ -128,7 +144,7 @@
 
   <div class="trainings-summary">
     <h4>All Trainings</h4>
-    <span class="badge bg-secondary">Total - {{ tableData.length }} Trainings</span>
+    <span class="badge bg-secondary">Total - {{ trainingsList.length }} Trainings</span>
   </div>
 
   <app-table
@@ -165,18 +181,10 @@
                 {{'Training Title'}}:
               </h4>
               <!-- <p class="my-auto mb-0"> {{complaintDetail.compcreator}}</p> -->
-               <p class="my-auto mb-0 form-control"> {{'training title'}}</p>
+               <p class="my-auto mb-0 form-control"> {{this.trainingDetails.trainingTitle}}</p>
             </div>
           </div>
-          <div class="col-md-6">
-            <div class="d-flex mr-4 form-group half-width">
-              <h4 class="my-auto mr-2 form-control-label detailsWidth">
-                {{'Training Type'}} :
-              </h4>
-              <!-- <p class="my-auto mb-0"> {{complaintDetail.creatormob}}</p> -->
-               <p class="my-auto mb-0 form-control">{{'xyz'}}</p>
-            </div>
-          </div>
+
           <div class="col-md-6">
             <div class="d-flex mr-4 statusColor form-group half-width">
               <h4 class="my-auto mr-2 form-control-label detailsWidth">
@@ -186,8 +194,17 @@
                 {{complaintDetail.finalStatus}}
               </p> -->
               <p class="my-auto mb-0 form-control" >
-                xyz
+                {{this.trainingDetails.scheme}}
               </p>
+            </div>
+          </div>
+          <div class="col-md-6">
+            <div class="d-flex mr-4 form-group half-width">
+              <h4 class="my-auto mr-2 form-control-label detailsWidth">
+                {{'Training Institute Name'}} :
+              </h4>
+              <!-- <p class="my-auto mb-0"> {{complaintDetail.creatormob}}</p> -->
+               <p class="my-auto mb-0 form-control">{{this.trainingDetails.trainingInstituteName}}</p>
             </div>
           </div>
           <div class="col-md-6">
@@ -199,17 +216,44 @@
                 {{complaintDetail.finalStatus}}
               </p> -->
               <p class="my-auto mb-0 form-control" >
-                xyz
+                {{this.trainingDetails.trainerName}}
               </p>
             </div>
           </div>
           <div class="col-md-6">
             <div class="d-flex mr-4 form-group half-width">
               <h4 class="my-auto mr-2 form-control-label detailsWidth">
-                {{'Training Institute Name'}} :
+                {{'Training Date'}} :
               </h4>
               <!-- <p class="my-auto mb-0"> {{complaintDetail.title}}</p> -->
-               <p class="my-auto mb-0 form-control">{{'xyz training center'}} </p>
+               <p class="my-auto mb-0 form-control">{{this.trainingDetails.trainingDate}} </p>
+            </div>
+          </div>
+          <div class="col-md-6">
+            <div class="d-flex mr-4 form-group half-width">
+              <h4 class="my-auto mr-2 form-control-label detailsWidth">
+                {{'Training Duration'}} :
+              </h4>
+              <!-- <p class="my-auto mb-0"> {{complaintDetail.title}}</p> -->
+               <p class="my-auto mb-0 form-control">{{this.trainingDetails.duration}} </p>
+            </div>
+          </div>
+          <div class="col-md-6">
+            <div class="d-flex mr-4 form-group half-width">
+              <h4 class="my-auto mr-2 form-control-label detailsWidth">
+                {{'Mode of Training'}} :
+              </h4>
+              <!-- <p class="my-auto mb-0"> {{complaintDetail.title}}</p> -->
+               <p class="my-auto mb-0 form-control">{{this.trainingDetails.modeOfTraining}} </p>
+            </div>
+          </div>
+          <div class="col-md-6">
+            <div class="d-flex mr-4 form-group half-width">
+              <h4 class="my-auto mr-2 form-control-label detailsWidth">
+                {{'Training Description'}} :
+              </h4>
+              <!-- <p class="my-auto mb-0"> {{complaintDetail.title}}</p> -->
+               <p class="my-auto mb-0 form-control">{{this.trainingDetails.trainingDescription}} </p>
             </div>
           </div>
           <div class="col-md-6">
@@ -221,62 +265,26 @@
                 {{complaintDetail.finalStatus}}
               </p> -->
               <p class="my-auto mb-0 form-control" >
-                xyz
+                {{this.trainingDetails.location}}
               </p>
             </div>
           </div>
           <div class="col-md-6">
             <div class="d-flex mr-4 statusColor form-group half-width">
               <h4 class="my-auto mr-2 form-control-label detailsWidth">
-                {{'Training Date'}} :
+                {{'Status'}} :
               </h4>
               <!-- <p class="my-auto mb-0" [class]="complaintDetail?.finalStatus">
                 {{complaintDetail.finalStatus}}
               </p> -->
               <p class="my-auto mb-0 form-control" >
-                25-02-2025
+                {{this.trainingDetails.status}}
               </p>
             </div>
           </div>
-          <div class="col-md-6">
-            <div class="d-flex mr-4 statusColor form-group half-width">
-              <h4 class="my-auto mr-2 form-control-label detailsWidth">
-                {{'Duration'}} :
-              </h4>
-              <!-- <p class="my-auto mb-0" [class]="complaintDetail?.finalStatus">
-                {{complaintDetail.finalStatus}}
-              </p> -->
-              <p class="my-auto mb-0 form-control" >
-                xyz
-              </p>
-            </div>
-          </div>
-          <div class="col-md-6">
-            <div class="d-flex mr-4 statusColor form-group half-width">
-              <h4 class="my-auto mr-2 form-control-label detailsWidth">
-                {{'Mode of Training'}} :
-              </h4>
-              <!-- <p class="my-auto mb-0" [class]="complaintDetail?.finalStatus">
-                {{complaintDetail.finalStatus}}
-              </p> -->
-              <p class="my-auto mb-0 form-control" >
-                xyz
-              </p>
-            </div>
-          </div>
-          <div class="col-md-6">
-            <div class="d-flex mr-4 statusColor form-group half-width">
-              <h4 class="my-auto mr-2 form-control-label detailsWidth">
-                {{'About Training'}} :
-              </h4>
-              <!-- <p class="my-auto mb-0" [class]="complaintDetail?.finalStatus">
-                {{complaintDetail.finalStatus}}
-              </p> -->
-              <p class="my-auto mb-0 form-control" >
-                xyz
-              </p>
-            </div>
-          </div>
+
+
+
           <div class="col-md-6">
             <div class="d-flex mr-4">
               <!-- <h4 class="my-auto mr-2">
@@ -335,12 +343,12 @@
         <div class="card-body">
           <app-table
     [columns]="tableColumnsTrainee"
-    [data]="tableDataTrainee"
+    [data]="traineeList"
     [actions]="tableActionsTrainee"
     (actionClick)="handleTableAction($event)"
     [isExportCSV]="isExportCSV" [isExportPDF]="isExportPdf"
     [pdfHeaders]="pdfHeadersTrainee" [columnKeys]="columnKeysTrainee"
-    [fileName]="fileName" [isBulkCertDownload]="isBulkCertDownload">
+    [fileName]="fileNameTrainees" [isBulkCertDownload]="isBulkCertDownload">
   </app-table>
           <!-- <form [formGroup]="trainingForm">
             <div class="pl-lg-0">

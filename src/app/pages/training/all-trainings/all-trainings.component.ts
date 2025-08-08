@@ -1,10 +1,12 @@
 import { Component, ElementRef, ViewChild } from '@angular/core';
 import { BreadcrumbComponent, BreadcrumbItem } from '../../../components/breadcrumb/breadcrumb.component';
-import { CommonModule } from '@angular/common';
+import { CommonModule, DatePipe } from '@angular/common';
 import { TableAction, TableColumn, TableComponent } from '../../../components/table/table.component';
 import { NgSelectModule } from '@ng-select/ng-select';
 import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import { TrainingService } from '../services/training.service';
+import { TraineeDetails, TrainingsList } from '../models/training.model';
 
 @Component({
   selector: 'app-all-trainings',
@@ -16,6 +18,7 @@ import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 })
 export class AllTrainingsComponent {
   private bootstrap: any;
+  trainingDetails:any;
   @ViewChild('trainingDetailsModal')
   trainingDetailsModal!: ElementRef;
   submitted:Boolean = false;
@@ -23,23 +26,27 @@ export class AllTrainingsComponent {
   isExportCSV:Boolean =true;
   isExportPdf:Boolean =true;
   isBulkCertDownload:Boolean =true;
-  fileName:String = 'All_trainings_'
-  fileNameTrainees:String = 'All_trainee_List_'
+  fileName:String = 'All_trainings_';
+  fileNameTrainees:String = 'All_trainee_List_';
+  traineesFile:String = 'All_trainee_List_';
   pdfHeaders: Array<string> = [
-    'Training Title', 'Date', 'Scheme','Location','Submission Date','Status'
+    'Sr.No.','Training Title', 'Scheme', 'Training Institute','Trainer Name','Location','Training Date','Status'
   ];
-  columnKeys:Array<string> =['trainingTitle','date','scheme','location','submittedOn','status']
+  columnKeys:Array<string> =['trainingTitle','scheme','trainingInstituteName','trainerName','location','trainingDate','status']
   breadcrumbItems: BreadcrumbItem[] = [
       { label: 'Training Module', url: '/dashboard/training-module' },
       { label: 'All Registered Trainings' }
     ];
     tableColumns: TableColumn[] = [
         { key: 'trainingTitle', header: 'Training Title' },
-        { key: 'date', header: 'Date' },
         { key: 'scheme', header: 'Scheme' },
+        { key: 'trainingInstituteName', header: 'Training Institute' },
+        { key: 'trainerName', header: 'Trainer Name' },
+
         { key: 'location', header: 'Location' },
-        { key: 'submittedOn', header: 'Submitted On' },
+        { key: 'trainingDate', header: 'Training Date' },
         { key: 'status', header: 'Status' },
+
       ];
 
       tableActions: TableAction[] = [
@@ -47,34 +54,36 @@ export class AllTrainingsComponent {
         // { name: 'download', icon: 'bi bi-download', class: 'btn-success', title: 'Download' },
       ];
 
-      tableData: any[] = [
-        { trainingTitle: 'ABC Training', date: '01-May-2025', scheme: 'PMKVY', location: 'Kanpur,Uttar Pradesh', submittedOn: '03-May-2025', status: 'Approved' },
-        { trainingTitle: 'ABC Training', date: '01-May-2025', scheme: 'PMKVY', location: 'Kanpur,Uttar Pradesh', submittedOn: '03-May-2025', status: 'Approved' },
-        { trainingTitle: 'XYZ ', date: '05-May-2025', scheme: 'PMKVYll', location: 'Kanpur,Uttar Pradesh,INdia', submittedOn: '03-May-2025', status: 'Approved' },
-        { trainingTitle: 'ABC Training', date: '01-May-2025', scheme: 'PMKVY', location: 'Kanpur,Uttar Pradesh', submittedOn: '03-May-2025', status: 'Approved' },
-        { trainingTitle: 'ABC Training', date: '01-May-2025', scheme: 'PMKVY', location: 'Kanpur,Uttar Pradesh', submittedOn: '03-May-2025', status: 'Approved' },
-        { trainingTitle: 'ABC Training', date: '01-May-2025', scheme: 'PMKVY', location: 'Kanpur Pradesh', submittedOn: '03-May-2025', status: 'Approved' },
-        { trainingTitle: 'ABC Training', date: '01-May-2025', scheme: 'PMKVY', location: 'Kanpur,Uttar Pradesh', submittedOn: '03-May-2025', status: 'Approved' },
-        { trainingTitle: 'ABC Training', date: '01-May-2025', scheme: 'PMKVY', location: 'Kanpur,Uttar Pradesh', submittedOn: '03-May-2025', status: 'Approved' },
-        { trainingTitle: 'ABC Training', date: '01-May-2025', scheme: 'PMKVY', location: 'Kanpur', submittedOn: '03-May-2025', status: 'Approved' },
-        { trainingTitle: 'ABC Training', date: '01-May-2025', scheme: 'PMKVY', location: 'Uttar Pradesh', submittedOn: '03-May-2025', status: 'Approved' },
-        { trainingTitle: 'ABC Training', date: '01-May-2025', scheme: 'PMKVY', location: 'Uttar Pradesh', submittedOn: '03-May-2025', status: 'Approved' },
-      ];
+      trainingsList: TrainingsList[]=[];
+      traineeList:TraineeDetails[]=[];
+
+      // tableData: any[] = [
+      //   { trainingTitle: 'ABC Training', date: '01-May-2025', scheme: 'PMKVY', location: 'Kanpur,Uttar Pradesh', submittedOn: '03-May-2025', status: 'Approved' },
+      //   { trainingTitle: 'ABC Training', date: '01-May-2025', scheme: 'PMKVY', location: 'Kanpur,Uttar Pradesh', submittedOn: '03-May-2025', status: 'Approved' },
+      //   { trainingTitle: 'XYZ ', date: '05-May-2025', scheme: 'PMKVYll', location: 'Kanpur,Uttar Pradesh,INdia', submittedOn: '03-May-2025', status: 'Approved' },
+      //   { trainingTitle: 'ABC Training', date: '01-May-2025', scheme: 'PMKVY', location: 'Kanpur,Uttar Pradesh', submittedOn: '03-May-2025', status: 'Approved' },
+      //   { trainingTitle: 'ABC Training', date: '01-May-2025', scheme: 'PMKVY', location: 'Kanpur,Uttar Pradesh', submittedOn: '03-May-2025', status: 'Approved' },
+      //   { trainingTitle: 'ABC Training', date: '01-May-2025', scheme: 'PMKVY', location: 'Kanpur Pradesh', submittedOn: '03-May-2025', status: 'Approved' },
+      //   { trainingTitle: 'ABC Training', date: '01-May-2025', scheme: 'PMKVY', location: 'Kanpur,Uttar Pradesh', submittedOn: '03-May-2025', status: 'Approved' },
+      //   { trainingTitle: 'ABC Training', date: '01-May-2025', scheme: 'PMKVY', location: 'Kanpur,Uttar Pradesh', submittedOn: '03-May-2025', status: 'Approved' },
+      //   { trainingTitle: 'ABC Training', date: '01-May-2025', scheme: 'PMKVY', location: 'Kanpur', submittedOn: '03-May-2025', status: 'Approved' },
+      //   { trainingTitle: 'ABC Training', date: '01-May-2025', scheme: 'PMKVY', location: 'Uttar Pradesh', submittedOn: '03-May-2025', status: 'Approved' },
+      //   { trainingTitle: 'ABC Training', date: '01-May-2025', scheme: 'PMKVY', location: 'Uttar Pradesh', submittedOn: '03-May-2025', status: 'Approved' },
+      // ];
 
 
       // TRainee dummy data
-      pdfHeadersTrainee: Array<string> = [
-    'Name', 'Age', 'Gender','Aadhaar','Email','Date'
+      pdfHeadersTrainee: Array<string> = ['Sr.No.',
+    'Name', 'Age', 'Gender','Contact','Email'
   ];
-  columnKeysTrainee:Array<string> =['traineeName','age','gender','aadhaar','email','date']
+  columnKeysTrainee:Array<string> =['name','age','gender','contactNumber','email']
 
     tableColumnsTrainee: TableColumn[] = [
-        { key: 'traineeName', header: 'Name' },
+        { key: 'name', header: 'Name' },
         { key: 'age', header: 'Age' },
         { key: 'gender', header: 'Gender' },
-        { key: 'aadhaar', header: 'Aadhaar' },
+        { key: 'contactNumber', header: 'Contact' },
         { key: 'email', header: 'Email' },
-        { key: 'date', header: 'Date' },
       ];
 
       tableActionsTrainee: TableAction[] = [
@@ -82,26 +91,14 @@ export class AllTrainingsComponent {
         { name: 'download', icon: 'bi bi-download', class: 'btn-success', title: 'Download certificate' },
       ];
 
-      tableDataTrainee: any[] = [
-        { traineeName: 'Manoj Kumar', age: 30, gender: 'M', aadhaar: 'XXXXXXXXXX25', email: 'XXXXXX5@gmail.com', date: '03-05-2025' },
-        { traineeName: 'Suman Devi', age: 44, gender: 'F', aadhaar: 'XXXXXXXXXX25', email: 'XXXXXX5@gmail.com', date: '03-05-2025' },
-        { traineeName: 'Manoj Kumar', age: 30, gender: 'M', aadhaar: 'XXXXXXXXXX25', email: 'XXXXXX5@gmail.com', date: '03-05-2025' },
-        { traineeName: 'Manoj Kumar', age: 30, gender: 'M', aadhaar: 'XXXXXXXXXX25', email: 'XXXXXX5@gmail.com', date: '03-05-2025' },
-        { traineeName: 'Suman Devi', age: 44, gender: 'F', aadhaar: 'XXXXXXXXXX25', email: 'XXXXXX5@gmail.com', date: '03-05-2025' },
-        { traineeName: 'Manoj Kumar', age: 30, gender: 'M', aadhaar: 'XXXXXXXXXX25', email: 'XXXXXX5@gmail.com', date: '03-05-2025' },
-        { traineeName: 'Manoj Kumar', age: 30, gender: 'M', aadhaar: 'XXXXXXXXXX25', email: 'XXXXXX5@gmail.com', date: '03-05-2025' },
-        { traineeName: 'Suman Devi', age: 44, gender: 'F', aadhaar: 'XXXXXXXXXX25', email: 'XXXXXX5@gmail.com', date: '03-05-2025' },
-        { traineeName: 'Manoj Kumar', age: 30, gender: 'M', aadhaar: 'XXXXXXXXXX25', email: 'XXXXXX5@gmail.com', date: '03-05-2025' },
-        { traineeName: 'Suman Devi', age: 44, gender: 'F', aadhaar: 'XXXXXXXXXX25', email: 'XXXXXX5@gmail.com', date: '03-05-2025' },
-        { traineeName: 'Manoj Kumar', age: 30, gender: 'M', aadhaar: 'XXXXXXXXXX25', email: 'XXXXXX5@gmail.com', date: '03-05-2025' },
-      ];
 
 
       constructor(private formBuilder: FormBuilder,
-        private modalService: NgbModal,
+        private modalService: NgbModal, private trainingsService: TrainingService
       ){
 
       }
+      filteredData = [...this.trainingsList];
 
       ngOnInit(): void {
         this.trainingForm = this.formBuilder.group({
@@ -109,13 +106,38 @@ export class AllTrainingsComponent {
         comment: ['', [Validators.required]],
         status: ['', [Validators.required]]
       });
+      this.trainingsService.getAllTrainings().subscribe(res => {
+        this.trainingsList = res.data;
+        this.filteredData = [...this.trainingsList];
+        let index=0;
+        this.trainingsList.forEach(ele => {
+          const datePipe = new DatePipe('en-US');
+          ele['location'] = ele['venueBlock']+","+
+          ele['venueDistrict']+","+ele["venueState"];
+          ele['trainingDate']= datePipe.transform(ele['trainingDate'], 'dd/MM/yyyy')!;
+          this.trainingsList[index]=ele;
+          index++;
+        })
+      });
+
       }
 
-      filteredData = [...this.tableData];
+
       handleTableAction(event: { action: string, item: any, index: number }): void {
         console.log('Action:', event.action, 'Item:', event.item);
         // const modal = new this.bootstrap.Modal(this.trainingDetailsModal.nativeElement);
       //modal.show();
+      this.traineeList=[];
+      this.trainingDetails = event.item;
+      this.fileNameTrainees = this.traineesFile;
+      this.fileNameTrainees = this.fileNameTrainees+this.trainingDetails.trainingInstituteName+"_"+
+        this.trainingDetails.trainingTitle+"_";
+      this.trainingsService.getTraineeList(this.trainingDetails.id).subscribe(
+        res=>{
+          this.traineeList = res.data;
+        }
+      );
+
         this.modalService.open(this.trainingDetailsModal, {
         size: 'xl',
         scrollable: true,
@@ -124,18 +146,21 @@ export class AllTrainingsComponent {
       });
       }
 
-      filters = { trainingTitle:null,date: null, scheme: null, location: null ,submittedOn:null,
-    status:null
+
+      filters = { trainingTitle:null,scheme: null, trainingInstituteName: null, trainerName: null ,location:null,
+    trainingDate:null,status:null
   };
 
   applyFilters(): void {
-      this.filteredData = this.tableData.filter(row => {
+
+      this.filteredData = this.trainingsList.filter(row => {
         return (
           (!this.filters.trainingTitle || row.trainingTitle === this.filters.trainingTitle) &&
-          (!this.filters.date || row.date === this.filters.date) &&
           (!this.filters.scheme || row.scheme === this.filters.scheme) &&
+          (!this.filters.trainingInstituteName || row.trainingInstituteName === this.filters.trainingInstituteName) &&
+          (!this.filters.trainerName || row.trainerName === this.filters.trainerName) &&
           (!this.filters.location || row.location === this.filters.location) &&
-          (!this.filters.submittedOn || row.submittedOn === this.filters.submittedOn) &&
+          (!this.filters.trainingDate || row.trainingDate === this.filters.trainingDate)&&
           (!this.filters.status || row.status === this.filters.status)
 
           // (!this.filters.sync_status || row.sync_status.toString() === this.filters.sync_status.toString()) &&
@@ -149,37 +174,45 @@ export class AllTrainingsComponent {
     }
      uniqueValuesTrainingTitle(): any[] {
 
-    return [...new Set(this.tableData.map(item => item['trainingTitle']))];
+    return [...new Set(this.trainingsList.map(item => item['trainingTitle']))];
 
   }
 
-  uniqueValuesDate(): any[] {
 
-    return [...new Set(this.tableData.map(item => item['date']))];
+  uniqueValuesTrainingDate(): any[] {
+
+    return [...new Set(this.trainingsList.map(item => item['trainingDate']))];
 
   }
 
   uniqueValuesScheme(): any[] {
 
-    return [...new Set(this.tableData.map(item => item['scheme']))];
+    return [...new Set(this.trainingsList.map(item => item['scheme']))];
 
   }
 
-  uniqueValuesocation(): any[] {
 
-    return [...new Set(this.tableData.map(item => item['location']))];
+  uniqueValuesInstituteName(): any[] {
+
+    return [...new Set(this.trainingsList.map(item => item['trainingInstituteName']))];
+
+  }
+  uniqueValuesTrainerName(): any[] {
+
+    return [...new Set(this.trainingsList.map(item => item['trainerName']))];
+
+  }
+  uniqueValueslocation(): any[] {
+
+    return [...new Set(this.trainingsList.map(item => item['location']))];
 
   }
 
-  uniqueValuesSubmittedON(): any[] {
 
-    return [...new Set(this.tableData.map(item => item['submittedOn']))];
-
-  }
 
   uniqueValuesStatus(): any[] {
 
-    return [...new Set(this.tableData.map(item => item['status']))];
+    return [...new Set(this.trainingsList.map(item => item['status']))];
 
   }
 
