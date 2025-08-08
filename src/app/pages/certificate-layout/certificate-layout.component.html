@@ -1,0 +1,51 @@
+<div class="certificate-wrapper" #certificateContent>
+  <div class="certificate-border">
+    <div class="certificate-header">
+      <h2>Certificate of Completion</h2>
+      <p class="subtitle">This Certificate Is Proudly Presented To</p>
+      <h1 class="trainee-name">{{ data?.traineeName }}</h1>
+    </div>
+
+    <div class="certificate-body">
+      <p>
+        From <strong>{{ data?.scheme }}</strong> has successfully completed the
+        training program <strong>{{ data?.trainingTitle }}</strong> on
+        <strong>{{ data?.date }}</strong
+        >, conducted at <strong>{{ data?.location }}</strong
+        >.
+      </p>
+    </div>
+
+    <div class="certificate-footer">
+      <div class="signatures">
+        <div class="signature">
+          <p>_____________________</p>
+          <p>[Signature Name]</p>
+          <p>[Designation]</p>
+          <p>[Organization]</p>
+        </div>
+
+        <div class="qr-code">
+          <qrcode
+            [qrdata]="qrData"
+            [width]="100"
+            [errorCorrectionLevel]="'M'"
+          ></qrcode>
+          <p class="uid">UIN: {{ uniqueId }}</p>
+        </div>
+
+        <div class="signature">
+          <p>_____________________</p>
+          <p>[Signature Name]</p>
+          <p>[Designation]</p>
+          <p>[Organization]</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal-actions mt-3 text-end">
+    <button class="btn btn-secondary me-2" (click)="closeModal()">Close</button>
+    <button class="btn btn-primary" (click)="download()">Download</button>
+  </div>
+</div>

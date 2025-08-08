@@ -7,37 +7,86 @@
 
   <div class="filter-container">
     <div class="filter-controls">
-      <input type="text" class="form-control" placeholder="dd mm yy - dd mm yy">
-      <input type="text" class="form-control" placeholder="Search by Training Title">
-      <select class="form-control">
-        <option>State</option>
+      <!-- Date Filter -->
+      <input
+        type="date"
+        class="form-control"
+        [(ngModel)]="filters.date"
+        placeholder="Date"
+      />
+
+      <!-- Training Title Search -->
+      <input
+        type="text"
+        class="form-control"
+        [(ngModel)]="filters.trainingTitle"
+        placeholder="Search by Training Title"
+      />
+
+      <!-- Status Filter -->
+      <select class="form-control" [(ngModel)]="filters.status">
+        <option value="ALL">All</option>
+        <option value="PENDING">Pending</option>
+        <option value="APPROVED">Approved</option>
+        <option value="REJECTED">Rejected</option>
       </select>
-      <select class="form-control">
-        <option>District</option>
-      </select>
-      <select class="form-control">
-        <option>Block</option>
-      </select>
-      <div class="form-check">
-        <input class="form-check-input" type="checkbox" id="approvedOnly" checked>
-        <label class="form-check-label" for="approvedOnly">Approved Only</label>
-      </div>
     </div>
+
     <div class="action-buttons">
-      <button class="btn btn-outline-primary"><i class="bi bi-upload"></i> Export as Excel</button>
-      <button class="btn btn-primary"><i class="bi bi-download"></i> Download Zip</button>
+      <button class="btn btn-outline-primary">
+        <i class="bi bi-upload"></i> Export as Excel
+      </button>
+      <button class="btn btn-primary">
+        <i class="bi bi-download"></i> Download Zip
+      </button>
     </div>
   </div>
 
   <div class="trainings-summary">
-    <h4>Approved Trainings</h4>
-    <span class="badge bg-secondary">{{ tableData.length }} Approved Trainings</span>
+    <h4>Trainees List</h4>
+    <span class="badge bg-secondary"
+      >Total trainees : {{ filteredTableData.length }}</span
+    >
   </div>
 
-  <app-table 
-    [columns]="tableColumns" 
-    [data]="tableData" 
+  <app-table
+    [columns]="tableColumns"
+    [data]="filteredTableData"
     [actions]="tableActions"
-    (actionClick)="handleTableAction($event)">
+    (actionClick)="handleTableAction($event)"
+  >
   </app-table>
+  <!-- View Modal -->
+  <!-- Modal -->
+  <div
+    class="modal fade"
+    id="viewCertificateModal"
+    tabindex="-1"
+    aria-labelledby="viewCertificateModalLabel"
+    aria-hidden="true"
+  >
+    <div class="modal-dialog modal-xl modal-dialog-centered">
+      <div class="modal-content p-4">
+        <div class="modal-header">
+          <h5 class="modal-title" id="viewCertificateModalLabel">
+            Approved Certificate
+          </h5>
+          <button
+            type="button"
+            class="btn-close"
+            data-bs-dismiss="modal"
+            aria-label="Close"
+          ></button>
+        </div>
+        <div class="modal-body">
+          <!-- 🔄 Load certificate only if selectedItem exists -->
+          <ng-container *ngIf="selectedItem">
+            <app-certificate-layout
+              [data]="selectedItem"
+            ></app-certificate-layout>
+          </ng-container>
+        </div>
+      </div>
+    </div>
+  </div>
 </div>

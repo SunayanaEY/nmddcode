@@ -54,3 +54,15 @@
 .trainings-summary .badge {
   font-size: 14px;
 }
+.modal-content {
+  border-radius: 10px;
+}
+
+.modal-header {
+  border-bottom: none;
+}
+
+.modal-footer {
+  border-top: none;
+  margin:auto !important;
+}
