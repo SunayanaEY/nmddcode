@@ -1,0 +1,131 @@
+{
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "type": "Feature",
+      "properties": {
+        "NAME": "Uttar Pradesh",
+        "STATE_CODE": "UP",
+        "ID": "UP"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [[
+          [77.0, 24.0], [84.0, 24.0], [84.0, 31.0], [77.0, 31.0], [77.0, 24.0]
+        ]]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "NAME": "Maharashtra",
+        "STATE_CODE": "MH",
+        "ID": "MH"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [[
+          [72.0, 15.0], [80.0, 15.0], [80.0, 22.0], [72.0, 22.0], [72.0, 15.0]
+        ]]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "NAME": "Karnataka",
+        "STATE_CODE": "KA",
+        "ID": "KA"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [[
+          [74.0, 11.0], [78.0, 11.0], [78.0, 18.0], [74.0, 18.0], [74.0, 11.0]
+        ]]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "NAME": "Tamil Nadu",
+        "STATE_CODE": "TN",
+        "ID": "TN"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [[
+          [76.0, 8.0], [80.0, 8.0], [80.0, 13.0], [76.0, 13.0], [76.0, 8.0]
+        ]]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "NAME": "West Bengal",
+        "STATE_CODE": "WB",
+        "ID": "WB"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [[
+          [85.0, 21.0], [89.0, 21.0], [89.0, 27.0], [85.0, 27.0], [85.0, 21.0]
+        ]]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "NAME": "Rajasthan",
+        "STATE_CODE": "RJ",
+        "ID": "RJ"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [[
+          [69.0, 23.0], [78.0, 23.0], [78.0, 30.0], [69.0, 30.0], [69.0, 23.0]
+        ]]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "NAME": "Gujarat",
+        "STATE_CODE": "GJ",
+        "ID": "GJ"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [[
+          [68.0, 20.0], [74.0, 20.0], [74.0, 24.0], [68.0, 24.0], [68.0, 20.0]
+        ]]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "NAME": "Telangana",
+        "STATE_CODE": "TS",
+        "ID": "TS"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [[
+          [77.0, 15.0], [81.0, 15.0], [81.0, 19.0], [77.0, 19.0], [77.0, 15.0]
+        ]]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "NAME": "Delhi",
+        "STATE_CODE": "DL",
+        "ID": "DL"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [[
+          [76.8, 28.4], [77.3, 28.4], [77.3, 28.9], [76.8, 28.9], [76.8, 28.4]
+        ]]
+      }
+    }
+  ]
+}

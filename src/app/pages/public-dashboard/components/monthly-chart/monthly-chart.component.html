@@ -1,0 +1,51 @@
+<div class="chart-wrapper">
+  <!-- Loading State -->
+  <div *ngIf="isLoading || chartLoading" class="chart-loading">
+    <div class="spinner-border text-primary" role="status">
+      <span class="visually-hidden">Loading chart...</span>
+    </div>
+    <p class="mt-2 text-muted mb-0">Loading monthly data...</p>
+  </div>
+
+  <!-- Chart Container -->
+  <div *ngIf="!isLoading && !chartLoading" class="chart-container">
+    <echarts 
+      [options]="chartOption" 
+      [loading]="chartLoading"
+      [loadingOpts]="{
+        text: 'Loading...',
+        color: '#0d6efd',
+        textColor: '#666',
+        maskColor: 'rgba(255, 255, 255, 0.8)',
+        zlevel: 0
+      }"
+      [initOpts]="{
+        width: 'auto',
+        height: 'auto',
+        renderer: 'canvas'
+      }"
+      (chartInit)="onChartInit($event)"
+      class="monthly-chart"
+      style="width: 100%; height: 100%;">
+    </echarts>
+  </div>
+
+  <!-- Chart Actions -->
+  <div *ngIf="!isLoading" class="chart-actions">
+    <button 
+      class="btn btn-sm btn-outline-secondary"
+      (click)="refreshChart()"
+      [disabled]="chartLoading"
+      title="Refresh Chart">
+      <i class="fas fa-sync-alt" [class.fa-spin]="chartLoading"></i>
+    </button>
+  </div>
+
+  <!-- State Info -->
+  <div *ngIf="selectedState && !isLoading" class="selected-state-indicator">
+    <small class="text-muted">
+      <i class="fas fa-map-marker-alt me-1"></i>
+      Showing data for: <strong>{{ selectedState.stateName }}</strong>
+    </small>
+  </div>
+</div>

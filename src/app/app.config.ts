@@ -3,11 +3,41 @@ import { provideRouter } from '@angular/router';
 import { provideHttpClient, withFetch, withInterceptors } from '@angular/common/http';
 import { provideAnimations } from '@angular/platform-browser/animations';
 import { provideToastr } from 'ngx-toastr';
+import { provideEchartsCore } from 'ngx-echarts';
 
 import { routes } from './app.routes';
 import { provideClientHydration, withEventReplay } from '@angular/platform-browser';
 import { ExcelService } from './_services/Excel/excel.service';
 import { JwtInterceptor, ErrorInterceptor } from './interceptors';
+
+// Import ECharts modules
+import * as echarts from 'echarts/core';
+import {
+  BarChart,
+  LineChart,
+  PieChart
+} from 'echarts/charts';
+import {
+  TitleComponent,
+  TooltipComponent,
+  GridComponent,
+  LegendComponent,
+  ToolboxComponent,
+} from 'echarts/components';
+import { CanvasRenderer } from 'echarts/renderers';
+
+// Register ECharts modules
+echarts.use([
+  BarChart,
+  LineChart,
+  PieChart,
+  TitleComponent,
+  TooltipComponent,
+  GridComponent,
+  LegendComponent,
+  ToolboxComponent,
+  CanvasRenderer
+]);
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -24,6 +54,7 @@ export const appConfig: ApplicationConfig = {
       withFetch(),
       withInterceptors([JwtInterceptor, ErrorInterceptor])
     ),
+    provideEchartsCore({ echarts }),
     ExcelService
   ]
 };

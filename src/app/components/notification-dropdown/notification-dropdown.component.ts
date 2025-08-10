@@ -20,10 +20,12 @@ export interface Notification {
 export class NotificationDropdownComponent implements OnInit {
   @Input() show: boolean = false;
   @Input() notifications: Notification[] = [];
+  @Input() isLoading: boolean = false;
   @Output() close = new EventEmitter<void>();
   @Output() markAsRead = new EventEmitter<number>();
   @Output() markAllAsRead = new EventEmitter<void>();
   @Output() deleteNotification = new EventEmitter<number>();
+  @Output() refresh = new EventEmitter<void>();
 
   constructor() {}
 
@@ -43,6 +45,10 @@ export class NotificationDropdownComponent implements OnInit {
 
   onDeleteNotification(notificationId: number): void {
     this.deleteNotification.emit(notificationId);
+  }
+
+  onRefresh(): void {
+    this.refresh.emit();
   }
 
   getUnreadCount(): number {

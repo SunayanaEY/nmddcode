@@ -57,11 +57,13 @@
         <!-- Notification Dropdown -->
         <app-notification-dropdown
           [show]="showNotificationDropdown"
-          [notifications]="mockNotifications"
+          [notifications]="notifications"
+          [isLoading]="isLoadingNotifications"
           (close)="closeNotificationDropdown()"
           (markAsRead)="markAsRead($event)"
           (markAllAsRead)="markAllAsRead()"
-          (deleteNotification)="deleteNotification($event)">
+          (deleteNotification)="deleteNotification($event)"
+          (refresh)="refreshNotifications()">
         </app-notification-dropdown>
       </div>
       <button class="action-btn settings-btn" title="Settings">

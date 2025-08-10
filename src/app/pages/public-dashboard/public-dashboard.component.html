@@ -1,0 +1,179 @@
+<!-- Government Header -->
+<div class="gov-header">
+  <div class="container-fluid">
+    <div class="row align-items-center">
+      <div class="col-md-8 d-flex align-items-center">
+        <div class="emblem-container">
+          <img src="assets/login/emblem.png" alt="Government Emblem" class="gov-emblem">
+        </div>
+        <div class="gov-text">
+          <h1 class="gov-title">भारत सरकार | GOVERNMENT OF INDIA</h1>
+          <p class="dept-text-hindi">पशुपालन और डेयरी विभाग</p>
+          <p class="dept-text-english">DEPARTMENT OF ANIMAL HUSBANDRY AND DAIRYING</p>
+        </div>
+      </div>
+      <div class="col-md-4 text-end">
+          <div class="header-actions">
+            <button class="btn-login" (click)="navigateToLogin()">
+              <i class="fas fa-user"></i>
+              Sign In
+            </button>
+          </div>
+        </div>
+    </div>
+  </div>
+</div>
+
+<!-- Main Dashboard Content -->
+<div class="dashboard-container">
+  <div class="container-fluid">
+    
+    <!-- Dashboard Header -->
+    <div class="dashboard-header mb-4">
+      <div class="dashboard-header-bg"></div>
+      <div class="dashboard-header-content">
+        <div class="row align-items-center">
+          <div class="col-md-6">
+            <div class="dashboard-title-section">
+              <div class="title-icon-wrapper">
+                <i class="fas fa-tachometer-alt dashboard-main-icon"></i>
+              </div>
+              <div class="title-content">
+                <h2 class="dashboard-title mb-1">
+                  Dashboard
+                  <span class="title-accent"></span>
+                </h2>
+                <p class="dashboard-welcome mb-0">
+                  <i class="fas fa-user-circle welcome-icon"></i>
+                  Hi,User. Welcome back to National Dairy Dashboard!
+                </p>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-6 text-end">
+            <div class="dashboard-actions">
+              <button class="btn btn-primary me-2" (click)="downloadCertificate()">
+                <i class="fas fa-download me-2"></i>Download Certificate
+              </button>
+              <button class="btn btn-outline-primary" (click)="filterByPeriod()">
+                <i class="fas fa-calendar me-2"></i>Filter Period
+                <small class="d-block">01 Jan 2024 - 31 Jan 2024</small>
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Public View Section -->
+    <div class="public-view-section mb-4">
+      <div class="d-flex justify-content-between align-items-center mb-3">
+        <div>
+          <h4 class="section-title mb-1">Public View</h4>
+          <p class="text-muted mb-0">Training Summary</p>
+        </div>
+        <button class="btn btn-outline-primary btn-sm" (click)="exportData()">
+          <i class="fas fa-external-link-alt me-1"></i>Export
+        </button>
+      </div>
+
+      <!-- Stats Cards -->
+      <app-stats-cards 
+        [stats]="dashboardStats"
+        [isLoading]="isLoading">
+      </app-stats-cards>
+    </div>
+
+    <!-- Main Content Grid -->
+    <div class="row">
+      <!-- India Map Section -->
+      <div class="col-lg-6 mb-4">
+        <div class="card dashboard-card">
+          <div class="card-header d-flex justify-content-between align-items-center">
+            <h5 class="card-title mb-0">Training Institutes in India</h5>
+            <select class="form-select form-select-sm" style="width: auto;">
+              <option value="all">States</option>
+              <option value="up">Uttar Pradesh</option>
+              <option value="mh">Maharashtra</option>
+              <option value="ka">Karnataka</option>
+              <!-- Add more states as needed -->
+            </select>
+          </div>
+          <div class="card-body p-0">
+            <app-india-map 
+              [selectedState]="selectedState"
+              (stateSelected)="onStateSelected($event)"
+              [isLoading]="isLoading">
+            </app-india-map>
+          </div>
+        </div>
+      </div>
+
+      <!-- Charts Section -->
+      <div class="col-lg-6">
+        <div class="row">
+          <!-- Monthly Trainings Chart -->
+          <div class="col-12 mb-4">
+            <div class="card dashboard-card">
+              <div class="card-header">
+                <h5 class="card-title mb-0">Monthly Trainings Conducted</h5>
+              </div>
+              <div class="card-body">
+                <app-monthly-chart 
+                  [selectedState]="selectedState"
+                  [isLoading]="isLoading">
+                </app-monthly-chart>
+              </div>
+            </div>
+          </div>
+
+          <!-- Pie Charts Row -->
+          <div class="col-12">
+            <div class="row">
+              <div class="col-md-6 mb-4">
+                <div class="card dashboard-card">
+                  <div class="card-header d-flex justify-content-between align-items-center">
+                    <h6 class="card-title mb-0">Age Group</h6>
+                    <button class="btn btn-link btn-sm p-0">
+                      <i class="fas fa-ellipsis-h"></i>
+                    </button>
+                  </div>
+                  <div class="card-body">
+                    <app-age-group-chart 
+                      [selectedState]="selectedState"
+                      [isLoading]="isLoading">
+                    </app-age-group-chart>
+                  </div>
+                </div>
+              </div>
+              
+              <div class="col-md-6 mb-4">
+                <div class="card dashboard-card">
+                  <div class="card-header d-flex justify-content-between align-items-center">
+                    <h6 class="card-title mb-0">Mode of Training</h6>
+                    <button class="btn btn-link btn-sm p-0">
+                      <i class="fas fa-ellipsis-h"></i>
+                    </button>
+                  </div>
+                  <div class="card-body">
+                    <app-mode-of-training-chart 
+                      [selectedState]="selectedState"
+                      [isLoading]="isLoading">
+                    </app-mode-of-training-chart>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Loading Overlay -->
+<div class="loading-overlay" *ngIf="isLoading">
+  <div class="spinner-border text-primary" role="status">
+    <span class="visually-hidden">Loading...</span>
+  </div>
+</div>
