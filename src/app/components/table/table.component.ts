@@ -36,9 +36,12 @@ export class TableComponent {
   @Input() data: any[] = [];
   @Input() tableName: string= "";
   schemesTableString:string = "schemes";
+  tableNamesArray:Array<string> = ["schemes","trainingTypes"];
+  @Input() addNew: String = "";
   @Input() columns: TableColumn[] = [];
   @Input() actions: TableAction[] = [];
   @Input()  pdfHeaders: Array<string> = [];
+  excelHeaders: Array<string> = [];
   @Input()  columnKeys: Array<string> = [];
   @Input()  isExportPDF: Boolean = false;
   @Input()  isExportCSV: Boolean = false;
@@ -160,7 +163,7 @@ export class TableComponent {
     //const users = [];
     //const complaintType = this.fliterForm.value.complaint;
 
-
+    this.excelHeaders = this.pdfHeaders.splice(0,1);
 
     this.data.forEach( (element) => {
 
@@ -185,8 +188,8 @@ export class TableComponent {
     new Date().getDate());
   }
 
-  addNewScheme(len:number){
-    this.data.push({ schemeId: ++len, schemeTitle: '' ,editable:true,actions:[
+  addNewRow(len:number){
+    this.data.push({ schemeId: null, schemeTitle: '' ,editable:true,actions:[
 
         { name: 'save', icon: 'bi bi-save-fill', class: 'btn-info', title: 'Save' },
         { name: 'delete', icon: 'bi bi-trash', class: 'btn-info', title: 'Delete' },

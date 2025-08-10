@@ -2,7 +2,7 @@
   <app-breadcrumb [items]="breadcrumbItems"></app-breadcrumb>
 
   <div class="page-header">
-    <h2>All Schemes</h2>
+    <h2>All Training Types</h2>
   </div>
 
 
@@ -10,12 +10,12 @@
 
   <div class="trainings-summary">
     <!-- <h4>All Trainings</h4> -->
-    <span class="badge bg-secondary">Total - {{ schemeList.length }} Schemes</span>
+    <span class="badge bg-secondary">Total - {{ tableData.length }} Training Types</span>
   </div>
 
   <app-table
     [columns]="tableColumns"
-    [data]="schemeList"
+    [data]="tableData"
     [actions]="tableActions"
     (actionClick)="handleTableAction($event)"
     [isExportCSV]="isExportCSV" [isExportPDF]="isExportPdf"
@@ -26,7 +26,7 @@
 </div>
 
 
-<ng-template #schemeConfirmationModal let-modal>
+<ng-template #trainingTypeConfirmationModal let-modal>
   <!-- <div class="modal fade" #trainingDetailsModal id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-sm">
 
