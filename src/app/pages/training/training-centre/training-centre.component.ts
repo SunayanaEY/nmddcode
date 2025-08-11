@@ -43,13 +43,6 @@ export class TrainingCentreComponent implements OnInit {
         placeholder: 'Enter institute name'
       },
       {
-        id: 'scheme',
-        label: 'Scheme',
-        type: 'text',
-        required: true,
-        placeholder: 'Enter scheme name'
-      },
-      {
         id: 'state',
         label: 'State',
         type: 'text',
@@ -136,7 +129,6 @@ export class TrainingCentreComponent implements OnInit {
 
   tableColumns: TableColumn[] = [
     { key: 'trainingInstituteName', header: 'Institute Name' },
-    { key: 'scheme', header: 'Scheme' },
     { key: 'state', header: 'State' },
     { key: 'district', header: 'District' },
     { key: 'contactPersonName', header: 'Contact Person' },

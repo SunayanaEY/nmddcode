@@ -1,6 +1,7 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { NotificationDropdownComponent, Notification } from '../components/notification-dropdown/notification-dropdown.component';
+import { AdminService, NewRegisteredInstitute } from './training/services/training-admin.service';
 
 @Component({
   selector: 'app-header',
@@ -17,39 +18,45 @@ export class HeaderComponent implements OnInit {
   // Notification Dropdown Properties
   showNotificationDropdown = false;
   
-  // Mock Notification Data
-  mockNotifications: Notification[] = [
-    {
-      id: 1,
-      title: 'Frankie Sullivan commented on your post',
-      message: 'This is looking great! Let\'s get started on it.',
-      type: 'info',
-      timestamp: new Date(Date.now() - 2 * 60 * 60 * 1000), // 2 hours ago
-      read: false
-    },
-    {
-      id: 5,
-      title: 'New Training Institute Registration',
-      message: 'A new training institute has registered and is pending approval.',
-      type: 'registration',
-      timestamp: new Date(Date.now() - 15 * 60 * 1000), // 15 minutes ago
-      read: false
-    },
-    {
-      id: 6,
-      title: 'Training Completion Approval',
-      message: 'A training batch has completed their course and is awaiting approval.',
-      type: 'info',
-      timestamp: new Date(Date.now() - 45 * 60 * 1000), // 45 minutes ago
-      read: false
-    }
-  ];
+  // Notification Data
+  notifications: Notification[] = [];
+  isLoadingNotifications = false;
+
+  constructor(private adminService: AdminService) {}
 
   ngOnInit(): void {
     const userData = sessionStorage.getItem('user');
     if (userData) {
       this.user = JSON.parse(userData);
     }
+    this.loadNotifications();
+  }
+
+  loadNotifications(): void {
+    this.isLoadingNotifications = true;
+    this.adminService.getAllNewRegisteredInstitutes().subscribe({
+      next: (institutes: NewRegisteredInstitute[]) => {
+        this.notifications = this.transformToNotifications(institutes);
+        this.isLoadingNotifications = false;
+      },
+      error: (error) => {
+        console.error('Error loading notifications:', error);
+        this.isLoadingNotifications = false;
+        // Fallback to empty notifications on error
+        this.notifications = [];
+      }
+    });
+  }
+
+  private transformToNotifications(institutes: NewRegisteredInstitute[]): Notification[] {
+    return institutes.map((institute, index) => ({
+      id: index + 1,
+      title: 'New Training Institute Registration',
+      message: `${institute.trainingInstituteName} (${institute.contactPersonName}) has registered and is pending approval. Registration ID: ${institute.registrationId}`,
+      type: 'registration' as const,
+      timestamp: new Date(institute.createdAt),
+      read: false
+    }));
   }
 
   // get userRole(): string {
@@ -81,27 +88,31 @@ export class HeaderComponent implements OnInit {
   }
 
   markAsRead(notificationId: number): void {
-    const notification = this.mockNotifications.find(n => n.id === notificationId);
+    const notification = this.notifications.find(n => n.id === notificationId);
     if (notification) {
       notification.read = true;
     }
   }
 
   markAllAsRead(): void {
-    this.mockNotifications.forEach(notification => {
+    this.notifications.forEach(notification => {
       notification.read = true;
     });
   }
 
   deleteNotification(notificationId: number): void {
-    const index = this.mockNotifications.findIndex(n => n.id === notificationId);
+    const index = this.notifications.findIndex(n => n.id === notificationId);
     if (index > -1) {
-      this.mockNotifications.splice(index, 1);
+      this.notifications.splice(index, 1);
     }
   }
 
   getUnreadCount(): number {
-    return this.mockNotifications.filter(n => !n.read).length;
+    return this.notifications.filter(n => !n.read).length;
+  }
+
+  refreshNotifications(): void {
+    this.loadNotifications();
   }
 
   getTimeAgo(timestamp: Date): string {

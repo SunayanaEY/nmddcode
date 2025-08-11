@@ -1,0 +1,260 @@
+/* Chart Wrapper */
+.chart-wrapper {
+  position: relative;
+  width: 100%;
+  height: 450px;
+  background: #fff;
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+/* Chart Container */
+.chart-container {
+  width: 100%;
+  height: 100%;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+}
+
+.monthly-chart {
+  width: 100% !important;
+  height: 100% !important;
+  min-height: 450px;
+  flex: 1;
+  display: block;
+}
+
+/* Loading State */
+.chart-loading {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  background: #f8f9fa;
+  border-radius: 8px;
+}
+
+.chart-loading .spinner-border {
+  width: 1.5rem;
+  height: 1.5rem;
+}
+
+.chart-loading p {
+  font-size: 0.875rem;
+  margin-top: 0.5rem;
+}
+
+/* Chart Actions */
+.chart-actions {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  z-index: 10;
+}
+
+.chart-actions .btn {
+  background: rgba(255, 255, 255, 0.9);
+  border: 1px solid #dee2e6;
+  backdrop-filter: blur(5px);
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  border-radius: 6px;
+}
+
+.chart-actions .btn:hover:not(:disabled) {
+  background: rgba(255, 255, 255, 1);
+  transform: scale(1.05);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.chart-actions .btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.chart-actions .btn i {
+  font-size: 0.75rem;
+}
+
+/* Selected State Indicator */
+.selected-state-indicator {
+  position: absolute;
+  bottom: 10px;
+  left: 10px;
+  z-index: 10;
+  background: rgba(255, 255, 255, 0.95);
+  padding: 6px 10px;
+  border-radius: 6px;
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  backdrop-filter: blur(5px);
+}
+
+.selected-state-indicator small {
+  font-size: 0.75rem;
+  display: flex;
+  align-items: center;
+}
+
+.selected-state-indicator i {
+  color: #0d6efd;
+}
+
+/* Chart Responsive Behavior */
+@media (max-width: 768px) {
+  .chart-wrapper {
+    height: 250px;
+  }
+  
+  .monthly-chart {
+    min-height: 250px;
+  }
+  
+  .chart-actions {
+    top: 5px;
+    right: 5px;
+  }
+  
+  .chart-actions .btn {
+    width: 28px;
+    height: 28px;
+  }
+  
+  .selected-state-indicator {
+    bottom: 5px;
+    left: 5px;
+    padding: 4px 8px;
+  }
+  
+  .selected-state-indicator small {
+    font-size: 0.7rem;
+  }
+}
+
+@media (max-width: 576px) {
+  .chart-wrapper {
+    height: 220px;
+  }
+  
+  .monthly-chart {
+    min-height: 220px;
+  }
+  
+  .selected-state-indicator {
+    position: static;
+    margin-top: 8px;
+    background: #f8f9fa;
+    border: 1px solid #e9ecef;
+  }
+}
+
+/* Animation Classes */
+.fade-in {
+  animation: fadeIn 0.5s ease-in;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.slide-up {
+  animation: slideUp 0.3s ease-out;
+}
+
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Focus States for Accessibility */
+.chart-actions .btn:focus {
+  outline: 2px solid #0d6efd;
+  outline-offset: 2px;
+}
+
+/* High Contrast Mode Support */
+@media (prefers-contrast: high) {
+  .chart-actions .btn {
+    background: white;
+    border: 2px solid #000;
+  }
+  
+  .selected-state-indicator {
+    background: white;
+    border: 2px solid #000;
+  }
+}
+
+/* Custom ECharts Styling */
+:host ::ng-deep .monthly-chart .echarts-tooltip {
+  border-radius: 8px !important;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15) !important;
+}
+
+:host ::ng-deep .monthly-chart .echarts-legend {
+  padding: 0 !important;
+}
+
+/* Loading Animation */
+.fa-spin {
+  animation: fa-spin 1s infinite linear;
+}
+
+@keyframes fa-spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+/* Smooth Transitions */
+.chart-container,
+.chart-loading {
+  transition: all 0.3s ease;
+}
+
+/* Error State (if needed) */
+.chart-error {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  background: #f8f9fa;
+  border-radius: 8px;
+  color: #6c757d;
+}
+
+.chart-error i {
+  font-size: 2rem;
+  margin-bottom: 1rem;
+  color: #dc3545;
+}
+
+.chart-error p {
+  font-size: 0.875rem;
+  margin-bottom: 1rem;
+  text-align: center;
+}
+
+.chart-error .btn {
+  font-size: 0.875rem;
+}

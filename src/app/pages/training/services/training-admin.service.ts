@@ -22,6 +22,27 @@ export interface TrainingInstitute {
   updatedAt: string;
 }
 
+export interface NewRegisteredInstitute {
+  id: string;
+  trainingInstituteName: string;
+  roleId: number;
+  state: string;
+  stateId: number;
+  district: string;
+  districtId: number;
+  registrationId: string;
+  contactPersonName: string;
+  designation: string;
+  contactNumber: string;
+  emailId: string;
+  active: boolean;
+  createdAt: string;
+  updatedAt: string;
+  status: string;
+  userId: number;
+  instituteImageUrl: string;
+}
+
 @Injectable({
   providedIn: 'root'
 })
@@ -97,6 +118,14 @@ export class AdminService {
   toggleActiveInactive(id: string): Observable<{success: boolean, message: string, data: {message: string}, statusCode: number}> {
     return this.http.get<{success: boolean, message: string, data: {message: string}, statusCode: number}>(
       `${this.apiUrl}training/activeInactive/${id}`,
+      this.getHttpOptions()
+    );
+  }
+
+  // Get all newly registered institutes for notifications
+  getAllNewRegisteredInstitutes(): Observable<NewRegisteredInstitute[]> {
+    return this.http.get<NewRegisteredInstitute[]>(
+      `${this.apiUrl}training/getAllNewRegisteredInstitutes`,
       this.getHttpOptions()
     );
   }

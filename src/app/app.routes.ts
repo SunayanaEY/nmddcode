@@ -5,11 +5,26 @@ import { SchemeManagementComponent } from './pages/admin-layout/scheme-managemen
 import { ForgetPasswordComponent } from './pages/forget-password/forget-password.component';
 
 export const routes: Routes = [
-  { path: '', redirectTo: 'login', pathMatch: 'full' },
-  { path: 'login', component: LoginComponent },
-
+  // Public Dashboard - Landing Page
   {
-    path: 'dashboard',
+    path: '',
+    loadChildren: () =>
+      import('./pages/public-dashboard/public-dashboard.module').then(
+        (m) => m.PublicDashboardModule
+      ),
+    data: {
+      title: 'National Dairy Development Programme - Public Dashboard',
+      description: 'View training statistics and farmer data across India',
+    },
+  },
+
+  // Authentication
+  { path: 'login', component: LoginComponent },
+  { path: 'signup', component: LoginComponent }, // TODO: Create separate signup component
+
+  // Admin Dashboard
+  {
+    path: 'admin',
     component: AdminLayoutComponent,
     children: [
       {
@@ -21,8 +36,10 @@ export const routes: Routes = [
       },
     ],
   },
-  {
-    path: 'forget-password',
-    component: ForgetPasswordComponent,
-  },
+
+  // Legacy route redirect
+  { path: 'dashboard', redirectTo: 'admin', pathMatch: 'full' },
+
+  // Wildcard route - should be last
+  { path: '**', redirectTo: '', pathMatch: 'full' },
 ];
