@@ -65,32 +65,91 @@ export class LoginComponent implements OnInit {
       password: ['', [Validators.required, Validators.minLength(6)]],
     });
 
-    this.signUpForm = this.fb.group({
-      username: ['', [Validators.required, Validators.minLength(3)]],
-      trainingInstituteName: [
-        '',
-        [Validators.required, Validators.minLength(3)],
-      ],
-      state: ['', [Validators.required]],
-      district: ['', [Validators.required]],
-      block: [''], // Optional field without validators
-      contactPersonName: ['', [Validators.required, Validators.minLength(2)]],
-      designation: ['', Validators.required],
-      contactNumber: [
-        '',
-        [Validators.required, Validators.pattern(/^[0-9]{10}$/)],
-      ],
-      email: ['', [Validators.required, Validators.email]],
-      password: [
-        '',
-        [
-          Validators.required,
-          Validators.minLength(8),
-          Validators.pattern(
-            /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]/
-          ),
+    this.signUpForm = this.fb.group(
+      {
+        username: ['', [Validators.required, Validators.minLength(3)]],
+        trainingInstituteName: [
+          '',
+          [Validators.required, Validators.minLength(3)],
         ],
-      ],
+        state: ['', [Validators.required]],
+        district: ['', [Validators.required]],
+        block: [''], // Optional field without validators
+        contactPersonName: ['', [Validators.required, Validators.minLength(2)]],
+        designation: ['', [Validators.required]],
+        contactNumber: [
+          '',
+          [Validators.required, Validators.pattern(/^[0-9]{10}$/)],
+        ],
+        emailId: ['', [Validators.required, Validators.email]],
+        password: [
+          '',
+          [
+            Validators.required,
+            Validators.minLength(8),
+            Validators.pattern(
+              /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]/
+            ),
+          ],
+        ],
+        confirmPassword: ['', [Validators.required]],
+      },
+      { validators: this.passwordMatchValidator }
+    );
+
+    // Subscribe to state changes to load districts
+    this.signUpForm.get('state')?.valueChanges.subscribe((stateId) => {
+      if (stateId) {
+        this.loadDistricts(stateId);
+        // Reset district selection when state changes
+        this.signUpForm.get('district')?.setValue('');
+      } else {
+        this.districts = [];
+        this.signUpForm.get('district')?.setValue('');
+      }
+    });
+  }
+
+  ngOnInit() {
+    this.loadStates();
+  }
+
+  /**
+   * Load states from API
+   */
+  loadStates() {
+    this.isLoadingStates = true;
+    this.locationService.getStates().subscribe({
+      next: (states) => {
+        this.states = states;
+        this.isLoadingStates = false;
+      },
+      error: (error) => {
+        console.error('Error loading states:', error);
+        this.toastr.error('Failed to load states', 'Error');
+        this.isLoadingStates = false;
+      },
+    });
+  }
+
+  /**
+   * Load districts based on selected state
+   * @param stateId - Selected state ID
+   */
+  loadDistricts(stateId: number) {
+    this.isLoadingDistricts = true;
+    this.districts = []; // Clear existing districts
+
+    this.locationService.getDistrictsByState(stateId).subscribe({
+      next: (districts) => {
+        this.districts = districts;
+        this.isLoadingDistricts = false;
+      },
+      error: (error) => {
+        console.error('Error loading districts:', error);
+        this.toastr.error('Failed to load districts', 'Error');
+        this.isLoadingDistricts = false;
+      },
     });
   }
 
@@ -151,19 +210,6 @@ export class LoginComponent implements OnInit {
 
     this.isLoading = true;
     this.errorMessage = '';
-
-    // Handle sign-up logic here
-    console.log('Sign Up:', this.signUpForm.value);
-    if (this.selectedFile) {
-      console.log('Selected file:', this.selectedFile.name);
-    }
-
-    // Simulate API call
-    setTimeout(() => {
-      this.isLoading = false;
-      this.toastr.success('Account created successfully!', 'Success');
-      this.isSignUp = false; // Switch to sign in form
-    }, 2000);
 
     // Create FormData for multipart request
     const formData = new FormData();
