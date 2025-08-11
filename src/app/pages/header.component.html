@@ -48,10 +48,22 @@
         }}</label>
       </div>
 
-      <button class="action-btn notification-btn" title="Notifications">
-        <i class="bi bi-bell"></i>
-        <span class="notification-badge">3</span>
-      </button>
+      <div class="notification-container" style="position: relative;">
+        <button class="action-btn notification-btn" title="Notifications" (click)="openNotificationDropdown()">
+          <i class="bi bi-bell"></i>
+          <span class="notification-badge" *ngIf="getUnreadCount() > 0">{{ getUnreadCount() }}</span>
+        </button>
+        
+        <!-- Notification Dropdown -->
+        <app-notification-dropdown
+          [show]="showNotificationDropdown"
+          [notifications]="mockNotifications"
+          (close)="closeNotificationDropdown()"
+          (markAsRead)="markAsRead($event)"
+          (markAllAsRead)="markAllAsRead()"
+          (deleteNotification)="deleteNotification($event)">
+        </app-notification-dropdown>
+      </div>
       <button class="action-btn settings-btn" title="Settings">
         <i class="bi bi-gear"></i>
       </button>

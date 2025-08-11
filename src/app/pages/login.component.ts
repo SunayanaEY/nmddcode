@@ -5,10 +5,14 @@ import {
   FormGroup,
   ReactiveFormsModule,
   Validators,
+  AbstractControl,
+  ValidationErrors,
 } from '@angular/forms';
 import { Router } from '@angular/router';
 import { AuthService } from '../services/auth.service';
+import { LocationService, State, District } from '../services/location.service';
 import { ToastrService } from 'ngx-toastr';
+import { OnInit } from '@angular/core';
 @Component({
   selector: 'app-login',
   standalone: true,
@@ -16,7 +20,7 @@ import { ToastrService } from 'ngx-toastr';
   templateUrl: './login.component.html',
   styleUrls: ['./login.component.css'],
 })
-export class LoginComponent {
+export class LoginComponent implements OnInit {
   isSignUp = false;
   signInForm: FormGroup;
   signUpForm: FormGroup;
@@ -25,14 +29,36 @@ export class LoginComponent {
   isDragOver = false;
   showPassword = false;
   showSignUpPassword = false;
+  showConfirmPassword = false;
   isLoading = false;
   errorMessage = '';
+
+  // Location data
+  states: State[] = [];
+  districts: District[] = [];
+  isLoadingStates = false;
+  isLoadingDistricts = false;
+
+  // Custom validator for password matching
+  passwordMatchValidator(control: AbstractControl): ValidationErrors | null {
+    const password = control.get('password');
+    const confirmPassword = control.get('confirmPassword');
+
+    if (!password || !confirmPassword) {
+      return null;
+    }
+
+    return password.value === confirmPassword.value
+      ? null
+      : { passwordMismatch: true };
+  }
 
   constructor(
     private fb: FormBuilder,
     private authService: AuthService,
     private router: Router,
-    private toastr: ToastrService
+    private toastr: ToastrService,
+    private locationService: LocationService
   ) {
     this.signInForm = this.fb.group({
       email: ['', [Validators.required, Validators.email]],
@@ -40,10 +66,14 @@ export class LoginComponent {
     });
 
     this.signUpForm = this.fb.group({
-      instituteName: ['', [Validators.required, Validators.minLength(3)]],
-      state: ['', Validators.required],
-      district: ['', Validators.required],
-      block: ['', Validators.required],
+      username: ['', [Validators.required, Validators.minLength(3)]],
+      trainingInstituteName: [
+        '',
+        [Validators.required, Validators.minLength(3)],
+      ],
+      state: ['', [Validators.required]],
+      district: ['', [Validators.required]],
+      block: [''], // Optional field without validators
       contactPersonName: ['', [Validators.required, Validators.minLength(2)]],
       designation: ['', Validators.required],
       contactNumber: [
@@ -84,6 +114,8 @@ export class LoginComponent {
         this.isLoading = false;
         if (response && response.data) {
           this.toastr.success('Login successful!', 'Welcome');
+          localStorage.setItem('username', response.data.username);
+          localStorage.setItem('roleId', response.data.role.toString());
           this.router.navigate(['/dashboard']);
         } else {
           this.errorMessage = 'Invalid email or password';
@@ -112,6 +144,11 @@ export class LoginComponent {
       return;
     }
 
+    if (!this.selectedFile) {
+      this.toastr.error('Please select an institute image', 'Validation Error');
+      return;
+    }
+
     this.isLoading = true;
     this.errorMessage = '';
 
@@ -127,6 +164,74 @@ export class LoginComponent {
       this.toastr.success('Account created successfully!', 'Success');
       this.isSignUp = false; // Switch to sign in form
     }, 2000);
+
+    // Create FormData for multipart request
+    const formData = new FormData();
+
+    // Create instituteDetails object
+    const instituteDetails = {
+      username: this.signUpForm.get('username')?.value || '',
+      trainingInstituteName:
+        this.signUpForm.get('trainingInstituteName')?.value || '',
+      stateId: parseInt(this.signUpForm.get('state')?.value) || 0,
+      districtId: parseInt(this.signUpForm.get('district')?.value) || 0,
+      block: this.signUpForm.get('block')?.value || '',
+      contactPersonName: this.signUpForm.get('contactPersonName')?.value || '',
+      designation: this.signUpForm.get('designation')?.value || '',
+      contactNumber: this.signUpForm.get('contactNumber')?.value || '',
+      emailId: this.signUpForm.get('emailId')?.value || '',
+      password: this.signUpForm.get('password')?.value || '',
+    };
+
+    // Append instituteDetails as JSON string with explicit content type
+    const instituteDetailsBlob = new Blob([JSON.stringify(instituteDetails)], {
+      type: 'application/json',
+    });
+    formData.append('instituteDetails', instituteDetailsBlob);
+
+    // Append image file
+    formData.append('instituteImage', this.selectedFile);
+
+    // Call the registration API
+    this.authService.register(formData).subscribe({
+      next: (response) => {
+        this.isLoading = false;
+        if (response.success) {
+          // Show success message with registration details
+          const registrationId = response.data?.registrationId || 'N/A';
+          const instituteName = response.data?.trainingInstituteName || 'N/A';
+          const status = response.data?.status || 'PENDING';
+
+          // Reset form after successful registration
+          this.signUpForm.reset();
+          this.selectedFile = null;
+
+          // Optionally redirect to login or dashboard
+          // this.router.navigate(['/login']);
+          this.toastr.success(
+            'Account created successfully! Registration ID: ' +
+              response.data.registrationId,
+            'Success'
+          );
+          this.isSignUp = false; // Switch to sign in form
+          // Reset form
+          this.signUpForm.reset();
+          this.selectedFile = null;
+          this.selectedImagePreview = null;
+        } else {
+          this.errorMessage = response.message || 'Registration failed';
+          this.toastr.error(response.message || 'Registration failed', 'Error');
+        }
+      },
+      error: (error) => {
+        this.isLoading = false;
+        const errorMessage =
+          error.error?.message || 'Registration failed. Please try again.';
+        this.errorMessage = errorMessage;
+        this.toastr.error(errorMessage, 'Error');
+        console.error('Registration error:', error);
+      },
+    });
   }
 
   onFileSelected(event: Event) {
@@ -229,6 +334,10 @@ export class LoginComponent {
 
   toggleSignUpPassword() {
     this.showSignUpPassword = !this.showSignUpPassword;
+  }
+
+  toggleConfirmPassword() {
+    this.showConfirmPassword = !this.showConfirmPassword;
   }
 
   markFormGroupTouched(formGroup: FormGroup) {

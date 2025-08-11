@@ -92,4 +92,12 @@ export class AdminService {
       this.getHttpOptions()
     );
   }
+
+  // Toggle active/inactive status
+  toggleActiveInactive(id: string): Observable<{success: boolean, message: string, data: {message: string}, statusCode: number}> {
+    return this.http.get<{success: boolean, message: string, data: {message: string}, statusCode: number}>(
+      `${this.apiUrl}training/activeInactive/${id}`,
+      this.getHttpOptions()
+    );
+  }
 }

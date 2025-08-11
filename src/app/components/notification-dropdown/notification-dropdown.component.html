@@ -1,0 +1,97 @@
+<div class="notification-dropdown-overlay" *ngIf="show" (click)="onClose()"></div>
+
+<div class="notification-dropdown" *ngIf="show" (click)="stopPropagation($event)">
+  <!-- Dropdown Arrow -->
+  <div class="dropdown-arrow"></div>
+  
+  <!-- Header -->
+  <div class="dropdown-header">
+    <div class="header-tabs">
+      <button class="tab-btn active">View all</button>
+      <!-- <button class="tab-btn">Mentions</button> -->
+    </div>
+    <button class="close-btn" (click)="onClose()">
+      <i class="bi bi-x"></i>
+    </button>
+  </div>
+
+  <!-- Notifications Content -->
+  <div class="dropdown-content">
+    <div class="notifications-list" *ngIf="notifications.length > 0; else noNotifications">
+      <div 
+        class="notification-item" 
+        *ngFor="let notification of notifications" 
+        [class.unread]="!notification.read">
+        
+        <!-- User Avatar/Icon -->
+        <div class="notification-avatar">
+          <div class="avatar-circle" [ngClass]="'avatar-' + notification.type">
+            <i class="bi" [ngClass]="{
+              'bi-person-fill': notification.type === 'info',
+              'bi-check-circle-fill': notification.type === 'success',
+              'bi-exclamation-triangle-fill': notification.type === 'warning',
+              'bi-person-plus-fill': notification.type === 'registration',
+              'bi-mortarboard-fill': notification.type === 'completion'
+            }"></i>
+          </div>
+        </div>
+        
+        <!-- Notification Content -->
+        <div class="notification-content">
+          <div class="notification-title">{{ notification.title }}</div>
+          <div class="notification-message">{{ notification.message }}</div>
+          <div class="notification-meta">
+            <span class="notification-time">{{ getTimeAgo(notification.timestamp) }}</span>
+            <span class="notification-date">{{ notification.timestamp | date:'MMM dd, yyyy' }}</span>
+          </div>
+        </div>
+        
+        <!-- Unread Indicator -->
+        <div class="unread-indicator" *ngIf="!notification.read"></div>
+        
+        <!-- Actions -->
+        <div class="notification-actions">
+          <button 
+            class="action-btn mark-read" 
+            *ngIf="!notification.read" 
+            (click)="onMarkAsRead(notification.id)"
+            title="Mark as read">
+            <i class="bi bi-check"></i>
+          </button>
+          <button 
+            class="action-btn delete" 
+            (click)="onDeleteNotification(notification.id)"
+            title="Delete notification">
+            <i class="bi bi-x"></i>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- No Notifications State -->
+    <ng-template #noNotifications>
+      <div class="no-notifications">
+        <div class="no-notifications-icon">
+          <i class="bi bi-bell-slash"></i>
+        </div>
+        <div class="no-notifications-text">
+          <h6>No notifications</h6>
+          <p>You're all caught up! Check back later for updates.</p>
+        </div>
+      </div>
+    </ng-template>
+  </div>
+
+  <!-- Footer -->
+  <div class="dropdown-footer" *ngIf="notifications.length > 0">
+    <div class="footer-actions">
+      <button class="footer-btn" (click)="onMarkAllAsRead()" *ngIf="getUnreadCount() > 0">
+        <i class="bi bi-check-all"></i>
+        Mark all as read
+      </button>
+      <button class="footer-btn view-all">
+        View all notifications
+      </button>
+    </div>
+  </div>
+</div>

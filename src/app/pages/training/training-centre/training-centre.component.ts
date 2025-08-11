@@ -23,8 +23,13 @@ export class TrainingCentreComponent implements OnInit {
   showModal = false;
   selectedCentre: any = null;
   modalMode: 'view' | 'edit' = 'view';
+  
+  // Confirmation modal properties
+  showConfirmModal = false;
+  confirmationText = '';
+  pendingToggleItem: any = null;
   modalConfig: ModalConfig = {
-    title: 'Training Centre Details',
+    title: 'Training Institute Admin Details',
     size: 'l',
     showCloseButton: true,
     showFooter: true,
@@ -102,6 +107,26 @@ export class TrainingCentreComponent implements OnInit {
     ]
   };
 
+  // Confirmation modal configuration
+  confirmModalConfig: ModalConfig = {
+    title: 'Confirm Status Change',
+    size: 'm',
+    showCloseButton: true,
+    showFooter: true,
+    primaryButtonText: 'Confirm',
+    secondaryButtonText: 'Cancel',
+    content: '', // Will be dynamically set
+    fields: [
+      {
+        id: 'confirmationText',
+        label: 'Type "confirm" to proceed',
+        type: 'text',
+        required: true,
+        placeholder: 'Type confirm here'
+      }
+    ]
+  };
+
   // API data
   trainingInstitutes: TrainingInstitute[] = [];
   isLoading = false;
@@ -114,9 +139,9 @@ export class TrainingCentreComponent implements OnInit {
     { key: 'scheme', header: 'Scheme' },
     { key: 'state', header: 'State' },
     { key: 'district', header: 'District' },
-    { key: 'block', header: 'Block' },
     { key: 'contactPersonName', header: 'Contact Person' },
-    { key: 'contactNumber', header: 'Contact Number' }
+    { key: 'contactNumber', header: 'Contact Number' },
+    { key: 'status', header: 'Status', transform: (value: any, item: any) => `<span class="${item.active ? 'status-active' : 'status-inactive'}">${item.active ? 'Active' : 'Inactive'}</span>` }
   ];
 
   tableActions: TableAction[] = [
@@ -180,7 +205,7 @@ export class TrainingCentreComponent implements OnInit {
 
   // Getter methods for template calculations
   get activeCentresCount(): number {
-    return this.trainingCentres.filter(c => c.status === 'Active').length;
+    return this.trainingCentres.filter(c => c.active === true || c.active === 'true' || c.active === 'Active' || c.active === 'active').length;
   }
 
   get totalCapacity(): number {
@@ -214,7 +239,7 @@ export class TrainingCentreComponent implements OnInit {
   viewTrainingCentre(centre: any) {
     this.selectedCentre = centre;
     this.modalMode = 'view';
-    this.modalConfig.title = 'Training Centre Details';
+    this.modalConfig.title = 'Training Institute Admin Details';
     this.modalConfig.primaryButtonText = 'Close';
     this.showModal = true;
   }
@@ -235,20 +260,108 @@ export class TrainingCentreComponent implements OnInit {
   }
 
   toggleCentreStatus(centre: any) {
-    // Call API to toggle status if available
-    this.adminService.toggleInstituteStatus(centre.id).subscribe({
-      next: (updatedInstitute) => {
-        const newStatus = centre.status === 'Active' ? 'Inactive' : 'Active';
-        centre.status = newStatus;
-        console.log(`Training centre ${centre.centreName} status changed to ${newStatus}`);
+    this.pendingToggleItem = centre;
+    this.confirmationText = '';
+    
+    // Determine current status and action
+    const isActive = centre.active === true || centre.active === 'true' || centre.active === 'Active' || centre.active === 'active';
+    const actionText = isActive ? 'deactivate' : 'activate';
+    const statusText = isActive ? 'Active' : 'Inactive';
+    
+    // Generate dynamic content with institute details
+    this.confirmModalConfig.content = `
+      <div class="alert alert-warning mb-3">
+        <i class="fas fa-exclamation-triangle me-2"></i>
+        <strong>Do you want to ${actionText} this training institute?</strong>
+      </div>
+      
+      <div class="card border-0 bg-light mb-3">
+        <div class="card-body p-3">
+          <h6 class="card-title text-primary mb-3">
+            <i class="fas fa-building me-2"></i>Institute Details
+          </h6>
+          
+          <div class="row g-2">
+            <div class="col-md-6">
+              <small class="text-muted d-block">Institute Name</small>
+              <strong>${centre.trainingInstituteName || 'N/A'}</strong>
+            </div>
+            <div class="col-md-6">
+              <small class="text-muted d-block">Current Status</small>
+              <span class="badge ${isActive ? 'bg-success' : 'bg-secondary'}">
+                <i class="fas ${isActive ? 'fa-check-circle' : 'fa-times-circle'} me-1"></i>
+                ${statusText}
+              </span>
+            </div>
+            <div class="col-md-6">
+              <small class="text-muted d-block">State</small>
+              <strong>${centre.state || 'N/A'}</strong>
+            </div>
+            <div class="col-md-6">
+              <small class="text-muted d-block">District</small>
+              <strong>${centre.district || 'N/A'}</strong>
+            </div>
+            <div class="col-md-6">
+              <small class="text-muted d-block">Contact Person</small>
+              <strong>${centre.contactPersonName || 'N/A'}</strong>
+            </div>
+            <div class="col-md-6">
+              <small class="text-muted d-block">Contact Number</small>
+              <strong>${centre.contactNumber || 'N/A'}</strong>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <div class="alert alert-info mb-0">
+        <i class="fas fa-info-circle me-2"></i>
+        This action will change the institute status to <strong>${isActive ? 'Inactive' : 'Active'}</strong>.
+      </div>
+    `;
+    
+    this.showConfirmModal = true;
+  }
+
+  onConfirmToggle(formData: any) {
+    if (formData.confirmationText?.toLowerCase() === 'confirm') {
+      this.performToggle();
+    } else {
+      alert('Please type "confirm" to proceed with the status change.');
+    }
+  }
+
+  performToggle() {
+    if (!this.pendingToggleItem) return;
+
+    this.adminService.toggleActiveInactive(this.pendingToggleItem.id).subscribe({
+      next: (response) => {
+        // Refresh the table data
+        this.loadTrainingInstitutes();
+        
+        // Show success message
+        alert(response.data.message);
+        
+        // Close confirmation modal
+        this.showConfirmModal = false;
+        this.pendingToggleItem = null;
+        this.confirmationText = '';
       },
       error: (error) => {
         console.error('Error toggling institute status:', error);
-        // Fallback to local toggle if API fails
-        const newStatus = centre.status === 'Active' ? 'Inactive' : 'Active';
-        centre.status = newStatus;
+        alert('Failed to update status. Please try again.');
+        
+        // Close confirmation modal
+        this.showConfirmModal = false;
+        this.pendingToggleItem = null;
+        this.confirmationText = '';
       }
     });
+  }
+
+  onCancelToggle() {
+    this.showConfirmModal = false;
+    this.pendingToggleItem = null;
+    this.confirmationText = '';
   }
 
   deleteTrainingCentre(centre: any) {

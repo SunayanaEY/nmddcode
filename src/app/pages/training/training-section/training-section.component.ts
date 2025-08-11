@@ -58,6 +58,10 @@ export class TrainingSectionComponent implements OnInit {
     this.router.navigate(['/dashboard/user-profile-creation']);
   }
 
+  navigateToRegisteredDataEntryOperators(): void {
+    this.router.navigate(['/dashboard/training/registered-data-entry-operators']);
+  }
+
   navigateToTrainingCentre() {
     this.router.navigate(['/dashboard/training-centre']);
   }

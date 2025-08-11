@@ -144,15 +144,37 @@
 /* Modal Body */
 .modal-body {
   padding: 2rem;
-  overflow-y: auto;
+  padding-bottom: 1rem;
   flex: 1;
   background: #f8f9fa;
+  overflow-y: auto;
+  overflow-x: hidden;
+  min-height: 0;
+  /* Add scrollbar styling for better UX */
+}
+
+/* Custom scrollbar styling for modal body */
+.modal-body::-webkit-scrollbar {
+  width: 6px;
+}
+
+.modal-body::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 3px;
+}
+
+.modal-body::-webkit-scrollbar-thumb {
+  background: #c1c1c1;
+  border-radius: 3px;
+}
+
+.modal-body::-webkit-scrollbar-thumb:hover {
+  background: #a8a8a8;
 }
 
 /* Form Fields */
 .form-fields {
-  max-height: 400px;
-  overflow-y: auto;
+  /* Remove fixed height constraints to allow modal body to handle scrolling */
   padding-right: 10px;
 }
 
@@ -160,6 +182,12 @@
 .form-fields .row {
   margin-left: -7.5px;
   margin-right: -7.5px;
+}
+
+/* Fix for view mode - remove negative margins to prevent left-side cutting */
+.form-fields.view-mode .row {
+  margin-left: 0;
+  margin-right: 0;
 }
 
 .form-fields .col-12,
@@ -219,29 +247,41 @@
 
 /* View Mode Specific Styles */
 .view-mode .row {
-  align-items: center; /* Vertically align items */
+  align-items: stretch; /* Allow items to stretch to full height */
 }
 
 .view-mode .col-12 {
-  padding-left: 10px;
-  padding-right: 10px;
+  padding-left: 0;
+  padding-right: 0;
+}
+
+.view-mode .col-md-6 {
+  padding-left: 0;
+  padding-right: 15px;
 }
 
 .view-mode .col-5,
 .view-mode .col-7 {
   display: flex;
   align-items: center; /* Align label and value */
+  padding: 0.5rem 0;
+  padding-left: 0;
+  padding-right: 0;
 }
 
 .view-mode strong {
   font-weight: 600;
   color: #495057; /* Slightly darker text for labels */
+  margin-bottom: 0;
 }
 
 .view-mode .form-control-plaintext {
-  padding: 0.5rem 0;
+  padding: 0;
   border-bottom: 1px solid #e9ecef; /* Subtle separator */
   width: 100%;
+  margin-bottom: 0;
+  background: transparent;
+  border-radius: 0;
 }
 
 /* Responsive adjustments */
@@ -320,10 +360,13 @@ input[type="file"].form-control:hover {
   align-items: center;
   justify-content: flex-end;
   gap: 0.75rem;
-  padding: 1.5rem 2rem;
+  padding: 1rem 2rem;
   background: white;
   border-top: 1px solid #e9ecef;
   flex-shrink: 0;
+  position: sticky;
+  bottom: 0;
+  z-index: 10;
 }
 
 /* Button Styles */

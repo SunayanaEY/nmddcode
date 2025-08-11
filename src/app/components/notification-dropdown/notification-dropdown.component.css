@@ -1,0 +1,362 @@
+/* Overlay */
+.notification-dropdown-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: transparent;
+  z-index: 999;
+}
+
+/* Dropdown Container */
+.notification-dropdown {
+  position: absolute;
+  top: calc(100% + 12px);
+  right: 0;
+  width: 380px;
+  max-height: 500px;
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.12);
+  border: 1px solid #e5e7eb;
+  z-index: 1000;
+  animation: dropdownFadeIn 0.2s ease-out;
+}
+
+@keyframes dropdownFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Dropdown Arrow */
+.dropdown-arrow {
+  position: absolute;
+  top: -6px;
+  right: 20px;
+  width: 12px;
+  height: 12px;
+  background: white;
+  border: 1px solid #e5e7eb;
+  border-bottom: none;
+  border-right: none;
+  transform: rotate(45deg);
+  z-index: 1001;
+}
+
+/* Header */
+.dropdown-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 16px 20px 12px;
+  border-bottom: 1px solid #f3f4f6;
+}
+
+.header-tabs {
+  display: flex;
+  gap: 8px;
+}
+
+.tab-btn {
+  padding: 6px 12px;
+  border: none;
+  background: transparent;
+  color: #6b7280;
+  font-size: 14px;
+  font-weight: 500;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.tab-btn.active {
+  color: #1f2937;
+  background: #f3f4f6;
+  text-decoration: underline;
+  text-underline-offset: 4px;
+  text-decoration-thickness: 2px;
+}
+
+.tab-btn:hover:not(.active) {
+  color: #374151;
+  background: #f9fafb;
+}
+
+.close-btn {
+  width: 28px;
+  height: 28px;
+  border: none;
+  background: transparent;
+  color: #6b7280;
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.close-btn:hover {
+  background: #f3f4f6;
+  color: #374151;
+}
+
+/* Content */
+.dropdown-content {
+  max-height: 360px;
+  overflow-y: auto;
+}
+
+.notifications-list {
+  padding: 8px 0;
+}
+
+.notification-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 12px 20px;
+  position: relative;
+  transition: background-color 0.2s ease;
+  cursor: pointer;
+}
+
+.notification-item:hover {
+  background: #f9fafb;
+}
+
+.notification-item.unread {
+  background: #fefefe;
+}
+
+.notification-item.unread:hover {
+  background: #f8faff;
+}
+
+/* Avatar */
+.notification-avatar {
+  flex-shrink: 0;
+}
+
+.avatar-circle {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-size: 16px;
+}
+
+.avatar-circle.avatar-info {
+  background: linear-gradient(135deg, #3b82f6, #1d4ed8);
+}
+
+.avatar-circle.avatar-success {
+  background: linear-gradient(135deg, #10b981, #059669);
+}
+
+.avatar-circle.avatar-warning {
+  background: linear-gradient(135deg, #f59e0b, #d97706);
+}
+
+/* Content */
+.notification-content {
+  flex: 1;
+  min-width: 0;
+}
+
+.notification-title {
+  font-size: 14px;
+  font-weight: 600;
+  color: #1f2937;
+  line-height: 1.4;
+  margin-bottom: 4px;
+}
+
+.notification-message {
+  font-size: 13px;
+  color: #6b7280;
+  line-height: 1.4;
+  margin-bottom: 6px;
+}
+
+.notification-meta {
+  display: flex;
+  gap: 8px;
+  font-size: 12px;
+  color: #9ca3af;
+}
+
+.notification-time {
+  font-weight: 500;
+}
+
+.notification-date {
+  color: #d1d5db;
+}
+
+/* Unread Indicator */
+.unread-indicator {
+  position: absolute;
+  top: 18px;
+  right: 20px;
+  width: 8px;
+  height: 8px;
+  background: #3b82f6;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+/* Actions */
+.notification-actions {
+  display: flex;
+  gap: 4px;
+  opacity: 0;
+  transition: opacity 0.2s ease;
+  flex-shrink: 0;
+}
+
+.notification-item:hover .notification-actions {
+  opacity: 1;
+}
+
+.action-btn {
+  width: 24px;
+  height: 24px;
+  border: none;
+  background: transparent;
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-size: 12px;
+}
+
+.action-btn.mark-read {
+  color: #10b981;
+}
+
+.action-btn.mark-read:hover {
+  background: rgba(16, 185, 129, 0.1);
+}
+
+.action-btn.delete {
+  color: #ef4444;
+}
+
+.action-btn.delete:hover {
+  background: rgba(239, 68, 68, 0.1);
+}
+
+/* No Notifications */
+.no-notifications {
+  text-align: center;
+  padding: 40px 20px;
+  color: #6b7280;
+}
+
+.no-notifications-icon {
+  margin-bottom: 16px;
+}
+
+.no-notifications-icon i {
+  font-size: 48px;
+  color: #d1d5db;
+}
+
+.no-notifications-text h6 {
+  font-size: 16px;
+  font-weight: 600;
+  color: #4b5563;
+  margin-bottom: 8px;
+}
+
+.no-notifications-text p {
+  font-size: 14px;
+  color: #6b7280;
+  margin: 0;
+}
+
+/* Footer */
+.dropdown-footer {
+  border-top: 1px solid #f3f4f6;
+  padding: 12px 20px;
+  background: #fafbfc;
+  border-radius: 0px 0px 10px 10px;
+}
+
+.footer-actions {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.footer-btn {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 12px;
+  border: none;
+  background: transparent;
+  color: #6b7280;
+  font-size: 13px;
+  font-weight: 500;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.footer-btn:hover {
+  background: #f3f4f6;
+  color: #374151;
+}
+
+.footer-btn.view-all {
+  color: #3b82f6;
+}
+
+.footer-btn.view-all:hover {
+  background: rgba(59, 130, 246, 0.1);
+}
+
+/* Scrollbar */
+.dropdown-content::-webkit-scrollbar {
+  width: 6px;
+}
+
+.dropdown-content::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 3px;
+}
+
+.dropdown-content::-webkit-scrollbar-thumb {
+  background: #c1c1c1;
+  border-radius: 3px;
+}
+
+.dropdown-content::-webkit-scrollbar-thumb:hover {
+  background: #a8a8a8;
+}
+
+/* Responsive */
+@media (max-width: 480px) {
+  .notification-dropdown {
+    width: 320px;
+    right: -20px;
+  }
+  
+  .dropdown-arrow {
+    right: 40px;
+  }
+}
