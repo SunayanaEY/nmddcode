@@ -15,7 +15,7 @@
 
   <app-table
     [columns]="tableColumns"
-    [data]="schemeList"
+    [data]="schemeListProcessed"
     [actions]="tableActions"
     (actionClick)="handleTableAction($event)"
     [isExportCSV]="isExportCSV" [isExportPDF]="isExportPdf"
