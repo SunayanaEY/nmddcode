@@ -2,7 +2,7 @@
   <app-breadcrumb [items]="breadcrumbItems"></app-breadcrumb>
 
   <div class="page-header">
-    <h2>All Registered Trainings</h2>
+    <h2>Approved/Rejected Trainings</h2>
   </div>
 <div style="
 
@@ -131,7 +131,7 @@
   </div>
 
   <div class="trainings-summary">
-    <h4>All Trainings</h4>
+    <!-- <h4>All Trainings</h4> -->
     <span class="badge bg-secondary">Total - {{ trainingsList.length }} Trainings</span>
   </div>
 
@@ -156,7 +156,8 @@
       color:white !important;
   ">
         <h3 class="my-auto text-white">{{'Training Details'}}</h3>
-        <button type="button" class="close" aria-label="Close" (click)="modal.dismiss('Cross click')">
+        <!-- <button type="button" class="close" aria-label="Close" (click)="modal.dismiss('Cross click')"> -->
+          <button type="button" class="close" aria-label="Close" (click)="modalDismiss()">
           <!-- <button type="button" class="close" aria-label="Close" data-bs-dismiss="modal"> -->
           <span aria-hidden="true">&times;</span>
         </button>
@@ -307,7 +308,8 @@
         </div>
       </div>
       <div class="modal-footer">
-        <button type="button" class="btn btn-primary" (click)="modal.dismiss('Close click')" style="background-color: #155e91;">
+        <!-- <button type="button" class="btn btn-primary" (click)="modal.dismiss('Close click')" style="background-color: #155e91;"> -->
+          <button type="button" class="btn btn-primary" (click)="modalDismiss()" style="background-color: #155e91;">
           <!-- <button type="button" class="btn btn-primary"  data-bs-dismiss="modal"> -->
           {{'close'}}
         </button>

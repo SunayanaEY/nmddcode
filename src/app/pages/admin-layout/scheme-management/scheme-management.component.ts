@@ -35,7 +35,7 @@ isExportCSV:Boolean =false;
     ];
     tableColumns: TableColumn[] = [
        // { key: 'schemeId', header: 'Training Title' },
-        { key: 'schemeName', header: 'Scheme' },
+        { key: 'title', header: 'Scheme' },
 
       ];
 
@@ -50,6 +50,7 @@ isExportCSV:Boolean =false;
 
       }
       schemeList:any[]=[];
+      schemeListProcessed:any[]=[];
 
       // tableData: any[] = [
       //   { schemeId: 1, schemeTitle: 'Scheme 1',editable:false,actions:this.tableActions },
@@ -66,30 +67,49 @@ isExportCSV:Boolean =false;
       }
 
       ngOnInit(){
-        this.schemeService.getAllSchemes().subscribe(res=>{
+        this.schemeListProcessed = [];
+        this.schemeService.getAllSchemes().subscribe({
+          next:(res)=>{
           this.schemeList = res;
           let index = 0;
           this.schemeList.forEach(ele=>{
-            ele['editable']= false;
-            ele['actions'] = [...this.tableActions];
+            let data={
+              id:ele['id'],
+              title:ele['schemeName'],
+              editable:false,
+              actions: [...this.tableActions]
+
+            }
+
+            // ele['editable']= false;
+            // ele['actions'] = [...this.tableActions];
+
+            // this.schemeList[index]=data;
+            // index++;
+            this.schemeListProcessed.push(data);
           });
-        });
+        },
+        error: (error) => {
+          this.toastr.error("Error while fetching schemes!");
+        }
+      }
+      );
       }
       handleTableAction(event: { action: string, item: any, index: number }): void {
         this.event=event;
         if(this.event.action=='edit'){
 
-          this.schemeList[this.event.index].editable=true;
+          this.schemeListProcessed[this.event.index].editable=true;
 
-            this.schemeList[this.event.index].actions= [
+            this.schemeListProcessed[this.event.index].actions= [
 
         { name: 'save', icon: 'bi bi-save-fill', class: 'btn-info', title: 'Save' },
         { name: 'delete', icon: 'bi bi-trash', class: 'btn-info', title: 'Delete' },
-        // { name: 'download', icon: 'bi bi-download', class: 'btn-success', title: 'Download' },
+
       ];
         }
         else if(this.event.action=='save'){
-          if(event.item.schemeName==null || event.item.schemeName==''){
+          if(event.item.title==null || event.item.title==''){
             this.toastr.warning("Please enter scheme name!");
           }else{
           this.confirmationMessage = "Confirm to Save the changes!";
@@ -97,8 +117,8 @@ isExportCSV:Boolean =false;
           }
          }
          else if(this.event.action=='delete'){
-          if(event.item.schemeName==null || event.item.schemeName==''){
-             this.schemeList.splice(this.event.index,1);
+          if(event.item.title==null || event.item.title==''){
+             this.schemeListProcessed.splice(this.event.index,1);
           }else{
           this.confirmationMessage = "Confirm to delete the scheme - "+event.item.schemeName;
           this.confirmChangeModal();
@@ -120,37 +140,42 @@ isExportCSV:Boolean =false;
       confirm(){
 
         if(this.event.action=='save'){
-          this.schemeList[this.event.index].editable=false;
+          this.schemeListProcessed[this.event.index].editable=false;
           let data = {
             id:this.event.item.id,
-            schemeName:this.event.item.schemeName
+            schemeName:this.event.item.title
 
           }
-          this.schemeService.saveScheme(data).subscribe(res=>{
+          this.schemeService.saveScheme(data).subscribe({
+            next: (res:any)=>{
             this.toastr.success("Saved Scheme successfully!");
             this.ngOnInit();
           },
-        error=>{
-          this.toastr.error("Error while saving scheme!");
-        });
-          //this.schemeList[this.event.index] = this.event.item;
-          //this.schemeList[this.event.index].actions= [
-        //{ name: 'edit', icon: 'bi bi-pencil-fill', class: 'btn-info', title: 'Edit' },
-        //{ name: 'save', icon: 'bi bi-save-fill', class: 'btn-info', title: 'Save' },
-        //{ name: 'delete', icon: 'bi bi-trash', class: 'btn-info', title: 'Delete' },
-        // { name: 'download', icon: 'bi bi-download', class: 'btn-success', title: 'Download' },
-      //];
+          error: (error)=>{
+             this.toastr.error("Error while saving scheme!");
+          }
+        }
+
+      );
+
 
         }
         else if(this.event.action=='delete'){
-          //this.schemeList.splice(this.event.index,1);
-          this.schemeService.deleteScheme(this.event.item.id).subscribe(res=>{
+
+          this.schemeService.deleteScheme(this.event.item.id).subscribe({
+            next: (res)=>{
             this.toastr.success("Scheme deleted successfully!");
             this.ngOnInit();
-          },error=>{
+          },
+          error: (error) => {
             this.toastr.error("Error while deleting scheme!");
           }
-        );
+          // ,
+          // complete: ()=>{
+          //   this.ngOnInit();
+          // }
+
+        });
         }
         this.modalService.dismissAll();
       }

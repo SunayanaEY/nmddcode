@@ -35,7 +35,7 @@ export class TrainingSectionComponent implements OnInit {
 
   navigateToApprovedCertificates() {
     console.log('Navigating to Approved Certificates');
-    this.router.navigate(['/admin/approved-certificate']);
+    this.router.navigate(['/admin/approvedrejectedTrainings']);
   }
 
   navigateToAllTrainings() {

@@ -286,3 +286,8 @@
     max-width: 120px;
   }
 }
+
+ .search{
+    width: 43%;
+    padding-left: 15px;
+  }

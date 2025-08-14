@@ -1,22 +1,21 @@
-import { Component, ElementRef, ViewChild } from '@angular/core';
-import { BreadcrumbComponent, BreadcrumbItem } from '../../../components/breadcrumb/breadcrumb.component';
 import { CommonModule, DatePipe } from '@angular/common';
-import { TableAction, TableColumn, TableComponent } from '../../../components/table/table.component';
-import { NgSelectModule } from '@ng-select/ng-select';
-import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
+import { Component, ElementRef, ViewChild } from '@angular/core';
+import { FormGroup, FormBuilder, Validators, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import { BreadcrumbComponent, BreadcrumbItem } from '../../../components/breadcrumb/breadcrumb.component';
+import { TableColumn, TableAction, TableComponent } from '../../../components/table/table.component';
+import { TrainingsList, TraineeDetails } from '../models/training.model';
 import { TrainingService } from '../services/training.service';
-import { TraineeDetails, TrainingsList } from '../models/training.model';
+import { NgSelectModule } from '@ng-select/ng-select';
 
 @Component({
-  selector: 'app-all-trainings',
+  selector: 'app-approved-rejected-trainings',
   imports: [CommonModule, BreadcrumbComponent, TableComponent,NgSelectModule,
-    ReactiveFormsModule,FormsModule
-  ],
-  templateUrl: './all-trainings.component.html',
-  styleUrl: './all-trainings.component.css'
+    ReactiveFormsModule,FormsModule],
+  templateUrl: './approved-rejected-trainings.component.html',
+  styleUrl: './approved-rejected-trainings.component.css'
 })
-export class AllTrainingsComponent {
+export class ApprovedRejectedTrainingsComponent {
 
   trainingDetails:any;
   @ViewChild('trainingDetailsModal')
@@ -34,8 +33,8 @@ export class AllTrainingsComponent {
   ];
   columnKeys:Array<string> =['trainingTitle','scheme','trainingInstituteName','trainerName','location','trainingDate','status']
   breadcrumbItems: BreadcrumbItem[] = [
-      { label: 'Training Module', url: '/dashboard/training-module' },
-      { label: 'All Registered Trainings' }
+      { label: 'Training Module', url: '/admin/training-module' },
+      { label: 'Approved/Rejected Trainings' }
     ];
     tableColumns: TableColumn[] = [
         { key: 'trainingTitle', header: 'Training Title' },
@@ -214,5 +213,10 @@ export class AllTrainingsComponent {
 
   keyFunc(){
 
+  }
+
+  modalDismiss(){
+    this.modalService.dismissAll();
+    this.ngOnInit();
   }
 }
