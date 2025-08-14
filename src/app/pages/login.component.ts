@@ -11,6 +11,7 @@ import {
 import { Router } from '@angular/router';
 import { AuthService } from '../services/auth.service';
 import { LocationService, State, District } from '../services/location.service';
+import { GeocodingService, GeocodeResult } from '../services/geocoding.service';
 import { ToastrService } from 'ngx-toastr';
 import { OnInit } from '@angular/core';
 @Component({
@@ -39,6 +40,11 @@ export class LoginComponent implements OnInit {
   isLoadingStates = false;
   isLoadingDistricts = false;
 
+  // Address and geocoding
+  isGeocodingAddress = false;
+  addressLatitude: number | null = null;
+  addressLongitude: number | null = null;
+
   // Custom validator for password matching
   passwordMatchValidator(control: AbstractControl): ValidationErrors | null {
     const password = control.get('password');
@@ -58,7 +64,8 @@ export class LoginComponent implements OnInit {
     private authService: AuthService,
     private router: Router,
     private toastr: ToastrService,
-    private locationService: LocationService
+    private locationService: LocationService,
+    private geocodingService: GeocodingService
   ) {
     this.signInForm = this.fb.group({
       email: ['', [Validators.required, Validators.email]],
@@ -82,6 +89,7 @@ export class LoginComponent implements OnInit {
           [Validators.required, Validators.pattern(/^[0-9]{10}$/)],
         ],
         emailId: ['', [Validators.required, Validators.email]],
+        address: ['', [Validators.required, Validators.minLength(10)]],
         password: [
           '',
           [
@@ -208,6 +216,18 @@ export class LoginComponent implements OnInit {
       return;
     }
 
+    // Check if address is provided but not geocoded yet
+    const addressValue = this.signUpForm.get('address')?.value;
+    if (addressValue && addressValue.trim().length > 10 && !this.addressLatitude && !this.addressLongitude) {
+      this.toastr.warning(
+        'Please wait for address validation to complete or check your address.',
+        'Address Validation'
+      );
+      // Trigger geocoding if not done yet
+      this.onAddressChange();
+      return;
+    }
+
     this.isLoading = true;
     this.errorMessage = '';
 
@@ -226,6 +246,9 @@ export class LoginComponent implements OnInit {
       designation: this.signUpForm.get('designation')?.value || '',
       contactNumber: this.signUpForm.get('contactNumber')?.value || '',
       emailId: this.signUpForm.get('emailId')?.value || '',
+      address: this.signUpForm.get('address')?.value || '',
+      latitude: this.addressLatitude,
+      longitude: this.addressLongitude,
       password: this.signUpForm.get('password')?.value || '',
     };
 
@@ -387,9 +410,53 @@ export class LoginComponent implements OnInit {
   }
 
   markFormGroupTouched(formGroup: FormGroup) {
-    Object.keys(formGroup.controls).forEach((key) => {
+    Object.keys(formGroup.controls).forEach(key => {
       const control = formGroup.get(key);
       control?.markAsTouched();
     });
+  }
+
+  /**
+   * Geocode the entered address to get latitude and longitude
+   */
+  onAddressChange() {
+    const addressControl = this.signUpForm.get('address');
+    if (addressControl && addressControl.value && addressControl.value.trim().length > 10) {
+      this.isGeocodingAddress = true;
+      
+      this.geocodingService.geocodeAddress(addressControl.value).subscribe({
+        next: (result: GeocodeResult | null) => {
+          this.isGeocodingAddress = false;
+          if (result) {
+            this.addressLatitude = result.latitude;
+            this.addressLongitude = result.longitude;
+            this.toastr.success(
+              `Address geocoded successfully: ${result.formattedAddress}`,
+              'Location Found'
+            );
+          } else {
+            this.addressLatitude = null;
+            this.addressLongitude = null;
+            this.toastr.warning(
+              'Could not find location for this address. Please check and try again.',
+              'Location Not Found'
+            );
+          }
+        },
+        error: (error) => {
+          this.isGeocodingAddress = false;
+          this.addressLatitude = null;
+          this.addressLongitude = null;
+          console.error('Geocoding error:', error);
+          this.toastr.error(
+            'Error occurred while finding location. Please try again.',
+            'Geocoding Error'
+          );
+        }
+      });
+    } else {
+      this.addressLatitude = null;
+      this.addressLongitude = null;
+    }
   }
 }

@@ -177,6 +177,33 @@
              </div>
            </div>
            <div class="form-group">
+             <label>Address</label>
+             <div style="position: relative;">
+               <textarea formControlName="address" placeholder="Enter complete address" 
+                          (blur)="onAddressChange()"
+                          rows="3"
+                          [class.error]="signUpForm.get('address')?.invalid && signUpForm.get('address')?.touched"></textarea>
+               <div *ngIf="isGeocodingAddress" class="geocoding-loader">
+                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="animate-spin">
+                   <path d="M21 12a9 9 0 11-6.219-8.56"/>
+                 </svg>
+               </div>
+               <div *ngIf="addressLatitude && addressLongitude" class="location-found">
+                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                   <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/>
+                   <circle cx="12" cy="10" r="3"/>
+                 </svg>
+               </div>
+             </div>
+             <div class="error-message" *ngIf="signUpForm.get('address')?.invalid && signUpForm.get('address')?.touched">
+               <span *ngIf="signUpForm.get('address')?.errors?.['required']">Address is required</span>
+               <span *ngIf="signUpForm.get('address')?.errors?.['minlength']">Address must be at least 10 characters</span>
+             </div>
+             <div *ngIf="addressLatitude && addressLongitude" class="location-info">
+               <small>📍 Location found: {{addressLatitude | number:'1.4-4'}}, {{addressLongitude | number:'1.4-4'}}</small>
+             </div>
+           </div>
+           <div class="form-group">
              <label>Password</label>
              <div style="position: relative;">
                <input [type]="showSignUpPassword ? 'text' : 'password'" formControlName="password" placeholder="Create Password"

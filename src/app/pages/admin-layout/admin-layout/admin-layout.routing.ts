@@ -48,6 +48,10 @@ export const AdminLayoutRoutes: Routes = [
     component: AllTrainingsComponent,
   },
   {
+    path: 'registered-data-entry-operators',
+    component: RegisteredDataEntryOperatorsComponent,
+  },
+  {
     path: 'training-centre',
     loadComponent: () =>
       import('../../training/training-centre/training-centre.component').then(

@@ -1,7 +1,9 @@
-import { Component, Input, OnInit, OnChanges, SimpleChanges } from '@angular/core';
+import { Component, Input, OnInit, OnChanges, SimpleChanges, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { NgxEchartsDirective } from 'ngx-echarts';
 import { EChartsOption } from 'echarts';
+import { Subscription } from 'rxjs';
+import { DashboardDataService, ModeOfTrainingDistributionResponse } from '../../services/dashboard-data.service';
 
 export interface ModeOfTrainingData {
   mode: string;
@@ -23,13 +25,18 @@ export interface StateData {
   templateUrl: './mode-of-training-chart.component.html',
   styleUrls: ['./mode-of-training-chart.component.css']
 })
-export class ModeOfTrainingChartComponent implements OnInit, OnChanges {
+export class ModeOfTrainingChartComponent implements OnInit, OnChanges, OnDestroy {
   @Input() selectedState: StateData | null = null;
   @Input() isLoading: boolean = false;
 
   chartOption: EChartsOption = {};
   chartLoading: boolean = false;
   chartInstance: any;
+  private dataSubscription?: Subscription;
+  private isLoadingData = false;
+  private apiData: ModeOfTrainingData[] = [];
+
+  constructor(private dashboardService: DashboardDataService) {}
 
   // Mock data for training modes
   private allIndiaData: ModeOfTrainingData[] = [
@@ -55,12 +62,12 @@ export class ModeOfTrainingChartComponent implements OnInit, OnChanges {
   };
 
   ngOnInit(): void {
-    this.updateChart();
+    this.loadModeOfTrainingData();
   }
 
   ngOnChanges(changes: SimpleChanges): void {
-    if (changes['selectedState'] || changes['isLoading']) {
-      this.updateChart();
+    if (changes['selectedState']) {
+      this.loadModeOfTrainingData();
     }
   }
 
@@ -81,10 +88,74 @@ export class ModeOfTrainingChartComponent implements OnInit, OnChanges {
   }
 
   private getChartData(): ModeOfTrainingData[] {
+    // Use API data if available
+    if (this.apiData && this.apiData.length > 0) {
+      return this.apiData;
+    }
+    
+    // Fallback to mock data
     if (this.selectedState && this.stateSpecificData[this.selectedState.stateId]) {
       return this.stateSpecificData[this.selectedState.stateId];
     }
     return this.allIndiaData;
+  }
+
+  private loadModeOfTrainingData(): void {
+    // Prevent multiple concurrent API calls
+    if (this.isLoadingData) {
+      return;
+    }
+
+    this.isLoadingData = true;
+    this.chartLoading = true;
+    
+    // Cancel any existing subscription
+    if (this.dataSubscription) {
+      this.dataSubscription.unsubscribe();
+    }
+    
+    this.dataSubscription = this.dashboardService.getModeOfTrainingDistribution().subscribe({
+      next: (response: ModeOfTrainingDistributionResponse) => {
+        if (response.success) {
+          // Transform API data to component format
+          this.apiData = this.transformApiData(response.data);
+        }
+        this.updateChart();
+        this.chartLoading = false;
+        this.isLoadingData = false;
+      },
+      error: (error) => {
+        console.error('Error fetching mode of training data:', error);
+        this.chartLoading = false;
+        this.isLoadingData = false;
+        // Use mock data as fallback
+        this.updateChart();
+      }
+    });
+  }
+
+  private transformApiData(data: any): ModeOfTrainingData[] {
+    const colorMap: { [key: string]: string } = {
+      'Online': '#4F46E5',
+      'Offline': '#059669', 
+      'Hybrid': '#DC2626',
+      'Field': '#D97706'
+    };
+    
+    const iconMap: { [key: string]: string } = {
+      'Online': 'laptop',
+      'Offline': 'users',
+      'Hybrid': 'globe', 
+      'Field': 'map-marker-alt'
+    };
+
+    return Object.entries(data).map(([mode, percentage]) => ({
+      mode: mode === 'Field' ? 'Field Training' : mode,
+      count: Math.round((percentage as number) * 10), // Approximate count based on percentage
+      percentage: percentage as number,
+      color: colorMap[mode] || '#6B7280',
+      icon: iconMap[mode] || 'chart-bar'
+    }));
   }
 
   private createChartOption(data: ModeOfTrainingData[]): EChartsOption {
@@ -245,7 +316,7 @@ export class ModeOfTrainingChartComponent implements OnInit, OnChanges {
   }
 
   refreshChart(): void {
-    this.updateChart();
+    this.loadModeOfTrainingData();
   }
 
   getMostPopularMode(): string {
@@ -260,9 +331,9 @@ export class ModeOfTrainingChartComponent implements OnInit, OnChanges {
     return this.getChartData().length;
   }
 
-  // TODO: Replace with actual API call
-  private loadTrainingModeData(): void {
-    // This will be replaced with actual API integration
-    console.log('Loading training mode data for:', this.selectedState?.stateName || 'All India');
+  ngOnDestroy(): void {
+    if (this.dataSubscription) {
+      this.dataSubscription.unsubscribe();
+    }
   }
 }

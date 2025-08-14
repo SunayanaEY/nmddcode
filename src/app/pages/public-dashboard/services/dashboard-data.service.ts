@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Observable, of, BehaviorSubject, delay } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
+import { environment } from '../../../../environments/environment';
 
 export interface DashboardStats {
   totalTrainings: {
@@ -66,11 +67,61 @@ export interface ModeOfTrainingData {
   icon: string;
 }
 
+export interface TrainingSummaryResponse {
+  success: boolean;
+  message: string;
+  data: {
+    totalCertificatesIssued: number;
+    totalTrainingsConducted: number;
+    totalFarmersTrained: number;
+    totalCertificatesApproved: number;
+  };
+  statusCode: number;
+}
+
+export interface MonthlyTrainingData {
+  month: string;
+  totalTrainings: number;
+  farmersTrained: number;
+  certificatesIssued: number;
+}
+
+export interface MonthlyTrainingResponse {
+  success: boolean;
+  message: string;
+  data: MonthlyTrainingData[];
+  statusCode: number;
+}
+
+export interface ModeOfTrainingDistributionResponse {
+  success: boolean;
+  message: string;
+  data: {
+    Field: number;
+    Hybrid: number;
+    Offline: number;
+    Online: number;
+  };
+  statusCode: number;
+}
+
+export interface AgeWiseDistributionResponse {
+  success: boolean;
+  message: string;
+  data: {
+    "18-25": number;
+    "26-35": number;
+    "36-45": number;
+    "46-60": number;
+  };
+  statusCode: number;
+}
+
 @Injectable({
   providedIn: 'root'
 })
 export class DashboardDataService {
-  private readonly API_BASE_URL = '/api/dashboard'; // TODO: Replace with actual API URL
+  private readonly API_BASE_URL = environment.apiUrl;
   
   // BehaviorSubjects for reactive data
   private dashboardStatsSubject = new BehaviorSubject<DashboardStats | null>(null);
@@ -340,5 +391,25 @@ export class DashboardDataService {
     ];
     
     return of(mockResults).pipe(delay(500));
+  }
+
+  getTrainingSummaryCount(): Observable<TrainingSummaryResponse> {
+    const url = `${this.API_BASE_URL}public/dashboard/trainingSummaryCount`;
+    return this.http.get<TrainingSummaryResponse>(url);
+  }
+
+  getMonthlyTrainingCount(): Observable<MonthlyTrainingResponse> {
+    const url = `${this.API_BASE_URL}public/dashboard/monthlyTrainingCount`;
+    return this.http.get<MonthlyTrainingResponse>(url);
+  }
+
+  getModeOfTrainingDistribution(): Observable<ModeOfTrainingDistributionResponse> {
+    const url = `${this.API_BASE_URL}public/dashboard/modeOfTrainingDistribution`;
+    return this.http.get<ModeOfTrainingDistributionResponse>(url);
+  }
+
+  getAgeWiseDistribution(): Observable<AgeWiseDistributionResponse> {
+    const url = `${this.API_BASE_URL}public/dashboard/ageWiseDistribution`;
+    return this.http.get<AgeWiseDistributionResponse>(url);
   }
 }

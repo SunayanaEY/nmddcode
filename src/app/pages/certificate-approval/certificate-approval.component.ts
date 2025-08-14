@@ -12,7 +12,7 @@ import { TableComponent, TableColumn, TableAction } from '../../components/table
 })
 export class CertificateApprovalComponent {
   breadcrumbItems: BreadcrumbItem[] = [
-    { label: 'Central Admin Login', url: '/dashboard/training-module' },
+    { label: 'Central Admin Login', url: '/admin/training-module' },
     { label: 'Certificate Approval' }
   ];
 

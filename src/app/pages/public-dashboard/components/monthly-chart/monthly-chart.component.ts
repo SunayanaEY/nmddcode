@@ -1,8 +1,10 @@
-import { Component, Input, OnInit, OnChanges, SimpleChanges } from '@angular/core';
+import { Component, Input, OnInit, OnChanges, SimpleChanges, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { NgxEchartsDirective } from 'ngx-echarts';
 import { EChartsOption } from 'echarts';
+import { Subscription } from 'rxjs';
 import { StateData } from '../../public-dashboard.component';
+import { DashboardDataService, MonthlyTrainingData } from '../../services/dashboard-data.service';
 
 @Component({
   selector: 'app-monthly-chart',
@@ -11,12 +13,17 @@ import { StateData } from '../../public-dashboard.component';
   templateUrl: './monthly-chart.component.html',
   styleUrls: ['./monthly-chart.component.css']
 })
-export class MonthlyChartComponent implements OnInit, OnChanges {
+export class MonthlyChartComponent implements OnInit, OnChanges, OnDestroy {
   @Input() selectedState: StateData | null = null;
   @Input() isLoading = false;
 
   chartOption: EChartsOption = {};
   chartLoading = false;
+  monthlyData: MonthlyTrainingData[] = [];
+  private dataSubscription?: Subscription;
+  private isLoadingData = false;
+
+  constructor(private dashboardService: DashboardDataService) {}
 
   // Mock data for monthly trainings
   private allIndiaData = {
@@ -84,12 +91,12 @@ export class MonthlyChartComponent implements OnInit, OnChanges {
   };
 
   ngOnInit(): void {
-    this.updateChart();
+    this.loadMonthlyData();
   }
 
   ngOnChanges(changes: SimpleChanges): void {
-    if (changes['selectedState'] || changes['isLoading']) {
-      this.updateChart();
+    if (changes['selectedState']) {
+      this.loadMonthlyData();
     }
   }
 
@@ -232,7 +239,65 @@ export class MonthlyChartComponent implements OnInit, OnChanges {
     };
   }
 
+  private loadMonthlyData(): void {
+    // Prevent multiple concurrent API calls
+    if (this.isLoadingData) {
+      return;
+    }
+
+    this.isLoadingData = true;
+    this.chartLoading = true;
+    
+    // Cancel any existing subscription
+    if (this.dataSubscription) {
+      this.dataSubscription.unsubscribe();
+    }
+    
+    this.dataSubscription = this.dashboardService.getMonthlyTrainingCount().subscribe({
+      next: (response) => {
+        if (response.success) {
+          this.monthlyData = response.data;
+          this.updateChart();
+        }
+        this.chartLoading = false;
+        this.isLoadingData = false;
+      },
+      error: (error) => {
+        console.error('Error fetching monthly training data:', error);
+        this.chartLoading = false;
+        this.isLoadingData = false;
+        // Use mock data as fallback
+        this.updateChart();
+      }
+    });
+  }
+
   private getChartData() {
+    if (this.monthlyData && this.monthlyData.length > 0) {
+      // Use API data
+      return {
+        months: this.monthlyData.map(item => item.month),
+        series: [
+          {
+            name: 'Total Trainings',
+            data: this.monthlyData.map(item => item.totalTrainings),
+            color: '#2196f3'
+          },
+          {
+            name: 'Farmers Trained',
+            data: this.monthlyData.map(item => item.farmersTrained),
+            color: '#4caf50'
+          },
+          {
+            name: 'Certificates Issued',
+            data: this.monthlyData.map(item => item.certificatesIssued),
+            color: '#ff9800'
+          }
+        ]
+      };
+    }
+    
+    // Fallback to mock data
     if (this.selectedState && this.stateSpecificData[this.selectedState.stateId]) {
       return this.stateSpecificData[this.selectedState.stateId];
     }
@@ -262,10 +327,12 @@ export class MonthlyChartComponent implements OnInit, OnChanges {
   }
 
   refreshChart(): void {
-    this.chartLoading = true;
-    // Simulate API call
-    setTimeout(() => {
-      this.updateChart();
-    }, 1000);
+    this.loadMonthlyData();
+  }
+
+  ngOnDestroy(): void {
+    if (this.dataSubscription) {
+      this.dataSubscription.unsubscribe();
+    }
   }
 }
