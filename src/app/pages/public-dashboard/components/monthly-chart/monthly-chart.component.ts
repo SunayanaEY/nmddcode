@@ -31,17 +31,17 @@ export class MonthlyChartComponent implements OnInit, OnChanges, OnDestroy {
     series: [
       {
         name: 'Total Trainings',
-        data: [120, 132, 101, 134, 90, 230, 210, 182, 191, 234],
+        data: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
         color: '#2196f3'
       },
       {
         name: 'Farmers Trained',
-        data: [220, 182, 191, 234, 290, 330, 310, 282, 291, 334],
+        data: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
         color: '#4caf50'
       },
       {
         name: 'Certificates Issued',
-        data: [150, 232, 201, 154, 190, 330, 410, 382, 391, 434],
+        data: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
         color: '#ff9800'
       }
     ]
@@ -53,17 +53,17 @@ export class MonthlyChartComponent implements OnInit, OnChanges, OnDestroy {
       series: [
         {
           name: 'Total Trainings',
-          data: [45, 52, 38, 54, 35, 89, 78, 68, 72, 89],
+          data: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
           color: '#2196f3'
         },
         {
           name: 'Farmers Trained',
-          data: [89, 72, 76, 89, 115, 132, 124, 112, 116, 134],
+          data: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
           color: '#4caf50'
         },
         {
           name: 'Certificates Issued',
-          data: [56, 89, 76, 58, 72, 132, 164, 152, 156, 174],
+          data: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
           color: '#ff9800'
         }
       ]
@@ -73,17 +73,17 @@ export class MonthlyChartComponent implements OnInit, OnChanges, OnDestroy {
       series: [
         {
           name: 'Total Trainings',
-          data: [32, 38, 28, 42, 25, 67, 58, 52, 56, 67],
+          data: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
           color: '#2196f3'
         },
         {
           name: 'Farmers Trained',
-          data: [67, 52, 56, 67, 85, 98, 92, 82, 86, 98],
+          data: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
           color: '#4caf50'
         },
         {
           name: 'Certificates Issued',
-          data: [42, 67, 56, 44, 52, 98, 122, 112, 116, 128],
+          data: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
           color: '#ff9800'
         }
       ]

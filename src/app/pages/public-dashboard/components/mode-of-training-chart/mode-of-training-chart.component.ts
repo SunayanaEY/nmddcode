@@ -40,24 +40,24 @@ export class ModeOfTrainingChartComponent implements OnInit, OnChanges, OnDestro
 
   // Mock data for training modes
   private allIndiaData: ModeOfTrainingData[] = [
-    { mode: 'Online', count: 1580, percentage: 40, color: '#4F46E5', icon: 'laptop' },
-    { mode: 'Offline', count: 1422, percentage: 36, color: '#059669', icon: 'users' },
-    { mode: 'Hybrid', count: 632, percentage: 16, color: '#DC2626', icon: 'globe' },
-    { mode: 'Field Training', count: 316, percentage: 8, color: '#D97706', icon: 'map-marker-alt' }
+    { mode: 'Online', count: 0, percentage: 0, color: '#4F46E5', icon: 'laptop' },
+    { mode: 'Offline', count: 0, percentage: 0, color: '#059669', icon: 'users' },
+    { mode: 'Hybrid', count: 0, percentage: 0, color: '#DC2626', icon: 'globe' },
+    { mode: 'Field Training', count: 0, percentage: 0, color: '#D97706', icon: 'map-marker-alt' }
   ];
 
   private stateSpecificData: { [key: string]: ModeOfTrainingData[] } = {
     'UP': [
-      { mode: 'Online', count: 240, percentage: 38, color: '#4F46E5', icon: 'laptop' },
-      { mode: 'Offline', count: 228, percentage: 36, color: '#059669', icon: 'users' },
-      { mode: 'Hybrid', count: 114, percentage: 18, color: '#DC2626', icon: 'globe' },
-      { mode: 'Field Training', count: 48, percentage: 8, color: '#D97706', icon: 'map-marker-alt' }
+      { mode: 'Online', count: 0, percentage: 0, color: '#4F46E5', icon: 'laptop' },
+      { mode: 'Offline', count: 0, percentage: 0, color: '#059669', icon: 'users' },
+      { mode: 'Hybrid', count: 0, percentage: 0, color: '#DC2626', icon: 'globe' },
+      { mode: 'Field Training', count: 0, percentage: 0, color: '#D97706', icon: 'map-marker-alt' }
     ],
     'MH': [
-      { mode: 'Online', count: 172, percentage: 42, color: '#4F46E5', icon: 'laptop' },
-      { mode: 'Offline', count: 143, percentage: 35, color: '#059669', icon: 'users' },
-      { mode: 'Hybrid', count: 61, percentage: 15, color: '#DC2626', icon: 'globe' },
-      { mode: 'Field Training', count: 33, percentage: 8, color: '#D97706', icon: 'map-marker-alt' }
+      { mode: 'Online', count: 0, percentage: 0, color: '#4F46E5', icon: 'laptop' },
+      { mode: 'Offline', count: 0, percentage: 0, color: '#059669', icon: 'users' },
+      { mode: 'Hybrid', count: 0, percentage: 0, color: '#DC2626', icon: 'globe' },
+      { mode: 'Field Training', count: 0, percentage: 0, color: '#D97706', icon: 'map-marker-alt' }
     ]
   };
 

@@ -39,29 +39,34 @@ export class AgeGroupChartComponent implements OnInit, OnChanges, OnDestroy {
 
   // Mock data for age groups
   private allIndiaData: AgeGroupData[] = [
-    { ageGroup: '18-25', count: 1250, percentage: 32, color: '#FF6B6B' },
-    { ageGroup: '26-35', count: 1450, percentage: 37, color: '#4ECDC4' },
-    { ageGroup: '36-45', count: 890, percentage: 23, color: '#45B7D1' },
-    { ageGroup: '46-60', count: 310, percentage: 8, color: '#96CEB4' }
+    { ageGroup: '18-25', count: 0, percentage: 0, color: '#FF6B6B' },
+    { ageGroup: '26-35', count: 0, percentage: 0, color: '#4ECDC4' },
+    { ageGroup: '36-45', count: 0, percentage: 0, color: '#45B7D1' },
+    { ageGroup: '46-60', count: 0, percentage: 0, color: '#96CEB4' }
   ];
 
   private stateSpecificData: { [key: string]: AgeGroupData[] } = {
     'UP': [
-      { ageGroup: '18-25', count: 180, percentage: 30, color: '#FF6B6B' },
-      { ageGroup: '26-35', count: 210, percentage: 35, color: '#4ECDC4' },
-      { ageGroup: '36-45', count: 150, percentage: 25, color: '#45B7D1' },
-      { ageGroup: '46-60', count: 60, percentage: 10, color: '#96CEB4' }
+      { ageGroup: '18-25', count: 0, percentage: 0, color: '#FF6B6B' },
+      { ageGroup: '26-35', count: 0, percentage: 0, color: '#4ECDC4' },
+      { ageGroup: '36-45', count: 0, percentage: 0, color: '#45B7D1' },
+      { ageGroup: '46-60', count: 0, percentage: 0, color: '#96CEB4' }
     ],
     'MH': [
-      { ageGroup: '18-25', count: 120, percentage: 28, color: '#FF6B6B' },
-      { ageGroup: '26-35', count: 165, percentage: 38, color: '#4ECDC4' },
-      { ageGroup: '36-45', count: 110, percentage: 26, color: '#45B7D1' },
-      { ageGroup: '46-60', count: 35, percentage: 8, color: '#96CEB4' }
+      { ageGroup: '18-25', count: 0, percentage: 0, color: '#FF6B6B' },
+      { ageGroup: '26-35', count: 0, percentage: 0, color: '#4ECDC4' },
+      { ageGroup: '36-45', count: 0, percentage: 0, color: '#45B7D1' },
+      { ageGroup: '46-60', count: 0, percentage: 0, color: '#96CEB4' }
     ]
   };
 
   ngOnInit(): void {
     this.loadAgeGroupData();
+  }
+
+  getTotalAgeGroups(): number {
+    const data = this.getChartData();
+    return data.length;
   }
 
   ngOnChanges(changes: SimpleChanges): void {

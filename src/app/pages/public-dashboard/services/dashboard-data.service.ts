@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Observable, of, BehaviorSubject, delay } from 'rxjs';
+import { Observable, of, BehaviorSubject, delay, map } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
 import { environment } from '../../../../environments/environment';
 
@@ -117,6 +117,21 @@ export interface AgeWiseDistributionResponse {
   statusCode: number;
 }
 
+export interface InstituteLocationData {
+  id: string;
+  name: string;
+  latitude: number;
+  longitude: number;
+  address: string;
+}
+
+export interface InstituteLocationResponse {
+  success: boolean;
+  message: string;
+  data: InstituteLocationData[];
+  statusCode: number;
+}
+
 @Injectable({
   providedIn: 'root'
 })
@@ -140,24 +155,24 @@ export class DashboardDataService {
   // Mock data - TODO: Replace with actual API calls
   private mockDashboardStats: DashboardStats = {
     totalTrainings: {
-      value: 54,
-      growth: 8.2,
+      value: 0,
+      growth: 0,
       isPositive: true
     },
     totalFarmers: {
-      value: 3932,
-      growth: 12.5,
+      value: 0,
+      growth: 0,
       isPositive: true
     },
     totalCertificatesApproved: {
-      value: 2912,
-      growth: 5.8,
+      value: 0,
+      growth: 0,
       isPositive: true
     },
     totalCertificatesIssued: {
-      value: 1640,
-      growth: -2.1,
-      isPositive: false
+      value: 0,
+      growth: 0,
+      isPositive: true
     }
   };
 
@@ -165,41 +180,41 @@ export class DashboardDataService {
     {
       stateId: 'UP',
       stateName: 'Uttar Pradesh',
-      totalInstitutes: 12,
-      totalTrainings: 18,
-      totalFarmers: 1250,
+      totalInstitutes: 0,
+      totalTrainings: 0,
+      totalFarmers: 0,
       coordinates: [80.9462, 26.8467]
     },
     {
       stateId: 'MH',
       stateName: 'Maharashtra',
-      totalInstitutes: 8,
-      totalTrainings: 12,
-      totalFarmers: 890,
+      totalInstitutes: 0,
+      totalTrainings: 0,
+      totalFarmers: 0,
       coordinates: [75.7139, 19.7515]
     },
     {
       stateId: 'GJ',
       stateName: 'Gujarat',
-      totalInstitutes: 6,
-      totalTrainings: 9,
-      totalFarmers: 650,
+      totalInstitutes: 0,
+      totalTrainings: 0,
+      totalFarmers: 0,
       coordinates: [71.1924, 22.2587]
     },
     {
       stateId: 'RJ',
       stateName: 'Rajasthan',
-      totalInstitutes: 5,
-      totalTrainings: 7,
-      totalFarmers: 480,
+      totalInstitutes: 0,
+      totalTrainings: 0,
+      totalFarmers: 0,
       coordinates: [74.2179, 27.0238]
     },
     {
       stateId: 'PB',
       stateName: 'Punjab',
-      totalInstitutes: 4,
-      totalTrainings: 8,
-      totalFarmers: 420,
+      totalInstitutes: 0,
+      totalTrainings: 0,
+      totalFarmers: 0,
       coordinates: [75.3412, 31.1471]
     }
   ];
@@ -210,8 +225,8 @@ export class DashboardDataService {
       name: 'National Dairy Research Institute',
       stateId: 'UP',
       coordinates: [80.9462, 26.8467],
-      totalTrainings: 8,
-      totalFarmers: 450,
+      totalTrainings: 0,
+      totalFarmers: 0,
       type: 'research'
     },
     {
@@ -219,8 +234,8 @@ export class DashboardDataService {
       name: 'Dairy Training Center Mumbai',
       stateId: 'MH',
       coordinates: [72.8777, 19.0760],
-      totalTrainings: 6,
-      totalFarmers: 320,
+      totalTrainings: 0,
+      totalFarmers: 0,
       type: 'primary'
     },
     {
@@ -228,25 +243,25 @@ export class DashboardDataService {
       name: 'Gujarat Cooperative Milk Marketing Federation',
       stateId: 'GJ',
       coordinates: [72.5714, 23.0225],
-      totalTrainings: 5,
-      totalFarmers: 280,
+      totalTrainings: 0,
+      totalFarmers: 0,
       type: 'primary'
     }
   ];
 
   private mockMonthlyData: MonthlyData[] = [
-    { month: 'Jan', trainings: 45, farmers: 320, certificates: 280 },
-    { month: 'Feb', trainings: 52, farmers: 380, certificates: 320 },
-    { month: 'Mar', trainings: 48, farmers: 350, certificates: 300 },
-    { month: 'Apr', trainings: 65, farmers: 420, certificates: 380 },
-    { month: 'May', trainings: 58, farmers: 390, certificates: 350 },
-    { month: 'Jun', trainings: 72, farmers: 480, certificates: 420 },
-    { month: 'Jul', trainings: 68, farmers: 450, certificates: 400 },
-    { month: 'Aug', trainings: 75, farmers: 520, certificates: 460 },
-    { month: 'Sep', trainings: 82, farmers: 580, certificates: 520 },
-    { month: 'Oct', trainings: 78, farmers: 550, certificates: 490 },
-    { month: 'Nov', trainings: 85, farmers: 620, certificates: 560 },
-    { month: 'Dec', trainings: 92, farmers: 680, certificates: 620 }
+    { month: 'Jan', trainings: 0, farmers: 0, certificates: 0 },
+    { month: 'Feb', trainings: 0, farmers: 0, certificates: 0 },
+    { month: 'Mar', trainings: 0, farmers: 0, certificates: 0 },
+    { month: 'Apr', trainings: 0, farmers: 0, certificates: 0 },
+    { month: 'May', trainings: 0, farmers: 0, certificates: 0 },
+    { month: 'Jun', trainings: 0, farmers: 0, certificates: 0 },
+    { month: 'Jul', trainings: 0, farmers: 0, certificates: 0 },
+    { month: 'Aug', trainings: 0, farmers: 0, certificates: 0 },
+    { month: 'Sep', trainings: 0, farmers: 0, certificates: 0 },
+    { month: 'Oct', trainings: 0, farmers: 0, certificates: 0 },
+    { month: 'Nov', trainings: 0, farmers: 0, certificates: 0 },
+    { month: 'Dec', trainings: 0, farmers: 0, certificates: 0 }
   ];
 
   // Initialize data on service creation
@@ -307,10 +322,10 @@ export class DashboardDataService {
     // return this.http.get<AgeGroupData[]>(url);
     
     const mockAgeGroupData: AgeGroupData[] = [
-      { ageGroup: '18-25', count: 1250, percentage: 32, color: '#FF6B6B' },
-      { ageGroup: '26-35', count: 1450, percentage: 37, color: '#4ECDC4' },
-      { ageGroup: '36-45', count: 890, percentage: 23, color: '#45B7D1' },
-      { ageGroup: '46-60', count: 310, percentage: 8, color: '#96CEB4' }
+      { ageGroup: '18-25', count: 0, percentage: 0, color: '#FF6B6B' },
+      { ageGroup: '26-35', count: 0, percentage: 0, color: '#4ECDC4' },
+      { ageGroup: '36-45', count: 0, percentage: 0, color: '#45B7D1' },
+      { ageGroup: '46-60', count: 0, percentage: 0, color: '#96CEB4' }
     ];
     
     return of(mockAgeGroupData).pipe(delay(400));
@@ -323,10 +338,10 @@ export class DashboardDataService {
     // return this.http.get<ModeOfTrainingData[]>(url);
     
     const mockTrainingModeData: ModeOfTrainingData[] = [
-      { mode: 'Online', count: 1580, percentage: 40, color: '#4F46E5', icon: 'laptop' },
-      { mode: 'Offline', count: 1422, percentage: 36, color: '#059669', icon: 'users' },
-      { mode: 'Hybrid', count: 632, percentage: 16, color: '#DC2626', icon: 'globe' },
-      { mode: 'Field Training', count: 316, percentage: 8, color: '#D97706', icon: 'map-marker-alt' }
+      { mode: 'Online', count: 0, percentage: 0, color: '#4F46E5', icon: 'laptop' },
+      { mode: 'Offline', count: 0, percentage: 0, color: '#059669', icon: 'users' },
+      { mode: 'Hybrid', count: 0, percentage: 0, color: '#DC2626', icon: 'globe' },
+      { mode: 'Field Training', count: 0, percentage: 0, color: '#D97706', icon: 'map-marker-alt' }
     ];
     
     return of(mockTrainingModeData).pipe(delay(400));
@@ -411,5 +426,13 @@ export class DashboardDataService {
   getAgeWiseDistribution(): Observable<AgeWiseDistributionResponse> {
     const url = `${this.API_BASE_URL}public/dashboard/ageWiseDistribution`;
     return this.http.get<AgeWiseDistributionResponse>(url);
+  }
+
+  // Get institute locations from API
+  getInstituteLocations(): Observable<InstituteLocationData[]> {
+    return this.http.get<InstituteLocationResponse>(`${this.API_BASE_URL}public/dashboard/institute-locations`)
+      .pipe(
+        map(response => response.data)
+      );
   }
 }
