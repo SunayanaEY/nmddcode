@@ -34,7 +34,7 @@ export class AllTrainingsComponent {
   ];
   columnKeys:Array<string> =['trainingTitle','scheme','trainingInstituteName','trainerName','location','trainingDate','status']
   breadcrumbItems: BreadcrumbItem[] = [
-      { label: 'Training Module', url: '/dashboard/training-module' },
+      { label: 'Training Module', url: '/admin/training-module' },
       { label: 'All Registered Trainings' }
     ];
     tableColumns: TableColumn[] = [

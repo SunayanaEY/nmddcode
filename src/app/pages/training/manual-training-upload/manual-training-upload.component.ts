@@ -51,11 +51,8 @@ export class ManualTrainingUploadComponent implements OnInit {
   isSpinning: boolean = false;
 
   breadcrumbItems: BreadcrumbItem[] = [
-    { label: 'Training Module', url: '/dashboard/training-module' },
-    {
-      label: 'Training Certificate Generation',
-      url: '/dashboard/training-certificate-generation',
-    },
+    { label: 'Training Module', url: '/admin/training-module' },
+    { label: 'Training Certificate Generation', url: '/admin/training-certificate-generation'},
     { label: 'Manual Training Upload' },
   ];
   tableColumns: TableColumn[] = [

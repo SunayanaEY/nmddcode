@@ -80,4 +80,29 @@ export class SidebarComponent {
       password: new FormControl('', [Validators.required]),
     });
   }
+
+  // Role-based visibility methods
+  isAdmin(): boolean {
+    return this.authService.isAdmin();
+  }
+
+  isTrainingHead(): boolean {
+    return this.authService.isTrainingHead();
+  }
+
+  isDataEntryOperator(): boolean {
+    return this.authService.isDataEntryOperator();
+  }
+
+  canAccessAdminFeatures(): boolean {
+    return this.authService.hasRole([1]);
+  }
+
+  canAccessTrainingFeatures(): boolean {
+    return this.authService.hasRole([1, 3]);
+  }
+
+  canAccessDataEntry(): boolean {
+    return this.authService.hasRole([3, 4]);
+  }
 }

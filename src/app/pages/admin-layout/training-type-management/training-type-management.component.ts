@@ -29,7 +29,7 @@ isExportCSV:Boolean =false;
   ];
   columnKeys:Array<string> =['trainingTitle','date','scheme','location','submittedOn','status']
   breadcrumbItems: BreadcrumbItem[] = [
-      { label: 'Dashboard', url: '/dashboard' },
+      { label: 'Central Admin Login', url: '/dashboard' },
       { label: 'Training Type Management' }
     ];
     tableColumns: TableColumn[] = [

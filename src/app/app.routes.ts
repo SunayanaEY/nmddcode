@@ -3,6 +3,7 @@ import { LoginComponent } from './pages/login.component';
 import { AdminLayoutComponent } from './pages/admin-layout/admin-layout/admin-layout.component';
 import { SchemeManagementComponent } from './pages/admin-layout/scheme-management/scheme-management.component';
 import { ForgetPasswordComponent } from './pages/forget-password/forget-password.component';
+import { AuthGuard } from './guards/auth.guard';
 
 export const routes: Routes = [
   // Public Dashboard - Landing Page
@@ -21,11 +22,22 @@ export const routes: Routes = [
   // Authentication
   { path: 'login', component: LoginComponent },
   { path: 'signup', component: LoginComponent }, // TODO: Create separate signup component
+  { path: 'forget-password', component: ForgetPasswordComponent },
+  
+  // Unauthorized access
+  {
+    path: 'unauthorized',
+    loadComponent: () =>
+      import('./pages/unauthorized/unauthorized.component').then(
+        (m) => m.UnauthorizedComponent
+      ),
+  },
 
   // Admin Dashboard
   {
     path: 'admin',
     component: AdminLayoutComponent,
+    canActivate: [AuthGuard],
     children: [
       {
         path: '',

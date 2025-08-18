@@ -15,7 +15,7 @@ import { HttpClientModule } from '@angular/common/http';
 })
 export class TrainingCentreComponent implements OnInit {
   breadcrumbItems: BreadcrumbItem[] = [
-    { label: 'Training Module', url: '/admin/training-module' },
+    { label: 'Central Admin Login', url: '/admin/training-module' },
     { label: 'Training Centre Data' }
   ];
 

@@ -14,7 +14,7 @@ import { BreadcrumbComponent, BreadcrumbItem } from '../../../components/breadcr
 })
 export class TrainingCertificateGenerationComponent {
   breadcrumbItems: BreadcrumbItem[] = [
-    { label: 'Training Module', url: '/dashboard/training-module' },
+    { label: 'Training Module', url: '/admin/training-module' },
     { label: 'Training Certificate Generation' }
   ];
   trainingForm: FormGroup;
@@ -77,15 +77,15 @@ export class TrainingCertificateGenerationComponent {
   }
 
   onManualUpload() {
-    this.router.navigate(['/dashboard/manual-training-upload']);
+    this.router.navigate(['/admin/manual-training-upload']);
   }
 
   onBulkUpload() {
-    this.router.navigate(['/dashboard/bulk-training-upload']);
+    this.router.navigate(['/admin/bulk-training-upload']);
   }
 
   goBack() {
-    this.router.navigate(['/dashboard/training-module']);
+    this.router.navigate(['/admin/training-module']);
   }
 
   onSignatureNameChange(event: Event, index: number) {

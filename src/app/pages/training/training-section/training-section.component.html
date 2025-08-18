@@ -43,7 +43,7 @@
       </div>
 
       <!-- Scheme Management -->
-       <div class="certificate-card" (click)="navigateToCertificateApproval()" *ngIf="userRole === 1">
+       <div class="certificate-card" (click)="navigateToSchemeManagementMaster()" *ngIf="userRole === 1">
         <div class="certificate-icon">
           <!-- <svg width="48" height="48" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
             <path d="M12 2C13.1 2 14 2.9 14 4C14 5.1 13.1 6 12 6C10.9 6 10 5.1 10 4C10 2.9 10.9 2 12 2ZM21 9V7L15 1H5C3.89 1 3 1.89 3 3V21C3 22.11 3.89 23 5 23H11V21H5V3H13V9H21ZM16.5 18.5L19.36 15.64L20.78 17.06L16.5 21.34L13.14 17.98L14.56 16.56L16.5 18.5Z" fill="currentColor"/>
@@ -56,7 +56,7 @@
         </div>
       </div>
       <!-- Training Types Management -->
-       <div class="certificate-card" (click)="navigateToCertificateApproval()" *ngIf="userRole === 1">
+       <div class="certificate-card" (click)="navigateToTrainingTypeManagement()" *ngIf="userRole === 1">
         <div class="certificate-icon">
           <!-- <svg width="48" height="48" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
             <path d="M12 2C13.1 2 14 2.9 14 4C14 5.1 13.1 6 12 6C10.9 6 10 5.1 10 4C10 2.9 10.9 2 12 2ZM21 9V7L15 1H5C3.89 1 3 1.89 3 3V21C3 22.11 3.89 23 5 23H11V21H5V3H13V9H21ZM16.5 18.5L19.36 15.64L20.78 17.06L16.5 21.34L13.14 17.98L14.56 16.56L16.5 18.5Z" fill="currentColor"/>
@@ -79,7 +79,7 @@
         </div>
       </div>
       <!-- Training Certificate Generation -->
-      <div class="certificate-card" (click)="navigateToTrainingCertificate()" *ngIf="userRole === 2">
+      <div class="certificate-card" (click)="navigateToTrainingCertificate()" *ngIf="userRole === 4">
         <div class="certificate-icon">
           <svg width="48" height="48" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
             <path d="M12 2L13.09 8.26L20 9L13.09 9.74L12 16L10.91 9.74L4 9L10.91 8.26L12 2Z" fill="currentColor"/>
@@ -94,7 +94,7 @@
       </div>
 
       <!-- Resume Certificate Generation -->
-      <div class="certificate-card" (click)="navigateToResumeCertificate()" *ngIf="userRole === 2">
+      <div class="certificate-card" (click)="navigateToResumeCertificate()" *ngIf="userRole === 4">
         <div class="certificate-icon">
           <svg width="48" height="48" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
             <path d="M8 2V6H16V2H18V6H20C21.1 6 22 6.9 22 8V20C22 21.1 21.1 22 20 22H4C2.9 22 2 21.1 2 20V8C2 6.9 2.9 6 4 6H6V2H8ZM4 10V20H20V10H4ZM6 12H18V14H6V12ZM6 16H14V18H6V16Z" fill="currentColor"/>
@@ -119,7 +119,7 @@
       </div> -->
 
             <!-- Pending for Approval -->
-      <div class="certificate-card" (click)="navigateToPendingApproval()" *ngIf="userRole === 2">
+      <div class="certificate-card" (click)="navigateToPendingApproval()" *ngIf="userRole === 4">
         <div class="certificate-icon">
           <svg width="48" height="48" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
             <path d="M12 2C6.48 2 2 6.48 2 12S6.48 22 12 22 22 17.52 22 12 17.52 2 12 2ZM13 17H11V15H13V17ZM13 13H11V7H13V13Z" fill="currentColor"/>
@@ -133,7 +133,7 @@
 
 
       <!-- All Trainings -->
-      <div class="certificate-card" (click)="navigateToAllTrainings()" *ngIf="userRole === 2">
+      <div class="certificate-card" (click)="navigateToAllTrainings()" *ngIf="userRole === 4">
         <div class="certificate-icon">
           <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none">
             <path opacity="0.5" fill-rule="evenodd" clip-rule="evenodd" d="M2.25 6C2.25 5.58579 2.58579 5.25 3 5.25H21C21.4142 5.25 21.75 5.58579 21.75 6C21.75 6.41421 21.4142 6.75 21 6.75H3C2.58579 6.75 2.25 6.41421 2.25 6ZM2.25 10C2.25 9.58579 2.58579 9.25 3 9.25H21C21.4142 9.25 21.75 9.58579 21.75 10C21.75 10.4142 21.4142 10.75 21 10.75H3C2.58579 10.75 2.25 10.4142 2.25 10ZM2.25 14C2.25 13.5858 2.58579 13.25 3 13.25H11C11.4142 13.25 11.75 13.5858 11.75 14C11.75 14.4142 11.4142 14.75 11 14.75H3C2.58579 14.75 2.25 14.4142 2.25 14ZM2.25 18C2.25 17.5858 2.58579 17.25 3 17.25H11C11.4142 17.25 11.75 17.5858 11.75 18C11.75 18.4142 11.4142 18.75 11 18.75H3C2.58579 18.75 2.25 18.4142 2.25 18Z" fill="#1C274C"/>

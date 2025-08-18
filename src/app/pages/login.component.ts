@@ -183,7 +183,9 @@ export class LoginComponent implements OnInit {
           this.toastr.success('Login successful!', 'Welcome');
           localStorage.setItem('username', response.data.username);
           localStorage.setItem('roleId', response.data.role.toString());
-          this.router.navigate(['/dashboard']);
+          
+          // Role-based redirect
+          this.redirectBasedOnRole(response.data.role);
         } else {
           this.errorMessage = 'Invalid email or password';
           this.toastr.error('Invalid email or password', 'Login Failed');
@@ -457,6 +459,22 @@ export class LoginComponent implements OnInit {
     } else {
       this.addressLatitude = null;
       this.addressLongitude = null;
+    }
+  }
+
+  private redirectBasedOnRole(role: number): void {
+    switch (role) {
+      case 1: // Central Admin
+        this.router.navigate(['/admin/training-module']);
+        break;
+      case 3: // Training Institute Head
+        this.router.navigate(['/admin/training-module']);
+        break;
+      case 4: // Training Data Entry Operator
+        this.router.navigate(['/admin/manual-training-upload']);
+        break;
+      default:
+        this.router.navigate(['/admin']);
     }
   }
 }

@@ -24,7 +24,7 @@ export class TrainingSectionComponent implements OnInit {
 
   navigateToTrainingCertificate() {
     console.log('Navigating to Training Certificate Generation');
-    this.router.navigate(['/dashboard/training-certificate-generation']);
+    this.router.navigate(['/admin/training-certificate-generation']);
   }
 
   navigateToResumeCertificate() {
@@ -54,6 +54,13 @@ export class TrainingSectionComponent implements OnInit {
     this.router.navigate(['/admin/certificate-approval']);
   }
 
+  navigateToSchemeManagementMaster() {
+    this.router.navigate(['/admin/scheme-management']);
+  }
+  
+  navigateToTrainingTypeManagement() {
+      this.router.navigate(['/admin/training-type-management']);
+    }
   navigateToUserProfileCreation() {
     this.router.navigate(['/admin/user-profile-creation']);
   }
