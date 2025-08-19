@@ -1,0 +1,195 @@
+<div class="approved-certificate-container">
+  <app-breadcrumb [items]="breadcrumbItems"></app-breadcrumb>
+  <div class="page-header">
+    <h2>Training Title : {{ trainingTitle }}</h2>
+  </div>
+
+  <div class="filter-container">
+    <div class="filter-controls">
+      <!-- Date Filter -->
+      <input
+        type="date"
+        class="form-control"
+        [(ngModel)]="filters.date"
+        placeholder="Date"
+      />
+
+      <!-- Training Title Search -->
+      <input
+        type="text"
+        class="form-control"
+        [(ngModel)]="filters.trainingTitle"
+        placeholder="Search by Training Title"
+      />
+    </div>
+    <select class="form-control status-dropdown" [(ngModel)]="filters.status">
+      <option value="ALL">All</option>
+      <option value="APPROVED">Approved</option>
+      <option value="REJECTED">Rejected</option>
+      <option value="PENDING">Pending</option>
+    </select>
+
+    <!-- <div class="action-buttons">
+      <button class="btn btn-primary">
+        <i class="bi bi-download"></i> Download Zip
+      </button> -->
+    <!-- </div> -->
+  </div>
+
+  <div class="trainings-summary">
+    <h4>Trainees List</h4>
+    <span class="badge bg-secondary"
+      >Total trainees : {{ filteredTableData.length }}</span
+    >
+  </div>
+
+  <app-table
+    [columns]="tableColumns"
+    [data]="filteredTableData"
+    [actions]="tableActions"
+    [isExportCSV]="isExportCSV"
+    [isExportPDF]="isExportPdf"
+    [pdfHeaders]="pdfHeaders"
+    [columnKeys]="columnKeys"
+    (actionClick)="handleTableAction($event)"
+  >
+  </app-table>
+  <!-- View Modal -->
+  <!-- Modal -->
+  <div
+    class="modal fade"
+    id="viewCertificateModal"
+    tabindex="-1"
+    aria-labelledby="viewCertificateModalLabel"
+    aria-hidden="true"
+  >
+    <div class="modal-dialog modal-xl modal-dialog-centered">
+      <div class="modal-content p-4">
+        <div class="modal-header">
+          <h2 class="modal-title" id="viewCertificateModalLabel">
+            Approved Certificate
+          </h2>
+          <button
+            type="button"
+            class="btn-close"
+            data-bs-dismiss="modal"
+            aria-label="Close"
+          ></button>
+        </div>
+        <div class="modal-body">
+          <ng-container *ngIf="selectedItem">
+            <app-certificate-layout
+              [data]="selectedItem"
+            ></app-certificate-layout>
+          </ng-container>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- Button trigger modal -->
+<button
+  type="button"
+  class="btn btn-primary"
+  data-bs-toggle="modal"
+  data-bs-target="#exampleModal"
+  id="modalBtn"
+  style="display: none"
+>
+  Launch demo modal
+</button>
+
+<!-- Modal -->
+<div
+  class="modal fade"
+  id="exampleModal"
+  tabindex="-1"
+  aria-labelledby="exampleModalLabel"
+  aria-hidden="true"
+>
+  <div class="modal-dialog modal-xl">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h1 class="modal-title fs-5" id="exampleModalLabel">Trainee Details</h1>
+        <button
+          type="button"
+          class="btn-close"
+          data-bs-dismiss="modal"
+          aria-label="Close"
+        ></button>
+      </div>
+      <div class="modal-body bg-light rounded-3 p-4">
+        <div class="d-flex align-items-center mb-4">
+          <div class="profile-avatar me-3">
+            <i
+              class="bi bi-person-circle text-primary"
+              style="font-size: 3rem"
+            ></i>
+          </div>
+          <div>
+            <h5 class="mb-0">{{ selectedItem?.name }}</h5>
+            <small class="text-muted">{{ selectedItem?.course }}</small>
+          </div>
+        </div>
+
+        <div class="row g-3 mb-3">
+          <div class="col-md-6">
+            <div class="p-3 bg-white rounded-3 shadow-sm h-100">
+              <strong>Email:</strong>
+              <span class="text-muted ms-3">{{ selectedItem?.email }}</span>
+            </div>
+          </div>
+
+          <div class="col-md-6">
+            <div class="p-3 bg-white rounded-3 shadow-sm h-100">
+              <strong>Phone:</strong>
+              <span class="text-muted ms-3">{{
+                selectedItem?.contactNumber
+              }}</span>
+            </div>
+          </div>
+        </div>
+        <div class="row g-3 mb-3">
+          <div class="col-md-6">
+            <div class="p-3 bg-white rounded-3 shadow-sm h-100">
+              <strong>Gender:</strong>
+              <span class="text-muted ms-3">{{ selectedItem?.gender }}</span>
+            </div>
+          </div>
+
+          <div class="col-md-6">
+            <div class="p-3 bg-white rounded-3 shadow-sm h-100">
+              <strong>Age:</strong>
+              <span style="margin-left: 10px" class="text-muted">{{
+                selectedItem?.age
+              }}</span>
+            </div>
+          </div>
+        </div>
+        <div class="row g-3 mb-3">
+          <div class="col-md-6">
+            <div class="p-3 bg-white rounded-3 shadow-sm h-100">
+              <strong>UIN:</strong>
+              <span class="text-muted ms-3">{{ selectedItem?.uin }}</span>
+            </div>
+          </div>
+
+          <div class="col-md-6">
+            <div class="p-3 bg-white rounded-3 shadow-sm h-100">
+              <strong>Masked Aadhar:</strong>
+              <span class="text-muted ms-3">{{
+                selectedItem?.aadharMasked
+              }}</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+          Close
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

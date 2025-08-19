@@ -4,22 +4,28 @@
     <div class="row align-items-center">
       <div class="col-md-8 d-flex align-items-center">
         <div class="emblem-container">
-          <img src="assets/login/emblem.png" alt="Government Emblem" class="gov-emblem">
+          <img
+            src="assets/login/emblem.png"
+            alt="Government Emblem"
+            class="gov-emblem"
+          />
         </div>
         <div class="gov-text">
           <h1 class="gov-title">भारत सरकार | GOVERNMENT OF INDIA</h1>
           <p class="dept-text-hindi">पशुपालन और डेयरी विभाग</p>
-          <p class="dept-text-english">DEPARTMENT OF ANIMAL HUSBANDRY AND DAIRYING</p>
+          <p class="dept-text-english">
+            DEPARTMENT OF ANIMAL HUSBANDRY AND DAIRYING
+          </p>
         </div>
       </div>
       <div class="col-md-4 text-end">
-          <div class="header-actions">
-            <button class="btn-login" (click)="navigateToLogin()">
-              <i class="fas fa-user"></i>
-              Sign In
-            </button>
-          </div>
+        <div class="header-actions">
+          <button class="btn-login" (click)="navigateToLogin()">
+            <i class="fas fa-user"></i>
+            Sign In
+          </button>
         </div>
+      </div>
     </div>
   </div>
 </div>
@@ -27,7 +33,6 @@
 <!-- Main Dashboard Content -->
 <div class="dashboard-container">
   <div class="container-fluid">
-    
     <!-- Dashboard Header -->
     <div class="dashboard-header mb-4">
       <div class="dashboard-header-bg"></div>
@@ -52,7 +57,10 @@
           </div>
           <div class="col-md-6 text-end">
             <div class="dashboard-actions">
-              <button class="btn btn-primary me-2" (click)="downloadCertificate()">
+              <button
+                class="btn btn-primary me-2"
+                (click)="downloadCertificate()"
+              >
                 <i class="fas fa-download me-2"></i>Download Certificate
               </button>
               <!-- <button class="btn btn-outline-primary" (click)="filterByPeriod()">
@@ -127,9 +135,7 @@
       </div>
 
       <!-- Stats Cards -->
-      <app-stats-cards 
-        [stats]="dashboardStats"
-        [isLoading]="isLoading">
+      <app-stats-cards [stats]="dashboardStats" [isLoading]="isLoading">
       </app-stats-cards>
     </div>
 
@@ -217,6 +223,37 @@
       </div>
     </div>
   </div>
+  <!-- Modal -->
+  <div
+    class="modal fade"
+    id="viewCertificateModal"
+    tabindex="-1"
+    aria-labelledby="viewCertificateModalLabel"
+    aria-hidden="true"
+  >
+    <div class="modal-dialog modal-xl modal-dialog-centered">
+      <div class="modal-content p-4">
+        <div class="modal-header">
+          <h2 class="modal-title" id="viewCertificateModalLabel">
+            Approved Certificate
+          </h2>
+          <button
+            type="button"
+            class="btn-close"
+            data-bs-dismiss="modal"
+            aria-label="Close"
+          ></button>
+        </div>
+        <div class="modal-body">
+          <ng-container *ngIf="selectedItem">
+            <app-certificate-layout
+              [data]="selectedItem"
+            ></app-certificate-layout>
+          </ng-container>
+        </div>
+      </div>
+    </div>
+  </div>
 </div>
 
 <!-- Loading Overlay -->
@@ -224,4 +261,14 @@
   <div class="spinner-border text-primary" role="status">
     <span class="visually-hidden">Loading...</span>
   </div>
+  <button
+    type="button"
+    class="btn btn-primary"
+    data-bs-toggle="modal"
+    data-bs-target="#exampleModal"
+    id="modalBtn"
+    style="display: none"
+  >
+    Launch demo modal
+  </button>
 </div>

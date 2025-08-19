@@ -1,16 +1,22 @@
 <div class="certificate-wrapper" #certificateContent>
   <div class="certificate-border">
+    <div class="certificate-logos">
+      <img src="{{ data.logoPath1 }}" alt="Logo 1" crossorigin="anonymous" />
+      <img src="{{ data.logoPath2 }}" alt="Logo 2" crossorigin="anonymous" />
+      <img src="{{ data.logoPath3 }}" alt="Logo 3" crossorigin="anonymous" />
+    </div>
     <div class="certificate-header">
       <h2>Certificate of Completion</h2>
       <p class="subtitle">This Certificate Is Proudly Presented To</p>
-      <h1 class="trainee-name">{{ data?.traineeName }}</h1>
+      <h1 class="trainee-name">{{ data?.name }}</h1>
     </div>
 
     <div class="certificate-body">
       <p>
-        From <strong>{{ data?.scheme }}</strong> has successfully completed the
-        training program <strong>{{ data?.trainingTitle }}</strong> on
-        <strong>{{ data?.date }}</strong
+        From <strong>{{ data?.trainingInstituteName }}</strong> has successfully
+        completed the training program
+        <strong>{{ data?.trainingTitle }}</strong> on
+        <strong>{{ data?.trainingDate }}</strong
         >, conducted at <strong>{{ data?.location }}</strong
         >.
       </p>
@@ -19,6 +25,7 @@
     <div class="certificate-footer">
       <div class="signatures">
         <div class="signature">
+          <p>{{ data.signatures[0].signatorySignaturePath }}</p>
           <p>_____________________</p>
           <p>[Signature Name]</p>
           <p>[Designation]</p>
@@ -31,10 +38,10 @@
             [width]="100"
             [errorCorrectionLevel]="'M'"
           ></qrcode>
-          <p class="uid">UIN: {{ uniqueId }}</p>
+          <p class="uid">UIN: {{ finalUniqueId }}</p>
         </div>
-
         <div class="signature">
+          <p>{{ data.signatures[1].signatorySignaturePath }}</p>
           <p>_____________________</p>
           <p>[Signature Name]</p>
           <p>[Designation]</p>
@@ -43,9 +50,7 @@
       </div>
     </div>
   </div>
-
   <div class="modal-actions mt-3 text-end">
-    <button class="btn btn-secondary me-2" (click)="closeModal()">Close</button>
     <button class="btn btn-primary" (click)="download()">Download</button>
   </div>
 </div>

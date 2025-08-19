@@ -1,32 +1,51 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormsModule, ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
+import {
+  FormsModule,
+  ReactiveFormsModule,
+  FormBuilder,
+  FormGroup,
+  Validators,
+} from '@angular/forms';
 import { Router } from '@angular/router';
 import { FileUploadComponent } from '../../../components/file-upload/file-upload.component';
-import { BreadcrumbComponent, BreadcrumbItem } from '../../../components/breadcrumb/breadcrumb.component';
+import {
+  BreadcrumbComponent,
+  BreadcrumbItem,
+} from '../../../components/breadcrumb/breadcrumb.component';
 
 @Component({
   selector: 'app-training-certificate-generation',
   standalone: true,
-  imports: [CommonModule, FormsModule, ReactiveFormsModule, FileUploadComponent, BreadcrumbComponent],
+  imports: [
+    CommonModule,
+    FormsModule,
+    ReactiveFormsModule,
+    FileUploadComponent,
+    BreadcrumbComponent,
+  ],
   templateUrl: './training-certificate-generation.component.html',
-  styleUrl: './training-certificate-generation.component.css'
+  styleUrl: './training-certificate-generation.component.css',
 })
 export class TrainingCertificateGenerationComponent {
   breadcrumbItems: BreadcrumbItem[] = [
     { label: 'Training Module', url: '/admin/training-module' },
-    { label: 'Training Certificate Generation' }
+    { label: 'Training Certificate Generation' },
   ];
   trainingForm: FormGroup;
-  signatures: any[] = [{
-    file: null,
-    name: '',
-    designation: '',
-    organization: ''
-  }];
-  logos: any[] = [{
-    file: null
-  }];
+  signatures: any[] = [
+    {
+      file: null,
+      name: '',
+      designation: '',
+      organization: '',
+    },
+  ];
+  logos: any[] = [
+    {
+      file: null,
+    },
+  ];
 
   constructor(private fb: FormBuilder, private router: Router) {
     this.trainingForm = this.fb.group({
@@ -41,7 +60,7 @@ export class TrainingCertificateGenerationComponent {
       duration: ['', Validators.required],
       durationType: ['Days', Validators.required],
       aboutTraining: ['', [Validators.required, Validators.maxLength(100)]],
-      modeOfTraining: ['Classroom/ Field Demo/ Others', Validators.required]
+      modeOfTraining: ['Classroom/ Field Demo/ Others', Validators.required],
     });
   }
 
@@ -66,13 +85,13 @@ export class TrainingCertificateGenerationComponent {
       file: null,
       name: '',
       designation: '',
-      organization: ''
+      organization: '',
     });
   }
 
   addMoreLogo() {
     this.logos.push({
-      file: null
+      file: null,
     });
   }
 
@@ -104,7 +123,7 @@ export class TrainingCertificateGenerationComponent {
   }
 
   private markFormGroupTouched() {
-    Object.keys(this.trainingForm.controls).forEach(key => {
+    Object.keys(this.trainingForm.controls).forEach((key) => {
       const control = this.trainingForm.get(key);
       control?.markAsTouched();
     });

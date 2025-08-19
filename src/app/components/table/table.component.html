@@ -1,30 +1,48 @@
 <div class="table-container">
-  <div class="d-flex justify-content-between  mb-3" style="margin-top: 3%;">
-            <div class="input-group mb-3 search">
-              <div class="input-group-prepend">
-                <span class="input-group-text">
-                  <svg width="18" height="18" viewBox="0 0 22 22" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <path
-                      d="M21 21L19 19M10.5 20C11.7476 20 12.9829 19.7543 14.1355 19.2769C15.2881 18.7994 16.3354 18.0997 17.2175 17.2175C18.0997 16.3354 18.7994 15.2881 19.2769 14.1355C19.7543 12.9829 20 11.7476 20 10.5C20 9.25244 19.7543 8.0171 19.2769 6.86451C18.7994 5.71191 18.0997 4.66464 17.2175 3.78249C16.3354 2.90033 15.2881 2.20056 14.1355 1.72314C12.9829 1.24572 11.7476 1 10.5 1C7.98044 1 5.56408 2.00089 3.78249 3.78249C2.00089 5.56408 1 7.98044 1 10.5C1 13.0196 2.00089 15.4359 3.78249 17.2175C5.56408 18.9991 7.98044 20 10.5 20V20Z"
-                      stroke="black" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path>
-                  </svg>
-                </span>
-              </div>
-              <input type="text" [id]="'searchTextActive'" [(ngModel)]="searchTextActive" (input)="p=1"
-                style="z-index: unset; height: 45px;" name="searchTextActive" placeholder="{{'Search'}}"
-                autocomplete="off" class="form-control input-md pl-3" />
-            </div>
-            <div class="col text-right">
-              <button *ngIf="isExportPDF" class="btn btn-primary text-right mb-2" (click)="createPdf()">{{'Export PDF'}}</button>
-              <button class="btn btn-warning text-right mb-2" *ngIf="isExportCSV" (click)="exportExcel()">{{'Export Excel'}}</button>
-              <button class="btn btn-primary" *ngIf="isBulkCertDownload"><i class="bi bi-download"></i> {{'Download Certificates'}}</button>
-              <button type="button" *ngIf="tableNamesArray.includes(tableName)" class="btn btn-link add-more-btn" (click)="addNewRow(data.length)">
-            <i class="bi bi-plus-circle"></i> {{addNew}}
-          </button>
-            </div>
-            <div>
-            </div>
-          </div>
+  <div
+    class="d-flex justify-content-between align-items-center mb-3"
+    style="margin-top: 3%"
+  >
+    <div class="input-group search mb-4" style="max-width: 500px">
+      <div class="input-group-prepend">
+        <span class="input-group-text">
+          <!-- search icon -->
+        </span>
+      </div>
+      <input
+        type="text"
+        [(ngModel)]="searchTextActive"
+        (input)="p = 1"
+        class="form-control"
+        placeholder="Search"
+        autocomplete="off"
+      />
+    </div>
+
+    <div class="d-flex gap-2">
+      <button *ngIf="isExportPDF" class="btn btn-primary" (click)="createPdf()">
+        Export PDF
+      </button>
+      <button
+        *ngIf="isExportCSV"
+        class="btn btn-warning"
+        (click)="exportExcel()"
+      >
+        Export Excel
+      </button>
+      <button *ngIf="isBulkCertDownload" class="btn btn-primary">
+        <i class="bi bi-download"></i> Download Certificates
+      </button>
+      <button
+        *ngIf="tableNamesArray.includes(tableName)"
+        class="btn btn-link add-more-btn"
+        (click)="addNewRow(data.length)"
+      >
+        <i class="bi bi-plus-circle"></i> {{ addNew }}
+      </button>
+    </div>
+  </div>
+
   <div class="table-responsive">
     <table class="table table-striped w-100">
       <thead>
@@ -35,22 +53,63 @@
         </tr>
       </thead>
       <tbody>
-        <tr *ngFor="let item of data |  tableSearch:searchTextActive | paginate: { id: 'pagination2',itemsPerPage: 10, currentPage: p }; let i = index " [class.odd-row]="i % 2 === 0 ">
+        <tr
+          *ngFor="
+            let item of data
+              | tableSearch : searchTextActive
+              | paginate
+                : { id: 'pagination2', itemsPerPage: 10, currentPage: p };
+            let i = index
+          "
+          [class.odd-row]="i % 2 === 0"
+        >
           <td>{{ formatSerialNumber(i) }}</td>
-          <ng-container *ngIf="tableNamesArray.includes(tableName) && item.editable">
+          <ng-container
+            *ngIf="tableNamesArray.includes(tableName) && item.editable"
+          >
             <td *ngFor="let col of columns">
-                   <input  [(ngModel)]="item[col.key]" (change)="onActionClick('save', item, i)" class="form-control" required="true"/>
+              <input
+                [(ngModel)]="item[col.key]"
+                (change)="onActionClick('save', item, i)"
+                class="form-control"
+                required
+              />
               <!-- {{ item[col.key] }} -->
             </td>
           </ng-container>
-          <ng-container *ngIf="tableNamesArray.includes(tableName) && !item.editable">
-          <td *ngFor="let col of columns">{{ item[col.key] }}</td>
+          <ng-container
+            *ngIf="tableNamesArray.includes(tableName) && !item.editable"
+          >
+            <td *ngFor="let col of columns">{{ item[col.key] }}</td>
           </ng-container>
           <ng-container *ngIf="!tableNamesArray.includes(tableName)">
-          <td *ngFor="let col of columns" [innerHTML]="col.transform ? col.transform(item[col.key], item) : item[col.key]"></td>
+            <td *ngFor="let col of columns">
+              <ng-container *ngIf="col.isLink; else normalCell">
+                <a
+                  href="javascript:void(0)"
+                  class="text-primary"
+                  (click)="onLinkClick(col, item)"
+                >
+                  {{
+                    col.transform
+                      ? col.transform(item[col.key], item)
+                      : item[col.key]
+                  }}
+                </a>
+              </ng-container>
+              <ng-template #normalCell>
+                {{
+                  col.transform
+                    ? col.transform(item[col.key], item)
+                    : item[col.key]
+                }}
+              </ng-template>
+            </td>
           </ng-container>
 
-          <td *ngIf="!tableNamesArray.includes(tableName) && actions.length > 0">
+          <td
+            *ngIf="!tableNamesArray.includes(tableName) && actions.length > 0"
+          >
             <div class="action-buttons">
 
 
@@ -78,25 +137,33 @@
 
             </div>
           </td>
-          <td *ngIf="tableNamesArray.includes(tableName) && item.actions.length > 0">
+          <td
+            *ngIf="
+              tableNamesArray.includes(tableName) && item.actions.length > 0
+            "
+          >
             <div class="action-buttons">
-
-
-              <button *ngFor="let action of item.actions" type="button" class="btn btn-action {{ action.class }}"
-
-                (click)="onActionClick(action.name, item, i)" [title]="action.title">
+              <button
+                *ngFor="let action of actions"
+                type="button"
+                class="btn btn-action {{ action.class }}"
+                (click)="onActionClick(action.name, item, i)"
+                [title]="action.title"
+              >
                 <i class="bi {{ action.icon }}"></i>
               </button>
-
             </div>
           </td>
         </tr>
       </tbody>
     </table>
   </div>
-   <div class="card-footer py-4">
-            <nav aria-label="..." class="text-right">
-              <pagination-controls id="pagination2" (pageChange)="p = $event"></pagination-controls>
-            </nav>
-          </div>
+  <div class="card-footer py-4">
+    <nav aria-label="..." class="text-right">
+      <pagination-controls
+        id="pagination2"
+        (pageChange)="p = $event"
+      ></pagination-controls>
+    </nav>
+  </div>
 </div>

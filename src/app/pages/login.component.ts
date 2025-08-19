@@ -183,7 +183,7 @@ export class LoginComponent implements OnInit {
           this.toastr.success('Login successful!', 'Welcome');
           localStorage.setItem('username', response.data.username);
           localStorage.setItem('roleId', response.data.role.toString());
-          
+
           // Role-based redirect
           this.redirectBasedOnRole(response.data.role);
         } else {
@@ -220,7 +220,12 @@ export class LoginComponent implements OnInit {
 
     // Check if address is provided but not geocoded yet
     const addressValue = this.signUpForm.get('address')?.value;
-    if (addressValue && addressValue.trim().length > 10 && !this.addressLatitude && !this.addressLongitude) {
+    if (
+      addressValue &&
+      addressValue.trim().length > 10 &&
+      !this.addressLatitude &&
+      !this.addressLongitude
+    ) {
       this.toastr.warning(
         'Please wait for address validation to complete or check your address.',
         'Address Validation'
@@ -412,7 +417,7 @@ export class LoginComponent implements OnInit {
   }
 
   markFormGroupTouched(formGroup: FormGroup) {
-    Object.keys(formGroup.controls).forEach(key => {
+    Object.keys(formGroup.controls).forEach((key) => {
       const control = formGroup.get(key);
       control?.markAsTouched();
     });
@@ -423,9 +428,13 @@ export class LoginComponent implements OnInit {
    */
   onAddressChange() {
     const addressControl = this.signUpForm.get('address');
-    if (addressControl && addressControl.value && addressControl.value.trim().length > 10) {
+    if (
+      addressControl &&
+      addressControl.value &&
+      addressControl.value.trim().length > 10
+    ) {
       this.isGeocodingAddress = true;
-      
+
       this.geocodingService.geocodeAddress(addressControl.value).subscribe({
         next: (result: GeocodeResult | null) => {
           this.isGeocodingAddress = false;
@@ -454,7 +463,7 @@ export class LoginComponent implements OnInit {
             'Error occurred while finding location. Please try again.',
             'Geocoding Error'
           );
-        }
+        },
       });
     } else {
       this.addressLatitude = null;

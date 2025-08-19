@@ -8,7 +8,7 @@ import { AuthService } from '../../../services/auth.service';
   standalone: true,
   imports: [CommonModule],
   templateUrl: './training-section.component.html',
-  styleUrl: './training-section.component.css'
+  styleUrl: './training-section.component.css',
 })
 export class TrainingSectionComponent implements OnInit {
   userRole: number = 0;
@@ -25,6 +25,7 @@ export class TrainingSectionComponent implements OnInit {
   navigateToTrainingCertificate() {
     console.log('Navigating to Training Certificate Generation');
     this.router.navigate(['/admin/training-certificate-generation']);
+    this.router.navigate(['/admin/training-certificate-generation']);
   }
 
   navigateToResumeCertificate() {
@@ -36,10 +37,12 @@ export class TrainingSectionComponent implements OnInit {
   navigateToApprovedCertificates() {
     console.log('Navigating to Approved Certificates');
     this.router.navigate(['/admin/approvedrejectedTrainings']);
+    // this.router.navigate(['/admin/approved-certificate']);
   }
 
   navigateToAllTrainings() {
     console.log('Navigating to Approved Certificates');
+    this.router.navigate(['/admin/all-trainings']);
     this.router.navigate(['/admin/all-trainings']);
   }
 
@@ -55,15 +58,19 @@ export class TrainingSectionComponent implements OnInit {
 
   navigateToCertificateApproval() {
     this.router.navigate(['/admin/certificate-approval']);
+    this.router.navigate(['/admin/certificate-approval']);
+  }
+  navigateToCertificateAll() {
+    this.router.navigate(['/admin/all-certificate']);
   }
 
   navigateToSchemeManagementMaster() {
     this.router.navigate(['/admin/scheme-management']);
   }
-  
+
   navigateToTrainingTypeManagement() {
-      this.router.navigate(['/admin/training-type-management']);
-    }
+    this.router.navigate(['/admin/training-type-management']);
+  }
   navigateToUserProfileCreation() {
     this.router.navigate(['/admin/user-profile-creation']);
   }

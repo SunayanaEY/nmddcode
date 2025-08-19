@@ -19,8 +19,17 @@
 
   <!-- Top Row: Collapse Button -->
   <div class="sidebar-top-row d-flex align-items-center justify-content-start">
-    <button class="sidebar-toggle-btn" (click)="toggleSidebar()" aria-label="Toggle sidebar">
-      <i class="bi" [ngClass]="collapsed ? 'bi-chevron-double-right' : 'bi-chevron-double-left'"></i>
+    <button
+      class="sidebar-toggle-btn"
+      (click)="toggleSidebar()"
+      aria-label="Toggle sidebar"
+    >
+      <i
+        class="bi"
+        [ngClass]="
+          collapsed ? 'bi-chevron-double-right' : 'bi-chevron-double-left'
+        "
+      ></i>
     </button>
   </div>
 
@@ -28,13 +37,15 @@
   <div class="nav-container">
     <nav class="flex-grow-1">
       <!-- Common Dashboard -->
-      <a class="sidebar-link d-flex align-items-center mb-2 fw-bold"
-         [routerLink]="['training-module']" routerLinkActive="active"
-         [attr.title]="collapsed ? 'Dashboard' : null">
+      <a
+        class="sidebar-link d-flex align-items-center mb-2 fw-bold"
+        [routerLink]="['training-module']"
+        routerLinkActive="active"
+        [attr.title]="collapsed ? 'Dashboard' : null"
+      >
         <i class="bi bi-speedometer2 me-2"></i>
         <span class="sidebar-label" *ngIf="!collapsed">Training Dashboard</span>
       </a>
-      
 
       <!-- Central Admin Only Features -->
       <!-- <a class="sidebar-link d-flex align-items-center mb-2"
@@ -115,11 +126,18 @@
     </nav>
   </div> -->
 
-  <!-- Logout Section -->
-  <div class="sidebar-logout">
-    <button class="logout-btn" (click)="logout()" [title]="collapsed ? 'Logout' : ''">
-      <i class="bi bi-box-arrow-right"></i>
-      <span *ngIf="!collapsed" class="logout-text">Logout</span>
-    </button>
+      <!-- Logout Section -->
+      <div class="sidebar-logout">
+        <button
+          class="logout-btn"
+          (click)="logout()"
+          [title]="collapsed ? 'Logout' : ''"
+        >
+          <i class="bi bi-box-arrow-right"></i>
+          <span *ngIf="!collapsed" class="logout-text">Logout</span>
+        </button>
+      </div>
+      <!-- </div> -->
+    </nav>
   </div>
-<!-- </div> -->
+</div>

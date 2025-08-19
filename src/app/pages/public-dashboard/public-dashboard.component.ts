@@ -9,6 +9,12 @@ import { IndiaMapComponent } from './components/india-map/india-map.component';
 import { MonthlyChartComponent } from './components/monthly-chart/monthly-chart.component';
 import { AgeGroupChartComponent } from './components/age-group-chart/age-group-chart.component';
 import { ModeOfTrainingChartComponent } from './components/mode-of-training-chart/mode-of-training-chart.component';
+import {
+  ModalComponent,
+  ModalConfig,
+} from '../../components/modal/modal.component';
+import { CertificateLayoutComponent } from '../certificate-layout/certificate-layout.component';
+import { TrainingService } from '../training/services/training.service';
 
 export interface DashboardStats {
   totalTrainings: number;
@@ -30,9 +36,90 @@ export interface StateData {
   selector: 'app-public-dashboard',
   templateUrl: './public-dashboard.component.html',
   styleUrls: ['./public-dashboard.component.css'],
-  imports: [CommonModule, ReactiveFormsModule, MonthlyChartComponent, IndiaMapComponent, StatsCardsComponent, AgeGroupChartComponent, ModeOfTrainingChartComponent]
+  imports: [CommonModule, ReactiveFormsModule, MonthlyChartComponent, IndiaMapComponent, StatsCardsComponent, AgeGroupChartComponent, ModeOfTrainingChartComponent, CertificateLayoutComponent]
 })
 export class PublicDashboardComponent implements OnInit {
+  selectedItem: any;
+  //certificate modal component properties
+  showModal = false;
+  modalConfig: ModalConfig = {
+    title: 'Certificate Download',
+    showCloseButton: true,
+    showFooter: true,
+    primaryButtonText: 'Submit',
+    secondaryButtonText: 'Close',
+    fields: [
+      {
+        id: 'uin',
+        label: 'UIN',
+        type: 'text',
+        placeholder: 'Enter UIN',
+        required: true,
+      },
+      {
+        id: 'gmail',
+        label: 'Gmail',
+        type: 'email',
+        placeholder: 'Enter your Gmail',
+        required: true,
+      },
+      {
+        id: 'phone',
+        label: 'Phone',
+        type: 'tel',
+        placeholder: 'Enter phone number',
+        required: true,
+      },
+    ],
+  };
+  // openModal() {
+  //   this.showModal = true;
+  // }
+
+  onClose() {
+    this.showModal = false;
+  }
+
+  onSubmit(formData: any) {
+    this.trainingsService
+      .getCertificateDetails(formData.uin, formData.gmail, formData.phone)
+      .subscribe({
+        next: (res) => {
+          if (res && res.data) {
+            // Clone the data so we don’t overwrite directly
+            const modifiedData = {
+              ...res.data,
+              location: `${res.data.venueBlock}, ${res.data.venueDistrict}, ${res.data.venueState}`,
+              trainingDate: new Date(res.data.trainingDate).toLocaleDateString(
+                'en-GB'
+              ), // dd/mm/yyyy
+            };
+
+            this.selectedItem = modifiedData;
+
+            const modalElement = document.getElementById(
+              'viewCertificateModal'
+            );
+            if (modalElement) {
+              const modal = new (window as any).bootstrap.Modal(modalElement);
+              modal.show();
+            }
+          } else {
+            console.warn('No data found in response:', res);
+          }
+        },
+        error: (err) => {
+          console.error('Error fetching trainees:', err);
+        },
+      });
+
+    this.showModal = false; // close modal after submit
+  }
+
+  onSecondaryAction() {
+    this.showModal = false;
+  }
+
   dashboardStats: DashboardStats = {
     totalTrainings: 54,
     totalFarmers: 3932,
@@ -41,7 +128,7 @@ export class PublicDashboardComponent implements OnInit {
     trainingGrowth: 8,
     farmerGrowth: 24,
     approvedGrowth: 37,
-    issuedGrowth: 26
+    issuedGrowth: 26,
   };
 
   selectedState: StateData | null = null;
@@ -60,7 +147,8 @@ export class PublicDashboardComponent implements OnInit {
     private router: Router,
     private dashboardService: DashboardDataService,
     private locationService: LocationService,
-    private fb: FormBuilder
+    private fb: FormBuilder,
+    private trainingsService: TrainingService
   ) {
     this.filterForm = this.fb.group({
       stateId: [null],
@@ -141,7 +229,7 @@ export class PublicDashboardComponent implements OnInit {
             trainingGrowth: 8, // Keep existing growth values or calculate from API
             farmerGrowth: 24,
             approvedGrowth: 37,
-            issuedGrowth: 26
+            issuedGrowth: 26,
           };
         }
         this.isLoading = false;
@@ -150,7 +238,7 @@ export class PublicDashboardComponent implements OnInit {
         console.error('Error fetching training summary:', error);
         this.isLoading = false;
         // Keep default values on error
-      }
+      },
     });
   }
 
@@ -178,7 +266,7 @@ export class PublicDashboardComponent implements OnInit {
 
   downloadCertificate(): void {
     // TODO: Implement certificate download functionality
-    console.log('Download certificate clicked');
+    this.showModal = true;
   }
 
   exportData(): void {
