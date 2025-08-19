@@ -48,18 +48,4 @@
       Showing data for: <strong>{{ selectedState.stateName }}</strong>
     </small>
   </div>
-
-  <!-- Summary Stats -->
-  <div *ngIf="!isLoading && !chartLoading" class="chart-summary">
-    <div class="summary-item">
-      <i class="fas fa-users text-primary"></i>
-      <span class="summary-label">Age Groups</span>
-      <span class="summary-value">{{ getTotalAgeGroups() }}</span>
-    </div>
-    <div class="summary-item">
-      <i class="fas fa-chart-pie text-success"></i>
-      <span class="summary-label">Distribution</span>
-      <span class="summary-value">Balanced</span>
-    </div>
-  </div>
 </div>

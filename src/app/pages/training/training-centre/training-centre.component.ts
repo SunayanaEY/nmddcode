@@ -151,8 +151,8 @@ export class TrainingCentreComponent implements OnInit {
     },
     {
       name: 'toggle',
-      icon: 'bi-toggle-on',
-      class: 'btn-success',
+      icon: 'bi-power',
+      class: 'btn-toggle',
       title: 'Toggle Active/Inactive'
     },
     {

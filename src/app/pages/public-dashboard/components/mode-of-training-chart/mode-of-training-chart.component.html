@@ -48,38 +48,4 @@
       Showing data for: <strong>{{ selectedState.stateName }}</strong>
     </small>
   </div>
-
-  <!-- Summary Stats -->
-  <div *ngIf="!isLoading && !chartLoading" class="chart-summary">
-    <div class="summary-item">
-      <i class="fas fa-graduation-cap text-primary"></i>
-      <span class="summary-label">Training Modes</span>
-      <span class="summary-value">{{ getTotalModes() }}</span>
-    </div>
-    <div class="summary-item">
-      <i class="fas fa-trophy text-warning"></i>
-      <span class="summary-label">Most Popular</span>
-      <span class="summary-value">{{ getMostPopularMode() }}</span>
-    </div>
-  </div>
-
-  <!-- Mode Legend -->
-  <div *ngIf="!isLoading && !chartLoading" class="mode-legend">
-    <div class="legend-item online">
-      <i class="fas fa-laptop"></i>
-      <span>Online</span>
-    </div>
-    <div class="legend-item offline">
-      <i class="fas fa-users"></i>
-      <span>Offline</span>
-    </div>
-    <div class="legend-item hybrid">
-      <i class="fas fa-globe"></i>
-      <span>Hybrid</span>
-    </div>
-    <div class="legend-item field">
-      <i class="fas fa-map-marker-alt"></i>
-      <span>Field</span>
-    </div>
-  </div>
 </div>

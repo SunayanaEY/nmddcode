@@ -54,10 +54,26 @@
             <div class="action-buttons">
 
 
-              <button *ngFor="let action of actions" type="button" class="btn btn-action {{ action.class }}"
-
+              <button *ngFor="let action of actions" type="button" 
+                class="btn btn-action {{ action.class }}" 
+                [ngClass]="{
+                  'btn-toggle-active': action.name === 'toggle' && (item.active === true || item.active === 'true' || item.active === 'Active' || item.active === 'active'),
+                  'btn-toggle-inactive': action.name === 'toggle' && !(item.active === true || item.active === 'true' || item.active === 'Active' || item.active === 'active')
+                }"
                 (click)="onActionClick(action.name, item, i)" [title]="action.title">
-                <i class="bi {{ action.icon }}"></i>
+                <ng-container *ngIf="action.name === 'toggle'">
+                  <div class="toggle-switch">
+                    <div class="toggle-slider" [ngClass]="{
+                      'slider-active': item.active === true || item.active === 'true' || item.active === 'Active' || item.active === 'active',
+                      'slider-inactive': !(item.active === true || item.active === 'true' || item.active === 'Active' || item.active === 'active')
+                    }">
+                      <div class="toggle-button"></div>
+                    </div>
+                  </div>
+                </ng-container>
+                <ng-container *ngIf="action.name !== 'toggle'">
+                  <i class="bi {{ action.icon }}"></i>
+                </ng-container>
               </button>
 
             </div>
