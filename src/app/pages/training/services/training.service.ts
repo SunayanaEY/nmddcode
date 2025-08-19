@@ -32,6 +32,13 @@ export class TrainingService {
     const url = `${this.apiUrl}/trainees/manual-upload`;
     return this.http.post(url, participants);
   }
+  getAllTraining() {
+    return this.http.get<any>(this.url + `training/getAllTraining`).pipe(
+      map((res: any) => {
+        return res;
+      })
+    );
+  }
   getAllTrainings(trainingInstituteId: any) {
     return this.http
       .get<any>(

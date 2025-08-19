@@ -154,7 +154,7 @@ export class PublicDashboardComponent implements OnInit {
 
   loadDashboardData(): void {
     this.isLoading = true;
-    
+
     this.dashboardService.getTrainingSummaryCount().subscribe({
       next: (response) => {
         if (response.success) {
@@ -166,7 +166,7 @@ export class PublicDashboardComponent implements OnInit {
             trainingGrowth: 8, // Keep existing growth values or calculate from API
             farmerGrowth: 24,
             approvedGrowth: 37,
-            issuedGrowth: 26
+            issuedGrowth: 26,
           };
         }
         this.isLoading = false;
@@ -175,7 +175,7 @@ export class PublicDashboardComponent implements OnInit {
         console.error('Error fetching training summary:', error);
         this.isLoading = false;
         // Keep default values on error
-      }
+      },
     });
   }
 
@@ -195,7 +195,6 @@ export class PublicDashboardComponent implements OnInit {
 
   downloadCertificate(): void {
     // TODO: Implement certificate download functionality
-    alert('Download certificate clicked');
     this.showModal = true;
   }
 
