@@ -9,7 +9,7 @@ import { LoginResponse } from '../models/training.model';
 })
 export class TrainingService {
   private apiUrl = environment.apiUrl + 'api';
-  private  url = environment.apiUrl;
+  private url = environment.apiUrl;
 
   constructor(private http: HttpClient) {}
 
@@ -32,15 +32,53 @@ export class TrainingService {
     const url = `${this.apiUrl}/trainees/manual-upload`;
     return this.http.post(url, participants);
   }
- getAllTrainings(){
-     return this.http.get<any>(this.url + `training/getAllTraining`).pipe(map((res: any) => {
-      return res;
-    }));
+  getAllTrainings(trainingInstituteId: any) {
+    return this.http
+      .get<any>(
+        this.url + `training/getTrainingByCenter/` + trainingInstituteId
+      )
+      .pipe(
+        map((res: any) => {
+          return res;
+        })
+      );
+  }
+  getAllTrainees(
+    status: string,
+    trainingInstitueId: number,
+    trainingId: number
+  ): Observable<any> {
+    const url = `${this.apiUrl}/trainees/traineesByStatus`;
+
+    const formData = {
+      status: status,
+      trainingCenter: trainingInstitueId,
+      trainingId: trainingId,
+    };
+
+    return this.http.post(url, formData);
+  }
+  getCertificateDetails(
+    uin: string,
+    email: string,
+    contactNumber: string
+  ): Observable<any> {
+    const url = `${this.url}training/getTrainingCertificateDetails`;
+
+    const formData = {
+      uin: uin,
+      email: email,
+      contactNumber: contactNumber,
+    };
+
+    return this.http.post(url, formData);
   }
 
-  getTraineeList(id:any){
-    return this.http.get<any>(this.apiUrl + `/trainees/getTrainee/`+id).pipe(map((res: any) => {
-      return res;
-    }));
+  getTraineeList(id: any) {
+    return this.http.get<any>(this.apiUrl + `/trainees/getTrainee/` + id).pipe(
+      map((res: any) => {
+        return res;
+      })
+    );
   }
 }

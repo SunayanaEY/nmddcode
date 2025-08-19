@@ -19,84 +19,143 @@
 
   <!-- Top Row: Collapse Button -->
   <div class="sidebar-top-row d-flex align-items-center justify-content-start">
-    <button class="sidebar-toggle-btn" (click)="toggleSidebar()" aria-label="Toggle sidebar">
-      <i class="bi" [ngClass]="collapsed ? 'bi-chevron-double-right' : 'bi-chevron-double-left'"></i>
+    <button
+      class="sidebar-toggle-btn"
+      (click)="toggleSidebar()"
+      aria-label="Toggle sidebar"
+    >
+      <i
+        class="bi"
+        [ngClass]="
+          collapsed ? 'bi-chevron-double-right' : 'bi-chevron-double-left'
+        "
+      ></i>
     </button>
   </div>
 
   <!-- Menu Items -->
   <div class="nav-container">
     <nav class="flex-grow-1">
-      <a class="sidebar-link d-flex align-items-center mb-2"
-         [routerLink]="['training-module']" routerLinkActive="active"
-         [attr.title]="collapsed ? 'Training Module' : null" >
+      <a
+        class="sidebar-link d-flex align-items-center mb-2"
+        [routerLink]="['training-module']"
+        routerLinkActive="active"
+        [attr.title]="collapsed ? 'Training Module' : null"
+      >
         <i class="bi bi-book me-2"></i>
         <span class="sidebar-label" *ngIf="!collapsed">Training Module</span>
       </a>
-      <a class="sidebar-link d-flex align-items-center mb-2 fw-bold"
-         [routerLink]="['dashboard']" routerLinkActive="active"
-         [attr.title]="collapsed ? 'Dashboard' : null">
+      <a
+        class="sidebar-link d-flex align-items-center mb-2 fw-bold"
+        [routerLink]="['dashboard']"
+        routerLinkActive="active"
+        [attr.title]="collapsed ? 'Dashboard' : null"
+      >
         <i class="bi bi-speedometer2 me-2"></i>
         <span class="sidebar-label" *ngIf="!collapsed">Dashboard</span>
       </a>
-      <a class="sidebar-link d-flex align-items-center mb-2"
-         routerLink="/performance" routerLinkActive="active"
-         [attr.title]="collapsed ? 'Performance' : null" *ngIf="!adminRole">
+      <a
+        class="sidebar-link d-flex align-items-center mb-2"
+        routerLink="/performance"
+        routerLinkActive="active"
+        [attr.title]="collapsed ? 'Performance' : null"
+        *ngIf="!adminRole"
+      >
         <i class="bi bi-bar-chart-line me-2"></i>
-        <span class="sidebar-label" *ngIf="!collapsed" >Performance</span>
+        <span class="sidebar-label" *ngIf="!collapsed">Performance</span>
       </a>
-      <a class="sidebar-link d-flex align-items-center mb-2"
-         [routerLink]="['charts']" routerLinkActive="active"
-         [attr.title]="collapsed ? 'Analytics & Trends' : null" *ngIf="adminRole">
+      <a
+        class="sidebar-link d-flex align-items-center mb-2"
+        [routerLink]="['charts']"
+        routerLinkActive="active"
+        [attr.title]="collapsed ? 'Analytics & Trends' : null"
+        *ngIf="adminRole"
+      >
         <i class="bi bi-graph-up-arrow me-2"></i>
         <span class="sidebar-label" *ngIf="!collapsed">Analytics & Trends</span>
       </a>
-      <a class="sidebar-link d-flex align-items-center mb-2"
-         routerLink="/geo-mapping" routerLinkActive="active"
-         [attr.title]="collapsed ? 'Geo Mapping' : null" *ngIf="!adminRole">
+      <a
+        class="sidebar-link d-flex align-items-center mb-2"
+        routerLink="/geo-mapping"
+        routerLinkActive="active"
+        [attr.title]="collapsed ? 'Geo Mapping' : null"
+        *ngIf="!adminRole"
+      >
         <i class="bi bi-geo-alt me-2"></i>
         <span class="sidebar-label" *ngIf="!collapsed">Geo Mapping</span>
       </a>
-      <a class="sidebar-link d-flex align-items-center mb-2"
-         [routerLink]="['table-data']" routerLinkActive="active"
-         [attr.title]="collapsed ? 'Reports & Exp' : null" *ngIf="!adminRole">
+      <a
+        class="sidebar-link d-flex align-items-center mb-2"
+        [routerLink]="['table-data']"
+        routerLinkActive="active"
+        [attr.title]="collapsed ? 'Reports & Exp' : null"
+        *ngIf="!adminRole"
+      >
         <i class="bi bi-file-earmark-bar-graph me-2"></i>
         <span class="sidebar-label" *ngIf="!collapsed">Reports & Exp</span>
       </a>
-      <a class="sidebar-link d-flex align-items-center mt-2"
-         routerLink="/system" routerLinkActive="active"
-         [attr.title]="collapsed ? 'System Management' : null" *ngIf="!adminRole">
+      <a
+        class="sidebar-link d-flex align-items-center mt-2"
+        routerLink="/system"
+        routerLinkActive="active"
+        [attr.title]="collapsed ? 'System Management' : null"
+        *ngIf="!adminRole"
+      >
         <i class="bi bi-gear me-2"></i>
         <span class="sidebar-label" *ngIf="!collapsed">System Management</span>
       </a>
-      <a class="sidebar-link d-flex align-items-center mt-2"
-         routerLink="/all-trainings" routerLinkActive="active"
-         [attr.title]="collapsed ? 'System Management' : null" *ngIf="adminRole">
+      <a
+        class="sidebar-link d-flex align-items-center mt-2"
+        routerLink="/all-trainings"
+        routerLinkActive="active"
+        [attr.title]="collapsed ? 'System Management' : null"
+        *ngIf="adminRole"
+      >
         <i class="bi bi-gear me-2"></i>
         <span class="sidebar-label" *ngIf="!collapsed">Trainings Data</span>
       </a>
-      <a class="sidebar-link d-flex align-items-center mt-2"
-         routerLink="/schemes" routerLinkActive="active"
-         [attr.title]="collapsed ? 'System Management' : null" *ngIf="adminRole">
+      <a
+        class="sidebar-link d-flex align-items-center mt-2"
+        routerLink="/schemes"
+        routerLinkActive="active"
+        [attr.title]="collapsed ? 'System Management' : null"
+        *ngIf="adminRole"
+      >
         <i class="bi bi-person-check me-2"></i>
-        <span class="sidebar-label" *ngIf="!collapsed">Training Head Profile Management</span>
+        <span class="sidebar-label" *ngIf="!collapsed"
+          >Training Head Profile Management</span
+        >
       </a>
-      <a class="sidebar-link d-flex align-items-center mt-2"
-         routerLink="/dashboard/schemes" routerLinkActive="active"
-         [attr.title]="collapsed ? 'System Management' : null" *ngIf="adminRole">
+      <a
+        class="sidebar-link d-flex align-items-center mt-2"
+        routerLink="/dashboard/schemes"
+        routerLinkActive="active"
+        [attr.title]="collapsed ? 'System Management' : null"
+        *ngIf="adminRole"
+      >
         <i class="bi bi-justify me-2"></i>
         <span class="sidebar-label" *ngIf="!collapsed">Scheme Management</span>
       </a>
-            <a class="sidebar-link d-flex align-items-center mt-2"
-         routerLink="/dashboard/training-types" routerLinkActive="active"
-         [attr.title]="collapsed ? 'System Management' : null" *ngIf="adminRole">
+      <a
+        class="sidebar-link d-flex align-items-center mt-2"
+        routerLink="/dashboard/training-types"
+        routerLinkActive="active"
+        [attr.title]="collapsed ? 'System Management' : null"
+        *ngIf="adminRole"
+      >
         <i class="bi bi-view-stacked me-2"></i>
-        <span class="sidebar-label" *ngIf="!collapsed">Training Types Management</span>
+        <span class="sidebar-label" *ngIf="!collapsed"
+          >Training Types Management</span
+        >
       </a>
 
-            <a class="sidebar-link d-flex align-items-center mt-2"
-         routerLink="/activity-log" routerLinkActive="active"
-         [attr.title]="collapsed ? 'System Management' : null" *ngIf="adminRole">
+      <a
+        class="sidebar-link d-flex align-items-center mt-2"
+        routerLink="/activity-log"
+        routerLinkActive="active"
+        [attr.title]="collapsed ? 'System Management' : null"
+        *ngIf="adminRole"
+      >
         <i class="bi bi-list-columns me-2"></i>
         <span class="sidebar-label" *ngIf="!collapsed">Activity Log Feed</span>
       </a>
@@ -105,7 +164,11 @@
 
   <!-- Logout Section -->
   <div class="sidebar-logout">
-    <button class="logout-btn" (click)="logout()" [title]="collapsed ? 'Logout' : ''">
+    <button
+      class="logout-btn"
+      (click)="logout()"
+      [title]="collapsed ? 'Logout' : ''"
+    >
       <i class="bi bi-box-arrow-right"></i>
       <span *ngIf="!collapsed" class="logout-text">Logout</span>
     </button>

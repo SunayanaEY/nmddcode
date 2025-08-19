@@ -8,7 +8,7 @@ import { AuthService } from '../../../services/auth.service';
   standalone: true,
   imports: [CommonModule],
   templateUrl: './training-section.component.html',
-  styleUrl: './training-section.component.css'
+  styleUrl: './training-section.component.css',
 })
 export class TrainingSectionComponent implements OnInit {
   userRole: number = 0;
@@ -24,7 +24,7 @@ export class TrainingSectionComponent implements OnInit {
 
   navigateToTrainingCertificate() {
     console.log('Navigating to Training Certificate Generation');
-    this.router.navigate(['/dashboard/training-certificate-generation']);
+    this.router.navigate(['/admin/training-certificate-generation']);
   }
 
   navigateToResumeCertificate() {
@@ -35,14 +35,13 @@ export class TrainingSectionComponent implements OnInit {
 
   navigateToApprovedCertificates() {
     console.log('Navigating to Approved Certificates');
-    this.router.navigate(['/dashboard/approved-certificate']);
+    this.router.navigate(['/admin/approved-certificate']);
   }
 
   navigateToAllTrainings() {
     console.log('Navigating to Approved Certificates');
-    this.router.navigate(['/dashboard/all-trainings']);
+    this.router.navigate(['/admin/all-trainings']);
   }
-
 
   navigateToPendingApproval() {
     console.log('Navigating to Pending Approval');
@@ -51,18 +50,21 @@ export class TrainingSectionComponent implements OnInit {
   }
 
   navigateToCertificateApproval() {
-    this.router.navigate(['/dashboard/certificate-approval']);
+    this.router.navigate(['/admin/certificate-approval']);
+  }
+  navigateToCertificateAll() {
+    this.router.navigate(['/admin/all-certificate']);
   }
 
   navigateToUserProfileCreation() {
-    this.router.navigate(['/dashboard/user-profile-creation']);
+    this.router.navigate(['/admin/user-profile-creation']);
   }
 
   navigateToRegisteredDataEntryOperators(): void {
-    this.router.navigate(['/dashboard/training/registered-data-entry-operators']);
+    this.router.navigate(['/admin/training/registered-data-entry-operators']);
   }
 
   navigateToTrainingCentre() {
-    this.router.navigate(['/dashboard/training-centre']);
+    this.router.navigate(['/admin/training-centre']);
   }
 }

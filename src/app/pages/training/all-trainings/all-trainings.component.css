@@ -133,7 +133,21 @@ border: 1px solid whitesmoke;
   .modal-body {
     padding: 1rem;
   }
-
+/* 
   .detailsWidth{
     width: -webkit-fill-available
-  }
+  } */
+  .detailsWidth {
+  width: auto; 
+}
+
+.detailsValue {
+  display: inline-block; /* shrink to content */
+  max-width: 100%; /* prevent breaking layout */
+  white-space: normal; /* allow wrapping */
+  word-wrap: break-word; /* wrap long words */
+  padding: 6px 12px; /* keep form-control-like padding */
+  border: 1px solid #ced4da;
+  border-radius: 4px;
+  background-color: #fff;
+}

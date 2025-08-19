@@ -10,6 +10,7 @@ import { CertificateLayoutComponent } from '../../certificate-layout/certificate
 import { SchemeManagementComponent } from '../scheme-management/scheme-management.component';
 import { TrainingTypeManagementComponent } from '../training-type-management/training-type-management.component';
 import { RegisteredDataEntryOperatorsComponent } from '../../training/registered-data-entry-operators/registered-data-entry-operators.component';
+import { AllCertificateComponent } from '../../all-certificate/all-certificate.component';
 
 export const AdminLayoutRoutes: Routes = [
   {
@@ -42,6 +43,10 @@ export const AdminLayoutRoutes: Routes = [
   {
     path: 'approved-certificate',
     component: ApprovedCertificateComponent,
+  },
+  {
+    path: 'all-certificate',
+    component: AllCertificateComponent,
   },
   {
     path: 'all-trainings',

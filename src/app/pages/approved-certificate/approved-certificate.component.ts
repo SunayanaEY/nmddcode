@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { TrainingService } from '../training/services/training.service';
 import {
   BreadcrumbComponent,
   BreadcrumbItem,
@@ -27,6 +28,24 @@ import { CertificateLayoutComponent } from '../certificate-layout/certificate-la
 })
 export class ApprovedCertificateComponent {
   selectedItem: any;
+  isExportCSV: Boolean = true;
+  isExportPdf: Boolean = true;
+  // pdfHeaders: Array<string> = [
+  //   'Sr.No.',
+  //   'Training Title',
+  //   'Scheme',
+  //   'Training Institute',
+  //   'Trainer Name',
+  //   'Location',
+  //   'Training Date',
+  // ];
+  // columnKeys: Array<string> = [
+  //   'trainingTitle',
+  //   'scheme',
+  //   'trainingInstituteName',
+  //   'trainerName',
+  //   'trainingDate',
+  // ];
   selectedSignatureFile: File | null = null;
   breadcrumbItems: BreadcrumbItem[] = [
     { label: 'Training Module', url: '/dashboard/training-module' },
@@ -88,7 +107,32 @@ export class ApprovedCertificateComponent {
       status: 'Rejected',
     },
   ];
-
+  constructor(private trainingsService: TrainingService) {}
+  ngOnInit(): void {
+    this.trainingsService;
+    // .getAllTrainees('APPROVED',this.trainingInstituteId,this.trainingId)
+    // .subscribe((res) => {
+    //   this.trainingsList = res.data;
+    //   this.filteredData = [...this.trainingsList];
+    //   let index = 0;
+    //   this.trainingsList.forEach((ele) => {
+    //     console.log('data : ' + JSON.stringify(ele));
+    //     const datePipe = new DatePipe('en-US');
+    //     ele['location'] =
+    //       ele['venueBlock'] +
+    //       ',' +
+    //       ele['venueDistrict'] +
+    //       ',' +
+    //       ele['venueState'];
+    //     ele['trainingDate'] = datePipe.transform(
+    //       ele['trainingDate'],
+    //       'dd/MM/yyyy'
+    //     )!;
+    //     this.trainingsList[index] = ele;
+    //     index++;
+    //   });
+    // });
+  }
   get filteredTableData(): any[] {
     return this.tableData.filter((item) => {
       const matchesDate = this.filters.date

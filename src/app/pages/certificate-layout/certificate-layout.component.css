@@ -74,3 +74,20 @@
   justify-content: center;
   gap: 20px;
 }
+
+.certificate-logos .logo {
+  width: 80px;      /* Fixed width */
+  height: 80px;     /* Fixed height */
+  object-fit: contain; /* Ensures the whole logo fits inside */
+}
+.certificate-logos {
+  display: flex;
+  justify-content: space-between; /* Pushes logos to edges with one in middle */
+  align-items: center;
+  margin-bottom: 20px; /* Space before heading */
+}
+
+.certificate-logos img {
+  height: 60px; /* Adjust as needed */
+  object-fit: contain;
+}

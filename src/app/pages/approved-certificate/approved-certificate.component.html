@@ -32,14 +32,14 @@
       </select>
     </div>
 
-    <div class="action-buttons">
+    <!-- <div class="action-buttons">
       <button class="btn btn-outline-primary">
         <i class="bi bi-upload"></i> Export as Excel
       </button>
       <button class="btn btn-primary">
         <i class="bi bi-download"></i> Download Zip
       </button>
-    </div>
+    </div> -->
   </div>
 
   <div class="trainings-summary">
@@ -53,10 +53,12 @@
     [columns]="tableColumns"
     [data]="filteredTableData"
     [actions]="tableActions"
+    [isExportCSV]="isExportCSV"
+    [isExportPDF]="isExportPdf"
     (actionClick)="handleTableAction($event)"
   >
   </app-table>
-  <!-- View Modal -->
+
   <!-- Modal -->
   <div
     class="modal fade"

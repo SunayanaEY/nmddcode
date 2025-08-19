@@ -14,7 +14,6 @@ import { IndiaMapComponent } from './components/india-map/india-map.component';
 import { MonthlyChartComponent } from './components/monthly-chart/monthly-chart.component';
 import { AgeGroupChartComponent } from './components/age-group-chart/age-group-chart.component';
 import { ModeOfTrainingChartComponent } from './components/mode-of-training-chart/mode-of-training-chart.component';
-
 // Services
 import { DashboardDataService } from './services/dashboard-data.service';
 
@@ -25,15 +24,15 @@ const routes: Routes = [
     component: PublicDashboardComponent,
     data: {
       title: 'Public Dashboard - National Dairy Development Programme',
-      description: 'View training statistics, farmer data, and certificate information across India'
-    }
-  }
+      description:
+        'View training statistics, farmer data, and certificate information across India',
+    },
+  },
 ];
 
 @NgModule({
   declarations: [
     // Main component
-    
     // Child components
   ],
   imports: [
@@ -42,17 +41,16 @@ const routes: Routes = [
     FormsModule,
     ReactiveFormsModule,
     HttpClientModule,
-    
+
     // Router module
     RouterModule.forChild(routes),
-    
+
     // Third-party modules
-    NgxEchartsModule.forChild()
+    NgxEchartsModule.forChild(),
   ],
   providers: [
     // Services
-    DashboardDataService
+    DashboardDataService,
   ],
 })
-
-export class PublicDashboardModule { }
+export class PublicDashboardModule {}
