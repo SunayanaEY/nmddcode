@@ -27,6 +27,15 @@ export const AdminLayoutRoutes: Routes = [
     canActivate: [RoleGuard],
     data: { allowedRoles: [1] }
   },
+  {
+    path: 'activity-log',
+    loadComponent: () =>
+      import('../../training/activity-log/activity-log.component').then(
+        (m) => m.ActivityLogComponent
+      ),
+    canActivate: [RoleGuard],
+    data: { allowedRoles: [1] }
+  },
 
   // Training Institute Head Routes (Role 3)
   {

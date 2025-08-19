@@ -43,6 +43,9 @@ export class TrainingSectionComponent implements OnInit {
     this.router.navigate(['/admin/all-trainings']);
   }
 
+  navigateToActivityLog(): void {
+    this.router.navigate(['/admin/activity-log']);
+  }
 
   navigateToPendingApproval() {
     console.log('Navigating to Pending Approval');

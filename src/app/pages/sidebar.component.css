@@ -228,6 +228,7 @@
   flex: 1;
   overflow: visible;
   padding-right: 5px;
+  padding-bottom: 80px; /* Space for fixed logout button */
 }
 
 .nav-container nav {
@@ -398,10 +399,14 @@ nav.flex-grow-1 {
 
 /* Logout Section Styles */
 .sidebar-logout {
-  margin-top: auto;
-  padding: 10px;
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  padding: 15px;
   border-top: 1px solid rgba(255, 255, 255, 0.1);
-  /* background: rgba(0, 0, 0, 0.1); */
+  background: rgba(0, 0, 0, 0.1);
+  backdrop-filter: blur(10px);
 }
 
 .logout-btn {

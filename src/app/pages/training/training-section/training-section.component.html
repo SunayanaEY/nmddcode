@@ -55,6 +55,26 @@
           <p class="certificate-description">Add, delete or update schemes</p>
         </div>
       </div>
+
+      <!-- Activity Log Feed -->
+      <div class="certificate-card" (click)="navigateToActivityLog()" *ngIf="userRole === 1">
+        <div class="certificate-icon">
+          <svg width="48" height="48" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M3 3H21C21.5523 3 22 3.44772 22 4V20C22 20.5523 21.5523 21 21 21H3C2.44772 21 2 20.5523 2 20V4C2 3.44772 2.44772 3 3 3Z" stroke="currentColor" stroke-width="2" fill="none"/>
+            <path d="M6 8H18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+            <path d="M6 12H18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+            <path d="M6 16H12" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+            <circle cx="16" cy="16" r="2" fill="#28a745"/>
+            <circle cx="18" cy="14" r="1.5" fill="#ffc107"/>
+            <circle cx="14" cy="14" r="1.5" fill="#dc3545"/>
+          </svg>
+        </div>
+        <div class="certificate-content">
+           <h3 class="certificate-title">Activity Log Feed</h3>
+           <p class="certificate-description">Real-time feed of training uploads, approvals, and comments</p>
+         </div>
+      </div>
+
       <!-- Training Types Management -->
        <div class="certificate-card" (click)="navigateToTrainingTypeManagement()" *ngIf="userRole === 1">
         <div class="certificate-icon">

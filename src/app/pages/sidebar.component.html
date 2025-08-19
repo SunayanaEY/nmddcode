@@ -32,11 +32,12 @@
          [routerLink]="['training-module']" routerLinkActive="active"
          [attr.title]="collapsed ? 'Dashboard' : null">
         <i class="bi bi-speedometer2 me-2"></i>
-        <span class="sidebar-label" *ngIf="!collapsed">Dashboard</span>
+        <span class="sidebar-label" *ngIf="!collapsed">Training Dashboard</span>
       </a>
+      
 
       <!-- Central Admin Only Features -->
-      <a class="sidebar-link d-flex align-items-center mb-2"
+      <!-- <a class="sidebar-link d-flex align-items-center mb-2"
          [routerLink]="['scheme-management']" routerLinkActive="active"
          [attr.title]="collapsed ? 'Scheme Management' : null" *ngIf="canAccessAdminFeatures()">
         <i class="bi bi-justify me-2"></i>
@@ -49,7 +50,6 @@
         <span class="sidebar-label" *ngIf="!collapsed">Training Type Management</span>
       </a>
 
-      <!-- Training Institute Head Features -->
       <a class="sidebar-link d-flex align-items-center mb-2"
          [routerLink]="['user-profile-creation']" routerLinkActive="active"
          [attr.title]="collapsed ? 'User Profile Creation' : null" *ngIf="isTrainingHead()">
@@ -75,7 +75,6 @@
         <span class="sidebar-label" *ngIf="!collapsed">Training Centre</span>
       </a>
 
-      <!-- Data Entry Features -->
       <a class="sidebar-link d-flex align-items-center mb-2"
          [routerLink]="['manual-training-upload']" routerLinkActive="active"
          [attr.title]="collapsed ? 'Manual Training Upload' : null" *ngIf="canAccessDataEntry()">
@@ -95,7 +94,6 @@
         <span class="sidebar-label" *ngIf="!collapsed">Certificate Generation</span>
       </a>
 
-      <!-- Shared Features -->
       <a class="sidebar-link d-flex align-items-center mb-2"
          [routerLink]="['all-trainings']" routerLinkActive="active"
          [attr.title]="collapsed ? 'All Trainings' : null">
@@ -115,7 +113,7 @@
         <span class="sidebar-label" *ngIf="!collapsed">Training Status</span>
       </a>
     </nav>
-  </div>
+  </div> -->
 
   <!-- Logout Section -->
   <div class="sidebar-logout">
@@ -124,4 +122,4 @@
       <span *ngIf="!collapsed" class="logout-text">Logout</span>
     </button>
   </div>
-</div>
+<!-- </div> -->
