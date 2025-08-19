@@ -90,30 +90,60 @@
           Approved
         </button>
         <button 
-          class="filter-btn status-pending" 
-          [class.active]="selectedFilter === 'pending'"
-          (click)="filterLogs('pending')">
-          <span class="filter-icon">⏳</span>
-          Pending
-        </button>
-        <button 
-          class="filter-btn status-rejected" 
-          [class.active]="selectedFilter === 'rejected'"
-          (click)="filterLogs('rejected')">
-          <span class="filter-icon">❌</span>
-          Rejected
-        </button>
+        class="filter-btn status-rejected" 
+        [class.active]="selectedFilter === 'rejected'"
+        (click)="filterLogs('rejected')">
+        <span class="filter-icon">❌</span>
+        Rejected
+      </button>
+      <button 
+        class="filter-btn status-others" 
+        [class.active]="selectedFilter === 'others'"
+        (click)="filterLogs('others')">
+        <span class="filter-icon">📝</span>
+        Others
+      </button>
       </div>
     </div>
   </div>
 
+    <!-- Loading State -->
+    <div class="loading-container" *ngIf="isLoading">
+      <div class="loading-spinner">
+        <div class="spinner"></div>
+        <p>Loading activity logs...</p>
+      </div>
+    </div>
+
+    <!-- Error Message -->
+    <div class="error-container" *ngIf="errorMessage && !isLoading">
+      <div class="error-message">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M12 9V13M12 17H12.01M21 12C21 16.9706 16.9706 21 12 21C7.02944 21 3 16.9706 3 12C3 7.02944 7.02944 3 12 3C16.9706 3 21 7.02944 21 12Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+        <p>{{ errorMessage }}</p>
+        <button class="retry-btn" (click)="loadActivityLogs()">Try Again</button>
+      </div>
+    </div>
+
+    <!-- No Data Message -->
+    <div class="no-data-container" *ngIf="!isLoading && !errorMessage && filteredLogs.length === 0">
+      <div class="no-data-message">
+        <svg width="48" height="48" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M9 12L11 14L15 10M21 12C21 16.9706 16.9706 21 12 21C7.02944 21 3 16.9706 3 12C3 7.02944 7.02944 3 12 3C16.9706 3 21 7.02944 21 12Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+        <h3>No Activity Logs Found</h3>
+        <p>There are no activity logs for the selected date range and filters.</p>
+      </div>
+    </div>
+
     <!-- Results Summary -->
-    <div class="results-summary" *ngIf="filteredLogs.length > 0">
+    <div class="results-summary" *ngIf="!isLoading && !errorMessage && filteredLogs.length > 0">
       <p>Showing {{ (currentPage - 1) * itemsPerPage + 1 }} - {{ Math.min(currentPage * itemsPerPage, filteredLogs.length) }} of {{ filteredLogs.length }} activities</p>
     </div>
     
     <!-- Activity Feed -->
-    <div class="activity-feed" *ngIf="paginatedLogs.length > 0">
+    <div class="activity-feed" *ngIf="!isLoading && !errorMessage && paginatedLogs.length > 0">
       <div class="timeline">
         <div class="activity-item" 
              *ngFor="let log of paginatedLogs; trackBy: trackByLogId" 
