@@ -3,14 +3,14 @@ import { CommonModule } from '@angular/common';
 import * as d3 from 'd3';
 import * as topojson from 'topojson';
 import { StateData } from '../../public-dashboard.component';
+import { DashboardDataService, InstituteLocationData } from '../../services/dashboard-data.service';
 
 interface InstituteMarker {
   id: string;
   name: string;
   latitude: number;
   longitude: number;
-  stateCode: string;
-  totalTrainings: number;
+  address: string;
 }
 
 @Component({
@@ -34,19 +34,8 @@ export class IndiaMapComponent implements OnInit, AfterViewInit, OnDestroy {
   private width = 500;
   private height = 400;
 
-  // Mock data for institutes
-  private institutes: InstituteMarker[] = [
-    { id: '1', name: 'Delhi Institute', latitude: 28.6139, longitude: 77.2090, stateCode: 'DL', totalTrainings: 45 },
-    { id: '2', name: 'Mumbai Institute', latitude: 19.0760, longitude: 72.8777, stateCode: 'MH', totalTrainings: 38 },
-    { id: '3', name: 'Bangalore Institute', latitude: 12.9716, longitude: 77.5946, stateCode: 'KA', totalTrainings: 52 },
-    { id: '4', name: 'Chennai Institute', latitude: 13.0827, longitude: 80.2707, stateCode: 'TN', totalTrainings: 41 },
-    { id: '5', name: 'Kolkata Institute', latitude: 22.5726, longitude: 88.3639, stateCode: 'WB', totalTrainings: 33 },
-    { id: '6', name: 'Lucknow Institute', latitude: 26.8467, longitude: 80.9462, stateCode: 'UP', totalTrainings: 67 },
-    { id: '7', name: 'Jaipur Institute', latitude: 26.9124, longitude: 75.7873, stateCode: 'RJ', totalTrainings: 29 },
-    { id: '8', name: 'Ahmedabad Institute', latitude: 23.0225, longitude: 72.5714, stateCode: 'GJ', totalTrainings: 44 },
-    { id: '9', name: 'Hyderabad Institute', latitude: 17.3850, longitude: 78.4867, stateCode: 'TS', totalTrainings: 36 },
-    { id: '10', name: 'Pune Institute', latitude: 18.5204, longitude: 73.8567, stateCode: 'MH', totalTrainings: 31 }
-  ];
+  // Institute data from API
+  private institutes: InstituteMarker[] = [];
 
   // Mock state data
   private statesData: { [key: string]: StateData } = {
@@ -61,13 +50,38 @@ export class IndiaMapComponent implements OnInit, AfterViewInit, OnDestroy {
     'DL': { stateId: 'DL', stateName: 'Delhi' }
   };
 
+  constructor(private dashboardService: DashboardDataService) {}
+
   ngOnInit(): void {
     console.log('=== IndiaMapComponent ngOnInit START ===');
     console.log('Component inputs:', {
       selectedState: this.selectedState,
       isLoading: this.isLoading
     });
+    this.loadInstituteData();
     console.log('=== IndiaMapComponent ngOnInit END ===');
+  }
+
+  private loadInstituteData(): void {
+    this.dashboardService.getInstituteLocations().subscribe({
+      next: (data: InstituteLocationData[]) => {
+        this.institutes = data.map(institute => ({
+          id: institute.id,
+          name: institute.name,
+          latitude: institute.latitude,
+          longitude: institute.longitude,
+          address: institute.address
+        }));
+        console.log('✅ Loaded institute data:', this.institutes.length, 'institutes');
+        // Re-render markers if map is already initialized
+        if (this.g) {
+          this.addInstituteMarkers();
+        }
+      },
+      error: (error) => {
+        console.error('❌ Error loading institute data:', error);
+      }
+    });
   }
 
   ngAfterViewInit(): void {
@@ -391,22 +405,9 @@ export class IndiaMapComponent implements OnInit, AfterViewInit, OnDestroy {
           console.log(`📍 ${d.name} projected to x:${x} (lat:${d.latitude}, lng:${d.longitude})`);
           return x;
         } else {
-          // Fallback to simplified positioning
-          const centerX = this.width / 2;
-          let x;
-          switch (d.stateCode) {
-            case 'UP': x = centerX + 50; break;
-            case 'MH': x = centerX - 50; break;
-            case 'KA': x = centerX; break;
-            case 'TN': x = centerX + 20; break;
-            case 'WB': x = centerX + 100; break;
-            case 'RJ': x = centerX - 100; break;
-            case 'GJ': x = centerX - 150; break;
-            case 'TS': x = centerX + 70; break;
-            case 'DL': x = centerX + 30; break;
-            default: x = centerX;
-          }
-          console.log(`📍 ${d.name} positioned at simplified x:${x} (state:${d.stateCode})`);
+          // Fallback to center positioning when projection is not available
+          const x = this.width / 2;
+          console.log(`📍 ${d.name} positioned at fallback x:${x}`);
           return x;
         }
       })
@@ -418,22 +419,9 @@ export class IndiaMapComponent implements OnInit, AfterViewInit, OnDestroy {
           console.log(`📍 ${d.name} projected to y:${y}`);
           return y;
         } else {
-          // Fallback to simplified positioning
-          const centerY = this.height / 2;
-          let y;
-          switch (d.stateCode) {
-            case 'UP': y = centerY - 50; break;
-            case 'MH': y = centerY + 50; break;
-            case 'KA': y = centerY + 120; break;
-            case 'TN': y = centerY + 150; break;
-            case 'WB': y = centerY; break;
-            case 'RJ': y = centerY - 80; break;
-            case 'GJ': y = centerY; break;
-            case 'TS': y = centerY + 80; break;
-            case 'DL': y = centerY - 80; break;
-            default: y = centerY;
-          }
-          console.log(`📍 ${d.name} positioned at simplified y:${y}`);
+          // Fallback to center positioning when projection is not available
+          const y = this.height / 2;
+          console.log(`📍 ${d.name} positioned at fallback y:${y}`);
           return y;
         }
       })
@@ -499,7 +487,7 @@ export class IndiaMapComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   private onInstituteHover(event: any, institute: InstituteMarker): void {
-    this.showTooltip(event, `${institute.name}\nTrainings: ${institute.totalTrainings}`);
+    this.showTooltip(event, `${institute.name}\n${institute.address}`);
   }
 
   private showTooltip(event: any, text: string): void {

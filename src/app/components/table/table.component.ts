@@ -71,7 +71,11 @@ export class TableComponent {
   constructor(
     private excelService: ExcelService,
     private toatsr: ToastrService
-  ) {}
+  ) {
+    //this.p=1;
+  }
+
+  ngOnInit() {}
   onActionClick(action: string, item: any, index: number): void {
     this.actionClick.emit({ action, item, index });
   }
@@ -217,9 +221,10 @@ export class TableComponent {
   }
 
   addNewRow(len: number) {
+    // this.data.push({ schemeId: null, schemeTitle: '' ,editable:true,actions:[
     this.data.push({
-      schemeId: null,
-      schemeTitle: '',
+      id: null,
+      title: '',
       editable: true,
       actions: [
         {

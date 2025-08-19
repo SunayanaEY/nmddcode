@@ -36,7 +36,7 @@ import { TraineeDetails, TrainingsList } from '../models/training.model';
   styleUrl: './all-trainings.component.css',
 })
 export class AllTrainingsComponent {
-  private bootstrap: any;
+
   trainingDetails: any;
   @ViewChild('trainingDetailsModal')
   trainingDetailsModal!: ElementRef;
@@ -66,7 +66,7 @@ export class AllTrainingsComponent {
     'trainingDate',
   ];
   breadcrumbItems: BreadcrumbItem[] = [
-    { label: 'Training Module', url: '/dashboard/training-module' },
+    { label: 'Training Module', url: '/admin/training-module' },
     { label: 'All Registered Trainings' },
   ];
   tableColumns: TableColumn[] = [
@@ -94,6 +94,9 @@ export class AllTrainingsComponent {
 
   trainingInstituteId: any = sessionStorage.getItem('trainingHeadId');
 
+
+      pdfHeadersTrainee: Array<string> = ['Sr.No.',
+    'Name', 'Age', 'Gender','Contact','Email'
   // tableData: any[] = [
   //   {
   //     trainingTitle: 'ABC Training',

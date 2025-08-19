@@ -81,6 +81,28 @@ export class AuthService {
     return !!sessionStorage.getItem('user');
   }
 
+  getUserRole(): number | null {
+    const user = this.getUser();
+    return user ? user.role : null;
+  }
+
+  hasRole(allowedRoles: number[]): boolean {
+    const userRole = this.getUserRole();
+    return userRole !== null && allowedRoles.includes(userRole);
+  }
+
+  isAdmin(): boolean {
+    return this.getUserRole() === 1;
+  }
+
+  isTrainingHead(): boolean {
+    return this.getUserRole() === 3;
+  }
+
+  isDataEntryOperator(): boolean {
+    return this.getUserRole() === 4;
+  }
+
   register(formData: FormData): Observable<RegisterResponse> {
     // Explicitly set headers to let browser handle multipart/form-data
     const headers = new HttpHeaders();

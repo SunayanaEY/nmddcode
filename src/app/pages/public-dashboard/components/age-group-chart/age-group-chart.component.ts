@@ -1,7 +1,9 @@
-import { Component, Input, OnInit, OnChanges, SimpleChanges } from '@angular/core';
+import { Component, Input, OnInit, OnChanges, SimpleChanges, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { NgxEchartsDirective } from 'ngx-echarts';
 import { EChartsOption } from 'echarts';
+import { Subscription } from 'rxjs';
+import { DashboardDataService, AgeWiseDistributionResponse } from '../../services/dashboard-data.service';
 
 export interface AgeGroupData {
   ageGroup: string;
@@ -22,44 +24,54 @@ export interface StateData {
   templateUrl: './age-group-chart.component.html',
   styleUrls: ['./age-group-chart.component.css']
 })
-export class AgeGroupChartComponent implements OnInit, OnChanges {
+export class AgeGroupChartComponent implements OnInit, OnChanges, OnDestroy {
   @Input() selectedState: StateData | null = null;
   @Input() isLoading: boolean = false;
 
   chartOption: EChartsOption = {};
   chartLoading: boolean = false;
   chartInstance: any;
+  private dataSubscription?: Subscription;
+  private isLoadingData = false;
+  private apiData: AgeGroupData[] = [];
+
+  constructor(private dashboardService: DashboardDataService) {}
 
   // Mock data for age groups
   private allIndiaData: AgeGroupData[] = [
-    { ageGroup: '18-25', count: 1250, percentage: 32, color: '#FF6B6B' },
-    { ageGroup: '26-35', count: 1450, percentage: 37, color: '#4ECDC4' },
-    { ageGroup: '36-45', count: 890, percentage: 23, color: '#45B7D1' },
-    { ageGroup: '46-60', count: 310, percentage: 8, color: '#96CEB4' }
+    { ageGroup: '18-25', count: 0, percentage: 0, color: '#FF6B6B' },
+    { ageGroup: '26-35', count: 0, percentage: 0, color: '#4ECDC4' },
+    { ageGroup: '36-45', count: 0, percentage: 0, color: '#45B7D1' },
+    { ageGroup: '46-60', count: 0, percentage: 0, color: '#96CEB4' }
   ];
 
   private stateSpecificData: { [key: string]: AgeGroupData[] } = {
     'UP': [
-      { ageGroup: '18-25', count: 180, percentage: 30, color: '#FF6B6B' },
-      { ageGroup: '26-35', count: 210, percentage: 35, color: '#4ECDC4' },
-      { ageGroup: '36-45', count: 150, percentage: 25, color: '#45B7D1' },
-      { ageGroup: '46-60', count: 60, percentage: 10, color: '#96CEB4' }
+      { ageGroup: '18-25', count: 0, percentage: 0, color: '#FF6B6B' },
+      { ageGroup: '26-35', count: 0, percentage: 0, color: '#4ECDC4' },
+      { ageGroup: '36-45', count: 0, percentage: 0, color: '#45B7D1' },
+      { ageGroup: '46-60', count: 0, percentage: 0, color: '#96CEB4' }
     ],
     'MH': [
-      { ageGroup: '18-25', count: 120, percentage: 28, color: '#FF6B6B' },
-      { ageGroup: '26-35', count: 165, percentage: 38, color: '#4ECDC4' },
-      { ageGroup: '36-45', count: 110, percentage: 26, color: '#45B7D1' },
-      { ageGroup: '46-60', count: 35, percentage: 8, color: '#96CEB4' }
+      { ageGroup: '18-25', count: 0, percentage: 0, color: '#FF6B6B' },
+      { ageGroup: '26-35', count: 0, percentage: 0, color: '#4ECDC4' },
+      { ageGroup: '36-45', count: 0, percentage: 0, color: '#45B7D1' },
+      { ageGroup: '46-60', count: 0, percentage: 0, color: '#96CEB4' }
     ]
   };
 
   ngOnInit(): void {
-    this.updateChart();
+    this.loadAgeGroupData();
+  }
+
+  getTotalAgeGroups(): number {
+    const data = this.getChartData();
+    return data.length;
   }
 
   ngOnChanges(changes: SimpleChanges): void {
-    if (changes['selectedState'] || changes['isLoading']) {
-      this.updateChart();
+    if (changes['selectedState']) {
+      this.loadAgeGroupData();
     }
   }
 
@@ -80,6 +92,11 @@ export class AgeGroupChartComponent implements OnInit, OnChanges {
   }
 
   private getChartData(): AgeGroupData[] {
+    // Prioritize API data if available
+    if (this.apiData.length > 0) {
+      return this.apiData;
+    }
+    // Fallback to mock data
     if (this.selectedState && this.stateSpecificData[this.selectedState.stateId]) {
       return this.stateSpecificData[this.selectedState.stateId];
     }
@@ -228,12 +245,68 @@ export class AgeGroupChartComponent implements OnInit, OnChanges {
   }
 
   refreshChart(): void {
-    this.updateChart();
+    this.loadAgeGroupData();
   }
 
-  // TODO: Replace with actual API call
   private loadAgeGroupData(): void {
-    // This will be replaced with actual API integration
-    console.log('Loading age group data for:', this.selectedState?.stateName || 'All India');
+    // Prevent concurrent API calls
+    if (this.isLoadingData) {
+      return;
+    }
+
+    this.isLoadingData = true;
+    this.chartLoading = true;
+
+    // Unsubscribe from previous subscription if exists
+    if (this.dataSubscription) {
+      this.dataSubscription.unsubscribe();
+    }
+
+    this.dataSubscription = this.dashboardService.getAgeWiseDistribution().subscribe({
+      next: (response: AgeWiseDistributionResponse) => {
+        if (response.success && response.data) {
+          this.apiData = this.transformApiData(response.data);
+        } else {
+          console.warn('Invalid API response for age-wise distribution');
+          this.apiData = [];
+        }
+        this.updateChart();
+      },
+      error: (error) => {
+        console.error('Error fetching age-wise distribution data:', error);
+        this.apiData = [];
+        this.updateChart();
+      },
+      complete: () => {
+        this.isLoadingData = false;
+      }
+    });
+  }
+
+  private transformApiData(data: any): AgeGroupData[] {
+    const colors = ['#FF6B6B', '#4ECDC4', '#45B7D1', '#96CEB4', '#FECA57', '#FF9FF3'];
+    const result: AgeGroupData[] = [];
+    let colorIndex = 0;
+
+    Object.entries(data).forEach(([ageGroup, percentage]) => {
+      // Calculate approximate count based on percentage (assuming total of 10000 for demo)
+      const count = Math.round((percentage as number) * 100);
+      
+      result.push({
+        ageGroup,
+        count,
+        percentage: percentage as number,
+        color: colors[colorIndex % colors.length]
+      });
+      colorIndex++;
+    });
+
+    return result;
+  }
+
+  ngOnDestroy(): void {
+    if (this.dataSubscription) {
+      this.dataSubscription.unsubscribe();
+    }
   }
 }

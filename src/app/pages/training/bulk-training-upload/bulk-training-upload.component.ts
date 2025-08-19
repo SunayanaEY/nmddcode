@@ -17,12 +17,9 @@ import { TrainingService } from '../../../pages/training/services/training.servi
 })
 export class BulkTrainingUploadComponent implements OnInit {
   breadcrumbItems: BreadcrumbItem[] = [
-    { label: 'Training Module', url: '/dashboard/training-module' },
-    {
-      label: 'Training Certificate Generation',
-      url: '/dashboard/training-certificate-generation',
-    },
-    { label: 'Bulk Upload' },
+    { label: 'Training Module', url: '/admin/training-module' },
+    { label: 'Training Certificate Generation', url: '/admin/training-certificate-generation'},
+    { label: 'Bulk Training Upload' },
   ];
 
   validationErrors: any[] = [];

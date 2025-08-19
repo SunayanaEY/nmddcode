@@ -25,6 +25,7 @@ export class TrainingSectionComponent implements OnInit {
   navigateToTrainingCertificate() {
     console.log('Navigating to Training Certificate Generation');
     this.router.navigate(['/admin/training-certificate-generation']);
+    this.router.navigate(['/admin/training-certificate-generation']);
   }
 
   navigateToResumeCertificate() {
@@ -35,12 +36,18 @@ export class TrainingSectionComponent implements OnInit {
 
   navigateToApprovedCertificates() {
     console.log('Navigating to Approved Certificates');
+    this.router.navigate(['/admin/approvedrejectedTrainings']);
     this.router.navigate(['/admin/approved-certificate']);
   }
 
   navigateToAllTrainings() {
     console.log('Navigating to Approved Certificates');
     this.router.navigate(['/admin/all-trainings']);
+    this.router.navigate(['/admin/all-trainings']);
+  }
+
+  navigateToActivityLog(): void {
+    this.router.navigate(['/admin/activity-log']);
   }
 
   navigateToPendingApproval() {
@@ -51,20 +58,31 @@ export class TrainingSectionComponent implements OnInit {
 
   navigateToCertificateApproval() {
     this.router.navigate(['/admin/certificate-approval']);
+    this.router.navigate(['/admin/certificate-approval']);
   }
   navigateToCertificateAll() {
     this.router.navigate(['/admin/all-certificate']);
   }
 
+  navigateToSchemeManagementMaster() {
+    this.router.navigate(['/admin/scheme-management']);
+  }
+
+  navigateToTrainingTypeManagement() {
+    this.router.navigate(['/admin/training-type-management']);
+  }
   navigateToUserProfileCreation() {
+    this.router.navigate(['/admin/user-profile-creation']);
     this.router.navigate(['/admin/user-profile-creation']);
   }
 
   navigateToRegisteredDataEntryOperators(): void {
+    this.router.navigate(['/admin/registered-data-entry-operators']);
     this.router.navigate(['/admin/training/registered-data-entry-operators']);
   }
 
   navigateToTrainingCentre() {
+    this.router.navigate(['/admin/training-centre']);
     this.router.navigate(['/admin/training-centre']);
   }
 }

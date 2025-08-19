@@ -29,7 +29,7 @@ import {
 })
 export class TrainingCertificateGenerationComponent {
   breadcrumbItems: BreadcrumbItem[] = [
-    { label: 'Training Module', url: '/dashboard/training-module' },
+    { label: 'Training Module', url: '/admin/training-module' },
     { label: 'Training Certificate Generation' },
   ];
   trainingForm: FormGroup;

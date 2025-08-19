@@ -154,10 +154,29 @@ export class PublicDashboardComponent implements OnInit {
 
   loadDashboardData(): void {
     this.isLoading = true;
-    // TODO: Implement API call to fetch dashboard data
-    setTimeout(() => {
-      this.isLoading = false;
-    }, 1000);
+    
+    this.dashboardService.getTrainingSummaryCount().subscribe({
+      next: (response) => {
+        if (response.success) {
+          this.dashboardStats = {
+            totalTrainings: response.data.totalTrainingsConducted,
+            totalFarmers: response.data.totalFarmersTrained,
+            totalCertificatesApproved: response.data.totalCertificatesApproved,
+            totalCertificatesIssued: response.data.totalCertificatesIssued,
+            trainingGrowth: 8, // Keep existing growth values or calculate from API
+            farmerGrowth: 24,
+            approvedGrowth: 37,
+            issuedGrowth: 26
+          };
+        }
+        this.isLoading = false;
+      },
+      error: (error) => {
+        console.error('Error fetching training summary:', error);
+        this.isLoading = false;
+        // Keep default values on error
+      }
+    });
   }
 
   onStateSelected(stateData: StateData): void {

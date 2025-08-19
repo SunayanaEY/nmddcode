@@ -150,3 +150,8 @@
     gap: 4px;
   }
 }
+
+ .search{
+    width: 43%;
+    padding-left: 15px;
+  }

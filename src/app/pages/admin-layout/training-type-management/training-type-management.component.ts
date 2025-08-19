@@ -4,6 +4,7 @@ import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { ToastrService } from 'ngx-toastr';
 import { BreadcrumbComponent, BreadcrumbItem } from '../../../components/breadcrumb/breadcrumb.component';
 import { TableColumn, TableAction, TableComponent } from '../../../components/table/table.component';
+import { TrainingTypeService } from '../../training/services/training-type.service';
 
 @Component({
   selector: 'app-training-type-management',
@@ -28,12 +29,12 @@ isExportCSV:Boolean =false;
   ];
   columnKeys:Array<string> =['trainingTitle','date','scheme','location','submittedOn','status']
   breadcrumbItems: BreadcrumbItem[] = [
-      { label: 'Dashboard', url: '/dashboard' },
+      { label: 'Central Admin Login', url: '/dashboard' },
       { label: 'Training Type Management' }
     ];
     tableColumns: TableColumn[] = [
        // { key: 'schemeId', header: 'Training Title' },
-        { key: 'trainingType', header: 'Training Type' },
+        { key: 'title', header: 'Training Type' },
 
       ];
 
@@ -44,6 +45,9 @@ isExportCSV:Boolean =false;
         // { name: 'download', icon: 'bi bi-download', class: 'btn-success', title: 'Download' },
       ];
 
+
+      trainingTypeList:any[]=[];
+      trainingTypeListProcessed:any[]=[];
       changeTableActions(){
 
       }
@@ -56,17 +60,46 @@ isExportCSV:Boolean =false;
       ];
 
       constructor(private formBuilder: FormBuilder,
-        private modalService: NgbModal,private toastr: ToastrService
+        private modalService: NgbModal,private toastr: ToastrService,
+        private trainingTypeService:TrainingTypeService
       ){
 
+      }
+
+      ngOnInit(){
+        this.trainingTypeListProcessed = [];
+        this.trainingTypeService.getAllTrainingTypes().subscribe({
+          next:(res)=>{
+          this.trainingTypeList = res;
+          let index = 0;
+          this.trainingTypeList.forEach(ele=>{
+             let data={
+              id:ele['id'],
+              title:ele['trainingTypeName'],
+              editable:false,
+              actions: [...this.tableActions]
+
+            }
+
+            // ele['editable']= false;
+            // ele['actions'] = [...this.tableActions];
+
+            this.trainingTypeListProcessed.push(data);
+          });
+        },
+        error: (error) => {
+          this.toastr.error("Error while fetching training types!");
+        }
+      }
+      );
       }
       handleTableAction(event: { action: string, item: any, index: number }): void {
         this.event=event;
         if(this.event.action=='edit'){
 
-          this.tableData[this.event.index].editable=true;
+          this.trainingTypeListProcessed[this.event.index].editable=true;
 
-            this.tableData[this.event.index].actions= [
+            this.trainingTypeListProcessed[this.event.index].actions= [
 
         { name: 'save', icon: 'bi bi-save-fill', class: 'btn-info', title: 'Save' },
         { name: 'delete', icon: 'bi bi-trash', class: 'btn-info', title: 'Delete' },
@@ -74,7 +107,7 @@ isExportCSV:Boolean =false;
       ];
         }
         else if(this.event.action=='save'){
-          if(event.item.trainingType==null || event.item.trainingType==''){
+          if(event.item.title==null || event.item.title==''){
             this.toastr.warning("Please enter training type!");
           }else{
           this.confirmationMessage = "Confirm to Save the changes!";
@@ -82,8 +115,8 @@ isExportCSV:Boolean =false;
           }
          }
          else if(this.event.action=='delete'){
-          if(event.item.trainingType==null || event.item.trainingType==''){
-             this.tableData.splice(this.event.index,1);
+          if(event.item.title==null || event.item.title==''){
+             this.trainingTypeListProcessed.splice(this.event.index,1);
           }else{
           this.confirmationMessage = "Confirm to delete training type - "+event.item.trainingType;
           this.confirmChangeModal();
@@ -105,18 +138,49 @@ isExportCSV:Boolean =false;
       confirm(){
 
         if(this.event.action=='save'){
-          this.tableData[this.event.index].editable=false;
-          this.tableData[this.event.index] = this.event.item;
-          this.tableData[this.event.index].actions= [
-        { name: 'edit', icon: 'bi bi-pencil-fill', class: 'btn-info', title: 'Edit' },
-        //{ name: 'save', icon: 'bi bi-save-fill', class: 'btn-info', title: 'Save' },
-        { name: 'delete', icon: 'bi bi-trash', class: 'btn-info', title: 'Delete' },
-        // { name: 'download', icon: 'bi bi-download', class: 'btn-success', title: 'Download' },
-      ];
+          this.trainingTypeListProcessed[this.event.index].editable=false;
+        //   this.tableData[this.event.index] = this.event.item;
+        //   this.tableData[this.event.index].actions= [
+        // { name: 'edit', icon: 'bi bi-pencil-fill', class: 'btn-info', title: 'Edit' },
+        // //{ name: 'save', icon: 'bi bi-save-fill', class: 'btn-info', title: 'Save' },
+        // { name: 'delete', icon: 'bi bi-trash', class: 'btn-info', title: 'Delete' },
+        // // { name: 'download', icon: 'bi bi-download', class: 'btn-success', title: 'Download' },
+      // ];
+
+       let data = {
+            id:this.event.item.id,
+            trainingTypeName:this.event.item.title
+
+          }
+          this.trainingTypeService.saveTrainingType(data).subscribe({
+            next: (res:any)=>{
+            this.toastr.success("Saved Training Type successfully!");
+            this.ngOnInit();
+          },
+          error: (error)=>{
+             this.toastr.error("Error while saving Training Type!");
+          }
+        }
+
+      );
+
 
         }
         else if(this.event.action=='delete'){
-          this.tableData.splice(this.event.index,1);
+         this.trainingTypeService.deleteTrainingType(this.event.item.id).subscribe({
+            next: (res)=>{
+            this.toastr.success("Training Type deleted successfully!");
+            this.ngOnInit();
+          },
+          error: (error) => {
+            this.toastr.error("Error while deleting Training Type!");
+          }
+          // ,
+          // complete: ()=>{
+          //   this.ngOnInit();
+          // }
+
+        });
         }
         this.modalService.dismissAll();
       }

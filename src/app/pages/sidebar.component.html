@@ -36,141 +36,108 @@
   <!-- Menu Items -->
   <div class="nav-container">
     <nav class="flex-grow-1">
-      <a
-        class="sidebar-link d-flex align-items-center mb-2"
-        [routerLink]="['training-module']"
-        routerLinkActive="active"
-        [attr.title]="collapsed ? 'Training Module' : null"
-      >
-        <i class="bi bi-book me-2"></i>
-        <span class="sidebar-label" *ngIf="!collapsed">Training Module</span>
-      </a>
+      <!-- Common Dashboard -->
       <a
         class="sidebar-link d-flex align-items-center mb-2 fw-bold"
-        [routerLink]="['dashboard']"
+        [routerLink]="['training-module']"
         routerLinkActive="active"
         [attr.title]="collapsed ? 'Dashboard' : null"
       >
         <i class="bi bi-speedometer2 me-2"></i>
-        <span class="sidebar-label" *ngIf="!collapsed">Dashboard</span>
+        <span class="sidebar-label" *ngIf="!collapsed">Training Dashboard</span>
       </a>
-      <a
-        class="sidebar-link d-flex align-items-center mb-2"
-        routerLink="/performance"
-        routerLinkActive="active"
-        [attr.title]="collapsed ? 'Performance' : null"
-        *ngIf="!adminRole"
-      >
-        <i class="bi bi-bar-chart-line me-2"></i>
-        <span class="sidebar-label" *ngIf="!collapsed">Performance</span>
-      </a>
-      <a
-        class="sidebar-link d-flex align-items-center mb-2"
-        [routerLink]="['charts']"
-        routerLinkActive="active"
-        [attr.title]="collapsed ? 'Analytics & Trends' : null"
-        *ngIf="adminRole"
-      >
-        <i class="bi bi-graph-up-arrow me-2"></i>
-        <span class="sidebar-label" *ngIf="!collapsed">Analytics & Trends</span>
-      </a>
-      <a
-        class="sidebar-link d-flex align-items-center mb-2"
-        routerLink="/geo-mapping"
-        routerLinkActive="active"
-        [attr.title]="collapsed ? 'Geo Mapping' : null"
-        *ngIf="!adminRole"
-      >
-        <i class="bi bi-geo-alt me-2"></i>
-        <span class="sidebar-label" *ngIf="!collapsed">Geo Mapping</span>
-      </a>
-      <a
-        class="sidebar-link d-flex align-items-center mb-2"
-        [routerLink]="['table-data']"
-        routerLinkActive="active"
-        [attr.title]="collapsed ? 'Reports & Exp' : null"
-        *ngIf="!adminRole"
-      >
-        <i class="bi bi-file-earmark-bar-graph me-2"></i>
-        <span class="sidebar-label" *ngIf="!collapsed">Reports & Exp</span>
-      </a>
-      <a
-        class="sidebar-link d-flex align-items-center mt-2"
-        routerLink="/system"
-        routerLinkActive="active"
-        [attr.title]="collapsed ? 'System Management' : null"
-        *ngIf="!adminRole"
-      >
-        <i class="bi bi-gear me-2"></i>
-        <span class="sidebar-label" *ngIf="!collapsed">System Management</span>
-      </a>
-      <a
-        class="sidebar-link d-flex align-items-center mt-2"
-        routerLink="/all-trainings"
-        routerLinkActive="active"
-        [attr.title]="collapsed ? 'System Management' : null"
-        *ngIf="adminRole"
-      >
-        <i class="bi bi-gear me-2"></i>
-        <span class="sidebar-label" *ngIf="!collapsed">Trainings Data</span>
-      </a>
-      <a
-        class="sidebar-link d-flex align-items-center mt-2"
-        routerLink="/schemes"
-        routerLinkActive="active"
-        [attr.title]="collapsed ? 'System Management' : null"
-        *ngIf="adminRole"
-      >
-        <i class="bi bi-person-check me-2"></i>
-        <span class="sidebar-label" *ngIf="!collapsed"
-          >Training Head Profile Management</span
-        >
-      </a>
-      <a
-        class="sidebar-link d-flex align-items-center mt-2"
-        routerLink="/dashboard/schemes"
-        routerLinkActive="active"
-        [attr.title]="collapsed ? 'System Management' : null"
-        *ngIf="adminRole"
-      >
+
+      <!-- Central Admin Only Features -->
+      <!-- <a class="sidebar-link d-flex align-items-center mb-2"
+         [routerLink]="['scheme-management']" routerLinkActive="active"
+         [attr.title]="collapsed ? 'Scheme Management' : null" *ngIf="canAccessAdminFeatures()">
         <i class="bi bi-justify me-2"></i>
         <span class="sidebar-label" *ngIf="!collapsed">Scheme Management</span>
       </a>
-      <a
-        class="sidebar-link d-flex align-items-center mt-2"
-        routerLink="/dashboard/training-types"
-        routerLinkActive="active"
-        [attr.title]="collapsed ? 'System Management' : null"
-        *ngIf="adminRole"
-      >
+      <a class="sidebar-link d-flex align-items-center mb-2"
+         [routerLink]="['training-type-management']" routerLinkActive="active"
+         [attr.title]="collapsed ? 'Training Type Management' : null" *ngIf="canAccessAdminFeatures()">
         <i class="bi bi-view-stacked me-2"></i>
-        <span class="sidebar-label" *ngIf="!collapsed"
-          >Training Types Management</span
-        >
+        <span class="sidebar-label" *ngIf="!collapsed">Training Type Management</span>
       </a>
 
-      <a
-        class="sidebar-link d-flex align-items-center mt-2"
-        routerLink="/activity-log"
-        routerLinkActive="active"
-        [attr.title]="collapsed ? 'System Management' : null"
-        *ngIf="adminRole"
-      >
-        <i class="bi bi-list-columns me-2"></i>
-        <span class="sidebar-label" *ngIf="!collapsed">Activity Log Feed</span>
+      <a class="sidebar-link d-flex align-items-center mb-2"
+         [routerLink]="['user-profile-creation']" routerLinkActive="active"
+         [attr.title]="collapsed ? 'User Profile Creation' : null" *ngIf="isTrainingHead()">
+        <i class="bi bi-person-plus me-2"></i>
+        <span class="sidebar-label" *ngIf="!collapsed">User Profile Creation</span>
+      </a>
+      <a class="sidebar-link d-flex align-items-center mb-2"
+         [routerLink]="['registered-data-entry-operators']" routerLinkActive="active"
+         [attr.title]="collapsed ? 'Data Entry Operators' : null" *ngIf="canAccessTrainingFeatures()">
+        <i class="bi bi-people me-2"></i>
+        <span class="sidebar-label" *ngIf="!collapsed">Data Entry Operators</span>
+      </a>
+      <a class="sidebar-link d-flex align-items-center mb-2"
+         [routerLink]="['certificate-approval']" routerLinkActive="active"
+         [attr.title]="collapsed ? 'Certificate Approval' : null" *ngIf="canAccessTrainingFeatures()">
+        <i class="bi bi-check-circle me-2"></i>
+        <span class="sidebar-label" *ngIf="!collapsed">Certificate Approval</span>
+      </a>
+      <a class="sidebar-link d-flex align-items-center mb-2"
+         [routerLink]="['training-centre']" routerLinkActive="active"
+         [attr.title]="collapsed ? 'Training Centre' : null" *ngIf="canAccessTrainingFeatures()">
+        <i class="bi bi-building me-2"></i>
+        <span class="sidebar-label" *ngIf="!collapsed">Training Centre</span>
+      </a>
+
+      <a class="sidebar-link d-flex align-items-center mb-2"
+         [routerLink]="['manual-training-upload']" routerLinkActive="active"
+         [attr.title]="collapsed ? 'Manual Training Upload' : null" *ngIf="canAccessDataEntry()">
+        <i class="bi bi-upload me-2"></i>
+        <span class="sidebar-label" *ngIf="!collapsed">Manual Training Upload</span>
+      </a>
+      <a class="sidebar-link d-flex align-items-center mb-2"
+         [routerLink]="['bulk-training-upload']" routerLinkActive="active"
+         [attr.title]="collapsed ? 'Bulk Training Upload' : null" *ngIf="canAccessDataEntry()">
+        <i class="bi bi-cloud-upload me-2"></i>
+        <span class="sidebar-label" *ngIf="!collapsed">Bulk Training Upload</span>
+      </a>
+      <a class="sidebar-link d-flex align-items-center mb-2"
+         [routerLink]="['training-certificate-generation']" routerLinkActive="active"
+         [attr.title]="collapsed ? 'Certificate Generation' : null" *ngIf="canAccessDataEntry()">
+        <i class="bi bi-award me-2"></i>
+        <span class="sidebar-label" *ngIf="!collapsed">Certificate Generation</span>
+      </a>
+
+      <a class="sidebar-link d-flex align-items-center mb-2"
+         [routerLink]="['all-trainings']" routerLinkActive="active"
+         [attr.title]="collapsed ? 'All Trainings' : null">
+        <i class="bi bi-list-ul me-2"></i>
+        <span class="sidebar-label" *ngIf="!collapsed">All Trainings</span>
+      </a>
+      <a class="sidebar-link d-flex align-items-center mb-2"
+         [routerLink]="['approved-certificate']" routerLinkActive="active"
+         [attr.title]="collapsed ? 'Approved Certificates' : null">
+        <i class="bi bi-patch-check me-2"></i>
+        <span class="sidebar-label" *ngIf="!collapsed">Approved Certificates</span>
+      </a>
+      <a class="sidebar-link d-flex align-items-center mb-2"
+         [routerLink]="['approvedrejectedTrainings']" routerLinkActive="active"
+         [attr.title]="collapsed ? 'Training Status' : null" *ngIf="canAccessTrainingFeatures()">
+        <i class="bi bi-clipboard-check me-2"></i>
+        <span class="sidebar-label" *ngIf="!collapsed">Training Status</span>
       </a>
     </nav>
-  </div>
+  </div> -->
 
-  <!-- Logout Section -->
-  <div class="sidebar-logout">
-    <button
-      class="logout-btn"
-      (click)="logout()"
-      [title]="collapsed ? 'Logout' : ''"
-    >
-      <i class="bi bi-box-arrow-right"></i>
-      <span *ngIf="!collapsed" class="logout-text">Logout</span>
-    </button>
+      <!-- Logout Section -->
+      <div class="sidebar-logout">
+        <button
+          class="logout-btn"
+          (click)="logout()"
+          [title]="collapsed ? 'Logout' : ''"
+        >
+          <i class="bi bi-box-arrow-right"></i>
+          <span *ngIf="!collapsed" class="logout-text">Logout</span>
+        </button>
+      </div>
+      <!-- </div> -->
+    </nav>
   </div>
 </div>

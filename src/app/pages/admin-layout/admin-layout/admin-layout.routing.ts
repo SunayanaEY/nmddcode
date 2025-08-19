@@ -11,11 +11,39 @@ import { SchemeManagementComponent } from '../scheme-management/scheme-managemen
 import { TrainingTypeManagementComponent } from '../training-type-management/training-type-management.component';
 import { RegisteredDataEntryOperatorsComponent } from '../../training/registered-data-entry-operators/registered-data-entry-operators.component';
 import { AllCertificateComponent } from '../../all-certificate/all-certificate.component';
+import { ApprovedRejectedTrainingsComponent } from '../../training/approved-rejected-trainings/approved-rejected-trainings.component';
+import { RoleGuard } from '../../../guards/role.guard';
 
 export const AdminLayoutRoutes: Routes = [
+  // Central Admin Only Routes (Role 1)
+  {
+    path: 'scheme-management',
+    component: SchemeManagementComponent,
+    canActivate: [RoleGuard],
+    data: { allowedRoles: [1] },
+  },
+  {
+    path: 'training-type-management',
+    component: TrainingTypeManagementComponent,
+    canActivate: [RoleGuard],
+    data: { allowedRoles: [1] },
+  },
+  {
+    path: 'activity-log',
+    loadComponent: () =>
+      import('../../training/activity-log/activity-log.component').then(
+        (m) => m.ActivityLogComponent
+      ),
+    canActivate: [RoleGuard],
+    data: { allowedRoles: [1] },
+  },
+
+  // Training Institute Head Routes (Role 3)
   {
     path: 'certificate-approval',
     component: CertificateApprovalComponent,
+    canActivate: [RoleGuard],
+    data: { allowedRoles: [1] },
   },
   {
     path: 'user-profile-creation',
@@ -23,26 +51,57 @@ export const AdminLayoutRoutes: Routes = [
       import(
         '../../user-profile-creation/user-profile-creation.component'
       ).then((m) => m.UserProfileCreationComponent),
+    canActivate: [RoleGuard],
+    data: { allowedRoles: [3] },
   },
   {
     path: 'training-module',
     component: TrainingSectionComponent,
+    canActivate: [RoleGuard],
+    data: { allowedRoles: [1, 3, 4] },
   },
+  {
+    path: 'registered-data-entry-operators',
+    component: RegisteredDataEntryOperatorsComponent,
+    canActivate: [RoleGuard],
+    data: { allowedRoles: [3] },
+  },
+  {
+    path: 'training-centre',
+    loadComponent: () =>
+      import('../../training/training-centre/training-centre.component').then(
+        (m) => m.TrainingCentreComponent
+      ),
+    canActivate: [RoleGuard],
+    data: { allowedRoles: [1] },
+  },
+
+  // Data Entry Operator Routes (Role 4)
   {
     path: 'training-certificate-generation',
     component: TrainingCertificateGenerationComponent,
+    canActivate: [RoleGuard],
+    data: { allowedRoles: [4] },
   },
   {
     path: 'manual-training-upload',
     component: ManualTrainingUploadComponent,
+    canActivate: [RoleGuard],
+    data: { allowedRoles: [3, 4] },
   },
   {
     path: 'bulk-training-upload',
     component: BulkTrainingUploadComponent,
+    canActivate: [RoleGuard],
+    data: { allowedRoles: [3, 4] },
   },
+
+  // Shared Routes (Multiple Roles)
   {
     path: 'approved-certificate',
     component: ApprovedCertificateComponent,
+    canActivate: [RoleGuard],
+    data: { allowedRoles: [1, 3, 4] },
   },
   {
     path: 'all-certificate',
@@ -51,12 +110,26 @@ export const AdminLayoutRoutes: Routes = [
   {
     path: 'all-trainings',
     component: AllTrainingsComponent,
+    canActivate: [RoleGuard],
+    data: { allowedRoles: [1, 3, 4] },
   },
   {
-    path: 'training-centre',
-    loadComponent: () =>
-      import('../../training/training-centre/training-centre.component').then(
-        (m) => m.TrainingCentreComponent
-      ),
+    path: 'registered-data-entry-operators',
+    component: RegisteredDataEntryOperatorsComponent,
+    canActivate: [RoleGuard],
+    data: { allowedRoles: [3] },
+  },
+  {
+    path: 'approvedrejectedTrainings',
+    component: ApprovedRejectedTrainingsComponent,
+    canActivate: [RoleGuard],
+    data: { allowedRoles: [3] },
+  },
+
+  // Default route based on user role
+  {
+    path: '',
+    redirectTo: 'training-module',
+    pathMatch: 'full',
   },
 ];
