@@ -4,17 +4,7 @@ import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { BreadcrumbComponent, BreadcrumbItem } from '../../../components/breadcrumb/breadcrumb.component';
 import { AuthService } from '../../../services/auth.service';
-
-interface ActivityLogItem {
-  id: string;
-  type: string;
-  title: string;
-  description: string;
-  user: string;
-  timestamp: Date;
-  status: string;
-  details?: { [key: string]: string | undefined };
-}
+import { ActivityLogService, ActivityLogItem } from '../services/activity-log.service';
 
 @Component({
   selector: 'app-activity-log',
@@ -48,10 +38,15 @@ export class ActivityLogComponent implements OnInit {
   startDate: string = '';
   endDate: string = '';
   originalLogs: ActivityLogItem[] = [];
+  
+  // Loading and error states
+  isLoading: boolean = false;
+  errorMessage: string = '';
 
   constructor(
     private router: Router,
-    private authService: AuthService
+    private authService: AuthService,
+    private activityLogService: ActivityLogService
   ) {}
 
   ngOnInit(): void {
@@ -64,7 +59,56 @@ export class ActivityLogComponent implements OnInit {
   }
 
   loadActivityLogs(): void {
-    // Mock data - in real application, this would come from an API
+    // Get date range for API call (default to last 30 days if no dates selected)
+    const fromDate = this.startDate || this.getDefaultFromDate();
+    const toDate = this.endDate || this.getDefaultToDate();
+    
+    this.isLoading = true;
+    this.errorMessage = '';
+    
+    this.activityLogService.getActivityLogs(fromDate, toDate).subscribe({
+      next: (logs) => {
+        this.activityLogs = logs;
+        this.originalLogs = [...logs];
+        this.filteredLogs = [...logs];
+        this.filterLogs(this.selectedFilter);
+        this.updatePagination();
+        this.isLoading = false;
+      },
+      error: (error) => {
+        console.error('Error loading activity logs:', error);
+        this.errorMessage = 'Failed to load activity logs. Please try again later.';
+        this.activityLogs = [];
+        this.originalLogs = [];
+        this.filteredLogs = [];
+        this.updatePagination();
+        this.isLoading = false;
+      }
+    });
+  }
+
+  /**
+   * Get default from date (30 days ago)
+   */
+  private getDefaultFromDate(): string {
+    const date = new Date();
+    date.setDate(date.getDate() - 30);
+    return date.toISOString().split('T')[0];
+  }
+
+  /**
+   * Get default to date (today)
+   */
+  private getDefaultToDate(): string {
+    const date = new Date();
+    return date.toISOString().split('T')[0];
+  }
+
+  /**
+   * Load activity logs with mock data fallback
+   */
+  private loadMockActivityLogs(): void {
+    // Fallback mock data for development/testing
     const logs = [
       {
         id: 'log_001',
@@ -185,7 +229,7 @@ export class ActivityLogComponent implements OnInit {
   getStatusClass(status: string): string {
     switch (status) {
       case 'approved': return 'status-approved';
-      case 'pending': return 'status-pending';
+      case 'others': return 'status-others';
       case 'rejected': return 'status-rejected';
       default: return '';
     }
@@ -195,8 +239,8 @@ export class ActivityLogComponent implements OnInit {
     switch (status) {
       case 'approved':
         return '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M9 12L11 14L15 10" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M21 12C21 16.9706 16.9706 21 12 21C7.02944 21 3 16.9706 3 12C3 7.02944 7.02944 3 12 3C16.9706 3 21 7.02944 21 12Z" stroke="currentColor" stroke-width="2"/></svg>';
-      case 'pending':
-        return '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="2"/><path d="M12 6V12L16 14" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+      case 'others':
+        return '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="2"/><path d="M12 8V16" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M8 12H16" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>';
       case 'rejected':
         return '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="2"/><path d="M15 9L9 15" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M9 9L15 15" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>';
       default:
@@ -287,29 +331,36 @@ export class ActivityLogComponent implements OnInit {
   
   // Date filter methods
   filterByDateRange(): void {
-    if (!this.startDate && !this.endDate) {
-      this.activityLogs = [...this.originalLogs];
-    } else {
-      const start = this.startDate ? new Date(this.startDate) : new Date(0);
-      const end = this.endDate ? new Date(this.endDate) : new Date();
+    if (this.startDate && this.endDate) {
+      this.isLoading = true;
+      this.errorMessage = '';
       
-      // Set end date to end of day
-      end.setHours(23, 59, 59, 999);
-      
-      this.activityLogs = this.originalLogs.filter(log => {
-        const logDate = new Date(log.timestamp);
-        return logDate >= start && logDate <= end;
+      // Use API service to fetch logs with date range
+      this.activityLogService.getActivityLogs(this.startDate, this.endDate).subscribe({
+        next: (logs) => {
+          this.activityLogs = logs;
+          this.originalLogs = [...logs];
+          this.filteredLogs = [...logs];
+          this.filterLogs(this.selectedFilter);
+          this.updatePagination();
+          this.isLoading = false;
+        },
+        error: (error) => {
+          console.error('Error filtering activity logs by date:', error);
+          this.errorMessage = 'Failed to filter activity logs. Please try again.';
+          this.isLoading = false;
+        }
       });
+    } else {
+      // If no date range is selected, reload all logs with default range
+      this.loadActivityLogs();
     }
-    
-    // Reapply status filter
-    this.filterLogs(this.selectedFilter);
   }
   
   clearDateFilter(): void {
     this.startDate = '';
     this.endDate = '';
-    this.activityLogs = [...this.originalLogs];
-    this.filterLogs(this.selectedFilter);
+    // Reload logs with default date range
+    this.loadActivityLogs();
   }
 }
