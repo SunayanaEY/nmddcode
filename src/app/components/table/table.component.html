@@ -113,13 +113,15 @@
             <div class="action-buttons">
 
 
-              <button *ngFor="let action of actions" type="button" 
-                class="btn btn-action {{ action.class }}" 
-                [ngClass]="{
-                  'btn-toggle-active': action.name === 'toggle' && (item.active === true || item.active === 'true' || item.active === 'Active' || item.active === 'active'),
-                  'btn-toggle-inactive': action.name === 'toggle' && !(item.active === true || item.active === 'true' || item.active === 'Active' || item.active === 'active')
-                }"
-                (click)="onActionClick(action.name, item, i)" [title]="action.title">
+              <ng-container *ngFor="let action of actions">
+                <button type="button" 
+                  *ngIf="!action.condition || action.condition(item)"
+                  class="btn btn-action {{ action.class }}" 
+                  [ngClass]="{
+                    'btn-toggle-active': action.name === 'toggle' && (item.active === true || item.active === 'true' || item.active === 'Active' || item.active === 'active'),
+                    'btn-toggle-inactive': action.name === 'toggle' && !(item.active === true || item.active === 'true' || item.active === 'Active' || item.active === 'active')
+                  }"
+                  (click)="onActionClick(action.name, item, i)" [title]="action.title">
                 <ng-container *ngIf="action.name === 'toggle'">
                   <div class="toggle-switch">
                     <div class="toggle-slider" [ngClass]="{
@@ -134,6 +136,7 @@
                   <i class="bi {{ action.icon }}"></i>
                 </ng-container>
               </button>
+              </ng-container>
 
             </div>
           </td>

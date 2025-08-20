@@ -291,14 +291,14 @@
         </div>
         <div class="card-body">
           <app-table
-    [columns]="tableColumnsTrainee"
-    [data]="traineeList"
-    [actions]="tableActionsTrainee"
-    (actionClick)="handleTableAction($event)"
-    [isExportCSV]="isExportCSV" [isExportPDF]="isExportPdf"
-    [pdfHeaders]="pdfHeadersTrainee" [columnKeys]="columnKeysTrainee"
-    [fileName]="fileNameTrainees" [isBulkCertDownload]="isBulkCertDownload">
-  </app-table>
+          [columns]="tableColumnsTrainee"
+          [data]="traineeList"
+          [actions]="tableActionsTrainee"
+          (actionClick)="handleTableAction($event)"
+          [isExportCSV]="isExportCSV" [isExportPDF]="isExportPdf"
+          [pdfHeaders]="pdfHeadersTrainee" [columnKeys]="columnKeysTrainee"
+          [fileName]="fileNameTrainees" [isBulkCertDownload]="allTraineesApproved">
+        </app-table>
 
         </div>
       </div>
@@ -312,3 +312,41 @@
     <!-- </div>
     </div>
     </div> -->
+
+<!-- Reject Modal -->
+<ng-template #rejectModal let-modal>
+  <div class="modal-header bg-danger">
+    <h4 class="modal-title text-white">Reject Trainee</h4>
+    <button type="button" class="close text-white" aria-label="Close" (click)="modal.dismiss('Cross click')">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <div class="modal-body">
+    <form [formGroup]="rejectForm" (ngSubmit)="rejectTrainee()">
+      <div class="form-group">
+        <label for="remarks" class="form-label">Remarks for Rejection <span class="text-danger">*</span></label>
+        <textarea 
+          id="remarks"
+          class="form-control" 
+          formControlName="remarks" 
+          rows="4" 
+          placeholder="Please provide reason for rejection..."
+          [class.is-invalid]="rejectFormControls['remarks'].invalid && rejectFormControls['remarks'].touched">
+        </textarea>
+        <div class="invalid-feedback" *ngIf="rejectFormControls['remarks'].invalid && rejectFormControls['remarks'].touched">
+          <div *ngIf="rejectFormControls['remarks'].errors?.['required']">
+            Remarks are required for rejection.
+          </div>
+        </div>
+      </div>
+    </form>
+  </div>
+  <div class="modal-footer">
+    <button type="button" class="btn btn-secondary" (click)="modal.dismiss('Cancel')">
+      Cancel
+    </button>
+    <button type="button" class="btn btn-danger" (click)="rejectTrainee()" [disabled]="rejectForm.invalid">
+      Reject Trainee
+    </button>
+  </div>
+</ng-template>

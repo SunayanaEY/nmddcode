@@ -6,7 +6,9 @@ import { BreadcrumbComponent, BreadcrumbItem } from '../../../components/breadcr
 import { TableColumn, TableAction, TableComponent } from '../../../components/table/table.component';
 import { TrainingsList, TraineeDetails } from '../models/training.model';
 import { TrainingService } from '../services/training.service';
+import { AdminService } from '../services/training-admin.service';
 import { NgSelectModule } from '@ng-select/ng-select';
+import { ToastrService } from 'ngx-toastr';
 
 @Component({
   selector: 'app-all-trainings-admin',
@@ -21,11 +23,17 @@ export class AllTrainingsAdminComponent {
     trainingDetails:any;
   @ViewChild('trainingDetailsModal')
   trainingDetailsModal!: ElementRef;
+  @ViewChild('rejectModal')
+  rejectModal!: ElementRef;
   submitted:Boolean = false;
    trainingForm!: FormGroup;
+   rejectForm!: FormGroup;
+   selectedTraineeForReject: any = null;
+   currentTrainingInstituteId: string = '';
+   currentTrainingId: number = 0;
   isExportCSV:Boolean =true;
   isExportPdf:Boolean =true;
-  isBulkCertDownload:Boolean =false;
+  isBulkCertDownload:Boolean =true;
   fileName:String = 'All_trainings_';
   fileNameTrainees:String = 'All_trainee_List_';
   traineesFile:String = 'All_trainee_List_';
@@ -34,7 +42,7 @@ export class AllTrainingsAdminComponent {
   ];
   columnKeys:Array<string> =['trainingTitle','scheme','trainingInstituteName','trainerName','location','trainingDate','status']
   breadcrumbItems: BreadcrumbItem[] = [
-      { label: 'Training Module', url: '/dashboard/training-module' },
+      { label: 'Training Module', url: '/admin/training-module' },
       { label: 'Approve/Reject Trainings' }
     ];
     tableColumns: TableColumn[] = [
@@ -73,16 +81,22 @@ export class AllTrainingsAdminComponent {
       ];
 
       tableActionsTrainee: TableAction[] = [
-        //{ name: 'download', icon: 'bi bi-eye', class: 'btn-info', title: 'Download certificate' },
-        { name: 'download', icon: 'bi bi-download', class: 'btn-success', title: 'Download certificate',
+        { name: 'approve', icon: 'bi bi-check-circle', class: 'btn-success', title: 'Approve',
+          condition: (row: any) => row.status !== 'APPROVED',
+        },
+        { name: 'reject', icon: 'bi bi-x-circle', class: 'btn-danger', title: 'Reject',
+          condition: (row: any) => row.status !== 'REJECTED' && row.status !== 'APPROVED',
+        },
+        { name: 'download', icon: 'bi bi-download', class: 'btn-info', title: 'Download certificate',
           condition: (row: any) => row.status === 'APPROVED',
-         },
+        },
       ];
 
 
 
       constructor(private formBuilder: FormBuilder,
-        private modalService: NgbModal, private trainingsService: TrainingService
+        private modalService: NgbModal, private trainingsService: TrainingService,
+        private adminService: AdminService, private toastr: ToastrService
       ){
 
       }
@@ -93,6 +107,10 @@ export class AllTrainingsAdminComponent {
         id: [''],
         comment: ['', [Validators.required]],
         status: ['', [Validators.required]]
+      });
+      
+      this.rejectForm = this.formBuilder.group({
+        remarks: ['', [Validators.required]]
       });
       this.trainingsService.getAllTraining().subscribe(res => {
         this.trainingsList = res.data;
@@ -113,25 +131,42 @@ export class AllTrainingsAdminComponent {
 
       handleTableAction(event: { action: string, item: any, index: number }): void {
         console.log('Action:', event.action, 'Item:', event.item);
-        // const modal = new this.bootstrap.Modal(this.trainingDetailsModal.nativeElement);
-      //modal.show();
-      this.traineeList=[];
-      this.trainingDetails = event.item;
-      this.fileNameTrainees = this.traineesFile;
-      this.fileNameTrainees = this.fileNameTrainees+this.trainingDetails.trainingInstituteName+"_"+
-        this.trainingDetails.trainingTitle+"_";
-      this.trainingsService.getTraineeList(this.trainingDetails.id).subscribe(
-        res=>{
-          this.traineeList = res.data;
-        }
-      );
+        
+        if (event.action === 'view') {
+          this.traineeList=[];
+          this.trainingDetails = event.item;
+          // Set current training details for API calls
+          this.currentTrainingId = this.trainingDetails.id;
+          this.currentTrainingInstituteId = this.trainingDetails.trainingCenterId || this.trainingDetails.instituteId || '';
+          
+          this.fileNameTrainees = this.traineesFile;
+          this.fileNameTrainees = this.fileNameTrainees+this.trainingDetails.trainingInstituteName+"_"+
+            this.trainingDetails.trainingTitle+"_";
+          this.trainingsService.getTraineeList(this.trainingDetails.id).subscribe(
+            res=>{
+              this.traineeList = res.data;
+            }
+          );
 
-        this.modalService.open(this.trainingDetailsModal, {
-        size: 'xl',
-        scrollable: true,
-        backdrop: 'static',
-        keyboard: false
-      });
+          this.modalService.open(this.trainingDetailsModal, {
+            size: 'xl',
+            scrollable: true,
+            backdrop: 'static',
+            keyboard: false
+          });
+        } else if (event.action === 'approve') {
+          this.approveTrainee(event.item);
+        } else if (event.action === 'reject') {
+          this.selectedTraineeForReject = event.item;
+          this.rejectForm.reset();
+          this.modalService.open(this.rejectModal, {
+            size: 'md',
+            backdrop: 'static',
+            keyboard: false
+          });
+        } else if (event.action === 'download') {
+          this.downloadCertificate(event.item);
+        }
       }
 
 
@@ -221,6 +256,79 @@ export class AllTrainingsAdminComponent {
 
   keyFunc(){
 
+  }
+
+  approveTrainee(trainee: any): void {
+    debugger;
+    const payload = {
+      trainingInstituteId: this.currentTrainingInstituteId,
+      trainingId: this.currentTrainingId,
+      traineeIds: [trainee.id]
+    };
+
+    this.adminService.approveTrainees(payload).subscribe({
+       next: (response) => {
+         if (response.success) {
+           trainee.status = 'APPROVED';
+           this.toastr.success(response.data.message || 'Trainee approved successfully', 'Success');
+         } else {
+           this.toastr.error(response.message || 'Failed to approve trainee', 'Error');
+         }
+       },
+       error: (error) => {
+         const errorMessage = error.error?.message || 'An error occurred while approving trainee';
+         this.toastr.error(errorMessage, 'Error');
+         console.error('Error approving trainee:', error);
+       }
+     });
+  }
+
+  rejectTrainee(): void {
+    if (this.rejectForm.valid && this.selectedTraineeForReject) {
+      const remarks = this.rejectForm.get('remarks')?.value;
+      const payload = {
+        trainingInstituteId: this.currentTrainingInstituteId,
+        trainingId: this.currentTrainingId,
+        traineeIds: [this.selectedTraineeForReject.id],
+        rejectionRemarks: remarks
+      };
+
+      this.adminService.rejectTrainees(payload).subscribe({
+         next: (response) => {
+           if (response.success) {
+             this.selectedTraineeForReject.status = 'REJECTED';
+             this.selectedTraineeForReject.remarks = remarks;
+             this.toastr.success(response.data.message || 'Trainee rejected successfully', 'Success');
+           } else {
+             this.toastr.error(response.message || 'Failed to reject trainee', 'Error');
+           }
+           this.modalService.dismissAll();
+           this.selectedTraineeForReject = null;
+         },
+         error: (error) => {
+           const errorMessage = error.error?.message || 'An error occurred while rejecting trainee';
+           this.toastr.error(errorMessage, 'Error');
+           console.error('Error rejecting trainee:', error);
+           this.modalService.dismissAll();
+           this.selectedTraineeForReject = null;
+         }
+       });
+    }
+  }
+
+  downloadCertificate(trainee: any): void {
+    console.log('Downloading certificate for trainee:', trainee);
+    // Here you would typically call a service to download the certificate
+    // this.trainingsService.downloadCertificate(trainee.id).subscribe(...);
+  }
+
+  // Check if all trainees are approved to show bulk download button
+  get allTraineesApproved(): boolean {
+    return this.traineeList.length > 0 && this.traineeList.every(trainee => trainee.status === 'APPROVED');
+  }
+
+  get rejectFormControls() {
+    return this.rejectForm.controls;
   }
 
 }

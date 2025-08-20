@@ -129,4 +129,31 @@ export class AdminService {
       this.getHttpOptions()
     );
   }
+
+  // Approve trainees
+  approveTrainees(payload: {
+    trainingInstituteId: string;
+    trainingId: number;
+    traineeIds: number[];
+  }): Observable<{success: boolean, message: string, data: any, statusCode: number}> {
+    return this.http.post<{success: boolean, message: string, data: any, statusCode: number}>(
+      `${this.apiUrl}api/trainees/approve-trainees`,
+      payload,
+      this.getHttpOptions()
+    );
+  }
+
+  // Reject trainees
+  rejectTrainees(payload: {
+    trainingInstituteId: string;
+    trainingId: number;
+    traineeIds: number[];
+    rejectionRemarks: string;
+  }): Observable<{success: boolean, message: string, data: any, statusCode: number}> {
+    return this.http.post<{success: boolean, message: string, data: any, statusCode: number}>(
+      `${this.apiUrl}api/trainees/reject-trainees`,
+      payload,
+      this.getHttpOptions()
+    );
+  }
 }
