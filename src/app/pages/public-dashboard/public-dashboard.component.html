@@ -63,6 +63,15 @@
               >
                 <i class="fas fa-download me-2"></i>Download Certificate
               </button>
+              <app-modal
+                [show]="showModal"
+                [config]="modalConfig"
+                mode="create"
+                (close)="onClose()"
+                (primaryAction)="onSubmit($event)"
+                (secondaryAction)="onSecondaryAction()"
+              >
+              </app-modal>
               <!-- <button class="btn btn-outline-primary" (click)="filterByPeriod()">
                 <i class="fas fa-calendar me-2"></i>Filter Period
                 <small class="d-block">01 Jan 2024 - 31 Jan 2024</small>

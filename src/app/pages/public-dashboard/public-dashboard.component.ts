@@ -36,7 +36,7 @@ export interface StateData {
   selector: 'app-public-dashboard',
   templateUrl: './public-dashboard.component.html',
   styleUrls: ['./public-dashboard.component.css'],
-  imports: [CommonModule, ReactiveFormsModule, MonthlyChartComponent, IndiaMapComponent, StatsCardsComponent, AgeGroupChartComponent, ModeOfTrainingChartComponent, CertificateLayoutComponent]
+  imports: [CommonModule, ReactiveFormsModule, MonthlyChartComponent, IndiaMapComponent, StatsCardsComponent, AgeGroupChartComponent, ModeOfTrainingChartComponent, CertificateLayoutComponent, ModalComponent]
 })
 export class PublicDashboardComponent implements OnInit {
   selectedItem: any;
