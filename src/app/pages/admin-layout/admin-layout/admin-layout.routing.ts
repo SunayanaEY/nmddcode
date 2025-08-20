@@ -12,7 +12,9 @@ import { TrainingTypeManagementComponent } from '../training-type-management/tra
 import { RegisteredDataEntryOperatorsComponent } from '../../training/registered-data-entry-operators/registered-data-entry-operators.component';
 import { AllCertificateComponent } from '../../all-certificate/all-certificate.component';
 import { ApprovedRejectedTrainingsComponent } from '../../training/approved-rejected-trainings/approved-rejected-trainings.component';
+import { VerifyTrainingsComponent } from '../../training/verify-trainings/verify-trainings.component';
 import { RoleGuard } from '../../../guards/role.guard';
+import { AllTrainingsAdminComponent } from '../../training/all-trainings-admin/all-trainings-admin.component';
 
 export const AdminLayoutRoutes: Routes = [
   // Central Admin Only Routes (Role 1)
@@ -114,6 +116,12 @@ export const AdminLayoutRoutes: Routes = [
     data: { allowedRoles: [1, 3, 4] },
   },
   {
+    path: 'all-trainings-admin',
+    component: AllTrainingsAdminComponent,
+    canActivate: [RoleGuard],
+    data: { allowedRoles: [1] },
+  },
+  {
     path: 'registered-data-entry-operators',
     component: RegisteredDataEntryOperatorsComponent,
     canActivate: [RoleGuard],
@@ -127,6 +135,10 @@ export const AdminLayoutRoutes: Routes = [
   },
 
   // Default route based on user role
+  {
+    path: 'verifyTrainings',
+    component: VerifyTrainingsComponent,
+  },
   {
     path: '',
     redirectTo: 'training-module',

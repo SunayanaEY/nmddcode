@@ -88,7 +88,9 @@ export class TableComponent {
   }
 
   formatSerialNumber(index: number): string {
-    return String(index + 1).padStart(2, '0');
+    if(index<10)
+    {return String(index + 1).padStart(2, '0');}
+    else return String(index + 1);
   }
 
   createPdf() {

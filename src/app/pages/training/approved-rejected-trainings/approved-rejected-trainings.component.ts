@@ -20,6 +20,8 @@ import {
 import { TrainingsList, TraineeDetails } from '../models/training.model';
 import { TrainingService } from '../services/training.service';
 import { NgSelectModule } from '@ng-select/ng-select';
+import { error } from 'console';
+import { ToastrService } from 'ngx-toastr';
 
 @Component({
   selector: 'app-approved-rejected-trainings',
@@ -66,27 +68,36 @@ export class ApprovedRejectedTrainingsComponent {
     'status',
   ];
   breadcrumbItems: BreadcrumbItem[] = [
-    { label: 'Training Module', url: '/admin/training-module' },
-    { label: 'Approved/Rejected Trainings' },
-  ];
-  tableColumns: TableColumn[] = [
-    { key: 'trainingTitle', header: 'Training Title' },
-    { key: 'scheme', header: 'Scheme' },
-    { key: 'trainingInstituteName', header: 'Training Institute' },
-    { key: 'trainerName', header: 'Trainer Name' },
+      { label: 'Training Module', url: '/admin/training-module' },
+      { label: 'Approved Trainings' }
+    ];
+      breadcrumbItems2: BreadcrumbItem[] = [
+      { label: 'Training Module', url: '/admin/training-module' },
+      { label: 'Rejected Trainings' }
+    ];
+    tableColumns: TableColumn[] = [
+        { key: 'trainingTitle', header: 'Training Title' },
+        { key: 'scheme', header: 'Scheme' },
+        { key: 'trainingInstituteName', header: 'Training Institute' },
+        { key: 'trainerName', header: 'Trainer Name' },
 
     { key: 'location', header: 'Location' },
     { key: 'trainingDate', header: 'Training Date' },
     { key: 'status', header: 'Status' },
   ];
 
-  tableActions: TableAction[] = [
-    { name: 'view', icon: 'bi bi-eye', class: 'btn-info', title: 'View' },
-    // { name: 'download', icon: 'bi bi-download', class: 'btn-success', title: 'Download' },
-  ];
+      tableActions: TableAction[] = [
+        { name: 'view', icon: 'bi bi-eye', class: 'btn-info', title: 'View' },
+        { name: 'download', icon: 'bi bi-download', class: 'btn-success', title: 'Download' },
+      ];
+      tableActions2: TableAction[] = [
+        { name: 'view', icon: 'bi bi-eye', class: 'btn-info', title: 'View' },
+        // { name: 'download', icon: 'bi bi-download', class: 'btn-success', title: 'Download' },
+      ];
 
-  trainingsList: TrainingsList[] = [];
-  traineeList: TraineeDetails[] = [];
+      trainingsList: TrainingsList[]=[];
+      trainingsList2: TrainingsList[]=[];
+      traineeList:TraineeDetails[]=[];
 
   pdfHeadersTrainee: Array<string> = [
     'Sr.No.',
@@ -122,40 +133,66 @@ export class ApprovedRejectedTrainingsComponent {
     },
   ];
 
-  constructor(
-    private formBuilder: FormBuilder,
-    private modalService: NgbModal,
-    private trainingsService: TrainingService
-  ) {}
-  filteredData = [...this.trainingsList];
 
-  ngOnInit(): void {
-    this.trainingForm = this.formBuilder.group({
-      id: [''],
-      comment: ['', [Validators.required]],
-      status: ['', [Validators.required]],
-    });
-    this.trainingsService.getAllTraining().subscribe((res) => {
-      this.trainingsList = res.data;
-      this.filteredData = [...this.trainingsList];
-      let index = 0;
-      this.trainingsList.forEach((ele) => {
-        const datePipe = new DatePipe('en-US');
-        ele['location'] =
-          ele['venueBlock'] +
-          ',' +
-          ele['venueDistrict'] +
-          ',' +
-          ele['venueState'];
-        ele['trainingDate'] = datePipe.transform(
-          ele['trainingDate'],
-          'dd/MM/yyyy'
-        )!;
-        this.trainingsList[index] = ele;
-        index++;
+
+      constructor(private formBuilder: FormBuilder,
+        private modalService: NgbModal, private trainingsService: TrainingService,
+        private toastr: ToastrService
+      ){
+
+      }
+      filteredData = [...this.trainingsList];
+
+      ngOnInit(): void {
+        this.trainingForm = this.formBuilder.group({
+        id: [''],
+        comment: ['', [Validators.required]],
+        status: ['', [Validators.required]]
       });
-    });
-  }
+      this.trainingsService.getApprovedTrainings().subscribe({
+        next:(res) => {
+        this.trainingsList = res;
+        this.filteredData = [...this.trainingsList];
+        let index=0;
+        this.trainingsList.forEach(ele => {
+          const datePipe = new DatePipe('en-US');
+          ele['location'] = ele['venueBlock']+","+
+          ele['venueDistrict']+","+ele["venueState"];
+          ele['trainingDate']= datePipe.transform(ele['trainingDate'], 'dd/MM/yyyy')!;
+          this.trainingsList[index]=ele;
+          index++;
+        })
+      },
+      error: (err)=>{
+        this.toastr.error("Error while fetching data!");
+      }
+      }
+
+    );
+
+    this.trainingsService.getRejectedTrainings().subscribe({
+        next:(res) => {
+        this.trainingsList2 = res;
+        //this.filteredData = [...this.trainingsList];
+        let index=0;
+        this.trainingsList2.forEach(ele => {
+          const datePipe = new DatePipe('en-US');
+          ele['location'] = ele['venueBlock']+","+
+          ele['venueDistrict']+","+ele["venueState"];
+          ele['trainingDate']= datePipe.transform(ele['trainingDate'], 'dd/MM/yyyy')!;
+          this.trainingsList2[index]=ele;
+          index++;
+        })
+      },
+      error: (err)=>{
+        this.toastr.error("Error while fetching data!");
+      }
+      }
+
+    );
+
+
+      }
 
   handleTableAction(event: { action: string; item: any; index: number }): void {
     console.log('Action:', event.action, 'Item:', event.item);

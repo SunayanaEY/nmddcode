@@ -67,6 +67,7 @@
   gap: 6px;
   justify-content: center;
   flex-wrap: nowrap;
+  margin: 3px;
 }
 
 .btn-action {
