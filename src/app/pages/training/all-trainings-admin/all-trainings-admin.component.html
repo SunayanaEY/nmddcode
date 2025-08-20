@@ -309,6 +309,22 @@
         </button>
       </div>
     </ng-template>
+
+<!-- Certificate Modal -->
+<ng-template #certificateModal let-modal>
+  <div class="modal-header border-0">
+    <h4 class="modal-title text-dark">Training Certificate</h4>
+    <button type="button" class="btn-close" aria-label="Close" (click)="modal.dismiss('Cross click')">
+    </button>
+  </div>
+  <div class="modal-body p-0">
+    <app-certificate-layout 
+      *ngIf="certificateData" 
+      [data]="certificateData"
+      [uniqueId]="selectedTraineeForCertificate?.uin || 'UIN2025345780991'">
+    </app-certificate-layout>
+  </div>
+</ng-template>
     <!-- </div>
     </div>
     </div> -->

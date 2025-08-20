@@ -1,7 +1,7 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { NotificationDropdownComponent, Notification } from '../components/notification-dropdown/notification-dropdown.component';
-import { AdminService, NewRegisteredInstitute } from './training/services/training-admin.service';
+import { AdminService, NotificationItem } from './training/services/training-admin.service';
 
 @Component({
   selector: 'app-header',
@@ -34,9 +34,14 @@ export class HeaderComponent implements OnInit {
 
   loadNotifications(): void {
     this.isLoadingNotifications = true;
-    this.adminService.getAllNewRegisteredInstitutes().subscribe({
-      next: (institutes: NewRegisteredInstitute[]) => {
-        this.notifications = this.transformToNotifications(institutes);
+    this.adminService.getNotifications().subscribe({
+      next: (response) => {
+        if (response.success) {
+          this.notifications = this.transformToNotifications(response.data);
+        } else {
+          console.error('Failed to load notifications:', response.message);
+          this.notifications = [];
+        }
         this.isLoadingNotifications = false;
       },
       error: (error) => {
@@ -48,14 +53,14 @@ export class HeaderComponent implements OnInit {
     });
   }
 
-  private transformToNotifications(institutes: NewRegisteredInstitute[]): Notification[] {
-    return institutes.map((institute, index) => ({
-      id: index + 1,
-      title: 'New Training Institute Registration',
-      message: `${institute.trainingInstituteName} (${institute.contactPersonName}) has registered and is pending approval. Registration ID: ${institute.registrationId}`,
-      type: 'registration' as const,
-      timestamp: new Date(institute.createdAt),
-      read: false
+  private transformToNotifications(notificationItems: NotificationItem[]): Notification[] {
+    return notificationItems.map(item => ({
+      id: item.id,
+      title: item.title,
+      message: item.description,
+      type: 'info' as const,
+      timestamp: new Date(item.createdAt),
+      read: item.read
     }));
   }
 
@@ -87,16 +92,67 @@ export class HeaderComponent implements OnInit {
     this.showNotificationDropdown = false;
   }
 
-  markAsRead(notificationId: number): void {
+  onNotificationRead(notificationId: number): void {
+    // Find and mark the notification as read locally
     const notification = this.notifications.find(n => n.id === notificationId);
     if (notification) {
       notification.read = true;
+      
+      // Call API to mark notification as seen
+      this.adminService.markNotificationsAsSeen([notificationId]).subscribe({
+        next: (response) => {
+          if (!response.success) {
+            console.error('Failed to mark notification as seen:', response.message);
+            // Revert the local change if API call failed
+            notification.read = false;
+          }
+        },
+        error: (error) => {
+          console.error('Error marking notification as seen:', error);
+          // Revert the local change if API call failed
+          notification.read = false;
+        }
+      });
     }
   }
 
-  markAllAsRead(): void {
+  onMarkAllAsRead(): void {
+    // Get all unread notification IDs
+    const unreadNotificationIds = this.notifications
+      .filter(n => !n.read)
+      .map(n => n.id);
+    
+    if (unreadNotificationIds.length === 0) {
+      return; // No unread notifications
+    }
+    
+    // Mark all notifications as read locally
     this.notifications.forEach(notification => {
       notification.read = true;
+    });
+    
+    // Call API to mark all notifications as seen
+    this.adminService.markNotificationsAsSeen(unreadNotificationIds).subscribe({
+      next: (response) => {
+        if (!response.success) {
+          console.error('Failed to mark all notifications as seen:', response.message);
+          // Revert the local changes if API call failed
+          this.notifications.forEach(notification => {
+            if (unreadNotificationIds.includes(notification.id)) {
+              notification.read = false;
+            }
+          });
+        }
+      },
+      error: (error) => {
+        console.error('Error marking all notifications as seen:', error);
+        // Revert the local changes if API call failed
+        this.notifications.forEach(notification => {
+          if (unreadNotificationIds.includes(notification.id)) {
+            notification.read = false;
+          }
+        });
+      }
     });
   }
 

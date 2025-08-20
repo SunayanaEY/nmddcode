@@ -43,6 +43,31 @@ export interface NewRegisteredInstitute {
   instituteImageUrl: string;
 }
 
+export interface NotificationItem {
+  id: number;
+  userId: number;
+  userRole: string | null;
+  title: string;
+  description: string;
+  createdAt: string;
+  readAt: string | null;
+  read: boolean;
+}
+
+export interface NotificationResponse {
+  success: boolean;
+  message: string;
+  data: NotificationItem[];
+  statusCode: number;
+}
+
+export interface MarkAsSeenResponse {
+  success: boolean;
+  message: string;
+  data: boolean;
+  statusCode: number;
+}
+
 @Injectable({
   providedIn: 'root'
 })
@@ -122,10 +147,19 @@ export class AdminService {
     );
   }
 
-  // Get all newly registered institutes for notifications
-  getAllNewRegisteredInstitutes(): Observable<NewRegisteredInstitute[]> {
-    return this.http.get<NewRegisteredInstitute[]>(
-      `${this.apiUrl}training/getAllNewRegisteredInstitutes`,
+  // Get notifications
+  getNotifications(): Observable<NotificationResponse> {
+    return this.http.get<NotificationResponse>(
+      `${this.apiUrl}notification/list`,
+      this.getHttpOptions()
+    );
+  }
+
+  // Mark notifications as seen
+  markNotificationsAsSeen(notificationIds: number[]): Observable<MarkAsSeenResponse> {
+    return this.http.post<MarkAsSeenResponse>(
+      `${this.apiUrl}notification/markAsSeen`,
+      notificationIds,
       this.getHttpOptions()
     );
   }

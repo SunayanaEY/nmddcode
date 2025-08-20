@@ -9,11 +9,12 @@ import { TrainingService } from '../services/training.service';
 import { AdminService } from '../services/training-admin.service';
 import { NgSelectModule } from '@ng-select/ng-select';
 import { ToastrService } from 'ngx-toastr';
+import { CertificateLayoutComponent } from '../../certificate-layout/certificate-layout.component';
 
 @Component({
   selector: 'app-all-trainings-admin',
   imports: [CommonModule, BreadcrumbComponent, TableComponent,NgSelectModule,
-    ReactiveFormsModule,FormsModule],
+    ReactiveFormsModule,FormsModule, CertificateLayoutComponent],
   templateUrl: './all-trainings-admin.component.html',
   styleUrl: './all-trainings-admin.component.css'
 })
@@ -25,7 +26,11 @@ export class AllTrainingsAdminComponent {
   trainingDetailsModal!: ElementRef;
   @ViewChild('rejectModal')
   rejectModal!: ElementRef;
+  @ViewChild('certificateModal')
+  certificateModal!: ElementRef;
   submitted:Boolean = false;
+  certificateData: any = null;
+  selectedTraineeForCertificate: any = null;
    trainingForm!: FormGroup;
    rejectForm!: FormGroup;
    selectedTraineeForReject: any = null;
@@ -137,7 +142,7 @@ export class AllTrainingsAdminComponent {
           this.trainingDetails = event.item;
           // Set current training details for API calls
           this.currentTrainingId = this.trainingDetails.id;
-          this.currentTrainingInstituteId = this.trainingDetails.trainingCenterId || this.trainingDetails.instituteId || '';
+          this.currentTrainingInstituteId = this.trainingDetails.trainingInstituteId || this.trainingDetails.instituteId || '';
           
           this.fileNameTrainees = this.traineesFile;
           this.fileNameTrainees = this.fileNameTrainees+this.trainingDetails.trainingInstituteName+"_"+
@@ -318,8 +323,34 @@ export class AllTrainingsAdminComponent {
 
   downloadCertificate(trainee: any): void {
     console.log('Downloading certificate for trainee:', trainee);
-    // Here you would typically call a service to download the certificate
-    // this.trainingsService.downloadCertificate(trainee.id).subscribe(...);
+    this.selectedTraineeForCertificate = trainee;
+    
+    // Call the getCertificateDetails API
+    this.trainingsService.getCertificateDetails(
+      trainee.uin || '',
+      trainee.email || '',
+      trainee.contactNumber || ''
+    ).subscribe({
+      next: (response) => {
+        if (response && response.success) {
+          this.certificateData = response.data;
+          // Open certificate modal
+          this.modalService.open(this.certificateModal, {
+            size: 'xl',
+            scrollable: true,
+            backdrop: 'static',
+            keyboard: false
+          });
+        } else {
+          this.toastr.error(response.message || 'Failed to load certificate details', 'Error');
+        }
+      },
+      error: (error) => {
+        const errorMessage = error.error?.message || 'An error occurred while loading certificate details';
+        this.toastr.error(errorMessage, 'Error');
+        console.error('Error loading certificate details:', error);
+      }
+    });
   }
 
   // Check if all trainees are approved to show bulk download button
