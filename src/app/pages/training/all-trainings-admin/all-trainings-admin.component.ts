@@ -1,5 +1,5 @@
 import { CommonModule, DatePipe } from '@angular/common';
-import { Component, ElementRef, ViewChild } from '@angular/core';
+import { Component, ElementRef, ViewChild, ViewEncapsulation } from '@angular/core';
 import { FormGroup, FormBuilder, Validators, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { BreadcrumbComponent, BreadcrumbItem } from '../../../components/breadcrumb/breadcrumb.component';
@@ -8,7 +8,10 @@ import { TrainingsList, TraineeDetails } from '../models/training.model';
 import { TrainingService } from '../services/training.service';
 import { AdminService } from '../services/training-admin.service';
 import { NgSelectModule } from '@ng-select/ng-select';
-import { ToastrService } from 'ngx-toastr';
+import jsPDF from 'jspdf';
+import html2canvas from 'html2canvas';
+import JSZip from 'jszip';
+import saveAs from 'file-saver';import { ToastrService } from 'ngx-toastr';
 import { CertificateLayoutComponent } from '../../certificate-layout/certificate-layout.component';
 
 @Component({
@@ -17,10 +20,12 @@ import { CertificateLayoutComponent } from '../../certificate-layout/certificate
     ReactiveFormsModule,FormsModule, CertificateLayoutComponent],
   templateUrl: './all-trainings-admin.component.html',
   styleUrl: './all-trainings-admin.component.css'
+  // encapsulation: ViewEncapsulation.None
 })
 export class AllTrainingsAdminComponent {
 
-
+@ViewChild('certificateContent', { static: false })
+  certificateContent!: ElementRef;
     trainingDetails:any;
   @ViewChild('trainingDetailsModal')
   trainingDetailsModal!: ElementRef;
@@ -29,6 +34,7 @@ export class AllTrainingsAdminComponent {
   @ViewChild('certificateModal')
   certificateModal!: ElementRef;
   submitted:Boolean = false;
+  certificateZip = new JSZip();
   certificateData: any = null;
   selectedTraineeForCertificate: any = null;
    trainingForm!: FormGroup;
@@ -39,6 +45,7 @@ export class AllTrainingsAdminComponent {
   isExportCSV:Boolean =true;
   isExportPdf:Boolean =true;
   isBulkCertDownload:Boolean =true;
+  bulkCertificateDownload:any[]=[];
   fileName:String = 'All_trainings_';
   fileNameTrainees:String = 'All_trainee_List_';
   traineesFile:String = 'All_trainee_List_';
@@ -150,16 +157,38 @@ export class AllTrainingsAdminComponent {
           this.trainingsService.getTraineeList(this.trainingDetails.id).subscribe(
             res=>{
               this.traineeList = res.data;
+          this.traineeList.forEach(trainee => {
+            if(trainee.uin!=null && trainee.uin!='' &&
+              trainee.uin!=undefined
+            ){
+            let certDetail={
+              id:trainee.id,
+              logoPath1:this.trainingDetails.logoPath1,
+              logoPath2:this.trainingDetails.logoPath2,
+              logoPath3:this.trainingDetails.logoPath3,
+              name: trainee.name,
+              trainingInstituteName:this.trainingDetails.trainingInstituteName,
+              trainingTitle:this.trainingDetails.trainingTitle,
+              trainingDate:this.trainingDetails.trainingDate,
+              location:this.trainingDetails.location,
+              signatures:this.trainingDetails.signatures,
+              uin:trainee.uin
+            }
+
+            this.bulkCertificateDownload.push(certDetail);
+          }
+          });
+
             }
           );
 
-          this.modalService.open(this.trainingDetailsModal, {
-            size: 'xl',
-            scrollable: true,
-            backdrop: 'static',
-            keyboard: false
-          });
-        } else if (event.action === 'approve') {
+        this.modalService.open(this.trainingDetailsModal, {
+        size: 'xl',
+        scrollable: true,
+        backdrop: 'static',
+        keyboard: false
+      });
+      } else if (event.action === 'approve') {
           this.approveTrainee(event.item);
         } else if (event.action === 'reject') {
           this.selectedTraineeForReject = event.item;
@@ -174,6 +203,133 @@ export class AllTrainingsAdminComponent {
         }
       }
 
+      async download(event:{action:string}){
+        this.certificateZip = new JSZip();
+        let promise: any[]=  [];
+        let index=0;
+        this.bulkCertificateDownload.forEach(async (cert)=>{
+          const targetDiv = document.getElementById('certificate')!;
+          targetDiv.innerHTML = `<div class="certificate-wrapper" #certificateContent>
+  <div class="certificate-border">
+    <div class="certificate-logos">
+      <img src="${ cert.logoPath1 }" alt="Logo 1" crossorigin="anonymous" />
+      <img src="${ cert.logoPath2 }" alt="Logo 2" crossorigin="anonymous" />
+      <img src="${ cert.logoPath3 }" alt="Logo 3" crossorigin="anonymous" />
+    </div>
+    <div class="certificate-header">
+      <h2>Certificate of Completion</h2>
+      <p class="subtitle">This Certificate Is Proudly Presented To</p>
+      <h1 class="trainee-name">${ cert?.name }</h1>
+    </div>
+
+    <div class="certificate-body">
+      <p>
+        From <strong>${ cert?.trainingInstituteName }</strong> has successfully
+        completed the training program
+        <strong>${ cert?.trainingTitle }</strong> on
+        <strong>${ cert?.trainingDate }</strong
+        >, conducted at <strong>${ cert?.location }</strong
+        >.
+      </p>
+    </div>
+
+    <div class="certificate-footer">
+      <div class="signatures">
+        <div class="signature">
+        <p><img src="${cert.signatures[0].signatorySignaturePath }" alt="Logo 1" crossorigin="anonymous" /></p>
+         <p>_____________________</p>
+          <p>${ cert.signatures[0].signatoryName }</p>
+          <p>${ cert.signatures[0].signatoryDesignation }</p>
+          <p>${ cert.signatures[0].signatoryOrganization }</p>
+        </div>
+
+        <div class="qr-code">
+          <qrcode
+            [qrdata]="qrData"
+            [width]="100"
+            [errorCorrectionLevel]="'M'"
+          ></qrcode>
+          <p class="uid">UIN: ${ cert.uin }</p>
+        </div>
+        <div class="signature">
+          <p><img src="${ cert.signatures[1].signatorySignaturePath }" alt="Logo 1" crossorigin="anonymous" /></p>
+           <p>_____________________</p>
+          <p>${ cert.signatures[1].signatoryName }</p>
+          <p>${ cert.signatures[1].signatoryDesignation }</p>
+          <p>${ cert.signatures[1].signatoryOrganization }</p>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+</div>
+`
+// const element = document.querySelector('#certificate')!;
+// html2canvas(this.certificateContent.nativeElement, {
+   //promise.push(await this.createCertificatePDF(cert,index));
+   index++;
+          await this.createCertificatePDF(cert,index);
+   
+   
+        });
+    //     const zipBlob = await zip.generateAsync({ type: 'blob' });
+    // saveAs(zipBlob, 'Certificates.zip');
+
+//     Promise.all(promise).finally(()=>{
+//     this.certificateZip.generateAsync({type:"blob"}).then(function(content) {
+//   console.log("after zip generate");
+//   saveAs(content, "Certificates.zip");
+// })
+
+//   });
+//    await this.certificateZip.generateAsync({type:"blob"}).then(function(content) {
+//   console.log("after zip generate");
+//   saveAs(content, "Certificates.zip");
+// })
+      }
+
+        createCertificatePDF(cert:any,index:number): Promise<unknown>{
+       return new Promise(async (resolve) =>{ await html2canvas(document.querySelector('#certificate')!, {
+      useCORS: true, // allow cross-origin images
+      allowTaint: false, // don't allow tainted canvas
+      scale: 2, // better quality
+    }).then( (canvas) => {
+      // const canvas = await html2canvas(element as HTMLElement, {
+      //   useCORS: true, // allow cross-origin images
+      //   allowTaint: false, // don't allow tainted canvas
+      //   scale: 2, // better quality
+      // });
+      const imgData = canvas.toDataURL('image/png');
+      const pdf = new jsPDF('landscape', 'mm', 'a4');
+      const imgProps = pdf.getImageProperties(imgData);
+      const pdfWidth = pdf.internal.pageSize.getWidth();
+      const pdfHeight = (imgProps.height * pdfWidth) / imgProps.width;
+
+        pdf.addImage(imgData, 'PNG', 0, 0, pdfWidth, pdfHeight);
+      //pdf.save(`Certificate-${cert?.name || 'Trainee'}.pdf`);
+      const pdfBlob = pdf.output('blob');
+      this.certificateZip.file(`Certificate-${cert?.name+"_"+cert?.aadharMasked || 'Trainee'}.pdf`, pdfBlob);
+       //index++;
+    });
+    resolve("");
+    await this.delay(1000);
+  })
+  .finally(()=>{
+    if(index===this.bulkCertificateDownload.length){
+    this.certificateZip.generateAsync({type:"blob"}).then(function(content) {
+  console.log("after zip generate");
+  saveAs(content, "Certificates.zip");
+
+})
+const targetDiv = document.getElementById('certificate')!;
+          targetDiv.innerHTML = ``;
+    }
+
+  })
+      }
+       delay(ms:number) {
+  return new Promise((resolve) => setTimeout(resolve, ms));
+}
 
       filters = { trainingTitle:null,scheme: null, trainingInstituteName: null, trainerName: null ,location:null,
     trainingDate:null,status:null, district:null
