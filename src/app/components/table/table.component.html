@@ -42,7 +42,7 @@
       >
         Export Excel
       </button>
-      <button *ngIf="isBulkCertDownload" class="btn btn-primary">
+      <button *ngIf="isBulkCertDownload" class="btn btn-primary" (click)="downloadCerts('Download Certs')">
         <i class="bi bi-download"></i> Download Certificates
       </button>
       <button

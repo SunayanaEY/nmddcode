@@ -70,6 +70,11 @@ export class TableComponent {
     item: any;
     index: number;
   }>();
+  @Output() downloadAllCerts = new EventEmitter<{
+    action: string;
+    //item: any;
+    //index: number;
+  }>();
   @Output() linkClick = new EventEmitter<{ column: TableColumn; row: any }>();
   @Output() bulkActionClick = new EventEmitter<{
     action: string;
@@ -93,6 +98,10 @@ export class TableComponent {
     } else {
       this.linkClick.emit({ column, row });
     }
+  }
+  downloadCerts(action:string){
+
+    this.downloadAllCerts.emit({action:action});
   }
 
   formatSerialNumber(index: number): string {

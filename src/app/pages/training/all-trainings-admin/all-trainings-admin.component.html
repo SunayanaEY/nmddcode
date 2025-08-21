@@ -4,6 +4,7 @@
   <div class="page-header">
     <h2>Approve/Reject Trainings</h2>
   </div>
+  
 <div style="
 
     height: 34px;
@@ -140,6 +141,9 @@
     [pdfHeaders]="pdfHeaders" [columnKeys]="columnKeys"
     [fileName]="fileName">
   </app-table>
+  
+
+  
 </div>
 
 <ng-template #trainingDetailsModal let-modal>
@@ -147,6 +151,9 @@
     <div class="modal-dialog modal-sm">
 
     <div class="modal-content"> -->
+      <div  id="certificate">
+    
+</div>
       <div class="modal-header bg-appColor" style="
       background-color: #155e91;
       color:white !important;
@@ -300,7 +307,8 @@
           (bulkActionClick)="handleBulkAction($event)"
           [isExportCSV]="isExportCSV" [isExportPDF]="isExportPdf"
           [pdfHeaders]="pdfHeadersTrainee" [columnKeys]="columnKeysTrainee"
-          [fileName]="fileNameTrainees" [isBulkCertDownload]="allTraineesApproved">
+          [fileName]="fileNameTrainees" [isBulkCertDownload]="allTraineesApproved"
+    (downloadAllCerts)="download($event)">
         </app-table>
 
         </div>
