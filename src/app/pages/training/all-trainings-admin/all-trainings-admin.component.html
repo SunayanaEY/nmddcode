@@ -295,6 +295,9 @@
           [data]="traineeList"
           [actions]="tableActionsTrainee"
           (actionClick)="handleTableAction($event)"
+          [enableMultiSelect]="enableMultiSelectTrainee"
+          [bulkActions]="bulkActionsTrainee"
+          (bulkActionClick)="handleBulkAction($event)"
           [isExportCSV]="isExportCSV" [isExportPDF]="isExportPdf"
           [pdfHeaders]="pdfHeadersTrainee" [columnKeys]="columnKeysTrainee"
           [fileName]="fileNameTrainees" [isBulkCertDownload]="allTraineesApproved">
@@ -332,12 +335,20 @@
 <!-- Reject Modal -->
 <ng-template #rejectModal let-modal>
   <div class="modal-header bg-danger">
-    <h4 class="modal-title text-white">Reject Trainee</h4>
-    <button type="button" class="close text-white" aria-label="Close" (click)="modal.dismiss('Cross click')">
+    <h4 class="modal-title text-white">
+      {{ selectedTraineesForBulkReject.length > 0 ? 'Bulk Reject Trainees' : 'Reject Trainee' }}
+    </h4>
+    <button type="button" class="close text-white" aria-label="Close" (click)="modal.dismiss('Cross click'); onRejectModalDismiss()">
       <span aria-hidden="true">&times;</span>
     </button>
   </div>
   <div class="modal-body">
+    <div *ngIf="selectedTraineesForBulkReject.length > 0" class="mb-3">
+      <p class="text-muted">
+        You are about to reject <strong>{{ selectedTraineesForBulkReject.length }}</strong> trainee(s). 
+        Please provide remarks for the rejection.
+      </p>
+    </div>
     <form [formGroup]="rejectForm" (ngSubmit)="rejectTrainee()">
       <div class="form-group">
         <label for="remarks" class="form-label">Remarks for Rejection <span class="text-danger">*</span></label>
@@ -358,11 +369,11 @@
     </form>
   </div>
   <div class="modal-footer">
-    <button type="button" class="btn btn-secondary" (click)="modal.dismiss('Cancel')">
+    <button type="button" class="btn btn-secondary" (click)="modal.dismiss('Cancel'); onRejectModalDismiss()">
       Cancel
     </button>
     <button type="button" class="btn btn-danger" (click)="rejectTrainee()" [disabled]="rejectForm.invalid">
-      Reject Trainee
+      {{ selectedTraineesForBulkReject.length > 0 ? 'Reject Selected Trainees' : 'Reject Trainee' }}
     </button>
   </div>
 </ng-template>

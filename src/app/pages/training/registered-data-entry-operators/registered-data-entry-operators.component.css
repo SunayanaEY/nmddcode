@@ -31,6 +31,21 @@
   opacity: 0.8;
 }
 
+.icon-wrapper {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 60px;
+  height: 60px;
+  border-radius: 12px;
+  flex-shrink: 0;
+}
+
+.icon-wrapper i {
+  font-size: 1.5rem;
+  color: white;
+}
+
 .bg-primary {
   background: linear-gradient(135deg, #667eea 0%, #764ba2 100%) !important;
 }

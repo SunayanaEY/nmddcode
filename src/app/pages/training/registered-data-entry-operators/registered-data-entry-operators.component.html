@@ -22,61 +22,61 @@
 
   <!-- Statistics Cards -->
   <div class="row mb-4">
-    <div class="col-md-3">
-      <div class="card bg-primary text-white">
-        <div class="card-body">
-          <div class="d-flex justify-content-between align-items-center">
-            <div>
-              <h5 class="card-title mb-0">Total Operators</h5>
-              <h3 class="mb-0">{{ tableData.length }}</h3>
+    <div class="col-md-3 mb-3">
+      <div class="card border-0 shadow-sm h-100">
+        <div class="card-body p-4">
+          <div class="d-flex align-items-center">
+            <div class="icon-wrapper bg-primary bg-opacity-10 rounded-3 p-3 me-3">
+              <i class="fas fa-users text-white fa-lg"></i>
             </div>
-            <div class="card-icon">
-              <i class="fas fa-users fa-2x"></i>
+            <div>
+              <h2 class="fw-bold mb-0 text-dark">{{ tableData.length }}</h2>
+              <p class="text-muted mb-0 small">Total Operators</p>
             </div>
           </div>
         </div>
       </div>
     </div>
-    <div class="col-md-3">
-      <div class="card bg-success text-white">
-        <div class="card-body">
-          <div class="d-flex justify-content-between align-items-center">
-            <div>
-              <h5 class="card-title mb-0">Active Operators</h5>
-              <h3 class="mb-0">{{ getActiveOperatorsCount() }}</h3>
+    <div class="col-md-3 mb-3">
+      <div class="card border-0 shadow-sm h-100">
+        <div class="card-body p-4">
+          <div class="d-flex align-items-center">
+            <div class="icon-wrapper bg-success bg-opacity-10 rounded-3 p-3 me-3">
+              <i class="fas fa-user-check text-white fa-lg"></i>
             </div>
-            <div class="card-icon">
-              <i class="fas fa-user-check fa-2x"></i>
+            <div>
+              <h2 class="fw-bold mb-0 text-dark">{{ getActiveOperatorsCount() }}</h2>
+              <p class="text-muted mb-0 small">Active Operators</p>
             </div>
           </div>
         </div>
       </div>
     </div>
-    <div class="col-md-3">
-      <div class="card bg-warning text-white">
-        <div class="card-body">
-          <div class="d-flex justify-content-between align-items-center">
-            <div>
-              <h5 class="card-title mb-0">Inactive Operators</h5>
-              <h3 class="mb-0">{{ getInactiveOperatorsCount() }}</h3>
+    <div class="col-md-3 mb-3">
+      <div class="card border-0 shadow-sm h-100">
+        <div class="card-body p-4">
+          <div class="d-flex align-items-center">
+            <div class="icon-wrapper bg-warning bg-opacity-10 rounded-3 p-3 me-3">
+              <i class="fas fa-user-times text-white fa-lg"></i>
             </div>
-            <div class="card-icon">
-              <i class="fas fa-user-times fa-2x"></i>
+            <div>
+              <h2 class="fw-bold mb-0 text-dark">{{ getInactiveOperatorsCount() }}</h2>
+              <p class="text-muted mb-0 small">Inactive Operators</p>
             </div>
           </div>
         </div>
       </div>
     </div>
-    <div class="col-md-3">
-      <div class="card bg-info text-white">
-        <div class="card-body">
-          <div class="d-flex justify-content-between align-items-center">
-            <div>
-              <h5 class="card-title mb-0">Recent Additions</h5>
-              <h3 class="mb-0">{{ getRecentAdditions() }}</h3>
+    <div class="col-md-3 mb-3">
+      <div class="card border-0 shadow-sm h-100">
+        <div class="card-body p-4">
+          <div class="d-flex align-items-center">
+            <div class="icon-wrapper bg-info bg-opacity-10 rounded-3 p-3 me-3">
+              <i class="fas fa-user-plus text-white fa-lg"></i>
             </div>
-            <div class="card-icon">
-              <i class="fas fa-user-plus fa-2x"></i>
+            <div>
+              <h2 class="fw-bold mb-0 text-dark">{{ getRecentAdditions() }}</h2>
+              <p class="text-muted mb-0 small">Recent Additions</p>
             </div>
           </div>
         </div>

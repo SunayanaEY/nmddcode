@@ -34,6 +34,7 @@ export class AllTrainingsAdminComponent {
    trainingForm!: FormGroup;
    rejectForm!: FormGroup;
    selectedTraineeForReject: any = null;
+   selectedTraineesForBulkReject: any[] = [];
    currentTrainingInstituteId: string = '';
    currentTrainingId: number = 0;
   isExportCSV:Boolean =true;
@@ -97,6 +98,14 @@ export class AllTrainingsAdminComponent {
         },
       ];
 
+      // Bulk actions for multi-select
+      bulkActionsTrainee: TableAction[] = [
+        { name: 'bulkApprove', icon: 'bi bi-check-circle', class: 'btn-success', title: 'Bulk Approve' },
+        { name: 'bulkReject', icon: 'bi bi-x-circle', class: 'btn-danger', title: 'Bulk Reject' },
+      ];
+
+      enableMultiSelectTrainee: boolean = true;
+
 
 
       constructor(private formBuilder: FormBuilder,
@@ -142,14 +151,15 @@ export class AllTrainingsAdminComponent {
           this.trainingDetails = event.item;
           // Set current training details for API calls
           this.currentTrainingId = this.trainingDetails.id;
-          this.currentTrainingInstituteId = this.trainingDetails.trainingInstituteId || this.trainingDetails.instituteId || '';
           
           this.fileNameTrainees = this.traineesFile;
           this.fileNameTrainees = this.fileNameTrainees+this.trainingDetails.trainingInstituteName+"_"+
-            this.trainingDetails.trainingTitle+"_";
+          this.trainingDetails.trainingTitle+"_";
           this.trainingsService.getTraineeList(this.trainingDetails.id).subscribe(
             res=>{
               this.traineeList = res.data;
+              debugger
+              this.currentTrainingInstituteId = this.traineeList[0].trainingInstituteId ||  '';
             }
           );
 
@@ -289,35 +299,41 @@ export class AllTrainingsAdminComponent {
   }
 
   rejectTrainee(): void {
-    if (this.rejectForm.valid && this.selectedTraineeForReject) {
+    if (this.rejectForm.valid) {
       const remarks = this.rejectForm.get('remarks')?.value;
-      const payload = {
-        trainingInstituteId: this.currentTrainingInstituteId,
-        trainingId: this.currentTrainingId,
-        traineeIds: [this.selectedTraineeForReject.id],
-        rejectionRemarks: remarks
-      };
+      
+      // Check if this is bulk rejection or individual rejection
+      if (this.selectedTraineesForBulkReject.length > 0) {
+        this.bulkRejectTraineesWithRemarks(this.selectedTraineesForBulkReject, remarks);
+      } else if (this.selectedTraineeForReject) {
+        const payload = {
+          trainingInstituteId: this.currentTrainingInstituteId,
+          trainingId: this.currentTrainingId,
+          traineeIds: [this.selectedTraineeForReject.id],
+          rejectionRemarks: remarks
+        };
 
-      this.adminService.rejectTrainees(payload).subscribe({
-         next: (response) => {
-           if (response.success) {
-             this.selectedTraineeForReject.status = 'REJECTED';
-             this.selectedTraineeForReject.remarks = remarks;
-             this.toastr.success(response.data.message || 'Trainee rejected successfully', 'Success');
-           } else {
-             this.toastr.error(response.message || 'Failed to reject trainee', 'Error');
+        this.adminService.rejectTrainees(payload).subscribe({
+           next: (response) => {
+             if (response.success) {
+               this.selectedTraineeForReject.status = 'REJECTED';
+               this.selectedTraineeForReject.remarks = remarks;
+               this.toastr.success(response.data.message || 'Trainee rejected successfully', 'Success');
+             } else {
+               this.toastr.error(response.message || 'Failed to reject trainee', 'Error');
+             }
+             this.modalService.dismissAll();
+             this.selectedTraineeForReject = null;
+           },
+           error: (error) => {
+             const errorMessage = error.error?.message || 'An error occurred while rejecting trainee';
+             this.toastr.error(errorMessage, 'Error');
+             console.error('Error rejecting trainee:', error);
+             this.modalService.dismissAll();
+             this.selectedTraineeForReject = null;
            }
-           this.modalService.dismissAll();
-           this.selectedTraineeForReject = null;
-         },
-         error: (error) => {
-           const errorMessage = error.error?.message || 'An error occurred while rejecting trainee';
-           this.toastr.error(errorMessage, 'Error');
-           console.error('Error rejecting trainee:', error);
-           this.modalService.dismissAll();
-           this.selectedTraineeForReject = null;
-         }
-       });
+         });
+      }
     }
   }
 
@@ -362,4 +378,112 @@ export class AllTrainingsAdminComponent {
     return this.rejectForm.controls;
   }
 
+  onRejectModalDismiss(): void {
+    this.selectedTraineesForBulkReject = [];
+    this.selectedTraineeForReject = null;
+    this.rejectForm.reset();
+  }
+
+  // Handle bulk actions
+  handleBulkAction(event: { action: string, items: any[] }): void {
+    const { action, items } = event;
+    
+    if (action === 'bulkApprove') {
+      this.bulkApproveTrainees(items);
+    } else if (action === 'bulkReject') {
+      this.selectedTraineesForBulkReject = items;
+      this.rejectForm.reset();
+      this.modalService.open(this.rejectModal, { centered: true });
+    }
+  }
+
+  bulkApproveTrainees(trainees: any[]): void {
+    const eligibleTrainees = trainees.filter(trainee => trainee.status !== 'APPROVED');
+    
+    if (eligibleTrainees.length === 0) {
+      this.toastr.warning('No eligible trainees to approve');
+      return;
+    }
+
+    const payload = {
+      trainingInstituteId: this.currentTrainingInstituteId,
+      trainingId: this.currentTrainingId,
+      traineeIds: eligibleTrainees.map(trainee => trainee.id)
+    };
+
+    this.adminService.approveTrainees(payload).subscribe({
+      next: (response) => {
+        this.toastr.success(`${eligibleTrainees.length} trainees approved successfully!`);
+        // Refresh the trainee list
+        this.trainingsService.getTraineeList(this.trainingDetails.id).subscribe(
+          res => {
+            this.traineeList = res.data;
+          }
+        );
+      },
+      error: (error) => {
+        this.toastr.error('Error approving trainees');
+        console.error('Bulk approve error:', error);
+      }
+    });
+  }
+
+  bulkRejectTrainees(trainees: any[]): void {
+    // This method is no longer used directly - bulk rejection now goes through the modal
+    // Keeping for backward compatibility if needed
+    this.selectedTraineesForBulkReject = trainees;
+    this.rejectForm.reset();
+    this.modalService.open(this.rejectModal, { centered: true });
+  }
+
+  bulkRejectTraineesWithRemarks(trainees: any[], remarks: string): void {
+    // Filter trainees that can be rejected (not already approved or rejected)
+    const eligibleTrainees = trainees.filter(trainee => 
+      trainee.status !== 'APPROVED' && trainee.status !== 'REJECTED'
+    );
+
+    if (eligibleTrainees.length === 0) {
+      this.toastr.warning('No eligible trainees to reject', 'Warning');
+      this.modalService.dismissAll();
+      this.selectedTraineesForBulkReject = [];
+      return;
+    }
+
+    const payload = {
+      trainingInstituteId: this.currentTrainingInstituteId,
+      trainingId: this.currentTrainingId,
+      traineeIds: eligibleTrainees.map(trainee => trainee.id),
+      rejectionRemarks: remarks
+    };
+
+    this.adminService.rejectTrainees(payload).subscribe({
+      next: (response) => {
+        if (response.success) {
+          // Update status for all rejected trainees
+          eligibleTrainees.forEach(trainee => {
+            trainee.status = 'REJECTED';
+            trainee.remarks = remarks;
+          });
+          this.toastr.success(`${eligibleTrainees.length} trainee(s) rejected successfully`, 'Success');
+          // Refresh the trainee list
+          this.trainingsService.getTraineeList(this.trainingDetails.id).subscribe(
+            res => {
+              this.traineeList = res.data;
+            }
+          );
+        } else {
+          this.toastr.error(response.message || 'Failed to reject trainees', 'Error');
+        }
+        this.modalService.dismissAll();
+        this.selectedTraineesForBulkReject = [];
+      },
+      error: (error) => {
+        const errorMessage = error.error?.message || 'An error occurred while rejecting trainees';
+        this.toastr.error(errorMessage, 'Error');
+        console.error('Error rejecting trainees:', error);
+        this.modalService.dismissAll();
+        this.selectedTraineesForBulkReject = [];
+      }
+    });
+  }
 }

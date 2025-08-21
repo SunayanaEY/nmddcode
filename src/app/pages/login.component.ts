@@ -480,7 +480,7 @@ export class LoginComponent implements OnInit {
         this.router.navigate(['/admin/training-module']);
         break;
       case 4: // Training Data Entry Operator
-        this.router.navigate(['/admin/manual-training-upload']);
+        this.router.navigate(['/admin/training-module']);
         break;
       default:
         this.router.navigate(['/admin']);

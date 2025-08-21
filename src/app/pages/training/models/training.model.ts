@@ -39,6 +39,6 @@ export interface TraineeDetails{
   status: string;
   trainingId: string;
   uin: string;
-
+  trainingInstituteId:string;
 }
 

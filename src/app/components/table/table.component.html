@@ -20,6 +20,18 @@
     </div>
 
     <div class="d-flex gap-2">
+      <!-- Bulk Action Buttons -->
+      <div *ngIf="enableMultiSelect && hasSelectedItems" class="d-flex gap-2 me-3">
+        <button
+          *ngFor="let action of bulkActions"
+          class="btn {{ action.class }}"
+          (click)="onBulkActionClick(action.name)"
+          [title]="action.title"
+        >
+          <i class="bi {{ action.icon }}"></i> {{ action.title }}
+        </button>
+      </div>
+      
       <button *ngIf="isExportPDF" class="btn btn-primary" (click)="createPdf()">
         Export PDF
       </button>
@@ -47,6 +59,15 @@
     <table class="table table-striped w-100">
       <thead>
         <tr>
+          <th *ngIf="enableMultiSelect" scope="col" style="width: 50px;">
+            <input
+              type="checkbox"
+              class="form-check-input"
+              [checked]="selectAll"
+              (change)="toggleSelectAll()"
+              [indeterminate]="selectedItems.size > 0 && selectedItems.size < data.length"
+            />
+          </th>
           <th scope="col">Sr.No.</th>
           <th *ngFor="let col of columns" scope="col">{{ col.header }}</th>
           <th *ngIf="actions.length > 0" scope="col">Actions</th>
@@ -63,6 +84,14 @@
           "
           [class.odd-row]="i % 2 === 0"
         >
+          <td *ngIf="enableMultiSelect" style="width: 50px;">
+            <input
+              type="checkbox"
+              class="form-check-input"
+              [checked]="isItemSelected(item)"
+              (change)="toggleItemSelection(item)"
+            />
+          </td>
           <td>{{ formatSerialNumber(i) }}</td>
           <ng-container
             *ngIf="tableNamesArray.includes(tableName) && item.editable"
