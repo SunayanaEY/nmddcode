@@ -157,3 +157,61 @@ h2 {
 .form-actions .btn-outline-secondary {
   font-weight: 500;
 }
+
+.training-card {
+  background: #fff;
+  border-radius: 12px;
+  padding: 2rem;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.08);
+  width: 100%;                 /* take full width */
+  max-width: 100%;             /* remove max constraint */
+  margin: 2rem auto;           /* centered with spacing */
+  font-family: "Segoe UI", sans-serif;
+  box-sizing: border-box;      /* ensures padding doesn’t break width */
+}
+
+.card-title {
+  font-size: 1.4rem;
+  font-weight: 600;
+  margin-bottom: 1.5rem;
+  color: #1f2937;
+  border-bottom: 2px solid #e5e7eb;
+  padding-bottom: 0.5rem;
+}
+
+.details-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1.2rem 2rem;
+}
+
+.detail-item {
+  display: flex;
+  flex-direction: column;
+}
+
+.detail-item .label {
+  font-weight: 600;
+  color: #374151;
+  margin-bottom: 0.25rem;
+  font-size: 0.95rem;
+}
+
+.detail-item .value {
+  font-size: 1rem;
+  color: #4b5563;
+  background: #f9fafb;
+  padding: 0.5rem 0.75rem;
+  border-radius: 8px;
+  border: 1px solid #e5e7eb;
+}
+
+.detail-item.full-width {
+  grid-column: 1 / -1;
+  margin-top: 1rem;
+}
+
+.detail-item .about {
+  white-space: pre-line;
+  line-height: 1.4;
+}

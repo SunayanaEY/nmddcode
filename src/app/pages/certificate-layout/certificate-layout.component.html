@@ -27,9 +27,9 @@
         <div class="signature">
           <p>{{ data.signatures[0].signatorySignaturePath }}</p>
           <p>_____________________</p>
-          <p>[Signature Name]</p>
-          <p>[Designation]</p>
-          <p>[Organization]</p>
+          <p>{{ data.signatures[0].signatoryName }}</p>
+          <p>{{ data.signatures[0].signatoryDesignation }}</p>
+          <p>{{ data.signatures[0].signatoryOrganization }}</p>
         </div>
 
         <div class="qr-code">
@@ -43,9 +43,9 @@
         <div class="signature">
           <p>{{ data.signatures[1].signatorySignaturePath }}</p>
           <p>_____________________</p>
-          <p>[Signature Name]</p>
-          <p>[Designation]</p>
-          <p>[Organization]</p>
+          <p>{{ data.signatures[1].signatoryName }}</p>
+          <p>{{ data.signatures[1].signatoryDesignation }}</p>
+          <p>{{ data.signatures[1].signatoryOrganization }}</p>
         </div>
       </div>
     </div>

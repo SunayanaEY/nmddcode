@@ -5,6 +5,7 @@ import {
   BreadcrumbComponent,
   BreadcrumbItem,
 } from '../../../components/breadcrumb/breadcrumb.component';
+import { ActivatedRoute, Router } from '@angular/router';
 import { FileUploadComponent } from '../../../components/file-upload/file-upload.component';
 import { TrainingService } from '../../../pages/training/services/training.service';
 
@@ -18,7 +19,10 @@ import { TrainingService } from '../../../pages/training/services/training.servi
 export class BulkTrainingUploadComponent implements OnInit {
   breadcrumbItems: BreadcrumbItem[] = [
     { label: 'Training Module', url: '/admin/training-module' },
-    { label: 'Training Certificate Generation', url: '/admin/training-certificate-generation'},
+    {
+      label: 'Training Certificate Generation',
+      url: '/admin/training-certificate-generation',
+    },
     { label: 'Bulk Training Upload' },
   ];
 
@@ -29,13 +33,39 @@ export class BulkTrainingUploadComponent implements OnInit {
   errorCount = 0;
   errorRowCount = 0;
   showValidationReport = false;
+  isSpinning: boolean = false;
   fileUploadKey = Date.now();
   showFileUpload = true;
   selectedFile: File | undefined;
+  trainingDetails: any = null;
+  trainingId: any;
 
-  constructor(private trainingService: TrainingService) {}
+  constructor(
+    private trainingService: TrainingService,
+    private route: ActivatedRoute,
+    private router: Router
+  ) {}
 
-  ngOnInit(): void {}
+  ngOnInit(): void {
+    // Get query params from snapshot (one-time read)
+    this.trainingId = this.route.snapshot.queryParams['trainingId'];
+
+    // Apply delay if needed
+    this.getTrainingDetails(this.trainingId);
+  }
+  getTrainingDetails(trainingId: number) {
+    this.isSpinning = true;
+    this.trainingService.getTrainingDetails(trainingId).subscribe({
+      next: (response) => {
+        this.isSpinning = false;
+        console.log(response);
+        this.trainingDetails = response;
+      },
+      error: (error) => {
+        this.isSpinning = false;
+      },
+    });
+  }
 
   onFileSelected(file: File): void {
     this.validationErrors = [];

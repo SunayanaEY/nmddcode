@@ -140,10 +140,11 @@
           </div>
           <div class="d-flex justify-content-between">
             <div class="forgot-password">
-              <a href="/forget-password">Reset Password?</a>
-            </div>
-            <div class="forgot-password">
-              <a href="/forget-password">Forgot Password?</a>
+              <a
+                [routerLink]="['/forget-password']"
+                [queryParams]="{ type: 'forget' }"
+                >Forgot Password?</a
+              >
             </div>
           </div>
           <!-- Error Message -->

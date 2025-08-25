@@ -14,10 +14,12 @@ import { LocationService, State, District } from '../services/location.service';
 import { GeocodingService, GeocodeResult } from '../services/geocoding.service';
 import { ToastrService } from 'ngx-toastr';
 import { OnInit } from '@angular/core';
+import { RouterModule } from '@angular/router';
+
 @Component({
   selector: 'app-login',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule],
+  imports: [CommonModule, ReactiveFormsModule, RouterModule],
   templateUrl: './login.component.html',
   styleUrls: ['./login.component.css'],
 })
@@ -480,7 +482,7 @@ export class LoginComponent implements OnInit {
         this.router.navigate(['/admin/training-module']);
         break;
       case 4: // Training Data Entry Operator
-        this.router.navigate(['/admin/manual-training-upload']);
+        this.router.navigate(['/admin/training-module']);
         break;
       default:
         this.router.navigate(['/admin']);

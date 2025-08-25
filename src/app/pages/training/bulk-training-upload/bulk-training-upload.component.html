@@ -1,6 +1,75 @@
 <div class="bulk-upload-container">
   <app-breadcrumb [items]="breadcrumbItems"></app-breadcrumb>
 
+  <div class="training-card">
+    <h3 class="card-title">Training Details</h3>
+
+    <div class="details-grid">
+      <div class="detail-item">
+        <span class="label">Training Title:</span>
+        <span class="value">{{ trainingDetails?.trainingTitle || "-" }}</span>
+      </div>
+      <div class="detail-item">
+        <span class="label">Scheme:</span>
+        <span class="value">{{ trainingDetails?.scheme || "-" }}</span>
+      </div>
+
+      <div class="detail-item">
+        <span class="label">Trainer Name:</span>
+        <span class="value">{{ trainingDetails?.trainerName || "-" }}</span>
+      </div>
+      <div class="detail-item">
+        <span class="label">trainingDetails Institute:</span>
+        <span class="value">{{
+          trainingDetails?.trainingInstituteName || "-"
+        }}</span>
+      </div>
+
+      <div class="detail-item">
+        <span class="label">Venue State:</span>
+        <span class="value">{{ trainingDetails?.venueState || "-" }}</span>
+      </div>
+      <div class="detail-item">
+        <span class="label">Venue District:</span>
+        <span class="value">{{ trainingDetails?.venueDistrict || "-" }}</span>
+      </div>
+
+      <div class="detail-item">
+        <span class="label">Venue Block:</span>
+        <span class="value">{{ trainingDetails?.venueBlock || "-" }}</span>
+      </div>
+      <div class="detail-item">
+        <span class="label">Training Date:</span>
+        <span class="value">{{ trainingDetails?.trainingDate }}</span>
+      </div>
+
+      <div class="detail-item">
+        <span class="label">Duration:</span>
+        <span class="value">{{ trainingDetails?.duration || "-" }}</span>
+      </div>
+      <div class="detail-item">
+        <span class="label">Duration Type:</span>
+        <span class="value">{{ trainingDetails?.durationType || "-" }}</span>
+      </div>
+
+      <div class="detail-item">
+        <span class="label">Mode of Training:</span>
+        <span class="value">{{ trainingDetails?.modeOfTraining || "-" }}</span>
+      </div>
+      <div class="detail-item">
+        <span class="label">Type of Training:</span>
+        <span class="value">{{ trainingDetails?.trainingType || "-" }}</span>
+      </div>
+    </div>
+
+    <div class="detail-item full-width">
+      <span class="label">About Training:</span>
+      <p class="value about">
+        {{ trainingDetails?.trainingDescription || "-" }}
+      </p>
+    </div>
+  </div>
+
   <h1 class="page-title">Bulk Upload</h1>
 
   <div class="template-section">

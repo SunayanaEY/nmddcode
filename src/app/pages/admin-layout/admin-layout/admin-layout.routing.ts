@@ -13,6 +13,7 @@ import { RegisteredDataEntryOperatorsComponent } from '../../training/registered
 import { AllCertificateComponent } from '../../all-certificate/all-certificate.component';
 import { ApprovedRejectedTrainingsComponent } from '../../training/approved-rejected-trainings/approved-rejected-trainings.component';
 import { RoleGuard } from '../../../guards/role.guard';
+import { ChangePasswordComponent } from '../../change-password/change-password.component';
 
 export const AdminLayoutRoutes: Routes = [
   // Central Admin Only Routes (Role 1)
@@ -82,6 +83,12 @@ export const AdminLayoutRoutes: Routes = [
     component: TrainingCertificateGenerationComponent,
     canActivate: [RoleGuard],
     data: { allowedRoles: [4] },
+  },
+  {
+    path: 'change-password',
+    component: ChangePasswordComponent,
+    canActivate: [RoleGuard],
+    data: { allowedRoles: [] },
   },
   {
     path: 'manual-training-upload',

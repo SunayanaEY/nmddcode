@@ -1,263 +1,373 @@
 <div class="main-content-wrapper">
   <div class="certificate-form-container">
-  <!-- Header Section -->
-  <div class="form-header">
-    <app-breadcrumb [items]="breadcrumbItems"></app-breadcrumb>
-    <h1 class="page-title">Training Certificate Generation</h1>
-  </div>
+    <!-- Header Section -->
+    <div class="form-header">
+      <app-breadcrumb [items]="breadcrumbItems"></app-breadcrumb>
+      <h1 class="page-title">Training Certificate Generation</h1>
+    </div>
 
-  <!-- Form Content -->
-  <div class="form-content">
-    <form [formGroup]="trainingForm" (ngSubmit)="onManualUpload()">
-      
-      <!-- General Training Info Section -->
-      <div class="form-section">
-        <h3 class="section-title">General Training Info</h3>
-        
-        <div class="form-row">
-          <div class="form-group full-width">
-            <label for="trainingTitle">Training Title</label>
-            <input 
-              type="text" 
-              id="trainingTitle" 
-              formControlName="trainingTitle"
-              placeholder="Enter the Training Title here"
-              class="form-control"
-              [class.is-invalid]="trainingForm.get('trainingTitle')?.invalid && trainingForm.get('trainingTitle')?.touched">
-          </div>
-        </div>
+    <!-- Form Content -->
+    <div class="form-content">
+      <form [formGroup]="trainingForm" (ngSubmit)="onManualUpload()">
+        <!-- General Training Info Section -->
+        <div class="form-section">
+          <h3 class="section-title">General Training Info</h3>
 
-        <div class="form-row">
-          <div class="form-group full-width">
-            <label for="scheme">Scheme</label>
-            <select 
-              id="scheme" 
-              formControlName="scheme"
-              class="form-control"
-              [class.is-invalid]="trainingForm.get('scheme')?.invalid && trainingForm.get('scheme')?.touched">
-              <option value="">Enter the Name of Scheme here</option>
-              <option value="scheme1">Scheme 1</option>
-              <option value="scheme2">Scheme 2</option>
-              <option value="scheme3">Scheme 3</option>
-            </select>
+          <div class="form-row">
+            <div class="form-group full-width">
+              <label for="trainingTitle"
+                >Training Title<span style="color: red">*</span></label
+              >
+              <input
+                type="text"
+                id="trainingTitle"
+                formControlName="trainingTitle"
+                placeholder="Enter the Training Title here"
+                class="form-control"
+                [class.is-invalid]="
+                  trainingForm.get('trainingTitle')?.invalid &&
+                  trainingForm.get('trainingTitle')?.touched
+                "
+              />
+            </div>
           </div>
-        </div>
 
-        <div class="form-row">
-          <div class="form-group half-width">
-            <label for="trainerName">Trainer Name (s)</label>
-            <input 
-              type="text" 
-              id="trainerName" 
-              formControlName="trainerName"
-              placeholder="Enter the Trainer Name here"
-              class="form-control"
-              [class.is-invalid]="trainingForm.get('trainerName')?.invalid && trainingForm.get('trainerName')?.touched">
+          <div class="form-row">
+            <div class="form-group full-width">
+              <label for="scheme"
+                >Scheme<span style="color: red">*</span></label
+              >
+              <select
+                id="scheme"
+                formControlName="scheme"
+                class="form-control"
+                [class.is-invalid]="
+                  trainingForm.get('scheme')?.invalid &&
+                  trainingForm.get('scheme')?.touched
+                "
+              >
+                <option value="">Enter the Name of Scheme here</option>
+                <option *ngFor="let scheme of schemes" [value]="scheme.id">
+                  {{ scheme.schemeName }}
+                </option>
+              </select>
+            </div>
           </div>
-          <div class="form-group half-width">
-            <label for="trainingInstituteName">Training Institute Name</label>
-            <select 
-              id="trainingInstituteName" 
-              formControlName="trainingInstituteName"
-              class="form-control"
-              [class.is-invalid]="trainingForm.get('trainingInstituteName')?.invalid && trainingForm.get('trainingInstituteName')?.touched">
-              <option value="">Enter Training Institute Name here</option>
-              <option value="institute1">Institute 1</option>
-              <option value="institute2">Institute 2</option>
-              <option value="institute3">Institute 3</option>
-            </select>
-          </div>
-        </div>
 
-        <!-- Training Location/Venue -->
-        <div class="form-row">
-          <div class="form-group location-label">
-            <label>Training Location /Venue</label>
+          <div class="form-row">
+            <div class="form-group half-width">
+              <label for="trainerName"
+                >Trainer Name (s)<span style="color: red">*</span></label
+              >
+              <input
+                type="text"
+                id="trainerName"
+                formControlName="trainerName"
+                placeholder="Enter the Trainer Name here"
+                class="form-control"
+                [class.is-invalid]="
+                  trainingForm.get('trainerName')?.invalid &&
+                  trainingForm.get('trainerName')?.touched
+                "
+              />
+            </div>
+            <div class="form-group half-width">
+              <label for="trainingInstituteName"
+                >Training Institute Name<span style="color: red">*</span></label
+              >
+              <select
+                id="trainingInstituteName"
+                formControlName="trainingInstituteName"
+                class="form-control"
+                [class.is-invalid]="
+                  trainingForm.get('trainingInstituteName')?.invalid &&
+                  trainingForm.get('trainingInstituteName')?.touched
+                "
+              >
+                <option value="">Enter Training Institute Name here</option>
+                <option
+                  *ngFor="let institute of instituteNames"
+                  [value]="institute.id"
+                >
+                  {{ institute.trainingInstituteName }}
+                </option>
+              </select>
+            </div>
           </div>
-        </div>
-        
-        <div class="form-row">
-          <div class="form-group third-width">
-            <select 
-              formControlName="state"
-              class="form-control"
-              [class.is-invalid]="trainingForm.get('state')?.invalid && trainingForm.get('state')?.touched">
-              <option value="">State</option>
-              <option value="up">Uttar Pradesh</option>
-              <option value="delhi">Delhi</option>
-              <option value="mumbai">Mumbai</option>
-            </select>
-          </div>
-          <div class="form-group third-width">
-            <select 
-              formControlName="district"
-              class="form-control"
-              [class.is-invalid]="trainingForm.get('district')?.invalid && trainingForm.get('district')?.touched">
-              <option value="">District</option>
-              <option value="lucknow">Lucknow</option>
-              <option value="kanpur">Kanpur</option>
-              <option value="agra">Agra</option>
-            </select>
-          </div>
-          <div class="form-group third-width">
-            <select 
-              formControlName="block"
-              class="form-control"
-              [class.is-invalid]="trainingForm.get('block')?.invalid && trainingForm.get('block')?.touched">
-              <option value="">Block</option>
-              <option value="block1">Block 1</option>
-              <option value="block2">Block 2</option>
-              <option value="block3">Block 3</option>
-            </select>
-          </div>
-        </div>
 
-        <!-- Date and Duration -->
-        <div class="form-row">
-          <div class="form-group third-width">
-            <label for="trainingDate">Date of Training</label>
-            <input 
-              type="date" 
-              id="trainingDate" 
-              formControlName="trainingDate"
-              placeholder="dd-mm-yyyy"
-              class="form-control"
-              [class.is-invalid]="trainingForm.get('trainingDate')?.invalid && trainingForm.get('trainingDate')?.touched">
+          <!-- Training Location/Venue -->
+          <div class="form-row">
+            <div class="form-group location-label">
+              <label
+                >Training Location /Venue<span style="color: red"
+                  >*</span
+                ></label
+              >
+            </div>
           </div>
-          <div class="form-group third-width">
-            <label for="duration">Duration</label>
-            <input 
-              type="number" 
-              id="duration" 
-              formControlName="duration"
-              placeholder="xx"
-              class="form-control"
-              [class.is-invalid]="trainingForm.get('duration')?.invalid && trainingForm.get('duration')?.touched">
-          </div>
-          <div class="form-group third-width">
-            <label for="durationType">&nbsp;</label>
-            <select 
-              id="durationType" 
-              formControlName="durationType"
-              class="form-control">
-              <option value="Days">Days</option>
-              <option value="Hours">Hours</option>
-              <option value="Weeks">Weeks</option>
-            </select>
-          </div>
-        </div>
 
-        <!-- About Training and Mode -->
-        <div class="form-row">
-          <div class="form-group two-thirds-width">
-            <label for="aboutTraining">About the Training</label>
-            <textarea 
-              id="aboutTraining" 
-              formControlName="aboutTraining"
-              placeholder="Brief Description ( Maximum 100 Words )"
-              class="form-control textarea"
-              rows="4"
-              [class.is-invalid]="trainingForm.get('aboutTraining')?.invalid && trainingForm.get('aboutTraining')?.touched"></textarea>
-          </div>
-          <div class="form-group third-width">
-            <label for="modeOfTraining">Mode of Training</label>
-            <select 
-              id="modeOfTraining" 
-              formControlName="modeOfTraining"
-              class="form-control"
-              [class.is-invalid]="trainingForm.get('modeOfTraining')?.invalid && trainingForm.get('modeOfTraining')?.touched">
-              <option value="Classroom/ Field Demo/ Others">Classroom/ Field Demo/ Others</option>
-              <option value="Classroom">Classroom</option>
-              <option value="Field Demo">Field Demo</option>
-              <option value="Online">Online</option>
-              <option value="Hybrid">Hybrid</option>
-            </select>
-          </div>
-        </div>
-      </div>
-
-      <!-- Upload Signature Section -->
-      <div class="form-section">
-        <h3 class="section-title">Upload Signature ( Maximum 2)</h3>
-        
-        <div class="signature-section" *ngFor="let signature of signatures; let i = index">
           <div class="form-row">
             <div class="form-group third-width">
-              <label>Signatory Name</label>
-              <input 
-                type="text" 
-                [value]="signature.name"
-                (input)="onSignatureNameChange($event, i)"
-                placeholder="Enter the Name of Signatory here"
-                class="form-control">
+              <select
+                formControlName="venueState"
+                class="form-control"
+                (change)="onStateSelected($any($event.target).value)"
+                [class.is-invalid]="
+                  trainingForm.get('venueState')?.invalid &&
+                  trainingForm.get('venueState')?.touched
+                "
+              >
+                <option value="">Select State</option>
+                <option *ngFor="let state of states" [value]="state.id">
+                  {{ state.stateName }}
+                </option>
+              </select>
             </div>
             <div class="form-group third-width">
-              <label>Signatory Designation</label>
-              <input 
-                type="text" 
-                [value]="signature.designation"
-                (input)="onSignatureDesignationChange($event, i)"
-                placeholder="Enter the Designation of Signatory here"
-                class="form-control">
+              <select
+                formControlName="venueDistrict"
+                class="form-control"
+                (change)="onDistrictSelect($any($event.target).value)"
+                [class.is-invalid]="
+                  trainingForm.get('venueDistrict')?.invalid &&
+                  trainingForm.get('venueDistrict')?.touched
+                "
+              >
+                <option value="">Select District</option>
+                <option
+                  *ngFor="let district of districts"
+                  [value]="district.id"
+                >
+                  {{ district.districtName }}
+                </option>
+              </select>
             </div>
             <div class="form-group third-width">
-              <label>Signatory Organization</label>
-              <input 
-                type="text" 
-                [value]="signature.organization"
-                (input)="onSignatureOrganizationChange($event, i)"
-                placeholder="Enter the Organization of Signatory here"
-                class="form-control">
+              <input
+                type="text"
+                formControlName="venueBlock"
+                class="form-control"
+                placeholder="Enter Block"
+                [class.is-invalid]="
+                  trainingForm.get('venueBlock')?.invalid &&
+                  trainingForm.get('venueBlock')?.touched
+                "
+              />
             </div>
           </div>
-          
+
+          <!-- Date and Duration -->
           <div class="form-row">
-            <app-file-upload 
-              [acceptedFileTypes]="'.png,.jpg,.jpeg'" 
-              [maxFileSizeMB]="2" 
-              [uploadText]="'Drag and Drop the Signature here'"
-              (fileSelected)="onFileSelect($event, 'signature', i)"
-              (fileRemoved)="removeSignature(i)">
-            </app-file-upload>
+            <div class="form-group third-width">
+              <label for="trainingDate"
+                >Date of Training<span style="color: red">*</span></label
+              >
+              <input
+                type="date"
+                id="trainingDate"
+                formControlName="trainingDate"
+                placeholder="dd-mm-yyyy"
+                class="form-control"
+                [class.is-invalid]="
+                  trainingForm.get('trainingDate')?.invalid &&
+                  trainingForm.get('trainingDate')?.touched
+                "
+              />
+            </div>
+            <div class="form-group third-width">
+              <label for="duration"
+                >Duration<span style="color: red">*</span></label
+              >
+              <input
+                type="number"
+                id="duration"
+                formControlName="duration"
+                placeholder="xx"
+                class="form-control"
+                [class.is-invalid]="
+                  trainingForm.get('duration')?.invalid &&
+                  trainingForm.get('duration')?.touched
+                "
+              />
+            </div>
+            <div class="form-group third-width">
+              <label for="durationType">&nbsp;</label>
+              <select
+                id="durationType"
+                formControlName="durationType"
+                class="form-control"
+              >
+                <option value="Days">Days</option>
+                <option value="Hours">Hours</option>
+                <option value="Weeks">Weeks</option>
+              </select>
+            </div>
+          </div>
+
+          <!-- About Training and Mode -->
+          <div class="form-row">
+            <div class="form-group two-thirds-width">
+              <label for="trainingDescription"
+                >About the Training<span style="color: red">*</span></label
+              >
+              <textarea
+                id="trainingDescription"
+                formControlName="trainingDescription"
+                placeholder="Brief Description ( Maximum 100 Words )"
+                class="form-control textarea"
+                rows="4"
+                [class.is-invalid]="
+                  trainingForm.get('trainingDescription')?.invalid &&
+                  trainingForm.get('trainingDescription')?.touched
+                "
+              ></textarea>
+            </div>
+            <div class="form-group third-width">
+              <label for="trainingType"
+                >Type of Training<span style="color: red">*</span></label
+              >
+              <select
+                id="trainingType"
+                formControlName="trainingType"
+                class="form-control"
+                [class.is-invalid]="
+                  trainingForm.get('trainingType')?.invalid &&
+                  trainingForm.get('trainingType')?.touched
+                "
+              >
+                <option *ngFor="let type of allTrainingType" [value]="type.id">
+                  {{ type.trainingTypeName }}
+                </option>
+              </select>
+            </div>
+            <div class="form-group third-width">
+              <label for="modeOfTraining"
+                >Mode of Training<span style="color: red">*</span></label
+              >
+              <select
+                id="modeOfTraining"
+                formControlName="modeOfTraining"
+                class="form-control"
+                [class.is-invalid]="
+                  trainingForm.get('modeOfTraining')?.invalid &&
+                  trainingForm.get('modeOfTraining')?.touched
+                "
+              >
+                <option value="offline">Offline</option>
+                <option value="online">Online</option>
+                <option value="field">Field</option>
+                <option value="hybrid">Hybrid</option>
+              </select>
+            </div>
           </div>
         </div>
-        
-        <div class="add-more-section" *ngIf="signatures.length < 2">
-          <button type="button" class="btn btn-link add-more-btn" (click)="addMoreSignature()">
-            <i class="bi bi-plus-circle"></i> Add More
+
+        <!-- Upload Signature Section -->
+        <div class="form-section">
+          <h3 class="section-title">Upload Signature ( Maximum 2)</h3>
+
+          <div
+            class="signature-section"
+            *ngFor="let signature of signatures; let i = index"
+          >
+            <div class="form-row">
+              <div class="form-group third-width">
+                <label>Signatory Name</label>
+                <input
+                  type="text"
+                  [value]="signature.name"
+                  (input)="onSignatureNameChange($event, i)"
+                  placeholder="Enter the Name of Signatory here"
+                  class="form-control"
+                />
+              </div>
+              <div class="form-group third-width">
+                <label>Signatory Designation</label>
+                <input
+                  type="text"
+                  [value]="signature.designation"
+                  (input)="onSignatureDesignationChange($event, i)"
+                  placeholder="Enter the Designation of Signatory here"
+                  class="form-control"
+                />
+              </div>
+              <div class="form-group third-width">
+                <label>Signatory Organization</label>
+                <input
+                  type="text"
+                  [value]="signature.organization"
+                  (input)="onSignatureOrganizationChange($event, i)"
+                  placeholder="Enter the Organization of Signatory here"
+                  class="form-control"
+                />
+              </div>
+            </div>
+
+            <div class="form-row">
+              <app-file-upload
+                [acceptedFileTypes]="'.png,.jpg,.jpeg'"
+                [maxFileSizeMB]="2"
+                [uploadText]="'Drag and Drop the Signature here'"
+                (fileSelected)="onFileSelect($event, 'signature', i)"
+                (fileRemoved)="removeSignature(i)"
+              >
+              </app-file-upload>
+            </div>
+          </div>
+
+          <div class="add-more-section" *ngIf="signatures.length < 2">
+            <button
+              type="button"
+              class="btn btn-link add-more-btn"
+              (click)="addMoreSignature()"
+            >
+              <i class="bi bi-plus-circle"></i> Add More
+            </button>
+          </div>
+        </div>
+
+        <!-- Upload Logo Section -->
+        <div class="form-section">
+          <h3 class="section-title">Upload Logo ( Maximum 3)</h3>
+
+          <div class="logo-section" *ngFor="let logo of logos; let i = index">
+            <div class="form-row">
+              <app-file-upload
+                [acceptedFileTypes]="'.png,.jpg,.jpeg'"
+                [maxFileSizeMB]="2"
+                [uploadText]="'Drag and Drop your logo here'"
+                (fileSelected)="onFileSelect($event, 'logo', i)"
+                (fileRemoved)="removeLogo(i)"
+              >
+              </app-file-upload>
+            </div>
+          </div>
+
+          <div class="add-more-section" *ngIf="logos.length < 3">
+            <button
+              type="button"
+              class="btn btn-link add-more-btn"
+              (click)="addMoreLogo()"
+            >
+              <i class="bi bi-plus-circle"></i> Add More
+            </button>
+          </div>
+        </div>
+
+        <!-- Action Buttons -->
+        <div class="form-actions">
+          <button type="submit" class="btn btn-primary btn-lg">
+            Manual Training Upload
+          </button>
+          <button
+            type="button"
+            class="btn btn-secondary btn-lg"
+            (click)="onBulkUpload()"
+          >
+            Bulk Upload
           </button>
         </div>
-      </div>
-
-      <!-- Upload Logo Section -->
-      <div class="form-section">
-        <h3 class="section-title">Upload Logo ( Maximum 3)</h3>
-        
-        <div class="logo-section" *ngFor="let logo of logos; let i = index">
-          <div class="form-row">
-            <app-file-upload 
-              [acceptedFileTypes]="'.png,.jpg,.jpeg'" 
-              [maxFileSizeMB]="2" 
-              [uploadText]="'Drag and Drop your logo here'"
-              (fileSelected)="onFileSelect($event, 'logo', i)"
-              (fileRemoved)="removeLogo(i)">
-            </app-file-upload>
-          </div>
-        </div>
-        
-        <div class="add-more-section" *ngIf="logos.length < 3">
-          <button type="button" class="btn btn-link add-more-btn" (click)="addMoreLogo()">
-            <i class="bi bi-plus-circle"></i> Add More
-          </button>
-        </div>
-      </div>
-
-      <!-- Action Buttons -->
-      <div class="form-actions">
-        <button type="submit" class="btn btn-primary btn-lg">Manual Training Upload</button>
-        <button type="button" class="btn btn-secondary btn-lg" (click)="onBulkUpload()">Bulk Upload</button>
-      </div>
-    </form>
+      </form>
     </div>
   </div>
 </div>

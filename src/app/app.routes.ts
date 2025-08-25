@@ -4,6 +4,7 @@ import { AdminLayoutComponent } from './pages/admin-layout/admin-layout/admin-la
 import { SchemeManagementComponent } from './pages/admin-layout/scheme-management/scheme-management.component';
 import { ForgetPasswordComponent } from './pages/forget-password/forget-password.component';
 import { AuthGuard } from './guards/auth.guard';
+import { VerifyCertificateComponent } from './pages/verify-certificate/verify-certificate.component';
 
 export const routes: Routes = [
   // Public Dashboard - Landing Page
@@ -23,7 +24,8 @@ export const routes: Routes = [
   { path: 'login', component: LoginComponent },
   { path: 'signup', component: LoginComponent }, // TODO: Create separate signup component
   { path: 'forget-password', component: ForgetPasswordComponent },
-  
+  { path: 'verify-certificate', component: VerifyCertificateComponent },
+
   // Unauthorized access
   {
     path: 'unauthorized',

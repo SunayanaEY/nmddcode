@@ -28,6 +28,10 @@ export class TrainingService {
 
     return this.http.post(url, formData);
   }
+
+  saveTraining(payload: FormData): Observable<any> {
+    return this.http.post(`${this.url}training/save`, payload);
+  }
   submitTrainees(participants: any[]): Observable<any> {
     const url = `${this.apiUrl}/trainees/manual-upload`;
     return this.http.post(url, participants);
@@ -38,6 +42,29 @@ export class TrainingService {
         return res;
       })
     );
+  }
+  getAllInstitutes() {
+    return this.http.get<any>(this.url + `training/trainingInstitutes`).pipe(
+      map((res: any) => {
+        return res;
+      })
+    );
+  }
+  getTrainingTypes() {
+    return this.http.get<any>(this.url + `trainingType/getTrainingType`).pipe(
+      map((res: any) => {
+        return res;
+      })
+    );
+  }
+  getTrainingDetails(trainingId: number) {
+    return this.http
+      .get<any>(this.url + `training/getTrainingById/` + trainingId)
+      .pipe(
+        map((res: any) => {
+          return res;
+        })
+      );
   }
   getAllTrainings(trainingInstituteId: any) {
     return this.http
@@ -80,7 +107,19 @@ export class TrainingService {
 
     return this.http.post(url, formData);
   }
-
+  // verifyCertificate(uin: string): Observable<any> {
+  //   const url = `${this.url}training/sendEmail`; // base url
+  //   return this.http.get(url, {
+  //     params: { uin }, // sending query param as { ?uin=value }
+  //   });
+  // }
+  verifyCertificate(uin: string): Observable<any> {
+    const url = `${this.url}training/sendEmail`;
+    return this.http.post(url, null, {
+      params: { uin },
+      responseType: 'text',
+    }) as Observable<any>;
+  }
   getTraineeList(id: any) {
     return this.http.get<any>(this.apiUrl + `/trainees/getTrainee/` + id).pipe(
       map((res: any) => {

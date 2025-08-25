@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ToastrService } from 'ngx-toastr';
+import { ActivatedRoute, Router } from '@angular/router';
 import {
   ReactiveFormsModule,
   FormBuilder,
@@ -24,7 +25,7 @@ interface Participant {
   age: number;
   gender: string;
   contactNumber: string;
-  aadhar: string;
+  aadharMasked: string;
   email: string;
 }
 
@@ -49,10 +50,15 @@ export class ManualTrainingUploadComponent implements OnInit {
   emailError: boolean = false;
   selectedParticipant: Participant | null = null;
   isSpinning: boolean = false;
+  trainingDetails: any = null;
+  trainingId: any;
 
   breadcrumbItems: BreadcrumbItem[] = [
     { label: 'Training Module', url: '/admin/training-module' },
-    { label: 'Training Certificate Generation', url: '/admin/training-certificate-generation'},
+    {
+      label: 'Training Certificate Generation',
+      url: '/admin/training-certificate-generation',
+    },
     { label: 'Manual Training Upload' },
   ];
   tableColumns: TableColumn[] = [
@@ -73,13 +79,28 @@ export class ManualTrainingUploadComponent implements OnInit {
     private fb: FormBuilder,
     private modalService: NgbModal,
     private trainingService: TrainingService,
-    private toastr: ToastrService
+    private toastr: ToastrService,
+    private route: ActivatedRoute,
+    private router: Router
   ) {
     this.initializeForm();
     this.loadSampleData();
   }
 
-  ngOnInit(): void {}
+  ngOnInit(): void {
+    // Get query params from snapshot (one-time read)
+    this.trainingId = this.route.snapshot.queryParams['trainingId'];
+
+    // Apply delay if needed
+    this.getTrainingDetails(this.trainingId);
+  }
+  // loadTrainingDetails() {
+  //   this.route.queryParams.subscribe((params) => {
+  //     this.trainingId = params['trainingId'];
+  //   });
+  //   alert(this.trainingId);
+  //   this.getTrainingDetails(this.trainingId);
+  // }
 
   initializeForm(): void {
     this.participantForm = this.fb.group({
@@ -96,88 +117,101 @@ export class ManualTrainingUploadComponent implements OnInit {
   }
 
   loadSampleData(): void {
-    this.participants = [
-      {
-        name: 'Manoj Kumar',
-        age: 25,
-        gender: 'Male',
-        contactNumber: 'xxxxxx6484',
-        aadhar: '4356xxxxxx32',
-        email: 'xxxx@gmail.com',
+    // this.participants = [
+    //   {
+    //     name: 'Manoj Kumar',
+    //     age: 25,
+    //     gender: 'Male',
+    //     contactNumber: 'xxxxxx6484',
+    //     aadharMasked: '4356xxxxxx32',
+    //     email: 'xxxx@gmail.com',
+    //   },
+    //   {
+    //     name: 'Suman Devi',
+    //     age: 23,
+    //     gender: 'Female',
+    //     contactNumber: 'xxxxxx6484',
+    //     aadharMasked: '4356xxxxxx32',
+    //     email: 'xxxx@gmail.com',
+    //   },
+    //   {
+    //     name: 'Manoj Kumar',
+    //     age: 25,
+    //     gender: 'Male',
+    //     contactNumber: 'xxxxxx6484',
+    //     aadharMasked: '4356xxxxxx32',
+    //     email: 'xxxx@gmail.com',
+    //   },
+    //   {
+    //     name: 'Suman Devi',
+    //     age: 23,
+    //     gender: 'Female',
+    //     contactNumber: 'xxxxxx6484',
+    //     aadharMasked: '4356xxxxxx32',
+    //     email: 'xxxx@gmail.com',
+    //   },
+    //   {
+    //     name: 'Manoj Kumar',
+    //     age: 25,
+    //     gender: 'Male',
+    //     contactNumber: 'xxxxxx6484',
+    //     aadharMasked: '4356xxxxxx32',
+    //     email: 'xxxx@gmail.com',
+    //   },
+    //   {
+    //     name: 'Suman Devi',
+    //     age: 23,
+    //     gender: 'Female',
+    //     contactNumber: 'xxxxxx6484',
+    //     aadharMasked: '4356xxxxxx32',
+    //     email: 'xxxx@gmail.com',
+    //   },
+    //   {
+    //     name: 'Manoj Kumar',
+    //     age: 25,
+    //     gender: 'Male',
+    //     contactNumber: 'xxxxxx6484',
+    //     aadharMasked: '4356xxxxxx32',
+    //     email: 'xxxx@gmail.com',
+    //   },
+    //   {
+    //     name: 'Suman Devi',
+    //     age: 23,
+    //     gender: 'Female',
+    //     contactNumber: 'xxxxxx6484',
+    //     aadharMasked: '4356xxxxxx32',
+    //     email: 'xxxx@gmail.com',
+    //   },
+    //   {
+    //     name: 'Manoj Kumar',
+    //     age: 25,
+    //     gender: 'Male',
+    //     contactNumber: 'xxxxxx6484',
+    //     aadharMasked: '4356xxxxxx32',
+    //     email: 'xxxx@gmail.com',
+    //   },
+    //   {
+    //     name: 'Suman Devi',
+    //     age: 23,
+    //     gender: 'Female',
+    //     contactNumber: 'xxxxxx6484',
+    //     aadharMasked: '4356xxxxxx32',
+    //     email: 'xxxx@gmail.com',
+    //   },
+    // ];
+  }
+  getTrainingDetails(trainingId: number) {
+    this.isSpinning = true;
+    this.trainingService.getTrainingDetails(trainingId).subscribe({
+      next: (response) => {
+        this.isSpinning = false;
+        console.log(response);
+        this.trainingDetails = response;
       },
-      {
-        name: 'Suman Devi',
-        age: 23,
-        gender: 'Female',
-        contactNumber: 'xxxxxx6484',
-        aadhar: '4356xxxxxx32',
-        email: 'xxxx@gmail.com',
+      error: (error) => {
+        this.isSpinning = false;
       },
-      {
-        name: 'Manoj Kumar',
-        age: 25,
-        gender: 'Male',
-        contactNumber: 'xxxxxx6484',
-        aadhar: '4356xxxxxx32',
-        email: 'xxxx@gmail.com',
-      },
-      {
-        name: 'Suman Devi',
-        age: 23,
-        gender: 'Female',
-        contactNumber: 'xxxxxx6484',
-        aadhar: '4356xxxxxx32',
-        email: 'xxxx@gmail.com',
-      },
-      {
-        name: 'Manoj Kumar',
-        age: 25,
-        gender: 'Male',
-        contactNumber: 'xxxxxx6484',
-        aadhar: '4356xxxxxx32',
-        email: 'xxxx@gmail.com',
-      },
-      {
-        name: 'Suman Devi',
-        age: 23,
-        gender: 'Female',
-        contactNumber: 'xxxxxx6484',
-        aadhar: '4356xxxxxx32',
-        email: 'xxxx@gmail.com',
-      },
-      {
-        name: 'Manoj Kumar',
-        age: 25,
-        gender: 'Male',
-        contactNumber: 'xxxxxx6484',
-        aadhar: '4356xxxxxx32',
-        email: 'xxxx@gmail.com',
-      },
-      {
-        name: 'Suman Devi',
-        age: 23,
-        gender: 'Female',
-        contactNumber: 'xxxxxx6484',
-        aadhar: '4356xxxxxx32',
-        email: 'xxxx@gmail.com',
-      },
-      {
-        name: 'Manoj Kumar',
-        age: 25,
-        gender: 'Male',
-        contactNumber: 'xxxxxx6484',
-        aadhar: '4356xxxxxx32',
-        email: 'xxxx@gmail.com',
-      },
-      {
-        name: 'Suman Devi',
-        age: 23,
-        gender: 'Female',
-        contactNumber: 'xxxxxx6484',
-        aadhar: '4356xxxxxx32',
-        email: 'xxxx@gmail.com',
-      },
-    ];
+    });
   }
 
   openAddModal(isEdit: boolean): void {
@@ -203,7 +237,7 @@ export class ManualTrainingUploadComponent implements OnInit {
         age: formValue.age,
         gender: formValue.gender,
         contactNumber: this.maskContactNumber(formValue.contactNumber),
-        aadhar: this.maskAadhar(formValue.aadhar),
+        aadharMasked: this.maskAadhar(formValue.aadhar),
         email: this.maskEmail(formValue.email),
       };
 
@@ -223,7 +257,7 @@ export class ManualTrainingUploadComponent implements OnInit {
         age: formValue.age,
         gender: formValue.gender,
         contactNumber: this.maskContactNumber(formValue.contactNumber),
-        aadhar: this.maskAadhar(formValue.aadhar),
+        aadharMasked: this.maskAadhar(formValue.aadhar),
         email: this.maskEmail(formValue.email),
       };
 

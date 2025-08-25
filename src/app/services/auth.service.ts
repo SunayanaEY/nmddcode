@@ -47,20 +47,58 @@ export class AuthService {
   private user: any = null;
   private apiUrl = environment.apiUrl;
 
-  constructor(private http: HttpClient) { }
+  constructor(private http: HttpClient) {}
 
   login(email: string, password: string): Observable<LoginResponse> {
-    return this.http.post<LoginResponse>(`${this.apiUrl}api/auth/login`, { email, password }).pipe(
-      tap(response => {
-        if (response && response.data) {
-          sessionStorage.setItem('user', JSON.stringify(response.data));
-          this.user = response.data;
-        }
-      }),
-      catchError(error => {
-        console.error('Login failed', error);
-        throw error;
-      })
+    return this.http
+      .post<LoginResponse>(`${this.apiUrl}api/auth/login`, { email, password })
+      .pipe(
+        tap((response) => {
+          if (response && response.data) {
+            sessionStorage.setItem('user', JSON.stringify(response.data));
+            this.user = response.data;
+          }
+        }),
+        catchError((error) => {
+          console.error('Login failed', error);
+          throw error;
+        })
+      );
+  }
+  // login.service.ts
+
+  changePassword(
+    email: string,
+    oldPassword: string,
+    newPassword: string
+  ): Observable<any> {
+    const body = {
+      email: email,
+      oldPassword: oldPassword,
+      newPassword: newPassword,
+    };
+
+    return this.http.post<any>(this.apiUrl + 'api/auth/reset-password', body);
+  }
+  forgetPasswordOTP(email: string): Observable<any> {
+    const body = {
+      email: email,
+    };
+    return this.http.post<any>(this.apiUrl + 'api/auth/forgot-password', body);
+  }
+  forgetPassword(
+    email: string,
+    otp: number,
+    newPassword: string
+  ): Observable<any> {
+    const body = {
+      email: email,
+      otp: otp,
+      newPassword: newPassword,
+    };
+    return this.http.post<any>(
+      this.apiUrl + 'api/auth/forgot-password-otp',
+      body
     );
   }
 
@@ -107,14 +145,20 @@ export class AuthService {
     // Explicitly set headers to let browser handle multipart/form-data
     const headers = new HttpHeaders();
     // Do NOT set Content-Type - let browser set it automatically for FormData
-    
-    return this.http.post<RegisterResponse>(`${this.apiUrl}api/auth/registerInstitute`, formData, {
-      headers: headers
-    }).pipe(
-      catchError(error => {
-        console.error('Registration failed', error);
-        throw error;
-      })
-    );
+
+    return this.http
+      .post<RegisterResponse>(
+        `${this.apiUrl}api/auth/registerInstitute`,
+        formData,
+        {
+          headers: headers,
+        }
+      )
+      .pipe(
+        catchError((error) => {
+          console.error('Registration failed', error);
+          throw error;
+        })
+      );
   }
 }
