@@ -16,6 +16,8 @@ import { DashboardDataService, MonthlyTrainingData } from '../../services/dashbo
 export class MonthlyChartComponent implements OnInit, OnChanges, OnDestroy {
   @Input() selectedState: StateData | null = null;
   @Input() isLoading = false;
+  @Input() stateId: number | null = null;
+  @Input() districtId: number | null = null;
 
   chartOption: EChartsOption = {};
   chartLoading = false;
@@ -95,7 +97,7 @@ export class MonthlyChartComponent implements OnInit, OnChanges, OnDestroy {
   }
 
   ngOnChanges(changes: SimpleChanges): void {
-    if (changes['selectedState']) {
+    if (changes['selectedState'] || changes['stateId'] || changes['districtId']) {
       this.loadMonthlyData();
     }
   }
@@ -253,7 +255,7 @@ export class MonthlyChartComponent implements OnInit, OnChanges, OnDestroy {
       this.dataSubscription.unsubscribe();
     }
     
-    this.dataSubscription = this.dashboardService.getMonthlyTrainingCount().subscribe({
+    this.dataSubscription = this.dashboardService.getMonthlyTrainingCount(this.stateId || undefined, this.districtId || undefined).subscribe({
       next: (response) => {
         if (response.success) {
           this.monthlyData = response.data;

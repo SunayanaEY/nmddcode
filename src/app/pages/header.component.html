@@ -60,8 +60,8 @@
           [notifications]="notifications"
           [isLoading]="isLoadingNotifications"
           (close)="closeNotificationDropdown()"
-          (markAsRead)="markAsRead($event)"
-          (markAllAsRead)="markAllAsRead()"
+          (markAsRead)="onNotificationRead($event)"
+          (markAllAsRead)="onMarkAllAsRead()"
           (deleteNotification)="deleteNotification($event)"
           (refresh)="refreshNotifications()">
         </app-notification-dropdown>

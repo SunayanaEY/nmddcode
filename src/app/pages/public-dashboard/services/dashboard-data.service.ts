@@ -408,23 +408,75 @@ export class DashboardDataService {
     return of(mockResults).pipe(delay(500));
   }
 
-  getTrainingSummaryCount(): Observable<TrainingSummaryResponse> {
-    const url = `${this.API_BASE_URL}public/dashboard/trainingSummaryCount`;
+  getTrainingSummaryCount(stateId?: number, districtId?: number): Observable<TrainingSummaryResponse> {
+    let url = `${this.API_BASE_URL}public/dashboard/trainingSummaryCount`;
+    const params = new URLSearchParams();
+    
+    if (stateId) {
+      params.append('stateId', stateId.toString());
+    }
+    if (districtId) {
+      params.append('districtId', districtId.toString());
+    }
+    
+    if (params.toString()) {
+      url += `?${params.toString()}`;
+    }
+    
     return this.http.get<TrainingSummaryResponse>(url);
   }
 
-  getMonthlyTrainingCount(): Observable<MonthlyTrainingResponse> {
-    const url = `${this.API_BASE_URL}public/dashboard/monthlyTrainingCount`;
+  getMonthlyTrainingCount(stateId?: number, districtId?: number): Observable<MonthlyTrainingResponse> {
+    let url = `${this.API_BASE_URL}public/dashboard/monthlyTrainingCount`;
+    const params = new URLSearchParams();
+    
+    if (stateId) {
+      params.append('stateId', stateId.toString());
+    }
+    if (districtId) {
+      params.append('districtId', districtId.toString());
+    }
+    
+    if (params.toString()) {
+      url += `?${params.toString()}`;
+    }
+    
     return this.http.get<MonthlyTrainingResponse>(url);
   }
 
-  getModeOfTrainingDistribution(): Observable<ModeOfTrainingDistributionResponse> {
-    const url = `${this.API_BASE_URL}public/dashboard/modeOfTrainingDistribution`;
+  getModeOfTrainingDistribution(stateId?: number, districtId?: number): Observable<ModeOfTrainingDistributionResponse> {
+    let url = `${this.API_BASE_URL}public/dashboard/modeOfTrainingDistribution`;
+    const params = new URLSearchParams();
+    
+    if (stateId) {
+      params.append('stateId', stateId.toString());
+    }
+    if (districtId) {
+      params.append('districtId', districtId.toString());
+    }
+    
+    if (params.toString()) {
+      url += `?${params.toString()}`;
+    }
+    
     return this.http.get<ModeOfTrainingDistributionResponse>(url);
   }
 
-  getAgeWiseDistribution(): Observable<AgeWiseDistributionResponse> {
-    const url = `${this.API_BASE_URL}public/dashboard/ageWiseDistribution`;
+  getAgeWiseDistribution(stateId?: number, districtId?: number): Observable<AgeWiseDistributionResponse> {
+    let url = `${this.API_BASE_URL}public/dashboard/ageWiseDistribution`;
+    const params = new URLSearchParams();
+    
+    if (stateId) {
+      params.append('stateId', stateId.toString());
+    }
+    if (districtId) {
+      params.append('districtId', districtId.toString());
+    }
+    
+    if (params.toString()) {
+      url += `?${params.toString()}`;
+    }
+    
     return this.http.get<AgeWiseDistributionResponse>(url);
   }
 

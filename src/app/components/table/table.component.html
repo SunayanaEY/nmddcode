@@ -20,6 +20,18 @@
     </div>
 
     <div class="d-flex gap-2">
+      <!-- Bulk Action Buttons -->
+      <div *ngIf="enableMultiSelect && hasSelectedItems" class="d-flex gap-2 me-3">
+        <button
+          *ngFor="let action of bulkActions"
+          class="btn {{ action.class }}"
+          (click)="onBulkActionClick(action.name)"
+          [title]="action.title"
+        >
+          <i class="bi {{ action.icon }}"></i> {{ action.title }}
+        </button>
+      </div>
+      
       <button *ngIf="isExportPDF" class="btn btn-primary" (click)="createPdf()">
         Export PDF
       </button>
@@ -30,7 +42,7 @@
       >
         Export Excel
       </button>
-      <button *ngIf="isBulkCertDownload" class="btn btn-primary">
+      <button *ngIf="isBulkCertDownload" class="btn btn-primary" (click)="downloadCerts('Download Certs')">
         <i class="bi bi-download"></i> Download Certificates
       </button>
       <button
@@ -47,6 +59,15 @@
     <table class="table table-striped w-100">
       <thead>
         <tr>
+          <th *ngIf="enableMultiSelect" scope="col" style="width: 50px;">
+            <input
+              type="checkbox"
+              class="form-check-input"
+              [checked]="selectAll"
+              (change)="toggleSelectAll()"
+              [indeterminate]="selectedItems.size > 0 && selectedItems.size < data.length"
+            />
+          </th>
           <th scope="col">Sr.No.</th>
           <th *ngFor="let col of columns" scope="col">{{ col.header }}</th>
           <th *ngIf="actions.length > 0" scope="col">Actions</th>
@@ -63,6 +84,14 @@
           "
           [class.odd-row]="i % 2 === 0"
         >
+          <td *ngIf="enableMultiSelect" style="width: 50px;">
+            <input
+              type="checkbox"
+              class="form-check-input"
+              [checked]="isItemSelected(item)"
+              (change)="toggleItemSelection(item)"
+            />
+          </td>
           <td>{{ formatSerialNumber(i) }}</td>
           <ng-container
             *ngIf="tableNamesArray.includes(tableName) && item.editable"
@@ -111,16 +140,33 @@
             *ngIf="!tableNamesArray.includes(tableName) && actions.length > 0"
           >
             <div class="action-buttons">
+
+
               <ng-container *ngFor="let action of actions">
-                <button
+                <button type="button" 
                   *ngIf="!action.condition || action.condition(item)"
-                  (click)="onActionClick(action.name, item, i)"
-                  [class]="action.class"
-                  [title]="action.title"
-                >
-                  <i [class]="action.icon"></i>
-                </button>
+                  class="btn btn-action {{ action.class }}" 
+                  [ngClass]="{
+                    'btn-toggle-active': action.name === 'toggle' && (item.active === true || item.active === 'true' || item.active === 'Active' || item.active === 'active'),
+                    'btn-toggle-inactive': action.name === 'toggle' && !(item.active === true || item.active === 'true' || item.active === 'Active' || item.active === 'active')
+                  }"
+                  (click)="onActionClick(action.name, item, i)" [title]="action.title">
+                <ng-container *ngIf="action.name === 'toggle'">
+                  <div class="toggle-switch">
+                    <div class="toggle-slider" [ngClass]="{
+                      'slider-active': item.active === true || item.active === 'true' || item.active === 'Active' || item.active === 'active',
+                      'slider-inactive': !(item.active === true || item.active === 'true' || item.active === 'Active' || item.active === 'active')
+                    }">
+                      <div class="toggle-button"></div>
+                    </div>
+                  </div>
+                </ng-container>
+                <ng-container *ngIf="action.name !== 'toggle'">
+                  <i class="bi {{ action.icon }}"></i>
+                </ng-container>
+              </button>
               </ng-container>
+
             </div>
           </td>
           <td

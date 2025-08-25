@@ -48,6 +48,10 @@ export class TableComponent {
   tableNamesArray: Array<string> = ['schemes', 'trainingTypes'];
   @Input() addNew: String = '';
   @Input() columns: TableColumn[] = [];
+  @Input() enableMultiSelect: boolean = false;
+  @Input() bulkActions: TableAction[] = [];
+  selectedItems: Set<any> = new Set();
+  selectAll: boolean = false;
   @Input() actions: TableAction[] = [];
   @Input() pdfHeaders: Array<string> = [];
   excelHeaders: Array<string> = [];
@@ -66,7 +70,16 @@ export class TableComponent {
     item: any;
     index: number;
   }>();
+  @Output() downloadAllCerts = new EventEmitter<{
+    action: string;
+    //item: any;
+    //index: number;
+  }>();
   @Output() linkClick = new EventEmitter<{ column: TableColumn; row: any }>();
+  @Output() bulkActionClick = new EventEmitter<{
+    action: string;
+    items: any[];
+  }>();
 
   constructor(
     private excelService: ExcelService,
@@ -86,9 +99,15 @@ export class TableComponent {
       this.linkClick.emit({ column, row });
     }
   }
+  downloadCerts(action:string){
+
+    this.downloadAllCerts.emit({action:action});
+  }
 
   formatSerialNumber(index: number): string {
-    return String(index + 1).padStart(2, '0');
+    if(index<10)
+    {return String(index + 1).padStart(2, '0');}
+    else return String(index + 1);
   }
 
   createPdf() {
@@ -221,26 +240,40 @@ export class TableComponent {
   }
 
   addNewRow(len: number) {
-    // this.data.push({ schemeId: null, schemeTitle: '' ,editable:true,actions:[
-    this.data.push({
-      id: null,
-      title: '',
-      editable: true,
-      actions: [
-        {
-          name: 'save',
-          icon: 'bi bi-save-fill',
-          class: 'btn-info',
-          title: 'Save',
-        },
-        {
-          name: 'delete',
-          icon: 'bi bi-trash',
-          class: 'btn-info',
-          title: 'Delete',
-        },
-        // { name: 'download', icon: 'bi bi-download', class: 'btn-success', title: 'Download' },
-      ],
-    });
+    this.actionClick.emit({ action: 'add', item: {}, index: len });
+  }
+
+  // Multi-select methods
+  toggleSelectAll(): void {
+    this.selectAll = !this.selectAll;
+    if (this.selectAll) {
+      this.data.forEach(item => this.selectedItems.add(item));
+    } else {
+      this.selectedItems.clear();
+    }
+  }
+
+  toggleItemSelection(item: any): void {
+    if (this.selectedItems.has(item)) {
+      this.selectedItems.delete(item);
+    } else {
+      this.selectedItems.add(item);
+    }
+    this.selectAll = this.selectedItems.size === this.data.length;
+  }
+
+  isItemSelected(item: any): boolean {
+    return this.selectedItems.has(item);
+  }
+
+  onBulkActionClick(action: string): void {
+    const selectedItemsArray = Array.from(this.selectedItems);
+    if (selectedItemsArray.length > 0) {
+      this.bulkActionClick.emit({ action, items: selectedItemsArray });
+    }
+  }
+
+  get hasSelectedItems(): boolean {
+    return this.selectedItems.size > 0;
   }
 }

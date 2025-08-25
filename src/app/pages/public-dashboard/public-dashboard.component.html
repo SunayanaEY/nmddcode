@@ -76,6 +76,7 @@
                 class="btn btn-outline-primary"
                 (click)="filterByPeriod()"
               >
+              <!-- <button class="btn btn-outline-primary" (click)="filterByPeriod()">
                 <i class="fas fa-calendar me-2"></i>Filter Period
                 <small class="d-block">01 Jan 2024 - 31 Jan 2024</small>
               </button> -->
@@ -92,9 +93,68 @@
           <h4 class="section-title mb-1">Public View</h4>
           <p class="text-muted mb-0">Training Summary</p>
         </div>
-        <button class="btn btn-outline-primary btn-sm" (click)="exportData()">
-          <i class="fas fa-external-link-alt me-1"></i>Export
-        </button>
+      </div>
+
+      <!-- Filter Section -->
+      <div class="filter-section mb-4" [formGroup]="filterForm">
+        <div class="row g-3">
+          <div class="col-md-4">
+            <label for="stateSelect" class="form-label fw-semibold"
+              >State</label
+            >
+            <select
+              id="stateSelect"
+              class="form-select"
+              formControlName="stateId"
+              [disabled]="isLoadingStates"
+            >
+              <option value="">All States</option>
+              <option *ngFor="let state of states" [value]="state.id">
+                {{ state.stateName }}
+              </option>
+            </select>
+            <div *ngIf="isLoadingStates" class="text-muted small mt-1">
+              <i class="fas fa-spinner fa-spin me-1"></i>Loading states...
+            </div>
+          </div>
+
+          <div class="col-md-4">
+            <label for="districtSelect" class="form-label fw-semibold"
+              >District</label
+            >
+            <select
+              id="districtSelect"
+              class="form-select"
+              formControlName="districtId"
+              [disabled]="isLoadingDistricts || !selectedStateId"
+            >
+              <option value="">All Districts</option>
+              <option *ngFor="let district of districts" [value]="district.id">
+                {{ district.districtName }}
+              </option>
+            </select>
+            <div *ngIf="isLoadingDistricts" class="text-muted small mt-1">
+              <i class="fas fa-spinner fa-spin me-1"></i>Loading districts...
+            </div>
+            <div
+              *ngIf="!selectedStateId && !isLoadingStates"
+              class="text-muted small mt-1"
+            >
+              Select a state first
+            </div>
+          </div>
+
+          <div class="col-md-4 d-flex align-items-end">
+            <button
+              type="button"
+              class="btn btn-outline-secondary"
+              (click)="clearFilters()"
+              [disabled]="!selectedStateId && !selectedDistrictId"
+            >
+              <i class="fas fa-times me-1"></i>Clear Filters
+            </button>
+          </div>
+        </div>
       </div>
 
       <!-- Stats Cards -->
@@ -102,96 +162,91 @@
       </app-stats-cards>
     </div>
 
-    <!-- Main Content Grid -->
-    <div class="row">
-      <!-- India Map Section -->
-      <div class="col-lg-6 mb-4">
-        <div class="card dashboard-card">
+    <!-- First Row: Monthly Trainings and Age Group -->
+    <div class="row g-4 mb-4">
+      <!-- Monthly Trainings Chart -->
+      <div class="col-lg-6">
+        <div class="card h-100">
+          <div class="card-header">
+            <h5 class="card-title mb-0">
+              <i class="fas fa-chart-line text-success me-2"></i>
+              Monthly Trainings Conducted
+            </h5>
+          </div>
+          <div class="card-body">
+            <app-monthly-chart
+              [selectedState]="selectedState"
+              [isLoading]="isLoading"
+              [stateId]="selectedStateId"
+              [districtId]="selectedDistrictId"
+            >
+            </app-monthly-chart>
+          </div>
+        </div>
+      </div>
+
+      <!-- Age Group Chart -->
+      <div class="col-lg-6">
+        <div class="card h-100">
+          <div class="card-header">
+            <h5 class="card-title mb-0">
+              <i class="fas fa-users text-warning me-2"></i>
+              Age Group
+            </h5>
+          </div>
+          <div class="card-body">
+            <app-age-group-chart
+              [selectedState]="selectedState"
+              [isLoading]="isLoading"
+              [stateId]="selectedStateId"
+              [districtId]="selectedDistrictId"
+            >
+            </app-age-group-chart>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Second Row: Training Institutes and Mode of Training -->
+    <div class="row g-4">
+      <!-- India Map -->
+      <div class="col-lg-6">
+        <div class="card">
           <div
             class="card-header d-flex justify-content-between align-items-center"
           >
-            <h5 class="card-title mb-0">Training Institutes in India</h5>
-            <select class="form-select form-select-sm" style="width: auto">
-              <option value="all">States</option>
-              <option value="up">Uttar Pradesh</option>
-              <option value="mh">Maharashtra</option>
-              <option value="ka">Karnataka</option>
-              <!-- Add more states as needed -->
-            </select>
+            <h5 class="card-title mb-0">
+              <i class="fas fa-map-marked-alt text-primary me-2"></i>
+              Training Institutes in India
+            </h5>
           </div>
-          <div class="card-body p-0">
+          <div class="card-body">
             <app-india-map
               [selectedState]="selectedState"
               (stateSelected)="onStateSelected($event)"
-              [isLoading]="isLoading"
             >
             </app-india-map>
           </div>
         </div>
       </div>
 
-      <!-- Charts Section -->
+      <!-- Mode of Training Chart -->
       <div class="col-lg-6">
-        <div class="row">
-          <!-- Monthly Trainings Chart -->
-          <div class="col-12 mb-4">
-            <div class="card dashboard-card">
-              <div class="card-header">
-                <h5 class="card-title mb-0">Monthly Trainings Conducted</h5>
-              </div>
-              <div class="card-body">
-                <app-monthly-chart
-                  [selectedState]="selectedState"
-                  [isLoading]="isLoading"
-                >
-                </app-monthly-chart>
-              </div>
-            </div>
+        <div class="card">
+          <div class="card-header">
+            <h5 class="card-title mb-0">
+              <i class="fas fa-chart-pie text-info me-2"></i>
+              Mode of Training
+            </h5>
           </div>
-
-          <!-- Pie Charts Row -->
-          <div class="col-12">
-            <div class="row">
-              <div class="col-md-6 mb-4">
-                <div class="card dashboard-card">
-                  <div
-                    class="card-header d-flex justify-content-between align-items-center"
-                  >
-                    <h6 class="card-title mb-0">Age Group</h6>
-                    <button class="btn btn-link btn-sm p-0">
-                      <i class="fas fa-ellipsis-h"></i>
-                    </button>
-                  </div>
-                  <div class="card-body">
-                    <app-age-group-chart
-                      [selectedState]="selectedState"
-                      [isLoading]="isLoading"
-                    >
-                    </app-age-group-chart>
-                  </div>
-                </div>
-              </div>
-
-              <div class="col-md-6 mb-4">
-                <div class="card dashboard-card">
-                  <div
-                    class="card-header d-flex justify-content-between align-items-center"
-                  >
-                    <h6 class="card-title mb-0">Mode of Training</h6>
-                    <button class="btn btn-link btn-sm p-0">
-                      <i class="fas fa-ellipsis-h"></i>
-                    </button>
-                  </div>
-                  <div class="card-body">
-                    <app-mode-of-training-chart
-                      [selectedState]="selectedState"
-                      [isLoading]="isLoading"
-                    >
-                    </app-mode-of-training-chart>
-                  </div>
-                </div>
-              </div>
-            </div>
+          <div class="card-body">
+            <app-mode-of-training-chart
+              [selectedState]="selectedState"
+              [isLoading]="isLoading"
+              [stateId]="selectedStateId"
+              [districtId]="selectedDistrictId"
+            >
+            </app-mode-of-training-chart>
           </div>
         </div>
       </div>

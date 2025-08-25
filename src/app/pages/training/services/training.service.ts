@@ -127,4 +127,12 @@ export class TrainingService {
       })
     );
   }
+
+  getApprovedTrainings(): Observable<any> {
+    return this.http.get<any>(this.url + `training/getAllApprovedTrainings`);
+  }
+
+  getRejectedTrainings(): Observable<any> {
+    return this.http.get<any>(this.url + `training/getAllRejectedTrainings`);
+  }
 }

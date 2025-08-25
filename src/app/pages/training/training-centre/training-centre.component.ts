@@ -5,6 +5,7 @@ import { TableComponent, TableColumn, TableAction } from '../../../components/ta
 import { ModalComponent, ModalConfig } from '../../../components/modal/modal.component';
 import { AdminService, TrainingInstitute } from '../services/training-admin.service';
 import { HttpClientModule } from '@angular/common/http';
+import * as XLSX from 'xlsx';
 
 @Component({
   selector: 'app-training-centre',
@@ -133,7 +134,7 @@ export class TrainingCentreComponent implements OnInit {
     { key: 'district', header: 'District' },
     { key: 'contactPersonName', header: 'Contact Person' },
     { key: 'contactNumber', header: 'Contact Number' },
-    { key: 'status', header: 'Status', transform: (value: any, item: any) => `<span class="${item.active ? 'status-active' : 'status-inactive'}">${item.active ? 'Active' : 'Inactive'}</span>` }
+    { key: 'status', header: 'Status', transform: (value: any, item: any) => item.active ? 'Active' : 'Inactive' }
   ];
 
   tableActions: TableAction[] = [
@@ -151,8 +152,8 @@ export class TrainingCentreComponent implements OnInit {
     },
     {
       name: 'toggle',
-      icon: 'bi-toggle-on',
-      class: 'btn-success',
+      icon: 'bi-power',
+      class: 'btn-toggle',
       title: 'Toggle Active/Inactive'
     },
     {
@@ -165,6 +166,10 @@ export class TrainingCentreComponent implements OnInit {
 
   // This will be populated from API
   trainingCentres: any[] = [];
+
+  // Export configuration
+  exportHeaders = ['Institute Name', 'State', 'District', 'Contact Person', 'Contact Number', 'Status'];
+  exportColumnKeys = ['trainingInstituteName', 'state', 'district', 'contactPersonName', 'contactNumber', 'status'];
 
   ngOnInit(): void {
     this.loadTrainingInstitutes();
@@ -437,5 +442,39 @@ export class TrainingCentreComponent implements OnInit {
         alert('Failed to update training centre. Please try again.');
       }
     });
+  }
+
+  exportToExcel(): void {
+    if (this.trainingCentres.length === 0) {
+      alert('No data available to export');
+      return;
+    }
+
+    // Prepare data for export
+    const exportData = this.trainingCentres.map(centre => {
+      const row: any = {};
+      this.exportColumnKeys.forEach((key, index) => {
+        if (key === 'status') {
+          row[this.exportHeaders[index]] = centre.active ? 'Active' : 'Inactive';
+        } else {
+          row[this.exportHeaders[index]] = centre[key] || '';
+        }
+      });
+      return row;
+    });
+
+    // Create worksheet
+    const ws = XLSX.utils.json_to_sheet(exportData);
+    
+    // Create workbook
+    const wb = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(wb, ws, 'Training Institute Admin Data');
+    
+    // Generate filename with current date
+    const date = new Date();
+    const filename = `Training_Institute_Admin_Data_${date.getFullYear()}-${(date.getMonth() + 1).toString().padStart(2, '0')}-${date.getDate().toString().padStart(2, '0')}.xlsx`;
+    
+    // Save file
+    XLSX.writeFile(wb, filename);
   }
 }

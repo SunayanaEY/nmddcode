@@ -33,24 +33,6 @@ export class RegisteredDataEntryOperatorsComponent implements OnInit {
   ];
 
   tableActions: TableAction[] = [
-    {
-      name: 'view',
-      icon: 'fas fa-eye',
-      class: 'btn-info btn-sm',
-      title: 'View Details'
-    },
-    {
-      name: 'edit',
-      icon: 'fas fa-edit',
-      class: 'btn-warning btn-sm',
-      title: 'Edit'
-    },
-    {
-      name: 'toggle-status',
-      icon: 'fas fa-toggle-on',
-      class: 'btn-secondary btn-sm',
-      title: 'Toggle Status'
-    }
   ];
 
   tableData: DataEntryOperator[] = [];

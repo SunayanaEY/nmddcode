@@ -28,6 +28,8 @@ export interface StateData {
 export class ModeOfTrainingChartComponent implements OnInit, OnChanges, OnDestroy {
   @Input() selectedState: StateData | null = null;
   @Input() isLoading: boolean = false;
+  @Input() stateId: number | null = null;
+  @Input() districtId: number | null = null;
 
   chartOption: EChartsOption = {};
   chartLoading: boolean = false;
@@ -66,7 +68,7 @@ export class ModeOfTrainingChartComponent implements OnInit, OnChanges, OnDestro
   }
 
   ngOnChanges(changes: SimpleChanges): void {
-    if (changes['selectedState']) {
+    if (changes['selectedState'] || changes['isLoading'] || changes['stateId'] || changes['districtId']) {
       this.loadModeOfTrainingData();
     }
   }
@@ -114,7 +116,7 @@ export class ModeOfTrainingChartComponent implements OnInit, OnChanges, OnDestro
       this.dataSubscription.unsubscribe();
     }
     
-    this.dataSubscription = this.dashboardService.getModeOfTrainingDistribution().subscribe({
+    this.dataSubscription = this.dashboardService.getModeOfTrainingDistribution(this.stateId || undefined, this.districtId || undefined).subscribe({
       next: (response: ModeOfTrainingDistributionResponse) => {
         if (response.success) {
           // Transform API data to component format
