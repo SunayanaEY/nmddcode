@@ -12,12 +12,13 @@ import jsPDF from 'jspdf';
 import html2canvas from 'html2canvas';
 import JSZip from 'jszip';
 import saveAs from 'file-saver';import { ToastrService } from 'ngx-toastr';
+import { NgxSpinnerModule, NgxSpinnerService } from 'ngx-spinner';
 import { CertificateLayoutComponent } from '../../certificate-layout/certificate-layout.component';
 
 @Component({
   selector: 'app-all-trainings-admin',
   imports: [CommonModule, BreadcrumbComponent, TableComponent,NgSelectModule,
-    ReactiveFormsModule,FormsModule, CertificateLayoutComponent],
+    ReactiveFormsModule,FormsModule, CertificateLayoutComponent, NgxSpinnerModule],
   templateUrl: './all-trainings-admin.component.html',
   styleUrl: './all-trainings-admin.component.css'
   // encapsulation: ViewEncapsulation.None
@@ -117,13 +118,15 @@ export class AllTrainingsAdminComponent {
 
       constructor(private formBuilder: FormBuilder,
         private modalService: NgbModal, private trainingsService: TrainingService,
-        private adminService: AdminService, private toastr: ToastrService
+        private adminService: AdminService, private toastr: ToastrService,
+        private spinner: NgxSpinnerService
       ){
 
       }
       filteredData = [...this.trainingsList];
 
       ngOnInit(): void {
+
         this.trainingForm = this.formBuilder.group({
         id: [''],
         comment: ['', [Validators.required]],
@@ -199,6 +202,7 @@ export class AllTrainingsAdminComponent {
         keyboard: false
       });
       } else if (event.action === 'approve') {
+          this.spinner.show('modalSpinner');
           this.approveTrainee(event.item);
         } else if (event.action === 'reject') {
           this.selectedTraineeForReject = event.item;
@@ -439,6 +443,7 @@ const targetDiv = document.getElementById('certificate')!;
 
     this.adminService.approveTrainees(payload).subscribe({
        next: (response) => {
+        this.spinner.hide('modalSpinner');
          if (response.success) {
            trainee.status = 'APPROVED';
            this.toastr.success(response.data.message || 'Trainee approved successfully', 'Success');
@@ -447,6 +452,7 @@ const targetDiv = document.getElementById('certificate')!;
          }
        },
        error: (error) => {
+        this.spinner.hide('modalSpinner');
          const errorMessage = error.error?.message || 'An error occurred while approving trainee';
          this.toastr.error(errorMessage, 'Error');
          console.error('Error approving trainee:', error);
@@ -469,8 +475,10 @@ const targetDiv = document.getElementById('certificate')!;
           rejectionRemarks: remarks
         };
 
+        this.spinner.show('modalSpinner');
         this.adminService.rejectTrainees(payload).subscribe({
            next: (response) => {
+            this.spinner.hide('modalSpinner');
              if (response.success) {
                this.selectedTraineeForReject.status = 'REJECTED';
                this.selectedTraineeForReject.remarks = remarks;
@@ -482,6 +490,7 @@ const targetDiv = document.getElementById('certificate')!;
              this.selectedTraineeForReject = null;
            },
            error: (error) => {
+            this.spinner.hide('modalSpinner');
              const errorMessage = error.error?.message || 'An error occurred while rejecting trainee';
              this.toastr.error(errorMessage, 'Error');
              console.error('Error rejecting trainee:', error);

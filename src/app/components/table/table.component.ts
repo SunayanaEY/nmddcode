@@ -247,7 +247,12 @@ export class TableComponent {
   toggleSelectAll(): void {
     this.selectAll = !this.selectAll;
     if (this.selectAll) {
-      this.data.forEach(item => this.selectedItems.add(item));
+      // Only select items that are not APPROVED or REJECTED
+      this.data.forEach(item => {
+        if (item.status !== 'APPROVED' && item.status !== 'REJECTED') {
+          this.selectedItems.add(item);
+        }
+      });
     } else {
       this.selectedItems.clear();
     }
@@ -259,7 +264,9 @@ export class TableComponent {
     } else {
       this.selectedItems.add(item);
     }
-    this.selectAll = this.selectedItems.size === this.data.length;
+    // Update selectAll based on eligible items only
+    const eligibleItems = this.data.filter(item => item.status !== 'APPROVED' && item.status !== 'REJECTED');
+    this.selectAll = eligibleItems.length > 0 && eligibleItems.every(item => this.selectedItems.has(item));
   }
 
   isItemSelected(item: any): boolean {
@@ -275,5 +282,9 @@ export class TableComponent {
 
   get hasSelectedItems(): boolean {
     return this.selectedItems.size > 0;
+  }
+
+  get eligibleItemsCount(): number {
+    return this.data.filter(item => item.status !== 'APPROVED' && item.status !== 'REJECTED').length;
   }
 }

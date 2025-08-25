@@ -65,7 +65,7 @@
               class="form-check-input"
               [checked]="selectAll"
               (change)="toggleSelectAll()"
-              [indeterminate]="selectedItems.size > 0 && selectedItems.size < data.length"
+              [indeterminate]="selectedItems.size > 0 && selectedItems.size < eligibleItemsCount"
             />
           </th>
           <th scope="col">Sr.No.</th>
@@ -86,6 +86,7 @@
         >
           <td *ngIf="enableMultiSelect" style="width: 50px;">
             <input
+              *ngIf="item.status !== 'APPROVED' && item.status !== 'REJECTED'"
               type="checkbox"
               class="form-check-input"
               [checked]="isItemSelected(item)"
