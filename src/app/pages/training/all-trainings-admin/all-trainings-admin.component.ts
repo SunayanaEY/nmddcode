@@ -121,7 +121,6 @@ export class AllTrainingsAdminComponent {
         private adminService: AdminService, private toastr: ToastrService,
         private spinner: NgxSpinnerService
       ){
-
       }
       filteredData = [...this.trainingsList];
 
@@ -168,7 +167,7 @@ export class AllTrainingsAdminComponent {
           this.trainingsService.getTraineeList(this.trainingDetails.id).subscribe(
             res=>{
               this.traineeList = res.data;
-              debugger
+              
               this.currentTrainingInstituteId = this.traineeList[0].trainingInstituteId ||  '';
           this.traineeList.forEach(trainee => {
             if(trainee.uin!=null && trainee.uin!='' &&
@@ -434,7 +433,6 @@ const targetDiv = document.getElementById('certificate')!;
   }
 
   approveTrainee(trainee: any): void {
-    debugger;
     const payload = {
       trainingInstituteId: this.currentTrainingInstituteId,
       trainingId: this.currentTrainingId,

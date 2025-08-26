@@ -24,7 +24,7 @@ export class RegisteredDataEntryOperatorsComponent implements OnInit {
     { key: 'contactNumber', header: 'Contact Number' },
     { key: 'emailId', header: 'Email ID' },
     { key: 'createdBy', header: 'Created By' },
-    { key: 'createdAt', header: 'Created Date', transform: (value: string) => {
+    { key: 'createdAt', header: 'Creation Date', transform: (value: string) => {
       return new Date(value).toLocaleDateString('en-IN');
     }},
     { key: 'active', header: 'Status', transform: (value: boolean) => {

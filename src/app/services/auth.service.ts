@@ -1,8 +1,9 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { Observable, of } from 'rxjs';
+import { Observable, of, interval, Subscription } from 'rxjs';
 import { catchError, map, tap } from 'rxjs/operators';
 import { environment } from '../../environments/environment';
+import { Router } from '@angular/router';
 
 interface LoginResponse {
   data: {
@@ -46,15 +47,25 @@ interface RegisterResponse {
 export class AuthService {
   private user: any = null;
   private apiUrl = environment.apiUrl;
+  private sessionTimeout = 10 * 60 * 1000; // 10 minutes in milliseconds
+  private sessionCheckInterval: Subscription | null = null;
+  private lastActivityTime: number = Date.now();
 
-  constructor(private http: HttpClient) { }
+  constructor(private http: HttpClient, private router: Router) {
+    this.startSessionMonitoring();
+    this.setupActivityListeners();
+  }
 
   login(email: string, password: string): Observable<LoginResponse> {
     return this.http.post<LoginResponse>(`${this.apiUrl}api/auth/login`, { email, password }).pipe(
       tap(response => {
         if (response && response.data) {
+          const loginTime = Date.now();
           sessionStorage.setItem('user', JSON.stringify(response.data));
+          sessionStorage.setItem('loginTime', loginTime.toString());
           this.user = response.data;
+          this.lastActivityTime = loginTime;
+          this.startSessionMonitoring();
         }
       }),
       catchError(error => {
@@ -67,6 +78,8 @@ export class AuthService {
   logout() {
     this.user = null;
     sessionStorage.removeItem('user');
+    sessionStorage.removeItem('loginTime');
+    this.stopSessionMonitoring();
   }
 
   getUser() {
@@ -78,7 +91,17 @@ export class AuthService {
   }
 
   isLoggedIn() {
-    return !!sessionStorage.getItem('user');
+    if (!sessionStorage.getItem('user')) {
+      return false;
+    }
+    
+    // Check if session has expired
+    if (this.isSessionExpired()) {
+      this.handleSessionExpiry();
+      return false;
+    }
+    
+    return true;
   }
 
   getUserRole(): number | null {
@@ -116,5 +139,84 @@ export class AuthService {
         throw error;
       })
     );
+  }
+
+  // Session timeout management methods
+  private startSessionMonitoring(): void {
+    this.stopSessionMonitoring(); // Stop any existing monitoring
+    
+    // Check session every minute
+    this.sessionCheckInterval = interval(60000).subscribe(() => {
+      if (this.isSessionExpired()) {
+        this.handleSessionExpiry();
+      }
+    });
+  }
+
+  private stopSessionMonitoring(): void {
+    if (this.sessionCheckInterval) {
+      this.sessionCheckInterval.unsubscribe();
+      this.sessionCheckInterval = null;
+    }
+  }
+
+  private setupActivityListeners(): void {
+    // Listen for user activity to update last activity time
+    const events = ['mousedown', 'mousemove', 'keypress', 'scroll', 'touchstart', 'click'];
+    
+    events.forEach(event => {
+      document.addEventListener(event, () => {
+        if (this.isLoggedIn()) {
+          this.updateLastActivity();
+        }
+      }, true);
+    });
+  }
+
+  private updateLastActivity(): void {
+    this.lastActivityTime = Date.now();
+  }
+
+  private isSessionExpired(): boolean {
+    if (!sessionStorage.getItem('user')) {
+      return true;
+    }
+
+    const loginTime = sessionStorage.getItem('loginTime');
+    if (!loginTime) {
+      return true;
+    }
+
+    const currentTime = Date.now();
+    const timeSinceActivity = currentTime - this.lastActivityTime;
+    
+    return timeSinceActivity > this.sessionTimeout;
+  }
+
+  private handleSessionExpiry(): void {
+    console.log('Session expired due to inactivity');
+    this.logout();
+    this.router.navigate(['/login'], { 
+      queryParams: { message: 'Your session has expired due to inactivity. Please log in again.' }
+    });
+  }
+
+  // Method to get remaining session time (useful for displaying countdown)
+  getRemainingSessionTime(): number {
+    if (!this.isLoggedIn()) {
+      return 0;
+    }
+
+    const timeSinceActivity = Date.now() - this.lastActivityTime;
+    const remainingTime = this.sessionTimeout - timeSinceActivity;
+    
+    return Math.max(0, remainingTime);
+  }
+
+  // Method to extend session (reset activity time)
+  extendSession(): void {
+    if (this.isLoggedIn()) {
+      this.updateLastActivity();
+    }
   }
 }

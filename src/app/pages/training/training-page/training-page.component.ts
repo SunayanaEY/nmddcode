@@ -4,10 +4,11 @@ import { TrainingSectionComponent } from '../training-section/training-section.c
 import { FooterComponent } from '../../footer.component';
 import { HeaderComponent } from '../../header.component';
 import { SidebarComponent } from '../../sidebar.component';
+import { SessionTimeoutWarningComponent } from '../../../components/session-timeout-warning/session-timeout-warning.component';
 
 @Component({
   selector: 'app-training-page',
-  imports: [HeaderComponent, FooterComponent, SidebarComponent, TrainingSectionComponent],
+  imports: [HeaderComponent, FooterComponent, SidebarComponent, TrainingSectionComponent, SessionTimeoutWarningComponent],
   templateUrl: './training-page.component.html',
   styleUrl: './training-page.component.css'
 })

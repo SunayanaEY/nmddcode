@@ -8,7 +8,7 @@ import {
   AbstractControl,
   ValidationErrors,
 } from '@angular/forms';
-import { Router } from '@angular/router';
+import { Router, ActivatedRoute } from '@angular/router';
 import { AuthService } from '../services/auth.service';
 import { LocationService, State, District } from '../services/location.service';
 import { GeocodingService, GeocodeResult } from '../services/geocoding.service';
@@ -63,6 +63,7 @@ export class LoginComponent implements OnInit {
     private fb: FormBuilder,
     private authService: AuthService,
     private router: Router,
+    private route: ActivatedRoute,
     private toastr: ToastrService,
     private locationService: LocationService,
     private geocodingService: GeocodingService
@@ -120,6 +121,16 @@ export class LoginComponent implements OnInit {
 
   ngOnInit() {
     this.loadStates();
+    
+    // Check for session expiry message
+    this.route.queryParams.subscribe(params => {
+      if (params['message']) {
+        this.toastr.warning(params['message'], 'Session Expired', {
+          timeOut: 5000,
+          closeButton: true
+        });
+      }
+    });
   }
 
   /**

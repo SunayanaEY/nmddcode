@@ -336,7 +336,6 @@ export class TrainingCentreComponent implements OnInit {
         this.loadTrainingInstitutes();
         
         // Show success message
-        alert(response.data.message);
         
         // Close confirmation modal
         this.showConfirmModal = false;
@@ -345,7 +344,6 @@ export class TrainingCentreComponent implements OnInit {
       },
       error: (error) => {
         console.error('Error toggling institute status:', error);
-        alert('Failed to update status. Please try again.');
         
         // Close confirmation modal
         this.showConfirmModal = false;
