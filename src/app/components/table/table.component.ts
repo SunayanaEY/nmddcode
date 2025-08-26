@@ -8,6 +8,7 @@ import { autoTable, applyPlugin } from 'jspdf-autotable';
 import { NgxPaginationModule } from 'ngx-pagination';
 import { PaginationModule } from 'ngx-bootstrap/pagination';
 import { ToastrService } from 'ngx-toastr';
+import { table } from 'node:console';
 applyPlugin(jsPDF);
 //require('jspdf-autotable');
 export interface TableColumn {
@@ -85,7 +86,7 @@ export class TableComponent {
     private excelService: ExcelService,
     private toatsr: ToastrService
   ) {
-    //this.p=1;
+    
   }
 
   ngOnInit() {}
@@ -99,20 +100,18 @@ export class TableComponent {
       this.linkClick.emit({ column, row });
     }
   }
-  downloadCerts(action:string){
-
-    this.downloadAllCerts.emit({action:action});
+  downloadCerts(action: string) {
+    this.downloadAllCerts.emit({ action: action });
   }
 
   formatSerialNumber(index: number): string {
-    if(index<10)
-    {return String(index + 1).padStart(2, '0');}
-    else return String(index + 1);
+    if (index < 10) {
+      return String(index + 1).padStart(2, '0');
+    } else return String(index + 1);
   }
 
   createPdf() {
     let headers = [this.pdfHeaders];
-    //this.pdfObjectKeys = this.objectKeys.keys;
     let finalData: any[][] = [];
     let sno = 1;
     this.data.forEach((ele) => {
@@ -205,9 +204,7 @@ export class TableComponent {
   }
 
   exportExcel() {
-    //const users = [];
-    //const complaintType = this.fliterForm.value.complaint;
-
+    
     this.excelHeaders = this.pdfHeaders.splice(0, 1);
 
     this.data.forEach((element) => {
@@ -219,12 +216,7 @@ export class TableComponent {
       combinedArray.forEach((arr) => {
         resultObj[arr.item1] = arr.item2;
       });
-      /*const resultObj = {
-        'Complaint Category': element.title,
-        'Description': element.description,
-        'Date': element.createDateTime,
-        'Status': element.status,
-      }*/
+     
       this.excelData.push(resultObj);
     });
     console.log('new Date(): ' + new Date());
@@ -248,8 +240,14 @@ export class TableComponent {
     this.selectAll = !this.selectAll;
     if (this.selectAll) {
       // Only select items that are not APPROVED or REJECTED
+     
       this.data.forEach(item => {
-        if (item.status !== 'APPROVED' && item.status !== 'REJECTED') {
+
+         if(this.tableName==='Verify-Trainings' && item.status === 'IN PROGRESS')
+      {
+         this.selectedItems.add(item);
+      }
+        else if (this.tableName!=='Verify-Trainings' && item.status === 'VERIFIED') {
           this.selectedItems.add(item);
         }
       });
@@ -285,6 +283,11 @@ export class TableComponent {
   }
 
   get eligibleItemsCount(): number {
-    return this.data.filter(item => item.status !== 'APPROVED' && item.status !== 'REJECTED').length;
+    if(this.tableName==='Verify-Trainings')
+      return this.data.filter(item => item.status === 'IN PROGRESS').length;
+    else
+    return this.data.filter(item => item.status === 'VERIFIED' ).length;
   }
+
+
 }

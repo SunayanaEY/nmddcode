@@ -5,66 +5,50 @@
     <h2>All Schemes</h2>
   </div>
 
-
-
-
   <div class="trainings-summary">
-    <!-- <h4>All Trainings</h4> -->
     <span class="badge bg-secondary">Total - {{ schemeList.length }} Schemes</span>
   </div>
 
-  <app-table
-    [columns]="tableColumns"
-    [data]="schemeListProcessed"
-    [actions]="tableActions"
-    (actionClick)="handleTableAction($event)"
-    [isExportCSV]="isExportCSV" [isExportPDF]="isExportPdf"
-    [pdfHeaders]="pdfHeaders" [columnKeys]="columnKeys"
-    [fileName]="fileName" [tableName]="table"
-    [addNew]="addNew">
+  <app-table [columns]="tableColumns" [data]="schemeListProcessed" [actions]="tableActions"
+    (actionClick)="handleTableAction($event)" [isExportCSV]="isExportCSV" [isExportPDF]="isExportPdf"
+    [pdfHeaders]="pdfHeaders" [columnKeys]="columnKeys" [fileName]="fileName" [tableName]="table" [addNew]="addNew">
   </app-table>
 </div>
 
 
 <ng-template #schemeConfirmationModal let-modal>
-  <!-- <div class="modal fade" #trainingDetailsModal id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-sm">
 
-    <div class="modal-content"> -->
-      <div class="modal-header bg-appColor" style="
+  <div class="modal-header bg-appColor" style="
       background-color: #155e91;
       color:white !important;
   ">
-        <h3 class="my-auto text-white">{{'Confirmation'}}</h3>
-        <button type="button" class="close" aria-label="Close" (click)="modal.dismiss('Cross click')">
-          <!-- <button type="button" class="close" aria-label="Close" data-bs-dismiss="modal"> -->
-          <span aria-hidden="true">&times;</span>
-        </button>
-      </div>
-      <div class="modal-body">
-        <div class="row">
-          <div class="col-md-12">
-            <div class="d-flex mr-4">
-              <h4 class="my-auto mr-2 ">
-                {{confirmationMessage}}
-              </h4>
-              <!-- <p class="my-auto mb-0"> {{complaintDetail.compcreator}}</p> -->
-               <!-- <p class="my-auto mb-0 form-control"> {{'training title'}}</p> -->
-            </div>
-          </div>
+    <h3 class="my-auto text-white">{{'Confirmation'}}</h3>
+    <button type="button" class="close" aria-label="Close" (click)="modal.dismiss('Cross click')">
 
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <div class="modal-body">
+    <div class="row">
+      <div class="col-md-12">
+        <div class="d-flex mr-4">
+          <h4 class="my-auto mr-2 ">
+            {{confirmationMessage}}
+          </h4>
         </div>
+      </div>
+
+    </div>
 
 
-      </div>
-      <div class="modal-footer">
-         <button type="button" class="btn btn-primary" (click)="confirm()" style="background-color: #155e91;">
-          <!-- <button type="button" class="btn btn-primary"  data-bs-dismiss="modal"> -->
-          {{'confirm'}}
-        </button>
-        <button type="button" class="btn btn-primary" (click)="modal.dismiss('Close click')" style="background-color: #155e91;">
-          <!-- <button type="button" class="btn btn-primary"  data-bs-dismiss="modal"> -->
-          {{'close'}}
-        </button>
-      </div>
-    </ng-template>
+  </div>
+  <div class="modal-footer">
+    <button type="button" class="btn btn-primary" (click)="confirm()" style="background-color: #155e91;">
+      {{'confirm'}}
+    </button>
+    <button type="button" class="btn btn-primary" (click)="modal.dismiss('Close click')"
+      style="background-color: #155e91;">
+      {{'close'}}
+    </button>
+  </div>
+</ng-template>

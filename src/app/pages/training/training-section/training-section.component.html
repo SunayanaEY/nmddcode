@@ -6,7 +6,7 @@
         <!-- Certificate Approval -->
         <div
           class="certificate-card"
-          (click)="navigateToAllTrainings()"
+          (click)="navigateToCertificateApproval()"
           *ngIf="userRole === 1"
         >
           <div class="certificate-icon">
@@ -633,9 +633,8 @@
             </p>
           </div>
         </div>
-      </div>
-      <!-- Approved Certificate -->
-      <div
+        <!-- Approved Certificate -->
+        <div
         class="certificate-card"
         (click)="navigateToApprovedCertificates()"
         *ngIf="userRole === 3"
@@ -674,6 +673,9 @@
           <p class="certificate-description">Verify trainings and send for approval!</p>
         </div>
       </div>
+
+      </div>
+
 
 
     </div>
