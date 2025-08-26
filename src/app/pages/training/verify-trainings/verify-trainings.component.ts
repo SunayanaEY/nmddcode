@@ -7,11 +7,14 @@ import { TableColumn, TableAction, TableComponent } from '../../../components/ta
 import { TrainingsList, TraineeDetails } from '../models/training.model';
 import { TrainingService } from '../services/training.service';
 import { NgSelectModule } from '@ng-select/ng-select';
+import { ToastrService } from 'ngx-toastr';
+import { AdminService } from '../services/training-admin.service';
+import { CertificateLayoutComponent } from '../../certificate-layout/certificate-layout.component';
 
 @Component({
   selector: 'app-verify-trainings',
   imports: [CommonModule, BreadcrumbComponent, TableComponent,NgSelectModule,
-    ReactiveFormsModule,FormsModule],
+    ReactiveFormsModule,FormsModule,CertificateLayoutComponent],
   templateUrl: './verify-trainings.component.html',
   styleUrl: './verify-trainings.component.css'
 })
@@ -29,6 +32,7 @@ export class VerifyTrainingsComponent {
   fileName:String = 'All_trainings_';
   fileNameTrainees:String = 'All_trainee_List_';
   traineesFile:String = 'All_trainee_List_';
+  tableName:string = 'Verify-Trainings'
   pdfHeaders: Array<string> = [
     'Sr.No.','Training Title', 'Scheme', 'Training Institute','Trainer Name','Location','Training Date','Status'
   ];
@@ -56,12 +60,12 @@ export class VerifyTrainingsComponent {
 
       trainingsList: TrainingsList[]=[];
       traineeList:TraineeDetails[]=[];
-
+      
 
       pdfHeadersTrainee: Array<string> = ['Sr.No.',
-    'Name', 'Age', 'Gender','Contact','Email'
+    'Name', 'Age', 'Gender','Contact','Email','Status'
   ];
-  columnKeysTrainee:Array<string> =['name','age','gender','contactNumber','email']
+  columnKeysTrainee:Array<string> =['name','age','gender','contactNumber','email','status']
 
     tableColumnsTrainee: TableColumn[] = [
         { key: 'name', header: 'Name' },
@@ -69,17 +73,51 @@ export class VerifyTrainingsComponent {
         { key: 'gender', header: 'Gender' },
         { key: 'contactNumber', header: 'Contact' },
         { key: 'email', header: 'Email' },
+        { key: 'status', header: 'Status' },
       ];
+
+      // tableActionsTrainee: TableAction[] = [
+      //   //{ name: 'download', icon: 'bi bi-eye', class: 'btn-info', title: 'Download certificate' },
+      //   { name: 'download', icon: 'bi bi-download', class: 'btn-success', title: 'Download certificate' },
+      // ];
 
       tableActionsTrainee: TableAction[] = [
-        //{ name: 'download', icon: 'bi bi-eye', class: 'btn-info', title: 'Download certificate' },
-        { name: 'download', icon: 'bi bi-download', class: 'btn-success', title: 'Download certificate' },
+              { name: 'verify', icon: 'bi bi-check-circle', class: 'btn-success', title: 'Verify',
+                condition: (row: any) => row.status === 'IN PROGRESS',
+              },
+              { name: 'cancel', icon: 'bi bi-x-circle', class: 'btn-danger', title: 'Cancel',
+                condition: (row: any) => row.status === 'IN PROGRESS' ,
+              },
+              { name: 'download', icon: 'bi bi-download', class: 'btn-info', title: 'Download certificate',
+                condition: (row: any) => row.status === 'APPROVED',
+              },
+            ];
+
+             bulkActionsTrainee: TableAction[] = [
+        { name: 'bulkVerify', icon: 'bi bi-check-circle', class: 'btn-success', title: 'Bulk Verify' },
+        { name: 'bulkCancel', icon: 'bi bi-x-circle', class: 'btn-danger', title: 'Bulk Cancel' },
       ];
 
+      enableMultiSelectTrainee: boolean = true;
 
+      selectedTraineesForbulkCancel: any[] = [];
+      eligibleTraineesLIst:any[]=[];
+      cancelForm!: FormGroup;
+      currentTrainingInstituteId: string = '';
+      @ViewChild('cancelModal')
+        cancelModal!: ElementRef;
+       
+   currentTrainingId: number = 0;
+  
+   selectedTraineeForCancel: any = null;
+   selectedTraineeForCertificate: any = null;
+   certificateData: any = null;
+  @ViewChild('certificateModal')
+  certificateModal!: ElementRef;
 
       constructor(private formBuilder: FormBuilder,
-        private modalService: NgbModal, private trainingsService: TrainingService
+        private modalService: NgbModal, private trainingsService: TrainingService,
+        private toastr: ToastrService,private adminService: AdminService
       ){
 
       }
@@ -91,7 +129,33 @@ export class VerifyTrainingsComponent {
         comment: ['', [Validators.required]],
         status: ['', [Validators.required]]
       });
-      this.trainingsService.getAllTraining().subscribe(res => {
+      this.cancelForm = this.formBuilder.group({
+      remarks: ['', [Validators.required]],
+    });
+
+
+    const sessionData = sessionStorage.getItem('user');
+      let trainingHeadId = '';
+      
+      if (sessionData) {
+        try {
+          const userData = JSON.parse(sessionData);
+          trainingHeadId = userData.trainingHeadId || '';
+        } catch (error) {
+          console.error('Error parsing session data:', error);
+          this.toastr.error('Session data error. Please login again.', 'Error');
+         // this.isLoading = false;
+         // return;
+        }
+      }
+
+      if (!trainingHeadId) {
+        this.toastr.error('Training Head ID not found. Please login again.', 'Error');
+       // this.isLoading = false;
+       // return;
+      }
+      else{
+      this.trainingsService.getAllTrainings(trainingHeadId).subscribe(res => {
         this.trainingsList = res.data;
         this.filteredData = [...this.trainingsList];
         let index=0;
@@ -104,6 +168,7 @@ export class VerifyTrainingsComponent {
           index++;
         })
       });
+    }
 
       }
 
@@ -112,8 +177,10 @@ export class VerifyTrainingsComponent {
         console.log('Action:', event.action, 'Item:', event.item);
         // const modal = new this.bootstrap.Modal(this.trainingDetailsModal.nativeElement);
       //modal.show();
+      if (event.action === 'view') {
       this.traineeList=[];
       this.trainingDetails = event.item;
+      this.currentTrainingId = this.trainingDetails.id;
       this.fileNameTrainees = this.traineesFile;
       this.fileNameTrainees = this.fileNameTrainees+this.trainingDetails.trainingInstituteName+"_"+
         this.trainingDetails.trainingTitle+"_";
@@ -129,6 +196,20 @@ export class VerifyTrainingsComponent {
         backdrop: 'static',
         keyboard: false
       });
+    }
+    else if (event.action === 'verify') {
+          this.verifyTrainee(event.item);
+        } else if (event.action === 'cancel') {
+          this.selectedTraineeForCancel = event.item;
+          this.cancelForm.reset();
+          this.modalService.open(this.cancelModal, {
+            size: 'md',
+            backdrop: 'static',
+            keyboard: false
+          });
+        } else if (event.action === 'download') {
+          this.downloadCertificate(event.item);
+        }
       }
 
 
@@ -223,5 +304,211 @@ export class VerifyTrainingsComponent {
   modalDismiss(){
     this.modalService.dismissAll();
     this.ngOnInit();
+  }
+
+  handleBulkAction(event: { action: string, items: any[] }): void {
+    const { action, items } = event;
+    
+    if (action === 'bulkVerify') {
+      this.bulkVerifyTrainees(items);
+    } else if (action === 'bulkCancel') {
+      this.selectedTraineesForbulkCancel = items;
+      this.cancelForm.reset();
+      this.modalService.open(this.cancelModal, { centered: true });
+    }
+  }
+
+  updateTRaineesList(){
+    this.trainingsService.getTraineeList(this.trainingDetails.id).subscribe(
+        res=>{
+          this.traineeList = res.data;
+        }
+      );
+  }
+  bulkVerifyTrainees(trainees: any[]): void {
+    const eligibleTrainees = trainees.filter(trainee => (trainee.status == 'IN PROGRESS')).map(trainee => trainee.id);
+    
+    if (eligibleTrainees.length === 0) {
+      this.toastr.warning('No eligible trainees to approve');
+      return;
+    }
+
+    const payload = eligibleTrainees;
+
+    this.adminService.verifyTrainees(payload).subscribe({
+      next: (response) => {
+        this.toastr.success(`${eligibleTrainees.length} trainees verified successfully!`);
+        // Refresh the trainee list
+        this.trainingsService.getTraineeList(this.trainingDetails.id).subscribe(
+          res => {
+            this.traineeList = res.data;
+          }
+        );
+      },
+      error: (error) => {
+        this.toastr.error('Error approving trainees');
+        console.error('Bulk approve error:', error);
+      }
+    });
+  }
+
+  bulkCancelTrainees(trainees: any[]): void {
+    // This method is no longer used directly - bulk cancellation now goes through the modal
+    // Keeping for backward compatibility if needed
+    this.selectedTraineesForbulkCancel = trainees;
+    this.cancelForm.reset();
+    this.modalService.open(this.cancelModal, { centered: true });
+  }
+
+  bulkCancelTraineesWithRemarks(trainees: any[], remarks: string): void {
+    // Filter trainees that can be cancelled (not already verified or cancelled)
+    const eligibleTrainees = trainees.filter(trainee => 
+      trainee.status == 'IN PROGRESS'
+    );
+    this.eligibleTraineesLIst = eligibleTrainees;
+
+    if (eligibleTrainees.length === 0) {
+      this.toastr.warning('No eligible trainees to cancel', 'Warning');
+      this.modalService.dismissAll();
+      this.selectedTraineesForbulkCancel = [];
+      return;
+    }
+
+    const payload = {
+      
+      traineeIds: eligibleTrainees.map(trainee => trainee.id),
+      cancelRemarks: remarks
+    };
+
+    this.adminService.cancelTrainees(payload).subscribe({
+      next: (response) => {
+        if (response.success) {
+          // Update status for all cancelled trainees
+          eligibleTrainees.forEach(trainee => {
+            trainee.status = 'CANCELLED';
+            trainee.remarks = remarks;
+          });
+          this.toastr.success(`${eligibleTrainees.length} trainee(s) cancelled successfully`, 'Success');
+          // Refresh the trainee list
+          this.trainingsService.getTraineeList(this.trainingDetails.id).subscribe(
+            res => {
+              this.traineeList = res.data;
+            }
+          );
+        } else {
+          this.toastr.error(response.message || 'Failed to cancel trainees', 'Error');
+        }
+        this.modalService.dismissAll();
+        this.selectedTraineesForbulkCancel = [];
+      },
+      error: (error) => {
+        const errorMessage = error.error?.message || 'An error occurred while cancelling trainees';
+        this.toastr.error(errorMessage, 'Error');
+        console.error('Error cancelling trainees:', error);
+        this.modalService.dismissAll();
+        this.selectedTraineesForbulkCancel = [];
+      }
+    });
+  }
+
+  verifyTrainee(trainee: any): void {
+    debugger;
+    const payload =  [trainee.id]
+    
+
+    this.adminService.verifyTrainees(payload).subscribe({
+       next: (response) => {
+         if (response.success) {
+           trainee.status = 'VERIFIED';
+           this.updateTRaineesList();
+           this.toastr.success(response.data.message || 'Trainee Verified successfully', 'Success');
+         } else {
+           this.toastr.error(response.message || 'Failed to verify trainee', 'Error');
+         }
+       },
+       error: (error) => {
+         const errorMessage = error.error?.message || 'An error occurred while verifying trainee';
+         this.toastr.error(errorMessage, 'Error');
+         console.error('Error verifying trainee:', error);
+       }
+     });
+  }
+
+  cancelTrainee(): void {
+    if (this.cancelForm.valid) {
+      const remarks = this.cancelForm.get('remarks')?.value;
+      
+      // Check if this is bulk cancellation or individual cancellation
+      if (this.selectedTraineesForbulkCancel.length > 0) {
+        this.bulkCancelTraineesWithRemarks(this.selectedTraineesForbulkCancel, remarks);
+      } else if (this.selectedTraineeForCancel) {
+        const payload = {
+          
+          traineeIds: [this.selectedTraineeForCancel.id],
+          cancelRemarks: remarks
+        };
+
+        this.adminService.cancelTrainees(payload).subscribe({
+           next: (response) => {
+             if (response.success) {
+               this.selectedTraineeForCancel.status = 'CANCELLED';
+               this.selectedTraineeForCancel.remarks = remarks;
+               this.toastr.success(response.data.message || 'Trainee cancelled successfully', 'Success');
+             } else {
+               this.toastr.error(response.message || 'Failed to cancel trainee', 'Error');
+             }
+             this.modalService.dismissAll();
+             this.selectedTraineeForCancel = null;
+           },
+           error: (error) => {
+             const errorMessage = error.error?.message || 'An error occurred while cancelling trainee';
+             this.toastr.error(errorMessage, 'Error');
+             console.error('Error cancelling trainee:', error);
+             this.modalService.dismissAll();
+             this.selectedTraineeForCancel = null;
+           }
+         });
+      }
+    }
+  }
+
+  downloadCertificate(trainee: any): void {
+    console.log('Downloading certificate for trainee:', trainee);
+    this.selectedTraineeForCertificate = trainee;
+    
+    // Call the getCertificateDetails API
+    this.trainingsService.getCertificateDetails(
+      trainee.uin || '',
+      trainee.email || '',
+      trainee.contactNumber || ''
+    ).subscribe({
+      next: (response) => {
+        if (response && response.success) {
+          this.certificateData = response.data;
+          // Open certificate modal
+          this.modalService.open(this.certificateModal, {
+            size: 'xl',
+            scrollable: true,
+            backdrop: 'static',
+            keyboard: false
+          });
+        } else {
+          this.toastr.error(response.message || 'Failed to load certificate details', 'Error');
+        }
+      },
+      error: (error) => {
+        const errorMessage = error.error?.message || 'An error occurred while loading certificate details';
+        this.toastr.error(errorMessage, 'Error');
+        console.error('Error loading certificate details:', error);
+      }
+    });
+  }
+   get cancelFormControls() {
+    return this.cancelForm.controls;
+  }
+  onCancelModalDismiss(): void {
+    this.selectedTraineesForbulkCancel = [];
+    this.selectedTraineeForCancel = null;
+    this.cancelForm.reset();
   }
 }

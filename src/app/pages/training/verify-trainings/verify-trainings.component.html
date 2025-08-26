@@ -296,9 +296,12 @@
     [data]="traineeList"
     [actions]="tableActionsTrainee"
     (actionClick)="handleTableAction($event)"
+    [enableMultiSelect]="enableMultiSelectTrainee"
+          [bulkActions]="bulkActionsTrainee"
+          (bulkActionClick)="handleBulkAction($event)"
     [isExportCSV]="isExportCSV" [isExportPDF]="isExportPdf"
     [pdfHeaders]="pdfHeadersTrainee" [columnKeys]="columnKeysTrainee"
-    [fileName]="fileNameTrainees" [isBulkCertDownload]="isBulkCertDownload">
+    [fileName]="fileNameTrainees" [isBulkCertDownload]="isBulkCertDownload" [tableName]="tableName">
   </app-table>
 
         </div>
@@ -314,3 +317,61 @@
     <!-- </div>
     </div>
     </div> -->
+<ng-template #cancelModal let-modal>
+  <div class="modal-header bg-danger">
+    <h4 class="modal-title text-white">
+      {{ selectedTraineesForbulkCancel.length > 0 ? 'Bulk Cancel Trainees' : 'Cancel Trainee' }}
+    </h4>
+    <button type="button" class="close text-white" aria-label="Close" (click)="modal.dismiss('Cross click'); onCancelModalDismiss()">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <div class="modal-body">
+    <div *ngIf="selectedTraineesForbulkCancel.length > 0" class="mb-3">
+      <p class="text-muted">
+        You are about to cancel <strong>{{ selectedTraineesForbulkCancel.length }}</strong> trainee(s). 
+        Please provide remarks for the cancellation.
+      </p>
+    </div>
+    <form [formGroup]="cancelForm" (ngSubmit)="cancelTrainee()">
+      <div class="form-group">
+        <label for="remarks" class="form-label">Remarks for Cancellation <span class="text-danger">*</span></label>
+        <textarea 
+          id="remarks"
+          class="form-control" 
+          formControlName="remarks" 
+          rows="4" 
+          placeholder="Please provide reason for cancellation..."
+          [class.is-invalid]="cancelFormControls['remarks'].invalid && cancelFormControls['remarks'].touched">
+        </textarea>
+        <div class="invalid-feedback" *ngIf="cancelFormControls['remarks'].invalid && cancelFormControls['remarks'].touched">
+          <div *ngIf="cancelFormControls['remarks'].errors?.['required']">
+            Remarks are required for Cancellation.
+          </div>
+        </div>
+      </div>
+    </form>
+  </div>
+  <div class="modal-footer">
+    <button type="button" class="btn btn-secondary" (click)="modal.dismiss('Cancel'); onCancelModalDismiss()">
+      Cancel
+    </button>
+    <button type="button" class="btn btn-danger" (click)="cancelTrainee()" [disabled]="cancelForm.invalid">
+      {{ selectedTraineesForbulkCancel.length > 0 ? 'Cancel Selected Trainees' : 'Cancel Trainee' }}
+    </button>
+  </div>
+</ng-template>
+<ng-template #certificateModal let-modal>
+  <div class="modal-header border-0">
+    <h4 class="modal-title text-dark">Training Certificate</h4>
+    <button type="button" class="btn-close" aria-label="Close" (click)="modal.dismiss('Cross click')">
+    </button>
+  </div>
+  <div class="modal-body p-0">
+    <app-certificate-layout 
+      *ngIf="certificateData" 
+      [data]="certificateData"
+      [uniqueId]="selectedTraineeForCertificate?.uin || 'UIN2025345780991'">
+    </app-certificate-layout>
+  </div>
+</ng-template>
