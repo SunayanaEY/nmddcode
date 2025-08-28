@@ -67,6 +67,7 @@ export class TrainingCertificateGenerationComponent implements OnInit {
   selectedState: any;
   selectedDistrict: any;
   allTrainingType: any;
+  isSpinner: boolean = false;
 
   constructor(
     private fb: FormBuilder,
@@ -268,19 +269,21 @@ export class TrainingCertificateGenerationComponent implements OnInit {
         payload.append('signatures', item.file);
       }
     });
-
-    // this.trainingService.saveTraining(payload).subscribe({
-    //   next: (response) => {
-    //     this.toastr.success('Training Details Saved Successfully!', 'Success');
-    //     const trainingId = response.data.id;
-    //     this.router.navigate(['/admin/manual-training-upload'], {
-    //       queryParams: { trainingId: trainingId },
-    //     });
-    //   },
-    //   error: (error) => {
-    //     this.toastr.error('Failed to save training', 'Error');
-    //   },
-    // });
+    this.isSpinner = true;
+    this.trainingService.saveTraining(payload).subscribe({
+      next: (response) => {
+        this.toastr.success('Training Details Saved Successfully!', 'Success');
+        const trainingId = response.data.id;
+        this.router.navigate(['/admin/manual-training-upload'], {
+          queryParams: { trainingId: trainingId },
+        });
+        this.isSpinner = false;
+      },
+      error: (error) => {
+        this.isSpinner = false;
+        this.toastr.error('Failed to save training', 'Error');
+      },
+    });
     const trainingId = 10;
     this.router.navigate(['/admin/manual-training-upload'], {
       queryParams: { trainingId: trainingId },
@@ -292,6 +295,7 @@ export class TrainingCertificateGenerationComponent implements OnInit {
     this.router.navigate(['/admin/bulk-training-upload'], {
       queryParams: { trainingId: trainingId },
     });
+    this.isSpinner = false;
   }
 
   goBack() {
