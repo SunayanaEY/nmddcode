@@ -57,28 +57,17 @@ export class AuthService {
   }
 
   login(email: string, password: string): Observable<LoginResponse> {
-    return this.http.post<LoginResponse>(`${this.apiUrl}api/auth/login`, { email, password }).pipe(
-      tap(response => {
-        if (response && response.data) {
-          const loginTime = Date.now();
-          sessionStorage.setItem('user', JSON.stringify(response.data));
-          sessionStorage.setItem('loginTime', loginTime.toString());
-          this.user = response.data;
-          this.lastActivityTime = loginTime;
-          this.startSessionMonitoring();
-        }
-      }),
-      catchError(error => {
-        console.error('Login failed', error);
-        throw error;
-      })
     return this.http
       .post<LoginResponse>(`${this.apiUrl}api/auth/login`, { email, password })
       .pipe(
         tap((response) => {
           if (response && response.data) {
+            const loginTime = Date.now();
             sessionStorage.setItem('user', JSON.stringify(response.data));
+            sessionStorage.setItem('loginTime', loginTime.toString());
             this.user = response.data;
+            this.lastActivityTime = loginTime;
+            this.startSessionMonitoring();
           }
         }),
         catchError((error) => {
@@ -86,42 +75,6 @@ export class AuthService {
           throw error;
         })
       );
-  }
-  // login.service.ts
-
-  changePassword(
-    email: string,
-    oldPassword: string,
-    newPassword: string
-  ): Observable<any> {
-    const body = {
-      email: email,
-      oldPassword: oldPassword,
-      newPassword: newPassword,
-    };
-
-    return this.http.post<any>(this.apiUrl + 'api/auth/reset-password', body);
-  }
-  forgetPasswordOTP(email: string): Observable<any> {
-    const body = {
-      email: email,
-    };
-    return this.http.post<any>(this.apiUrl + 'api/auth/forgot-password', body);
-  }
-  forgetPassword(
-    email: string,
-    otp: number,
-    newPassword: string
-  ): Observable<any> {
-    const body = {
-      email: email,
-      otp: otp,
-      newPassword: newPassword,
-    };
-    return this.http.post<any>(
-      this.apiUrl + 'api/auth/forgot-password-otp',
-      body
-    );
   }
 
   logout() {
@@ -143,13 +96,13 @@ export class AuthService {
     if (!sessionStorage.getItem('user')) {
       return false;
     }
-    
+
     // Check if session has expired
     if (this.isSessionExpired()) {
       this.handleSessionExpiry();
       return false;
     }
-    
+
     return true;
   }
 
@@ -199,7 +152,7 @@ export class AuthService {
   // Session timeout management methods
   private startSessionMonitoring(): void {
     this.stopSessionMonitoring(); // Stop any existing monitoring
-    
+
     // Check session every minute
     this.sessionCheckInterval = interval(60000).subscribe(() => {
       if (this.isSessionExpired()) {
@@ -217,14 +170,25 @@ export class AuthService {
 
   private setupActivityListeners(): void {
     // Listen for user activity to update last activity time
-    const events = ['mousedown', 'mousemove', 'keypress', 'scroll', 'touchstart', 'click'];
-    
-    events.forEach(event => {
-      document.addEventListener(event, () => {
-        if (this.isLoggedIn()) {
-          this.updateLastActivity();
-        }
-      }, true);
+    const events = [
+      'mousedown',
+      'mousemove',
+      'keypress',
+      'scroll',
+      'touchstart',
+      'click',
+    ];
+
+    events.forEach((event) => {
+      document.addEventListener(
+        event,
+        () => {
+          if (this.isLoggedIn()) {
+            this.updateLastActivity();
+          }
+        },
+        true
+      );
     });
   }
 
@@ -244,15 +208,18 @@ export class AuthService {
 
     const currentTime = Date.now();
     const timeSinceActivity = currentTime - this.lastActivityTime;
-    
+
     return timeSinceActivity > this.sessionTimeout;
   }
 
   private handleSessionExpiry(): void {
     console.log('Session expired due to inactivity');
     this.logout();
-    this.router.navigate(['/login'], { 
-      queryParams: { message: 'Your session has expired due to inactivity. Please log in again.' }
+    this.router.navigate(['/login'], {
+      queryParams: {
+        message:
+          'Your session has expired due to inactivity. Please log in again.',
+      },
     });
   }
 
@@ -264,7 +231,7 @@ export class AuthService {
 
     const timeSinceActivity = Date.now() - this.lastActivityTime;
     const remainingTime = this.sessionTimeout - timeSinceActivity;
-    
+
     return Math.max(0, remainingTime);
   }
 
