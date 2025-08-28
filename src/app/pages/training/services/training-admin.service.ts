@@ -190,4 +190,23 @@ export class AdminService {
       this.getHttpOptions()
     );
   }
+
+  verifyTrainees(ids:any[]): Observable<{success: boolean, message: string, data: any, statusCode: number}> {
+    return this.http.post<{success: boolean, message: string, data: any, statusCode: number}>(
+      `${this.apiUrl}api/trainees/verify-trainees`,
+      ids,
+      this.getHttpOptions()
+    );
+  }
+  cancelTrainees(payload: {
+   
+    traineeIds: number[];
+    cancelRemarks: string;
+  }): Observable<{success: boolean, message: string, data: any, statusCode: number}>  {
+    return this.http.post<{success: boolean, message: string, data: any, statusCode: number}>(
+      `${this.apiUrl}api/trainees/cancel-trainees`,
+      payload,
+      this.getHttpOptions()
+    );
+  }
 }

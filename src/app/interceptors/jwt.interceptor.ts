@@ -5,6 +5,11 @@ import { AuthService } from '../services/auth.service';
 export const JwtInterceptor: HttpInterceptorFn = (req, next) => {
   const authService = inject(AuthService);
   
+  // Check if user is logged in (this will also check for session expiry)
+  if (!authService.isLoggedIn()) {
+    return next(req);
+  }
+  
   // Get the current user from auth service
   const currentUser = authService.getUser();
   

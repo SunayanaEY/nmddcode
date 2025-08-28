@@ -49,7 +49,11 @@ export class TrainingSectionComponent implements OnInit {
     // this.router.navigate(['/admin/all-trainings-admin']);
     this.router.navigate(['/admin/all-trainings']);
   }
-
+  navigateToAllTrainingsAdmin() {
+    console.log('Navigating to Approved Certificates');
+    this.router.navigate(['/admin/all-trainings-admin']);
+    // this.router.navigate(['/admin/all-trainings']);
+  }
   navigateToActivityLog(): void {
     this.router.navigate(['/admin/activity-log']);
   }
@@ -61,8 +65,8 @@ export class TrainingSectionComponent implements OnInit {
   }
 
   navigateToCertificateApproval() {
-    //this.router.navigate(['/admin/all-trainings']);
-    this.router.navigate(['/admin/certificate-approval']);
+    this.router.navigate(['/admin/all-trainings-admin']);
+   // this.router.navigate(['/admin/certificate-approval']);
   }
   navigateToCertificateAll() {
     this.router.navigate(['/admin/all-certificate']);
