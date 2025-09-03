@@ -51,7 +51,14 @@
                   <strong>{{ field.label }}:</strong>
                 </div>
                 <div class="col-7">
-                  <span class="form-control-plaintext">{{ formatDisplayValue(getDisplayValue(field.id), field.type) }}</span>
+                  <!-- Image Display for File Type -->
+                  <div *ngIf="field.type === 'file' && field.id === 'instituteImage' && getDisplayValue(field.id)" class="view-image-container">
+                    <img [src]="getDisplayValue(field.id)" alt="Institute Image" class="view-image" style="max-width: 200px; max-height: 150px; border-radius: 8px; border: 1px solid #ddd;">
+                  </div>
+                  <!-- Regular Text Display -->
+                  <span *ngIf="field.type !== 'file'" class="form-control-plaintext">{{ formatDisplayValue(getDisplayValue(field.id), field.type) }}</span>
+                  <!-- File Field with No Image -->
+                  <span *ngIf="field.type === 'file' && !getDisplayValue(field.id)" class="form-control-plaintext text-muted">No image available</span>
                 </div>
               </div>
             </div>
@@ -115,17 +122,37 @@
                 [(ngModel)]="formData[field.id]"
                 (ngModelChange)="onFieldChange(field.id, $event)"></textarea>
 
-              <!-- File Input -->
-              <input 
-                *ngIf="field.type === 'file'"
-                type="file"
-                [id]="field.id"
-                class="form-control"
-                [accept]="field.accept || ''"
-                [multiple]="field.multiple || false"
-                [required]="field.required || false"
-                [disabled]="field.disabled || false"
-                (change)="onFileChange(field.id, $event)">
+              <!-- File Input with Image Preview -->
+              <div *ngIf="field.type === 'file'">
+                <!-- Current Image Display (for edit mode) -->
+                <div *ngIf="mode === 'edit' && data.instituteImageUrl && field.id === 'instituteImage'" class="current-image-container mb-3">
+                  <div class="current-image-wrapper">
+                    <img [src]="data.instituteImageUrl" alt="Current Institute Image" class="current-image">
+                  </div>
+                </div>
+                
+                <!-- File Input -->
+                <input 
+                  type="file"
+                  [id]="field.id"
+                  class="form-control"
+                  [accept]="field.accept || ''"
+                  [multiple]="field.multiple || false"
+                  [required]="field.required || false"
+                  [disabled]="field.disabled || false"
+                  (change)="onFileChange(field.id, $event)">
+                
+                <!-- New Image Preview -->
+                <div *ngIf="getFilePreview(field.id)" class="new-image-container mt-3">
+                  <label class="form-label">New Image Preview:</label>
+                  <div class="new-image-wrapper">
+                    <img [src]="getFilePreview(field.id)" alt="New Image Preview" class="new-image">
+                    <button type="button" class="btn btn-sm btn-danger remove-image-btn" (click)="removeFilePreview(field.id)">
+                      <i class="bi bi-x"></i> Remove
+                    </button>
+                  </div>
+                </div>
+              </div>
 
               <!-- Select Dropdown -->
               <select 
@@ -137,7 +164,7 @@
                 [multiple]="field.multiple || false"
                 [(ngModel)]="formData[field.id]"
                 (ngModelChange)="onFieldChange(field.id, $event)">
-                <option value="" disabled>{{ field.placeholder || 'Select an option' }}</option>
+                <option [value]="null" disabled selected>{{ field.placeholder || 'Select an option' }}</option>
                 <option *ngFor="let option of field.options" [value]="option.value">
                   {{ option.label }}
                 </option>

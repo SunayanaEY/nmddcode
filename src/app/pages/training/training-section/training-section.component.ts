@@ -90,4 +90,8 @@ export class TrainingSectionComponent implements OnInit {
   navigateToTrainingCentre() {
     this.router.navigate(['/admin/training-centre']);
   }
+
+  navigateToTrainingCentreAdminProfile() {
+    this.router.navigate(['/admin/training-centre-admin-profile']);
+  }
 }

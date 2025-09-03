@@ -24,7 +24,7 @@ export interface MapboxGeocodeResponse {
   providedIn: 'root'
 })
 export class GeocodingService {
-  private mapboxAccessToken = environment.mapboxAccessToken;
+  private mapboxAccessToken = '';
   private mapboxBaseUrl = 'https://api.mapbox.com/geocoding/v5/mapbox.places';
 
   constructor(private http: HttpClient) {}

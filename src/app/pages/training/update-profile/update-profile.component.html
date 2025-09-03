@@ -1,0 +1,239 @@
+<div class="update-profile-container">
+  <!-- Breadcrumb -->
+  <app-breadcrumb [items]="breadcrumbItems"></app-breadcrumb>
+  
+  <!-- Page Header -->
+  <div class="page-header">
+    <h2>Update Profile</h2>
+    <p class="page-description">Update your training institute profile information</p>
+  </div>
+
+  <!-- Loading State -->
+  <div *ngIf="isLoading" class="loading-container">
+    <div class="loading-spinner"></div>
+    <p>Loading profile data...</p>
+  </div>
+
+  <!-- Error Message -->
+  <div *ngIf="error" class="alert alert-danger" role="alert">
+    <i class="bi bi-exclamation-triangle-fill me-2"></i>
+    {{ error }}
+    <button type="button" class="btn-close" (click)="clearMessages()"></button>
+  </div>
+
+  <!-- Success Message -->
+  <div *ngIf="success" class="alert alert-success" role="alert">
+    <i class="bi bi-check-circle-fill me-2"></i>
+    {{ success }}
+    <button type="button" class="btn-close" (click)="clearMessages()"></button>
+  </div>
+
+  <!-- Update Profile Form -->
+  <div *ngIf="!isLoading" class="profile-form-container">
+    <form [formGroup]="updateProfileForm" (ngSubmit)="onSubmit()" class="profile-form">
+      
+      <!-- Institute Image -->
+      <div class="form-group">
+        <label for="instituteImage" class="form-label">Institute Image</label>
+        <div class="image-upload-container">
+          <div class="current-image" *ngIf="currentImageUrl">
+            <img [src]="currentImageUrl" alt="Current Institute Image" class="preview-image">
+          </div>
+          <input 
+            type="file" 
+            id="instituteImage" 
+            class="form-control"
+            accept=".jpg,.jpeg,.png,.gif"
+            (change)="onFileSelected($event)">
+          <small class="form-text text-muted">Select institute image (JPG, PNG, GIF - Max 5MB)</small>
+        </div>
+      </div>
+
+      <!-- Institute Name -->
+      <div class="form-group">
+        <label for="instituteName" class="form-label required">Institute Name</label>
+        <input 
+          type="text" 
+          id="instituteName" 
+          class="form-control"
+          formControlName="instituteName"
+          [class.is-invalid]="isFieldInvalid('instituteName')"
+          placeholder="Enter institute name">
+        <div *ngIf="isFieldInvalid('instituteName')" class="invalid-feedback">
+          {{ getFieldError('instituteName') }}
+        </div>
+      </div>
+
+      <!-- Current State (Read-only) -->
+      <div class="form-group">
+        <label for="currentStateName" class="form-label">Current State</label>
+        <input 
+          type="text" 
+          id="currentStateName" 
+          class="form-control"
+          formControlName="currentStateName"
+          placeholder="Current state"
+          readonly>
+      </div>
+
+      <!-- Current District (Read-only) -->
+      <div class="form-group">
+        <label for="currentDistrictName" class="form-label">Current District</label>
+        <input 
+          type="text" 
+          id="currentDistrictName" 
+          class="form-control"
+          formControlName="currentDistrictName"
+          placeholder="Current district"
+          readonly>
+      </div>
+
+      <!-- Change State (Optional) -->
+      <div class="form-group">
+        <label for="newStateId" class="form-label">Change State (Optional)</label>
+        <select 
+          id="newStateId" 
+          class="form-select"
+          formControlName="newStateId">
+          <option value="">Select new state if you want to change</option>
+          <option *ngFor="let state of states" [value]="state.id">{{ state.stateName }}</option>
+        </select>
+      </div>
+
+      <!-- Change District (Optional) -->
+      <div class="form-group">
+        <label for="newDistrictId" class="form-label">Change District (Optional)</label>
+        <select 
+          id="newDistrictId" 
+          class="form-select"
+          formControlName="newDistrictId"
+          [disabled]="!updateProfileForm.get('newStateId')?.value">
+          <option value="">Select new district if you want to change</option>
+          <option *ngFor="let district of districts" [value]="district.id">{{ district.districtName }}</option>
+        </select>
+      </div>
+
+      <!-- Contact Person -->
+      <div class="form-group">
+        <label for="contactPerson" class="form-label required">Contact Person</label>
+        <input 
+          type="text" 
+          id="contactPerson" 
+          class="form-control"
+          formControlName="contactPerson"
+          [class.is-invalid]="isFieldInvalid('contactPerson')"
+          placeholder="Enter contact person name">
+        <div *ngIf="isFieldInvalid('contactPerson')" class="invalid-feedback">
+          {{ getFieldError('contactPerson') }}
+        </div>
+      </div>
+
+      <!-- Contact Number -->
+      <div class="form-group">
+        <label for="contactNumber" class="form-label required">Contact Number</label>
+        <input 
+          type="tel" 
+          id="contactNumber" 
+          class="form-control"
+          formControlName="contactNumber"
+          [class.is-invalid]="isFieldInvalid('contactNumber')"
+          placeholder="Enter contact number"
+          pattern="[0-9]{10}">
+        <div *ngIf="isFieldInvalid('contactNumber')" class="invalid-feedback">
+          {{ getFieldError('contactNumber') }}
+        </div>
+      </div>
+
+      <!-- Email ID -->
+      <div class="form-group">
+        <label for="emailId" class="form-label required">Email ID</label>
+        <input 
+          type="email" 
+          id="emailId" 
+          class="form-control"
+          formControlName="emailId"
+          [class.is-invalid]="isFieldInvalid('emailId')"
+          placeholder="Enter email address">
+        <div *ngIf="isFieldInvalid('emailId')" class="invalid-feedback">
+          {{ getFieldError('emailId') }}
+        </div>
+      </div>
+
+      <!-- Designation -->
+      <div class="form-group">
+        <label for="designation" class="form-label">Designation</label>
+        <input 
+          type="text" 
+          id="designation" 
+          class="form-control"
+          formControlName="designation"
+          placeholder="Enter designation">
+      </div>
+
+      <!-- Registration ID (Read-only) -->
+      <div class="form-group">
+        <label for="registrationId" class="form-label">Registration ID</label>
+        <input 
+          type="text" 
+          id="registrationId" 
+          class="form-control"
+          formControlName="registrationId"
+          placeholder="Registration ID"
+          readonly>
+      </div>
+
+      <!-- Address -->
+      <div class="form-group">
+        <label for="address" class="form-label">Address</label>
+        <textarea 
+          id="address" 
+          class="form-control"
+          formControlName="address"
+          rows="3"
+          placeholder="Enter complete address"></textarea>
+      </div>
+
+      <!-- Latitude -->
+      <div class="form-group">
+        <label for="latitude" class="form-label">Latitude</label>
+        <input 
+          type="number" 
+          id="latitude" 
+          class="form-control"
+          formControlName="latitude"
+          step="any"
+          placeholder="Enter latitude (e.g., 28.6139)">
+      </div>
+
+      <!-- Longitude -->
+      <div class="form-group">
+        <label for="longitude" class="form-label">Longitude</label>
+        <input 
+          type="number" 
+          id="longitude" 
+          class="form-control"
+          formControlName="longitude"
+          step="any"
+          placeholder="Enter longitude (e.g., 77.2090)">
+      </div>
+
+      <!-- Form Actions -->
+      <div class="form-actions">
+        <button 
+          type="submit" 
+          class="btn btn-primary"
+          [disabled]="isLoading || updateProfileForm.invalid">
+          <span *ngIf="isLoading" class="spinner-border spinner-border-sm me-2"></span>
+          {{ isLoading ? 'Updating...' : 'Update Profile' }}
+        </button>
+        <button 
+          type="button" 
+          class="btn btn-secondary ms-2"
+          (click)="loadProfileData()"
+          [disabled]="isLoading">
+          Reset
+        </button>
+      </div>
+    </form>
+  </div>
+</div>

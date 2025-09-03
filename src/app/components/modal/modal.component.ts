@@ -49,6 +49,7 @@ export class ModalComponent implements OnInit {
   @Output() fieldChange = new EventEmitter<{ fieldId: string; value: any }>();
 
   formData: any = {};
+  filePreviews: { [key: string]: string } = {};
 
   ngOnInit() {
     this.initializeFormData();
@@ -64,7 +65,8 @@ export class ModalComponent implements OnInit {
     this.formData = {};
     if (this.config.fields) {
       this.config.fields.forEach(field => {
-        this.formData[field.id] = field.value || this.getDefaultValue(field.type);
+        // Priority: field.value > data[field.id] > default value
+        this.formData[field.id] = field.value || (this.data && this.data[field.id]) || this.getDefaultValue(field.type);
       });
     }
   }
@@ -76,6 +78,8 @@ export class ModalComponent implements OnInit {
       case 'number':
         return 0;
       case 'file':
+        return null;
+      case 'select':
         return null;
       default:
         return '';
@@ -105,7 +109,39 @@ export class ModalComponent implements OnInit {
     if (field?.multiple) {
       this.onFieldChange(fieldId, files);
     } else {
-      this.onFieldChange(fieldId, files[0] || null);
+      const file = files[0] || null;
+      this.onFieldChange(fieldId, file);
+      
+      // Create preview for image files
+      if (file && file.type.startsWith('image/')) {
+        this.createFilePreview(fieldId, file);
+      } else {
+        this.removeFilePreview(fieldId);
+      }
+    }
+  }
+
+  createFilePreview(fieldId: string, file: File) {
+    const reader = new FileReader();
+    reader.onload = (e: any) => {
+      this.filePreviews[fieldId] = e.target.result;
+    };
+    reader.readAsDataURL(file);
+  }
+
+  getFilePreview(fieldId: string): string | null {
+    return this.filePreviews[fieldId] || null;
+  }
+
+  removeFilePreview(fieldId: string) {
+    delete this.filePreviews[fieldId];
+    this.formData[fieldId] = null;
+    this.onFieldChange(fieldId, null);
+    
+    // Clear the file input
+    const fileInput = document.getElementById(fieldId) as HTMLInputElement;
+    if (fileInput) {
+      fileInput.value = '';
     }
   }
 
@@ -129,7 +165,7 @@ export class ModalComponent implements OnInit {
 
   // Helper method to get display value for view mode
   getDisplayValue(key: string): any {
-    return this.data[key] || '-';
+    return (this.data && this.data[key]) || '-';
   }
 
   // Helper method to format display values
