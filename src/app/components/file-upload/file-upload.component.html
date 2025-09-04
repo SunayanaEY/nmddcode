@@ -1,11 +1,25 @@
 <div class="upload-section">
+  <!--Prepopulated files from backend -->
+  <div class="file-info" *ngIf="filePath">
+    <div class="file-details">
+      <p>
+        <strong>Uploaded file:</strong>
+        <span class="file-name ms-2">{{ getFileName(filePath) }}</span>
+      </p>
+    </div>
+    <button type="button" class="btn-remove ms-4" (click)="removeFile()">
+      <i class="bi bi-trash"></i> Remove
+    </button>
+  </div>
+
+  <!-- 2️⃣ Upload area (only show when no selected file and no prepopulated file) -->
   <div
     class="upload-box"
     [class.drag-over]="isDragOver"
     (drop)="onFileDrop($event)"
     (dragover)="onDragOver($event)"
     (dragleave)="onDragLeave($event)"
-    *ngIf="!selectedFile"
+    *ngIf="filePath === ''"
   >
     <div class="upload-icon">
       <i class="bi bi-cloud-upload"></i>
@@ -13,12 +27,10 @@
     <p class="upload-text">{{ uploadText }}</p>
     <p class="upload-subtext">{{ subText }}</p>
 
-    <!-- ✅ Use safe reference to input directly -->
     <button type="button" class="btn-upload" (click)="fileInput.click()">
       {{ buttonText }}
     </button>
 
-    <!-- ✅ Hidden input for file selection -->
     <input
       #fileInput
       type="file"
@@ -28,23 +40,25 @@
     />
   </div>
 
+  <!-- 3️⃣ User-selected file -->
   <div class="file-info" *ngIf="selectedFile && showFileInfo">
     <div class="file-details">
       <p><strong>Accepted formats:</strong> {{ acceptedFileTypes }}</p>
       <p><strong>Max size per file:</strong> {{ maxFileSizeMB }}MB</p>
       <p>
         <strong>Selected file:</strong>
-        <span class="file-name">{{ selectedFile.name }}</span>
+        <span class="file-name ms-2">{{ selectedFile.name }}</span>
       </p>
       <p><strong>File size:</strong> {{ getFileSize(selectedFile.size) }}</p>
     </div>
-    <button type="button" class="btn-remove" (click)="removeFile()">
+    <button type="button" class="btn-remove ms-4" (click)="removeFile()">
       <i class="bi bi-trash"></i> Remove
     </button>
   </div>
 </div>
-<!-- Error Message Display -->
-<div class="error-message" *ngIf="errorMessage">
+
+<!-- Error -->
+<div class="error-message" *ngIf="errorMessage && filePath.length === 0">
   <i class="bi bi-exclamation-triangle"></i>
   <span>{{ errorMessage }}</span>
 </div>

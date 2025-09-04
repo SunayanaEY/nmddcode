@@ -78,7 +78,8 @@
               <select
                 id="trainingInstituteName"
                 formControlName="trainingInstituteName"
-                class="form-control"
+                class="form-control h-auto"
+                (change)="onTrainingInstituteChange()"
                 [class.is-invalid]="
                   trainingForm.get('trainingInstituteName')?.invalid &&
                   trainingForm.get('trainingInstituteName')?.touched
@@ -87,7 +88,7 @@
                 <option value="">Enter Training Institute Name here</option>
                 <option
                   *ngFor="let institute of instituteNames"
-                  [value]="institute.id"
+                  [ngValue]="institute"
                 >
                   {{ institute.trainingInstituteName }}
                 </option>
@@ -110,7 +111,7 @@
             <div class="form-group third-width">
               <select
                 formControlName="venueState"
-                class="form-control"
+                class="form-control h-auto"
                 (change)="onStateSelected($any($event.target).value)"
                 [class.is-invalid]="
                   trainingForm.get('venueState')?.invalid &&
@@ -126,7 +127,7 @@
             <div class="form-group third-width">
               <select
                 formControlName="venueDistrict"
-                class="form-control"
+                class="form-control h-auto"
                 (change)="onDistrictSelect($any($event.target).value)"
                 [class.is-invalid]="
                   trainingForm.get('venueDistrict')?.invalid &&
@@ -195,7 +196,7 @@
               <select
                 id="durationType"
                 formControlName="durationType"
-                class="form-control"
+                class="form-control h-auto"
               >
                 <option value="Days">Days</option>
                 <option value="Hours">Hours</option>
@@ -229,12 +230,13 @@
               <select
                 id="trainingType"
                 formControlName="trainingType"
-                class="form-control"
+                class="form-control h-auto"
                 [class.is-invalid]="
                   trainingForm.get('trainingType')?.invalid &&
                   trainingForm.get('trainingType')?.touched
                 "
               >
+                <option value="" disabled>Select training type</option>
                 <option *ngFor="let type of allTrainingType" [value]="type.id">
                   {{ type.trainingTypeName }}
                 </option>
@@ -247,12 +249,13 @@
               <select
                 id="modeOfTraining"
                 formControlName="modeOfTraining"
-                class="form-control"
+                class="form-control h-auto"
                 [class.is-invalid]="
                   trainingForm.get('modeOfTraining')?.invalid &&
                   trainingForm.get('modeOfTraining')?.touched
                 "
               >
+                <option value="" disabled>Select mode of training</option>
                 <option value="offline">Offline</option>
                 <option value="online">Online</option>
                 <option value="field">Field</option>
@@ -310,6 +313,7 @@
                 [uploadText]="'Drag and Drop the Signature here'"
                 (fileSelected)="onFileSelect($event, 'signature', i)"
                 (fileRemoved)="removeSignature(i)"
+                [filePath]="mySelectedFile[i]"
               >
               </app-file-upload>
             </div>
@@ -338,6 +342,7 @@
                 [uploadText]="'Drag and Drop your logo here'"
                 (fileSelected)="onFileSelect($event, 'logo', i)"
                 (fileRemoved)="removeLogo(i)"
+                [filePath]="mySelectedLogo[i]"
               >
               </app-file-upload>
             </div>

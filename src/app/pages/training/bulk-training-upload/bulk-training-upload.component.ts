@@ -5,6 +5,7 @@ import {
   BreadcrumbComponent,
   BreadcrumbItem,
 } from '../../../components/breadcrumb/breadcrumb.component';
+import { ToastrService } from 'ngx-toastr';
 import { ActivatedRoute, Router } from '@angular/router';
 import { FileUploadComponent } from '../../../components/file-upload/file-upload.component';
 import { TrainingService } from '../../../pages/training/services/training.service';
@@ -39,9 +40,12 @@ export class BulkTrainingUploadComponent implements OnInit {
   selectedFile: File | undefined;
   trainingDetails: any = null;
   trainingId: any;
+  trainingInstituteId: any;
+  user: any = sessionStorage.getItem('user');
 
   constructor(
     private trainingService: TrainingService,
+    private toastr: ToastrService,
     private route: ActivatedRoute,
     private router: Router
   ) {}
@@ -189,6 +193,7 @@ export class BulkTrainingUploadComponent implements OnInit {
   }
 
   downloadExcelTemplate(): void {
+    this.isSpinning = true;
     this.trainingService.downloadExcelFile().subscribe({
       next: (response: Blob) => {
         const blob = new Blob([response], {
@@ -201,26 +206,42 @@ export class BulkTrainingUploadComponent implements OnInit {
         a.download = 'TraineeTemplate.xlsx';
         a.click();
         window.URL.revokeObjectURL(url);
+        this.toastr.success('Bulk Upload Template Downloaded', 'Success');
+        this.isSpinning = false;
       },
       error: (error) => {
         console.error('Error downloading the Excel template:', error);
+        this.toastr.error('Bulk Upload Template Not Downloaded', 'Error');
+        this.isSpinning = false;
       },
     });
   }
   uploadExcelFile(): void {
-    alert('coming for upload!!');
     const trainingId = 10;
+    this.isSpinning = true;
+    if (this.user) {
+      const user = JSON.parse(this.user);
+      this.trainingInstituteId = user.trainingHeadId;
+    }
 
     if (this.selectedFile != undefined) {
       this.trainingService
-        .uploadTraineeExcel(this.selectedFile, trainingId)
+        .uploadTraineeExcel(
+          this.selectedFile,
+          trainingId,
+          this.trainingInstituteId
+        )
         .subscribe({
           next: (response) => {
+            this.isSpinning = false;
             console.log('File uploaded successfully:', response);
-            // Optionally show a success toast here
+            this.toastr.success('Bulk Excel File Uploaded', 'Success');
+            this.router.navigate(['/admin/training-module']);
           },
           error: (error) => {
+            this.isSpinning = false;
             console.error('File upload failed:', error);
+            this.toastr.error('Bulk Excel File Not Uploaded', 'Error');
           },
         });
     }

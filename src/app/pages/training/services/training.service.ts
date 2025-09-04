@@ -19,12 +19,17 @@ export class TrainingService {
       responseType: 'blob',
     });
   }
-  uploadTraineeExcel(file: File, trainingId: number): Observable<any> {
+  uploadTraineeExcel(
+    file: File,
+    trainingId: number,
+    trainingInstituteId: string
+  ): Observable<any> {
     const url = `${this.apiUrl}/trainees/upload-trainees-excel`;
 
     const formData = new FormData();
     formData.append('file', file);
     formData.append('trainingId', trainingId.toString());
+    formData.append('trainingInstituteId', trainingInstituteId);
 
     return this.http.post(url, formData);
   }
@@ -32,17 +37,21 @@ export class TrainingService {
   saveTraining(payload: FormData): Observable<any> {
     return this.http.post(`${this.url}training/save`, payload);
   }
-  submitTrainees(participants: any[]): Observable<any> {
+  updateTraining(payload: FormData): Observable<any> {
+    return this.http.post(`${this.url}training/update`, payload);
+  }
+  submitTrainees(participants: any[]): Observable<string> {
     const url = `${this.apiUrl}/trainees/manual-upload`;
-    return this.http.post(url, participants);
+    return this.http.post(url, participants, { responseType: 'text' });
   }
-  getAllTraining() {
-    return this.http.get<any>(this.url + `training/getAllTraining`).pipe(
-      map((res: any) => {
-        return res;
-      })
-    );
-  }
+
+  // getAllTraining() {
+  //   return this.http.get<any>(this.url + `training/getAllTraining`).pipe(
+  //     map((res: any) => {
+  //       return res;
+  //     })
+  //   );
+  // }
   getAllInstitutes() {
     return this.http.get<any>(this.url + `training/trainingInstitutes`).pipe(
       map((res: any) => {
@@ -66,6 +75,13 @@ export class TrainingService {
         })
       );
   }
+  getAllTraining() {
+    return this.http.get<any>(this.url + `training/getAllTrainingByRole`).pipe(
+      map((res: any) => {
+        return res;
+      })
+    );
+  }
   getAllTrainings(trainingInstituteId: any) {
     return this.http
       .get<any>(
@@ -86,12 +102,12 @@ export class TrainingService {
 
     const formData = {
       status: status,
-      trainingCenter: trainingInstitueId,
       trainingId: trainingId,
     };
 
     return this.http.post(url, formData);
   }
+
   getCertificateDetails(
     uin: string,
     email: string,

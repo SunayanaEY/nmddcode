@@ -23,13 +23,13 @@ export const AdminLayoutRoutes: Routes = [
     path: 'scheme-management',
     component: SchemeManagementComponent,
     canActivate: [RoleGuard],
-    data: { allowedRoles: [1] },
+    data: { allowedRoles: [1, 5] },
   },
   {
     path: 'training-type-management',
     component: TrainingTypeManagementComponent,
     canActivate: [RoleGuard],
-    data: { allowedRoles: [1] },
+    data: { allowedRoles: [1, 5] },
   },
   {
     path: 'activity-log',
@@ -38,7 +38,7 @@ export const AdminLayoutRoutes: Routes = [
         (m) => m.ActivityLogComponent
       ),
     canActivate: [RoleGuard],
-    data: { allowedRoles: [1] },
+    data: { allowedRoles: [1, 5] },
   },
 
   // Training Institute Head Routes (Role 3)
@@ -46,7 +46,7 @@ export const AdminLayoutRoutes: Routes = [
     path: 'certificate-approval',
     component: CertificateApprovalComponent,
     canActivate: [RoleGuard],
-    data: { allowedRoles: [1] },
+    data: { allowedRoles: [1, 5] },
   },
   {
     path: 'user-profile-creation',
@@ -61,7 +61,7 @@ export const AdminLayoutRoutes: Routes = [
     path: 'training-module',
     component: TrainingSectionComponent,
     canActivate: [RoleGuard],
-    data: { allowedRoles: [1, 3, 4] },
+    data: { allowedRoles: [1, 3, 4, 5] },
   },
   {
     path: 'registered-data-entry-operators',
@@ -76,7 +76,7 @@ export const AdminLayoutRoutes: Routes = [
         (m) => m.TrainingCentreComponent
       ),
     canActivate: [RoleGuard],
-    data: { allowedRoles: [1] },
+    data: { allowedRoles: [1, 5] },
   },
 
   // Data Entry Operator Routes (Role 4)
@@ -110,7 +110,7 @@ export const AdminLayoutRoutes: Routes = [
     path: 'approved-certificate',
     component: ApprovedCertificateComponent,
     canActivate: [RoleGuard],
-    data: { allowedRoles: [1, 3, 4] },
+    data: { allowedRoles: [1, 3, 4, 5] },
   },
   {
     path: 'all-certificate',
@@ -120,13 +120,13 @@ export const AdminLayoutRoutes: Routes = [
     path: 'all-trainings',
     component: AllTrainingsComponent,
     canActivate: [RoleGuard],
-    data: { allowedRoles: [1, 3, 4] },
+    data: { allowedRoles: [1, 3, 4, 5] },
   },
   {
     path: 'all-trainings-admin',
     component: AllTrainingsAdminComponent,
     canActivate: [RoleGuard],
-    data: { allowedRoles: [1] },
+    data: { allowedRoles: [1, 3, 5] },
   },
   {
     path: 'registered-data-entry-operators',

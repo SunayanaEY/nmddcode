@@ -25,7 +25,7 @@ interface Participant {
   age: number;
   gender: string;
   contactNumber: string;
-  aadharMasked: string;
+  fathersName: string;
   email: string;
 }
 
@@ -46,7 +46,7 @@ export class ManualTrainingUploadComponent implements OnInit {
   participants: Participant[] = [];
   editingIndex: number = -1;
   alphabetError: boolean = false;
-  aadharError: boolean = false;
+  // aadharError: boolean = false;
   emailError: boolean = false;
   selectedParticipant: Participant | null = null;
   isSpinning: boolean = false;
@@ -66,7 +66,7 @@ export class ManualTrainingUploadComponent implements OnInit {
     { key: 'age', header: 'Age' },
     { key: 'gender', header: 'Gender' },
     { key: 'contactNumber', header: 'Contact Number' },
-    { key: 'aadhar', header: 'Aadhar (Masked)' },
+    { key: 'fathersName', header: "Father's Name" },
     { key: 'email', header: 'Email(Optional)' },
   ];
   tableActions: TableAction[] = [
@@ -84,7 +84,6 @@ export class ManualTrainingUploadComponent implements OnInit {
     private router: Router
   ) {
     this.initializeForm();
-    this.loadSampleData();
   }
 
   ngOnInit(): void {
@@ -111,96 +110,13 @@ export class ManualTrainingUploadComponent implements OnInit {
         '',
         [Validators.required, Validators.pattern(/^[0-9]{10}$/)],
       ],
-      aadhar: ['', [Validators.required, Validators.pattern(/^[0-9]{12}$/)]],
+      fathersName: ['', [Validators.required]],
       email: ['', [Validators.email]],
     });
   }
 
-  loadSampleData(): void {
-    // this.participants = [
-    //   {
-    //     name: 'Manoj Kumar',
-    //     age: 25,
-    //     gender: 'Male',
-    //     contactNumber: 'xxxxxx6484',
-    //     aadharMasked: '4356xxxxxx32',
-    //     email: 'xxxx@gmail.com',
-    //   },
-    //   {
-    //     name: 'Suman Devi',
-    //     age: 23,
-    //     gender: 'Female',
-    //     contactNumber: 'xxxxxx6484',
-    //     aadharMasked: '4356xxxxxx32',
-    //     email: 'xxxx@gmail.com',
-    //   },
-    //   {
-    //     name: 'Manoj Kumar',
-    //     age: 25,
-    //     gender: 'Male',
-    //     contactNumber: 'xxxxxx6484',
-    //     aadharMasked: '4356xxxxxx32',
-    //     email: 'xxxx@gmail.com',
-    //   },
-    //   {
-    //     name: 'Suman Devi',
-    //     age: 23,
-    //     gender: 'Female',
-    //     contactNumber: 'xxxxxx6484',
-    //     aadharMasked: '4356xxxxxx32',
-    //     email: 'xxxx@gmail.com',
-    //   },
-    //   {
-    //     name: 'Manoj Kumar',
-    //     age: 25,
-    //     gender: 'Male',
-    //     contactNumber: 'xxxxxx6484',
-    //     aadharMasked: '4356xxxxxx32',
-    //     email: 'xxxx@gmail.com',
-    //   },
-    //   {
-    //     name: 'Suman Devi',
-    //     age: 23,
-    //     gender: 'Female',
-    //     contactNumber: 'xxxxxx6484',
-    //     aadharMasked: '4356xxxxxx32',
-    //     email: 'xxxx@gmail.com',
-    //   },
-    //   {
-    //     name: 'Manoj Kumar',
-    //     age: 25,
-    //     gender: 'Male',
-    //     contactNumber: 'xxxxxx6484',
-    //     aadharMasked: '4356xxxxxx32',
-    //     email: 'xxxx@gmail.com',
-    //   },
-    //   {
-    //     name: 'Suman Devi',
-    //     age: 23,
-    //     gender: 'Female',
-    //     contactNumber: 'xxxxxx6484',
-    //     aadharMasked: '4356xxxxxx32',
-    //     email: 'xxxx@gmail.com',
-    //   },
-    //   {
-    //     name: 'Manoj Kumar',
-    //     age: 25,
-    //     gender: 'Male',
-    //     contactNumber: 'xxxxxx6484',
-    //     aadharMasked: '4356xxxxxx32',
-    //     email: 'xxxx@gmail.com',
-    //   },
-    //   {
-    //     name: 'Suman Devi',
-    //     age: 23,
-    //     gender: 'Female',
-    //     contactNumber: 'xxxxxx6484',
-    //     aadharMasked: '4356xxxxxx32',
-    //     email: 'xxxx@gmail.com',
-    //   },
-    // ];
-  }
   getTrainingDetails(trainingId: number) {
+    // alert('Training Upload : ' + trainingId);
     this.isSpinning = true;
     this.trainingService.getTrainingDetails(trainingId).subscribe({
       next: (response) => {
@@ -237,7 +153,7 @@ export class ManualTrainingUploadComponent implements OnInit {
         age: formValue.age,
         gender: formValue.gender,
         contactNumber: this.maskContactNumber(formValue.contactNumber),
-        aadharMasked: this.maskAadhar(formValue.aadhar),
+        fathersName: formValue.fathersName,
         email: this.maskEmail(formValue.email),
       };
 
@@ -257,7 +173,7 @@ export class ManualTrainingUploadComponent implements OnInit {
         age: formValue.age,
         gender: formValue.gender,
         contactNumber: this.maskContactNumber(formValue.contactNumber),
-        aadharMasked: this.maskAadhar(formValue.aadhar),
+        fathersName: formValue.fathersName,
         email: this.maskEmail(formValue.email),
       };
 
@@ -277,14 +193,14 @@ export class ManualTrainingUploadComponent implements OnInit {
       this.alphabetError = false;
     }
   }
-  allowOnlyAadharDigits(event: KeyboardEvent): void {
-    const charCode = event.which ? event.which : event.keyCode;
-    if (charCode < 48 || charCode > 57) {
-      this.aadharError = true;
-      setTimeout(() => (this.aadharError = false), 1000); // Auto-hide in 1 sec
-      event.preventDefault();
-    }
-  }
+  // allowOnlyAadharDigits(event: KeyboardEvent): void {
+  //   const charCode = event.which ? event.which : event.keyCode;
+  //   if (charCode < 48 || charCode > 57) {
+  //     this.aadharError = true;
+  //     setTimeout(() => (this.aadharError = false), 1000); // Auto-hide in 1 sec
+  //     event.preventDefault();
+  //   }
+  // }
   validateEmail(): void {
     const emailControl = this.participantForm.get('email');
     const emailValue = emailControl?.value || '';
@@ -325,8 +241,8 @@ export class ManualTrainingUploadComponent implements OnInit {
       name: participant.name,
       age: participant.age,
       gender: participant.gender,
-      contactNumber: '9876543210', // Original unmasked value
-      aadhar: '123456789012', // Original unmasked value
+      contactNumber: participant.contactNumber, // Original unmasked value
+      fathersName: participant.fathersName, // Original unmasked value
       email: participant.email.includes('xxxx')
         ? 'user@example.com'
         : participant.email,
@@ -348,7 +264,7 @@ export class ManualTrainingUploadComponent implements OnInit {
     }
   }
   submitTraineesData() {
-    const trainingId = 10;
+    const trainingId = this.trainingId;
     const payload = this.participants.map((participant) => ({
       ...participant,
       trainingId: trainingId,
@@ -359,11 +275,11 @@ export class ManualTrainingUploadComponent implements OnInit {
     this.trainingService.submitTrainees(payload).subscribe({
       next: (response) => {
         this.isSpinning = false;
-        // this.toastr.success('Participants submitted successfully!', 'Success');
+        this.toastr.success('Participants submitted successfully!', 'Success');
       },
       error: (error) => {
         this.isSpinning = false;
-        // this.toastr.error('Failed to submit participants.', 'Error');
+        this.toastr.error('Failed to submit participants.', 'Error');
       },
     });
   }
@@ -385,12 +301,12 @@ export class ManualTrainingUploadComponent implements OnInit {
     return contact;
   }
 
-  private maskAadhar(aadhar: string): string {
-    if (aadhar && aadhar.length >= 8) {
-      return aadhar.slice(0, 4) + 'xxxxxx' + aadhar.slice(-2);
-    }
-    return aadhar;
-  }
+  // private maskAadhar(aadhar: string): string {
+  //   if (aadhar && aadhar.length >= 8) {
+  //     return aadhar.slice(0, 4) + 'xxxxxx' + aadhar.slice(-2);
+  //   }
+  //   return aadhar;
+  // }
 
   private maskEmail(email: string): string {
     // if (email && email.includes('@')) {

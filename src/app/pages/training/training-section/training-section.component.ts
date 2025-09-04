@@ -66,7 +66,7 @@ export class TrainingSectionComponent implements OnInit {
 
   navigateToCertificateApproval() {
     this.router.navigate(['/admin/all-trainings-admin']);
-   // this.router.navigate(['/admin/certificate-approval']);
+    // this.router.navigate(['/admin/certificate-approval']);
   }
   navigateToCertificateAll() {
     this.router.navigate(['/admin/all-certificate']);

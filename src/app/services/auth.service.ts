@@ -241,4 +241,38 @@ export class AuthService {
       this.updateLastActivity();
     }
   }
+  changePassword(
+    email: string,
+    oldPassword: string,
+    newPassword: string
+  ): Observable<any> {
+    const body = {
+      email: email,
+      oldPassword: oldPassword,
+      newPassword: newPassword,
+    };
+
+    return this.http.post<any>(this.apiUrl + 'api/auth/reset-password', body);
+  }
+  forgetPasswordOTP(email: string): Observable<any> {
+    const body = {
+      email: email,
+    };
+    return this.http.post<any>(this.apiUrl + 'api/auth/forgot-password', body);
+  }
+  forgetPassword(
+    email: string,
+    otp: number,
+    newPassword: string
+  ): Observable<any> {
+    const body = {
+      email: email,
+      otp: otp,
+      newPassword: newPassword,
+    };
+    return this.http.post<any>(
+      this.apiUrl + 'api/auth/forgot-password-otp',
+      body
+    );
+  }
 }

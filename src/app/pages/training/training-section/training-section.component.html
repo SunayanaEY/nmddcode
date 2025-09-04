@@ -7,7 +7,7 @@
         <div
           class="certificate-card"
           (click)="navigateToCertificateApproval()"
-          *ngIf="userRole === 1"
+          *ngIf="userRole === 3"
         >
           <div class="certificate-icon">
             <svg
@@ -25,9 +25,7 @@
           </div>
           <div class="certificate-content">
             <h3 class="certificate-title">Trainings Approval</h3>
-            <p class="certificate-description">
-              Approve or reject trainings
-            </p>
+            <p class="certificate-description">Approve or reject trainings</p>
           </div>
         </div>
         <!--Certificate All-->
@@ -53,11 +51,9 @@
             </svg>
           </div>
           <div class="certificate-content">
-            <h3 class="certificate-title">
-              Data Entry Operator Profile Creation
-            </h3>
+            <h3 class="certificate-title">Training Manager Profile Creation</h3>
             <p class="certificate-description">
-              Create and manage training data entry operators
+              Create and manage Training Managers
             </p>
           </div>
         </div>
@@ -95,7 +91,7 @@
         <div
           class="certificate-card"
           (click)="navigateToSchemeManagementMaster()"
-          *ngIf="userRole === 1"
+          *ngIf="userRole === 1 || userRole === 5"
         >
           <div class="certificate-icon">
             <!-- <svg width="48" height="48" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -161,7 +157,7 @@
         <div
           class="certificate-card"
           (click)="navigateToActivityLog()"
-          *ngIf="userRole === 1"
+          *ngIf="userRole === 1 || userRole === 5"
         >
           <div class="certificate-icon">
             <svg
@@ -212,7 +208,7 @@
         <div
           class="certificate-card"
           (click)="navigateToTrainingTypeManagement()"
-          *ngIf="userRole === 1"
+          *ngIf="userRole === 1 || userRole === 5"
         >
           <div class="certificate-icon">
             <!-- <svg width="48" height="48" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -307,7 +303,7 @@
         <div
           class="certificate-card"
           (click)="navigateToTrainingCentre()"
-          *ngIf="userRole === 1"
+          *ngIf="userRole === 1 || userRole === 5"
         >
           <div class="certificate-icon">
             <svg
@@ -590,7 +586,7 @@
         <div
           class="certificate-card"
           (click)="navigateToAllTrainingsAdmin()"
-          *ngIf="userRole === 1"
+          *ngIf="userRole === 1 || userRole === 5"
         >
           <div class="certificate-icon">
             <svg
@@ -661,59 +657,68 @@
             </svg>
           </div>
           <div class="certificate-content">
-            <h3 class="certificate-title">Registered Data Entry Operators</h3>
+            <h3 class="certificate-title">Registered Training Managers</h3>
             <p class="certificate-description">
-              View and manage all registered data entry operators
+              View and manage all registered Training Managers
             </p>
           </div>
         </div>
         <!-- Approved Certificate -->
         <div
-        class="certificate-card"
-        (click)="navigateToApprovedCertificates()"
-        *ngIf="userRole === 3"
-      >
-        <div class="certificate-icon">
-          <svg
-            width="48"
-            height="48"
-            viewBox="0 0 24 24"
-            fill="none"
-            xmlns="http://www.w3.org/2000/svg"
-          >
-            <path
-              d="M12 2C13.1 2 14 2.9 14 4C14 5.1 13.1 6 12 6C10.9 6 10 5.1 10 4C10 2.9 10.9 2 12 2ZM21 9V7L15 1H5C3.89 1 3 1.89 3 3V21C3 22.11 3.89 23 5 23H11V21H5V3H13V9H21ZM16.5 18.5L19.36 15.64L20.78 17.06L16.5 21.34L13.14 17.98L14.56 16.56L16.5 18.5Z"
-              fill="currentColor"
-            />
-          </svg>
+          class="certificate-card"
+          (click)="navigateToApprovedCertificates()"
+          *ngIf="userRole === 3"
+        >
+          <div class="certificate-icon">
+            <svg
+              width="48"
+              height="48"
+              viewBox="0 0 24 24"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                d="M12 2C13.1 2 14 2.9 14 4C14 5.1 13.1 6 12 6C10.9 6 10 5.1 10 4C10 2.9 10.9 2 12 2ZM21 9V7L15 1H5C3.89 1 3 1.89 3 3V21C3 22.11 3.89 23 5 23H11V21H5V3H13V9H21ZM16.5 18.5L19.36 15.64L20.78 17.06L16.5 21.34L13.14 17.98L14.56 16.56L16.5 18.5Z"
+                fill="currentColor"
+              />
+            </svg>
+          </div>
+          <div class="certificate-content">
+            <h3 class="certificate-title">Approved/Rejected Trainings</h3>
+            <p class="certificate-description">
+              View and Manage trainings approved or rejected By Institute Head
+            </p>
+          </div>
         </div>
-        <div class="certificate-content">
-          <h3 class="certificate-title">Approved/Rejected Trainings</h3>
-          <p class="certificate-description">
-            View and Mange trainings approved or rejected By Central Admin
-          </p>
-        </div>
+
+        <!-- Verify Trainings -->
+        <!-- <div
+          class="certificate-card"
+          (click)="navigateToVerifyTrainings()"
+          *ngIf="userRole === 3"
+        >
+          <div class="certificate-icon">
+            <svg
+              width="48"
+              height="48"
+              viewBox="0 0 24 24"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                d="M12 2C13.1 2 14 2.9 14 4C14 5.1 13.1 6 12 6C10.9 6 10 5.1 10 4C10 2.9 10.9 2 12 2ZM21 9V7L15 1H5C3.89 1 3 1.89 3 3V21C3 22.11 3.89 23 5 23H11V21H5V3H13V9H21ZM16.5 18.5L19.36 15.64L20.78 17.06L16.5 21.34L13.14 17.98L14.56 16.56L16.5 18.5Z"
+                fill="currentColor"
+              />
+            </svg>
+          </div>
+          <div class="certificate-content">
+            <h3 class="certificate-title">Verify Trainings</h3>
+            <p class="certificate-description">
+              Verify trainings and send for approval!
+            </p>
+          </div>
+        </div> -->
       </div>
-
-      <!-- Verify Trainings -->
-      <div class="certificate-card" (click)="navigateToVerifyTrainings()" *ngIf="userRole === 3">
-        <div class="certificate-icon">
-          <svg width="48" height="48" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <path d="M12 2C13.1 2 14 2.9 14 4C14 5.1 13.1 6 12 6C10.9 6 10 5.1 10 4C10 2.9 10.9 2 12 2ZM21 9V7L15 1H5C3.89 1 3 1.89 3 3V21C3 22.11 3.89 23 5 23H11V21H5V3H13V9H21ZM16.5 18.5L19.36 15.64L20.78 17.06L16.5 21.34L13.14 17.98L14.56 16.56L16.5 18.5Z" fill="currentColor"/>
-          </svg>
-        </div>
-        <div class="certificate-content">
-          <h3 class="certificate-title">Verify Trainings</h3>
-          <p class="certificate-description">Verify trainings and send for approval!</p>
-        </div>
-      </div>
-
-      </div>
-
-
-
-    </div>
-
     </div>
   </div>
-
+</div>

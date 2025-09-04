@@ -1,34 +1,54 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { BreadcrumbComponent, BreadcrumbItem } from '../../../components/breadcrumb/breadcrumb.component';
-import { TableComponent, TableColumn, TableAction } from '../../../components/table/table.component';
-import { ModalComponent, ModalConfig } from '../../../components/modal/modal.component';
-import { AdminService, TrainingInstitute } from '../services/training-admin.service';
+import {
+  BreadcrumbComponent,
+  BreadcrumbItem,
+} from '../../../components/breadcrumb/breadcrumb.component';
+import {
+  TableComponent,
+  TableColumn,
+  TableAction,
+} from '../../../components/table/table.component';
+import {
+  ModalComponent,
+  ModalConfig,
+} from '../../../components/modal/modal.component';
+import {
+  AdminService,
+  TrainingInstitute,
+} from '../services/training-admin.service';
 import { HttpClientModule } from '@angular/common/http';
 import * as XLSX from 'xlsx';
 
 @Component({
   selector: 'app-training-centre',
   standalone: true,
-  imports: [CommonModule, BreadcrumbComponent, TableComponent, ModalComponent, HttpClientModule],
+  imports: [
+    CommonModule,
+    BreadcrumbComponent,
+    TableComponent,
+    ModalComponent,
+    HttpClientModule,
+  ],
   templateUrl: './training-centre.component.html',
-  styleUrls: ['./training-centre.component.css']
+  styleUrls: ['./training-centre.component.css'],
 })
 export class TrainingCentreComponent implements OnInit {
   breadcrumbItems: BreadcrumbItem[] = [
     { label: 'Central Admin Login', url: '/admin/training-module' },
-    { label: 'Training Centre Data' }
+    { label: 'Training Centre Data' },
   ];
 
   // Modal properties
   showModal = false;
   selectedCentre: any = null;
   modalMode: 'view' | 'edit' = 'view';
-  
+
   // Confirmation modal properties
   showConfirmModal = false;
   confirmationText = '';
   pendingToggleItem: any = null;
+  statusFilter: string = '';
   modalConfig: ModalConfig = {
     title: 'Training Institute Admin Details',
     size: 'l',
@@ -41,35 +61,35 @@ export class TrainingCentreComponent implements OnInit {
         label: 'Institute Name',
         type: 'text',
         required: true,
-        placeholder: 'Enter institute name'
+        placeholder: 'Enter institute name',
       },
       {
         id: 'state',
         label: 'State',
         type: 'text',
         required: true,
-        placeholder: 'Enter state'
+        placeholder: 'Enter state',
       },
       {
         id: 'district',
         label: 'District',
         type: 'text',
         required: true,
-        placeholder: 'Enter district'
+        placeholder: 'Enter district',
       },
       {
         id: 'block',
         label: 'Block',
         type: 'text',
         required: true,
-        placeholder: 'Enter block'
+        placeholder: 'Enter block',
       },
       {
         id: 'contactPersonName',
         label: 'Contact Person',
         type: 'text',
         required: true,
-        placeholder: 'Enter contact person name'
+        placeholder: 'Enter contact person name',
       },
       {
         id: 'contactNumber',
@@ -77,28 +97,28 @@ export class TrainingCentreComponent implements OnInit {
         type: 'tel',
         required: true,
         placeholder: 'Enter contact number',
-        pattern: '[0-9]{10}'
+        pattern: '[0-9]{10}',
       },
       {
         id: 'emailId',
         label: 'Email ID',
         type: 'email',
         required: true,
-        placeholder: 'Enter email address'
+        placeholder: 'Enter email address',
       },
       {
         id: 'designation',
         label: 'Designation',
         type: 'text',
-        placeholder: 'Enter designation'
+        placeholder: 'Enter designation',
       },
       {
         id: 'registrationId',
         label: 'Registration ID',
         type: 'text',
-        placeholder: 'Enter registration ID'
-      }
-    ]
+        placeholder: 'Enter registration ID',
+      },
+    ],
   };
 
   // Confirmation modal configuration
@@ -116,9 +136,9 @@ export class TrainingCentreComponent implements OnInit {
         label: 'Type "confirm" to proceed',
         type: 'text',
         required: true,
-        placeholder: 'Type confirm here'
-      }
-    ]
+        placeholder: 'Type confirm here',
+      },
+    ],
   };
 
   // API data
@@ -134,7 +154,12 @@ export class TrainingCentreComponent implements OnInit {
     { key: 'district', header: 'District' },
     { key: 'contactPersonName', header: 'Contact Person' },
     { key: 'contactNumber', header: 'Contact Number' },
-    { key: 'status', header: 'Status', transform: (value: any, item: any) => item.active ? 'Active' : 'Inactive' }
+    {
+      key: 'status',
+      header: 'Status',
+      transform: (value: any, item: any) =>
+        item.active ? 'Active' : 'Inactive',
+    },
   ];
 
   tableActions: TableAction[] = [
@@ -142,34 +167,48 @@ export class TrainingCentreComponent implements OnInit {
       name: 'view',
       icon: 'bi-eye',
       class: 'btn-info',
-      title: 'View Details'
+      title: 'View Details',
     },
     {
       name: 'edit',
       icon: 'bi-pencil',
       class: 'btn-warning',
-      title: 'Edit Details'
+      title: 'Edit Details',
     },
     {
       name: 'toggle',
       icon: 'bi-power',
       class: 'btn-toggle',
-      title: 'Toggle Active/Inactive'
+      title: 'Toggle Active/Inactive',
     },
     {
       name: 'delete',
       icon: 'bi-trash',
       class: 'btn-danger',
-      title: 'Delete'
-    }
+      title: 'Delete',
+    },
   ];
 
   // This will be populated from API
   trainingCentres: any[] = [];
 
   // Export configuration
-  exportHeaders = ['Institute Name', 'State', 'District', 'Contact Person', 'Contact Number', 'Status'];
-  exportColumnKeys = ['trainingInstituteName', 'state', 'district', 'contactPersonName', 'contactNumber', 'status'];
+  exportHeaders = [
+    'Institute Name',
+    'State',
+    'District',
+    'Contact Person',
+    'Contact Number',
+    'Status',
+  ];
+  exportColumnKeys = [
+    'trainingInstituteName',
+    'state',
+    'district',
+    'contactPersonName',
+    'contactNumber',
+    'status',
+  ];
 
   ngOnInit(): void {
     this.loadTrainingInstitutes();
@@ -178,17 +217,17 @@ export class TrainingCentreComponent implements OnInit {
   loadTrainingInstitutes(): void {
     this.isLoading = true;
     this.error = null;
-    
+
     this.adminService.getTrainingInstitutes().subscribe({
       next: (data: TrainingInstitute[]) => {
         this.trainingInstitutes = data;
         // Map API data to table format
-        this.trainingCentres = data.map(institute => ({
+        this.trainingCentres = data.map((institute) => ({
           ...institute,
           centreName: institute.trainingInstituteName,
           contactPerson: institute.contactPersonName,
           email: institute.emailId,
-          status: 'Active' // Default status since API doesn't provide it
+          status: 'Active', // Default status since API doesn't provide it
         }));
         this.isLoading = false;
       },
@@ -196,13 +235,19 @@ export class TrainingCentreComponent implements OnInit {
         console.error('Error loading training institutes:', error);
         this.error = 'Failed to load training institutes. Please try again.';
         this.isLoading = false;
-      }
+      },
     });
   }
 
   // Getter methods for template calculations
   get activeCentresCount(): number {
-    return this.trainingCentres.filter(c => c.active === true || c.active === 'true' || c.active === 'Active' || c.active === 'active').length;
+    return this.trainingCentres.filter(
+      (c) =>
+        c.active === true ||
+        c.active === 'true' ||
+        c.active === 'Active' ||
+        c.active === 'active'
+    ).length;
   }
 
   get totalCapacity(): number {
@@ -211,12 +256,19 @@ export class TrainingCentreComponent implements OnInit {
   }
 
   get statesCovered(): number {
-    return [...new Set(this.trainingCentres.map(c => c.district))].length;
+    return [...new Set(this.trainingCentres.map((c) => c.district))].length;
   }
 
   onTableAction(event: { action: string; item: any; index: number }) {
-    console.log('Table action:', event.action, 'Item:', event.item, 'Index:', event.index);
-    
+    console.log(
+      'Table action:',
+      event.action,
+      'Item:',
+      event.item,
+      'Index:',
+      event.index
+    );
+
     switch (event.action) {
       case 'view':
         this.viewTrainingCentre(event.item);
@@ -246,25 +298,30 @@ export class TrainingCentreComponent implements OnInit {
     this.modalMode = 'edit';
     this.modalConfig.title = 'Edit Training Centre';
     this.modalConfig.primaryButtonText = 'Update';
-    
+
     // Populate modal fields with existing data
-    this.modalConfig.fields = this.modalConfig.fields?.map(field => ({
-      ...field,
-      value: this.getFieldValue(centre, field.id)
-    })) || [];
-    
+    this.modalConfig.fields =
+      this.modalConfig.fields?.map((field) => ({
+        ...field,
+        value: this.getFieldValue(centre, field.id),
+      })) || [];
+
     this.showModal = true;
   }
 
   toggleCentreStatus(centre: any) {
     this.pendingToggleItem = centre;
     this.confirmationText = '';
-    
+
     // Determine current status and action
-    const isActive = centre.active === true || centre.active === 'true' || centre.active === 'Active' || centre.active === 'active';
+    const isActive =
+      centre.active === true ||
+      centre.active === 'true' ||
+      centre.active === 'Active' ||
+      centre.active === 'active';
     const actionText = isActive ? 'deactivate' : 'activate';
     const statusText = isActive ? 'Active' : 'Inactive';
-    
+
     // Generate dynamic content with institute details
     this.confirmModalConfig.content = `
       <div class="alert alert-warning mb-3">
@@ -286,7 +343,9 @@ export class TrainingCentreComponent implements OnInit {
             <div class="col-md-6">
               <small class="text-muted d-block">Current Status</small>
               <span class="badge ${isActive ? 'bg-success' : 'bg-secondary'}">
-                <i class="fas ${isActive ? 'fa-check-circle' : 'fa-times-circle'} me-1"></i>
+                <i class="fas ${
+                  isActive ? 'fa-check-circle' : 'fa-times-circle'
+                } me-1"></i>
                 ${statusText}
               </span>
             </div>
@@ -312,10 +371,12 @@ export class TrainingCentreComponent implements OnInit {
       
       <div class="alert alert-info mb-0">
         <i class="fas fa-info-circle me-2"></i>
-        This action will change the institute status to <strong>${isActive ? 'Inactive' : 'Active'}</strong>.
+        This action will change the institute status to <strong>${
+          isActive ? 'Inactive' : 'Active'
+        }</strong>.
       </div>
     `;
-    
+
     this.showConfirmModal = true;
   }
 
@@ -330,27 +391,29 @@ export class TrainingCentreComponent implements OnInit {
   performToggle() {
     if (!this.pendingToggleItem) return;
 
-    this.adminService.toggleActiveInactive(this.pendingToggleItem.id).subscribe({
-      next: (response) => {
-        // Refresh the table data
-        this.loadTrainingInstitutes();
-        
-        // Show success message
-        
-        // Close confirmation modal
-        this.showConfirmModal = false;
-        this.pendingToggleItem = null;
-        this.confirmationText = '';
-      },
-      error: (error) => {
-        console.error('Error toggling institute status:', error);
-        
-        // Close confirmation modal
-        this.showConfirmModal = false;
-        this.pendingToggleItem = null;
-        this.confirmationText = '';
-      }
-    });
+    this.adminService
+      .toggleActiveInactive(this.pendingToggleItem.id)
+      .subscribe({
+        next: (response) => {
+          // Refresh the table data
+          this.loadTrainingInstitutes();
+
+          // Show success message
+
+          // Close confirmation modal
+          this.showConfirmModal = false;
+          this.pendingToggleItem = null;
+          this.confirmationText = '';
+        },
+        error: (error) => {
+          console.error('Error toggling institute status:', error);
+
+          // Close confirmation modal
+          this.showConfirmModal = false;
+          this.pendingToggleItem = null;
+          this.confirmationText = '';
+        },
+      });
   }
 
   onCancelToggle() {
@@ -363,13 +426,17 @@ export class TrainingCentreComponent implements OnInit {
     if (confirm(`Are you sure you want to delete ${centre.centreName}?`)) {
       this.adminService.deleteTrainingInstitute(centre.id).subscribe({
         next: () => {
-          this.trainingCentres = this.trainingCentres.filter(c => c.id !== centre.id);
-          console.log(`Training centre ${centre.centreName} deleted successfully`);
+          this.trainingCentres = this.trainingCentres.filter(
+            (c) => c.id !== centre.id
+          );
+          console.log(
+            `Training centre ${centre.centreName} deleted successfully`
+          );
         },
         error: (error) => {
           console.error('Error deleting institute:', error);
           alert('Failed to delete training centre. Please try again.');
-        }
+        },
       });
     }
   }
@@ -383,18 +450,18 @@ export class TrainingCentreComponent implements OnInit {
   // Helper method to get field value from centre data
   getFieldValue(centre: any, fieldId: string): any {
     const fieldMapping: { [key: string]: string } = {
-      'trainingInstituteName': 'trainingInstituteName',
-      'scheme': 'scheme',
-      'state': 'state',
-      'district': 'district',
-      'block': 'block',
-      'contactPersonName': 'contactPersonName',
-      'contactNumber': 'contactNumber',
-      'emailId': 'emailId',
-      'designation': 'designation',
-      'registrationId': 'registrationId'
+      trainingInstituteName: 'trainingInstituteName',
+      scheme: 'scheme',
+      state: 'state',
+      district: 'district',
+      block: 'block',
+      contactPersonName: 'contactPersonName',
+      contactNumber: 'contactNumber',
+      emailId: 'emailId',
+      designation: 'designation',
+      registrationId: 'registrationId',
     };
-    
+
     const mappedField = fieldMapping[fieldId] || fieldId;
     return centre[mappedField] || '';
   }
@@ -413,33 +480,39 @@ export class TrainingCentreComponent implements OnInit {
       return;
     }
 
-    this.adminService.updateTrainingInstitute(updatedData.id, updatedData).subscribe({
-      next: (response) => {
-        // Update the local data
-        const index = this.trainingCentres.findIndex(c => c.id === updatedData.id);
-        if (index !== -1) {
-          this.trainingCentres[index] = {
-            ...updatedData,
-            centreName: updatedData.trainingInstituteName,
-            contactPerson: updatedData.contactPersonName,
-            email: updatedData.emailId
-          };
-        }
-        
-        // Also update the trainingInstitutes array
-        const instituteIndex = this.trainingInstitutes.findIndex(i => i.id === updatedData.id);
-        if (instituteIndex !== -1) {
-          this.trainingInstitutes[instituteIndex] = updatedData;
-        }
-        
-        console.log('Training centre updated successfully');
-        this.closeModal();
-      },
-      error: (error) => {
-        console.error('Error updating training centre:', error);
-        alert('Failed to update training centre. Please try again.');
-      }
-    });
+    this.adminService
+      .updateTrainingInstitute(updatedData.id, updatedData)
+      .subscribe({
+        next: (response) => {
+          // Update the local data
+          const index = this.trainingCentres.findIndex(
+            (c) => c.id === updatedData.id
+          );
+          if (index !== -1) {
+            this.trainingCentres[index] = {
+              ...updatedData,
+              centreName: updatedData.trainingInstituteName,
+              contactPerson: updatedData.contactPersonName,
+              email: updatedData.emailId,
+            };
+          }
+
+          // Also update the trainingInstitutes array
+          const instituteIndex = this.trainingInstitutes.findIndex(
+            (i) => i.id === updatedData.id
+          );
+          if (instituteIndex !== -1) {
+            this.trainingInstitutes[instituteIndex] = updatedData;
+          }
+
+          console.log('Training centre updated successfully');
+          this.closeModal();
+        },
+        error: (error) => {
+          console.error('Error updating training centre:', error);
+          alert('Failed to update training centre. Please try again.');
+        },
+      });
   }
 
   exportToExcel(): void {
@@ -449,11 +522,13 @@ export class TrainingCentreComponent implements OnInit {
     }
 
     // Prepare data for export
-    const exportData = this.trainingCentres.map(centre => {
+    const exportData = this.trainingCentres.map((centre) => {
       const row: any = {};
       this.exportColumnKeys.forEach((key, index) => {
         if (key === 'status') {
-          row[this.exportHeaders[index]] = centre.active ? 'Active' : 'Inactive';
+          row[this.exportHeaders[index]] = centre.active
+            ? 'Active'
+            : 'Inactive';
         } else {
           row[this.exportHeaders[index]] = centre[key] || '';
         }
@@ -463,15 +538,19 @@ export class TrainingCentreComponent implements OnInit {
 
     // Create worksheet
     const ws = XLSX.utils.json_to_sheet(exportData);
-    
+
     // Create workbook
     const wb = XLSX.utils.book_new();
     XLSX.utils.book_append_sheet(wb, ws, 'Training Institute Admin Data');
-    
+
     // Generate filename with current date
     const date = new Date();
-    const filename = `Training_Institute_Admin_Data_${date.getFullYear()}-${(date.getMonth() + 1).toString().padStart(2, '0')}-${date.getDate().toString().padStart(2, '0')}.xlsx`;
-    
+    const filename = `Training_Institute_Admin_Data_${date.getFullYear()}-${(
+      date.getMonth() + 1
+    )
+      .toString()
+      .padStart(2, '0')}-${date.getDate().toString().padStart(2, '0')}.xlsx`;
+
     // Save file
     XLSX.writeFile(wb, filename);
   }

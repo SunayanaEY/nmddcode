@@ -197,28 +197,22 @@
             </div>
             <div class="col-md-6">
               <div class="mb-3">
-                <label for="aadhar" class="form-label">Aadhar</label>
+                <label for="fathersName" class="form-label"
+                  >Father's Name</label
+                >
                 <input
                   type="text"
                   class="form-control"
-                  id="aadhar"
-                  formControlName="aadhar"
-                  placeholder="Enter Aadhar Number"
-                  maxlength="12"
-                  pattern="[0-9]{12}"
-                  (keypress)="allowOnlyAadharDigits($event)"
+                  id="fathersName"
+                  formControlName="fathersName"
+                  placeholder="Enter Father's Name"
                 />
-
-                <!-- Real-time warning -->
-                <small *ngIf="aadharError" class="text-danger">
-                  Only digits are allowed (12 digits max).
-                </small>
 
                 <!-- Angular form validation -->
                 <div
                   *ngIf="
-                    participantForm.get('aadhar')?.touched &&
-                    participantForm.get('aadhar')?.invalid
+                    participantForm.get('fathersName')?.touched &&
+                    participantForm.get('fathersName')?.invalid
                   "
                 >
                   <!-- <small
@@ -227,12 +221,12 @@
                   >
                     Aadhar is required.
                   </small> -->
-                  <small
+                  <!-- <small
                     class="text-danger"
                     *ngIf="participantForm.get('aadhar')?.errors?.['pattern']"
                   >
                     Aadhar must be exactly 12 digits.
-                  </small>
+                  </small> -->
                 </div>
               </div>
             </div>
@@ -329,7 +323,9 @@
         <p>
           <strong>Contact:</strong> {{ selectedParticipant?.contactNumber }}
         </p>
-        <p><strong>Aadhar:</strong> {{ selectedParticipant?.aadharMasked }}</p>
+        <p>
+          <strong>Father's Name:</strong> {{ selectedParticipant?.fathersName }}
+        </p>
         <p><strong>Email:</strong> {{ selectedParticipant?.email }}</p>
       </div>
       <div class="modal-footer">

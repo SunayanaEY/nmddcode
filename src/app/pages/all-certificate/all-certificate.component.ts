@@ -39,10 +39,9 @@ export class AllCertificateComponent {
       //     JSON.stringify(navigation.extras.state['trainingData'])
       // );
       const trainingData = navigation.extras.state['trainingData'];
-
       this.trainingTitle = trainingData.trainingTitle;
       this.trainingId = trainingData.id;
-      this.trainingInstituteId = trainingData.trainingCenterId;
+      this.trainingInstituteId = trainingData.trainingInstituteId;
 
       this.trainingInstituteName = trainingData.trainingInstituteName;
       this.trainingDate = trainingData.trainingDate;
@@ -54,6 +53,7 @@ export class AllCertificateComponent {
       this.signatures = trainingData.signatures;
 
       // alert('Training insitutre Id : ' + trainingData.trainingCenterId);
+      // alert('getting called!' + this.trainingInstituteId);
 
       this.trainingsService
         .getAllTrainees('ALL', this.trainingInstituteId, this.trainingId)
@@ -61,18 +61,8 @@ export class AllCertificateComponent {
           next: (res) => {
             if (res && res.data) {
               this.tableData = res.data.map((item: any) => {
-                // Convert aadharMasked from scientific notation to normal string
-                let aadharMasked = item.aadharMasked;
+                let fatherName = item.fatherName;
 
-                if (aadharMasked !== null && aadharMasked !== undefined) {
-                  // Convert to number safely and back to string without exponential format
-                  aadharMasked = Number(aadharMasked).toLocaleString(
-                    'fullwide',
-                    { useGrouping: false }
-                  );
-                }
-
-                // Combine location parts (ignore null/empty values)
                 const locationParts = [
                   item.venueBlock,
                   item.venueDistrict,
@@ -81,7 +71,7 @@ export class AllCertificateComponent {
 
                 return {
                   ...item,
-                  aadharMasked: aadharMasked, // replace with corrected format
+                  fatherName: fatherName, // replace with corrected format
                   trainingDate: this.trainingDate, // formatted from API
                   location: locationParts.join(', '),
                   trainingInstituteName: this.trainingInstituteName,
@@ -112,7 +102,7 @@ export class AllCertificateComponent {
     'Gender',
     'Age',
     'Email',
-    'Masked Aadhar',
+    "Father's Name",
     'Contact No.',
     'Status',
   ];
@@ -122,7 +112,7 @@ export class AllCertificateComponent {
     'gender',
     'age',
     'email',
-    'aadharMasked',
+    'fatherName',
     'contactNumber',
     'status',
   ];
@@ -147,7 +137,7 @@ export class AllCertificateComponent {
     { key: 'gender', header: 'Gender' },
     { key: 'age', header: 'Age' },
     { key: 'email', header: 'Email' },
-    { key: 'aadharMasked', header: 'Masked Aadhar' },
+    { key: 'fatherName', header: "Father's Name" },
     { key: 'contactNumber', header: 'Contact No.' },
     { key: 'status', header: 'Status' },
   ];
@@ -175,36 +165,6 @@ export class AllCertificateComponent {
   };
   tableData: any = [];
 
-  // tableData: any[] = [
-  //   {
-  //     traineeName: 'Sayan Jha',
-  //     trainingTitle: 'ABC Training',
-  //     date: '01-May-2025',
-  //     scheme: 'PMKVY',
-  //     location: 'Kanpur,Uttar Pradesh',
-  //     submittedOn: '03-May-2025',
-  //     status: 'Approved',
-  //   },
-  //   {
-  //     traineeName: 'Riya Sharma',
-  //     trainingTitle: 'Skill India',
-  //     date: '02-May-2025',
-  //     scheme: 'DDUGKY',
-  //     location: 'Lucknow,Uttar Pradesh',
-  //     submittedOn: '04-May-2025',
-  //     status: 'Pending',
-  //   },
-  //   {
-  //     traineeName: 'Amit Verma',
-  //     trainingTitle: 'PMKVY Workshop',
-  //     date: '03-May-2025',
-  //     scheme: 'PMKVY',
-  //     location: 'Noida,Uttar Pradesh',
-  //     submittedOn: '05-May-2025',
-  //     status: 'Rejected',
-  //   },
-  // ];
-
   get filteredTableData(): any[] {
     return this.tableData.filter(
       (item: { date: string; trainingTitle: string; status: string }) => {
@@ -226,6 +186,18 @@ export class AllCertificateComponent {
         return matchesDate && matchesTitle && matchesStatus;
       }
     );
+  }
+  onManualUpload() {
+    // alert('Training ID is : ' + this.trainingId);
+    this.router.navigate(['/admin/manual-training-upload'], {
+      queryParams: { trainingId: this.trainingId },
+    });
+  }
+
+  onBulkUpload() {
+    this.router.navigate(['/admin/bulk-training-upload'], {
+      queryParams: { trainingId: this.trainingId },
+    });
   }
 
   formatDate(input: string): string {

@@ -86,13 +86,18 @@ export class AllTrainingsComponent {
 
   tableActions: TableAction[] = [
     { name: 'view', icon: 'bi bi-eye', class: 'btn-info', title: 'View' },
-    // { name: 'download', icon: 'bi bi-download', class: 'btn-success', title: 'Download' },
+    {
+      name: 'edit',
+      icon: 'bi bi-pencil-fill',
+      class: 'btn-info',
+      title: 'Edit',
+    },
   ];
 
   trainingsList: TrainingsList[] = [];
   traineeList: TraineeDetails[] = [];
-
-  trainingInstituteId: any = sessionStorage.getItem('trainingHeadId');
+  userData: any = sessionStorage.getItem('user');
+  trainingInstituteId: any;
 
   // tableData: any[] = [
   //   {
@@ -234,7 +239,11 @@ export class AllTrainingsComponent {
       comment: ['', [Validators.required]],
     });
     //comment this later
-    this.trainingInstituteId = 'be26beca-3b33-4e6f-b497-1de8366e91b8';
+    // this.trainingInstituteId = 'be26beca-3b33-4e6f-b497-1de8366e91b8';
+    if (this.userData) {
+      const user = JSON.parse(this.userData);
+      this.trainingInstituteId = user.trainingHeadId;
+    }
     this.trainingsService
       .getAllTrainings(this.trainingInstituteId)
       .subscribe((res) => {
@@ -303,24 +312,31 @@ export class AllTrainingsComponent {
   }
 
   handleTableAction(event: { action: string; item: any; index: number }): void {
-    console.log('Action:', event.action, 'Item:', event.item);
+    if (event.action == 'edit') {
+      // alert(JSON.stringify(event.item));
+      this.router.navigate(['/admin/training-certificate-generation'], {
+        queryParams: { trainingId: event.item.id, populate: true },
+      });
+    } else {
+      console.log('Action:', event.action, 'Item:', event.item);
 
-    this.traineeList = [];
-    this.trainingDetails = event.item;
-    this.fileNameTrainees = this.traineesFile;
-    this.fileNameTrainees =
-      this.fileNameTrainees +
-      this.trainingDetails.trainingInstituteName +
-      '_' +
-      this.trainingDetails.trainingTitle +
-      '_';
+      this.traineeList = [];
+      this.trainingDetails = event.item;
+      this.fileNameTrainees = this.traineesFile;
+      this.fileNameTrainees =
+        this.fileNameTrainees +
+        this.trainingDetails.trainingInstituteName +
+        '_' +
+        this.trainingDetails.trainingTitle +
+        '_';
 
-    this.modalService.open(this.trainingDetailsModal, {
-      size: 'lg',
-      scrollable: true,
-      backdrop: 'static',
-      keyboard: false,
-    });
+      this.modalService.open(this.trainingDetailsModal, {
+        size: 'lg',
+        scrollable: true,
+        backdrop: 'static',
+        keyboard: false,
+      });
+    }
   }
 
   filters = {

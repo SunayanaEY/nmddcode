@@ -123,13 +123,13 @@ export class LoginComponent implements OnInit {
 
   ngOnInit() {
     this.loadStates();
-    
+
     // Check for session expiry message
-    this.route.queryParams.subscribe(params => {
+    this.route.queryParams.subscribe((params) => {
       if (params['message']) {
         this.toastr.warning(params['message'], 'Session Expired', {
           timeOut: 5000,
-          closeButton: true
+          closeButton: true,
         });
       }
     });
