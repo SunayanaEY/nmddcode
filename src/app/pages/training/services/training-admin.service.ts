@@ -114,11 +114,17 @@ export class AdminService {
   }
 
   // Update training institute
-  updateTrainingInstitute(id: string, institute: Partial<TrainingInstitute>): Observable<TrainingInstitute> {
-    return this.http.put<TrainingInstitute>(
-      `${this.apiUrl}training/registerInstitute/${id}`,
-      institute,
-      this.getHttpOptions()
+  updateTrainingInstitute(formData: FormData): Observable<TrainingInstitute> {
+    const token = localStorage.getItem('token');
+    const headers = new HttpHeaders({
+      'Authorization': `Bearer ${token}`
+      // Don't set Content-Type for FormData, let browser set it with boundary
+    });
+    
+    return this.http.post<TrainingInstitute>(
+      `${this.apiUrl}api/auth/registerInstitute`,
+      formData,
+      { headers }
     );
   }
 

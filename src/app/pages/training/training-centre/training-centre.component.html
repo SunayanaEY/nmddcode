@@ -158,12 +158,14 @@
 
 <!-- Generic Modal Component -->
 <app-modal
+  #editModal
   [show]="showModal"
   [config]="modalConfig"
   [data]="selectedCentre"
   [mode]="modalMode"
   (close)="closeModal()"
   (primaryAction)="onModalPrimaryAction($event)"
+  (fieldChange)="onModalFieldChange($event)"
 >
 </app-modal>
 

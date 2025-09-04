@@ -1,0 +1,540 @@
+<div class="profile-creation-container">
+  <div class="container">
+    <app-breadcrumb [items]="breadcrumbItems"></app-breadcrumb>
+
+    <div class="profile-card">
+      <div class="card-header">
+        <h2 class="card-title">Training Centre Admin Profile Creation</h2>
+        <p class="card-subtitle">Create a new training centre administrator profile</p>
+      </div>
+
+      <div class="card-content">
+      <form [formGroup]="profileForm" (ngSubmit)="onSubmit()">
+        <!-- Basic Information Section -->
+        <div class="form-section">
+          <h3 class="section-title">Basic Information</h3>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label for="username">Username<span class="required">*</span></label>
+              <input
+                type="text"
+                id="username"
+                formControlName="username"
+                placeholder="Enter Username"
+                class="form-control"
+                [class.is-invalid]="
+                  profileForm.get('username')?.invalid &&
+                  profileForm.get('username')?.touched
+                "
+              />
+              <div
+                class="invalid-feedback"
+                *ngIf="
+                  profileForm.get('username')?.invalid &&
+                  profileForm.get('username')?.touched
+                "
+              >
+                <span *ngIf="profileForm.get('username')?.errors?.['required']"
+                  >Username is required</span
+                >
+                <span *ngIf="profileForm.get('username')?.errors?.['minlength']"
+                  >Username must be at least 3 characters</span
+                >
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label for="trainingInstituteName">Training Institute Name<span class="required">*</span></label>
+              <input
+                type="text"
+                id="trainingInstituteName"
+                formControlName="trainingInstituteName"
+                placeholder="Enter Training Institute Name"
+                class="form-control"
+                [class.is-invalid]="
+                  profileForm.get('trainingInstituteName')?.invalid &&
+                  profileForm.get('trainingInstituteName')?.touched
+                "
+              />
+              <div
+                class="invalid-feedback"
+                *ngIf="
+                  profileForm.get('trainingInstituteName')?.invalid &&
+                  profileForm.get('trainingInstituteName')?.touched
+                "
+              >
+                <span *ngIf="profileForm.get('trainingInstituteName')?.errors?.['required']"
+                  >Training institute name is required</span
+                >
+                <span *ngIf="profileForm.get('trainingInstituteName')?.errors?.['minlength']"
+                  >Training institute name must be at least 3 characters</span
+                >
+              </div>
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label for="state">State<span class="required">*</span></label>
+              <select
+                id="state"
+                formControlName="state"
+                class="form-control"
+                [class.is-invalid]="
+                  profileForm.get('state')?.invalid &&
+                  profileForm.get('state')?.touched
+                "
+                [disabled]="isLoadingStates"
+              >
+                <option value="" disabled>
+                  {{ isLoadingStates ? "Loading states..." : "Select State" }}
+                </option>
+                <option *ngFor="let state of states" [value]="state.id">
+                  {{ state.stateName }}
+                </option>
+              </select>
+              <div
+                class="invalid-feedback"
+                *ngIf="
+                  profileForm.get('state')?.invalid &&
+                  profileForm.get('state')?.touched
+                "
+              >
+                <span *ngIf="profileForm.get('state')?.errors?.['required']"
+                  >State is required</span
+                >
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label for="district">District<span class="required">*</span></label>
+              <select
+                id="district"
+                formControlName="district"
+                class="form-control"
+                [class.is-invalid]="
+                  profileForm.get('district')?.invalid &&
+                  profileForm.get('district')?.touched
+                "
+                [disabled]="
+                  isLoadingDistricts || !profileForm.get('state')?.value
+                "
+              >
+                <option value="" disabled>
+                  {{
+                    isLoadingDistricts
+                      ? "Loading districts..."
+                      : profileForm.get("state")?.value
+                      ? "Select District"
+                      : "Select State First"
+                  }}
+                </option>
+                <option
+                  *ngFor="let district of districts"
+                  [value]="district.id"
+                >
+                  {{ district.districtName }}
+                </option>
+              </select>
+              <div
+                class="invalid-feedback"
+                *ngIf="
+                  profileForm.get('district')?.invalid &&
+                  profileForm.get('district')?.touched
+                "
+              >
+                <span *ngIf="profileForm.get('district')?.errors?.['required']"
+                  >District is required</span
+                >
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Contact Information Section -->
+        <div class="form-section">
+          <h3 class="section-title">Contact Information</h3>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label for="contactPersonName">Contact Person Name<span class="required">*</span></label>
+              <input
+                type="text"
+                id="contactPersonName"
+                formControlName="contactPersonName"
+                placeholder="Enter Contact Person Name"
+                class="form-control"
+                [class.is-invalid]="
+                  profileForm.get('contactPersonName')?.invalid &&
+                  profileForm.get('contactPersonName')?.touched
+                "
+              />
+              <div
+                class="invalid-feedback"
+                *ngIf="
+                  profileForm.get('contactPersonName')?.invalid &&
+                  profileForm.get('contactPersonName')?.touched
+                "
+              >
+                <span
+                  *ngIf="profileForm.get('contactPersonName')?.errors?.['required']"
+                  >Contact person name is required</span
+                >
+                <span
+                  *ngIf="profileForm.get('contactPersonName')?.errors?.['minlength']"
+                  >Name must be at least 2 characters</span
+                >
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label for="designation">Designation<span class="required">*</span></label>
+              <input
+                type="text"
+                id="designation"
+                formControlName="designation"
+                placeholder="Enter Designation"
+                class="form-control"
+                [class.is-invalid]="
+                  profileForm.get('designation')?.invalid &&
+                  profileForm.get('designation')?.touched
+                "
+              />
+              <div
+                class="invalid-feedback"
+                *ngIf="
+                  profileForm.get('designation')?.invalid &&
+                  profileForm.get('designation')?.touched
+                "
+              >
+                <span
+                  *ngIf="profileForm.get('designation')?.errors?.['required']"
+                  >Designation is required</span
+                >
+              </div>
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label for="contactNumber">Contact Number<span class="required">*</span></label>
+              <input
+                type="tel"
+                id="contactNumber"
+                formControlName="contactNumber"
+                placeholder="Enter Contact Number"
+                class="form-control"
+                [class.is-invalid]="
+                  profileForm.get('contactNumber')?.invalid &&
+                  profileForm.get('contactNumber')?.touched
+                "
+              />
+              <div
+                class="invalid-feedback"
+                *ngIf="
+                  profileForm.get('contactNumber')?.invalid &&
+                  profileForm.get('contactNumber')?.touched
+                "
+              >
+                <span
+                  *ngIf="profileForm.get('contactNumber')?.errors?.['required']"
+                  >Contact number is required</span
+                >
+                <span
+                  *ngIf="profileForm.get('contactNumber')?.errors?.['pattern']"
+                  >Please enter a valid 10-digit phone number</span
+                >
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label for="emailId">Email ID<span class="required">*</span></label>
+              <input
+                type="email"
+                id="emailId"
+                formControlName="emailId"
+                placeholder="Enter Email ID"
+                class="form-control"
+                [class.is-invalid]="
+                  profileForm.get('emailId')?.invalid &&
+                  profileForm.get('emailId')?.touched
+                "
+              />
+              <div
+                class="invalid-feedback"
+                *ngIf="
+                  profileForm.get('emailId')?.invalid &&
+                  profileForm.get('emailId')?.touched
+                "
+              >
+                <span *ngIf="profileForm.get('emailId')?.errors?.['required']"
+                  >Email is required</span
+                >
+                <span *ngIf="profileForm.get('emailId')?.errors?.['email']"
+                  >Please enter a valid email</span
+                >
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Location Information Section -->
+        <div class="form-section">
+          <h3 class="section-title">Location Information</h3>
+
+          <div class="form-group full-width">
+            <label for="address">Address<span class="required">*</span></label>
+            <textarea
+              id="address"
+              formControlName="address"
+              placeholder="Enter complete address"
+              rows="3"
+              class="form-control"
+              [class.is-invalid]="
+                profileForm.get('address')?.invalid &&
+                profileForm.get('address')?.touched
+              "
+            ></textarea>
+            <div
+              class="invalid-feedback"
+              *ngIf="
+                profileForm.get('address')?.invalid &&
+                profileForm.get('address')?.touched
+              "
+            >
+              <span *ngIf="profileForm.get('address')?.errors?.['required']"
+                >Address is required</span
+              >
+              <span *ngIf="profileForm.get('address')?.errors?.['minlength']"
+                >Address must be at least 10 characters</span
+              >
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label for="latitude">Latitude<span class="required">*</span></label>
+              <input
+                type="number"
+                id="latitude"
+                formControlName="latitude"
+                placeholder="Enter Latitude"
+                step="any"
+                class="form-control"
+                [class.is-invalid]="
+                  profileForm.get('latitude')?.invalid &&
+                  profileForm.get('latitude')?.touched
+                "
+              />
+              <div
+                class="invalid-feedback"
+                *ngIf="
+                  profileForm.get('latitude')?.invalid &&
+                  profileForm.get('latitude')?.touched
+                "
+              >
+                <span *ngIf="profileForm.get('latitude')?.errors?.['required']"
+                  >Latitude is required</span
+                >
+                <span *ngIf="profileForm.get('latitude')?.errors?.['min'] || profileForm.get('latitude')?.errors?.['max']"
+                  >Latitude must be between -90 and 90</span
+                >
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label for="longitude">Longitude<span class="required">*</span></label>
+              <input
+                type="number"
+                id="longitude"
+                formControlName="longitude"
+                placeholder="Enter Longitude"
+                step="any"
+                class="form-control"
+                [class.is-invalid]="
+                  profileForm.get('longitude')?.invalid &&
+                  profileForm.get('longitude')?.touched
+                "
+              />
+              <div
+                class="invalid-feedback"
+                *ngIf="
+                  profileForm.get('longitude')?.invalid &&
+                  profileForm.get('longitude')?.touched
+                "
+              >
+                <span *ngIf="profileForm.get('longitude')?.errors?.['required']"
+                  >Longitude is required</span
+                >
+                <span *ngIf="profileForm.get('longitude')?.errors?.['min'] || profileForm.get('longitude')?.errors?.['max']"
+                  >Longitude must be between -180 and 180</span
+                >
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Security Information Section -->
+        <div class="form-section">
+          <h3 class="section-title">Security Information</h3>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label for="password">Password<span class="required">*</span></label>
+              <div class="password-input-container">
+                <input
+                  [type]="showPassword ? 'text' : 'password'"
+                  id="password"
+                  formControlName="password"
+                  placeholder="Create Password"
+                  class="form-control"
+                  [class.is-invalid]="
+                    profileForm.get('password')?.invalid &&
+                    profileForm.get('password')?.touched
+                  "
+                />
+                <button
+                  type="button"
+                  class="password-toggle"
+                  (click)="togglePassword()"
+                >
+                  <i [class]="showPassword ? 'fas fa-eye-slash' : 'fas fa-eye'"></i>
+                </button>
+              </div>
+              <div
+                class="invalid-feedback"
+                *ngIf="
+                  profileForm.get('password')?.invalid &&
+                  profileForm.get('password')?.touched
+                "
+              >
+                <span *ngIf="profileForm.get('password')?.errors?.['required']"
+                  >Password is required</span
+                >
+                <span *ngIf="profileForm.get('password')?.errors?.['minlength']"
+                  >Password must be at least 8 characters</span
+                >
+                <span *ngIf="profileForm.get('password')?.errors?.['pattern']"
+                  >Password must contain uppercase, lowercase, number and special
+                  character</span
+                >
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label for="confirmPassword">Confirm Password<span class="required">*</span></label>
+              <div class="password-input-container">
+                <input
+                  [type]="showConfirmPassword ? 'text' : 'password'"
+                  id="confirmPassword"
+                  formControlName="confirmPassword"
+                  placeholder="Confirm Password"
+                  class="form-control"
+                  [class.is-invalid]="
+                    (profileForm.get('confirmPassword')?.invalid &&
+                    profileForm.get('confirmPassword')?.touched) ||
+                    (profileForm.errors?.['passwordMismatch'] &&
+                    profileForm.get('confirmPassword')?.touched)
+                  "
+                />
+                <button
+                  type="button"
+                  class="password-toggle"
+                  (click)="toggleConfirmPassword()"
+                >
+                  <i [class]="showConfirmPassword ? 'fas fa-eye-slash' : 'fas fa-eye'"></i>
+                </button>
+              </div>
+              <div
+                class="invalid-feedback"
+                *ngIf="
+                  (profileForm.get('confirmPassword')?.invalid &&
+                  profileForm.get('confirmPassword')?.touched) ||
+                  (profileForm.errors?.['passwordMismatch'] &&
+                  profileForm.get('confirmPassword')?.touched)
+                "
+              >
+                <span
+                  *ngIf="profileForm.get('confirmPassword')?.errors?.['required']"
+                  >Confirm password is required</span
+                >
+                <span *ngIf="profileForm.errors?.['passwordMismatch']"
+                  >Passwords do not match</span
+                >
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Image Upload Section -->
+        <div class="form-section">
+          <h3 class="section-title">Institute Image</h3>
+          
+          <div class="image-upload-container">
+            <label>Image of Training Institute<span class="required">*</span></label>
+            <div
+              class="image-upload-area"
+              (click)="triggerFileInput()"
+              (dragover)="onDragOver($event)"
+              (dragleave)="onDragLeave($event)"
+              (drop)="onDrop($event)"
+              [class.drag-over]="isDragOver"
+            >
+              <div *ngIf="!selectedImagePreview" class="upload-placeholder">
+                <i class="fas fa-cloud-upload-alt upload-icon"></i>
+                <p>Drag and drop an image here or click to select</p>
+                <span class="file-types">PNG, JPG, JPEG up to 5MB</span>
+              </div>
+              <div *ngIf="selectedImagePreview" class="image-preview">
+                <img
+                  [src]="selectedImagePreview"
+                  alt="Preview"
+                  class="preview-image"
+                />
+                <button
+                  type="button"
+                  class="remove-image"
+                  (click)="removeImage($event)"
+                >
+                  <i class="fas fa-times"></i>
+                </button>
+              </div>
+              <input
+                #fileInput
+                type="file"
+                accept="image/*"
+                (change)="onFileSelected($event)"
+                style="display: none"
+              />
+            </div>
+          </div>
+        </div>
+
+        <!-- Form Actions -->
+        <div class="form-actions">
+          <button
+            type="button"
+            class="btn btn-secondary"
+            (click)="onCancel()"
+          >
+            Cancel
+          </button>
+          <button
+            type="submit"
+            class="btn btn-primary"
+            [disabled]="isLoading || profileForm.invalid || !selectedFile"
+          >
+            <span *ngIf="!isLoading">
+              <i class="fas fa-save me-2"></i>Create Profile
+            </span>
+            <span *ngIf="isLoading">
+              <i class="fas fa-spinner fa-spin me-2"></i>Creating...
+            </span>
+          </button>
+        </div>
+      </form>
+      </div>
+    </div>
+  </div>
+</div>

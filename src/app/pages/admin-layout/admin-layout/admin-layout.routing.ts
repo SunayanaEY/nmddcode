@@ -16,6 +16,7 @@ import { VerifyTrainingsComponent } from '../../training/verify-trainings/verify
 import { RoleGuard } from '../../../guards/role.guard';
 import { ChangePasswordComponent } from '../../change-password/change-password.component';
 import { AllTrainingsAdminComponent } from '../../training/all-trainings-admin/all-trainings-admin.component';
+import { UpdateProfileComponent } from '../../training/update-profile/update-profile.component';
 
 export const AdminLayoutRoutes: Routes = [
   // Central Admin Only Routes (Role 1)
@@ -77,6 +78,21 @@ export const AdminLayoutRoutes: Routes = [
       ),
     canActivate: [RoleGuard],
     data: { allowedRoles: [1, 5] },
+  },
+  {
+    path: 'training-centre-admin-profile',
+    loadComponent: () =>
+      import('../../training/training-centre-admin-profile/training-centre-admin-profile.component').then(
+        (m) => m.TrainingCentreAdminProfileComponent
+      ),
+    canActivate: [RoleGuard],
+    data: { allowedRoles: [1] },
+  },
+  {
+    path: 'update-profile',
+    component: UpdateProfileComponent,
+    canActivate: [RoleGuard],
+    data: { allowedRoles: [3] },
   },
 
   // Data Entry Operator Routes (Role 4)

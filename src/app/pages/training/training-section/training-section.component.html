@@ -58,6 +58,46 @@
           </div>
         </div>
 
+        <!-- Training Centre Admin Profile Creation -->
+        <div
+          class="certificate-card"
+          (click)="navigateToTrainingCentreAdminProfile()"
+          *ngIf="userRole === 1"
+        >
+          <div class="certificate-icon">
+            <svg
+              width="48"
+              height="48"
+              viewBox="0 0 24 24"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                d="M12 2C13.1 2 14 2.9 14 4C14 5.1 13.1 6 12 6C10.9 6 10 5.1 10 4C10 2.9 10.9 2 12 2Z"
+                fill="currentColor"
+              />
+              <path
+                d="M21 9V7L15 1H5C3.89 1 3 1.89 3 3V21C3 22.11 3.89 23 5 23H19C20.11 23 21 22.11 21 21V9Z"
+                fill="currentColor"
+              />
+              <path
+                d="M12 14C9.33 14 4 15.34 4 18V20H20V18C20 15.34 14.67 14 12 14Z"
+                fill="currentColor"
+              />
+              <circle cx="18" cy="6" r="3" fill="#28a745" />
+              <path d="M16.5 5L17.5 6L19.5 4" stroke="white" stroke-width="1" fill="none" />
+            </svg>
+          </div>
+          <div class="certificate-content">
+            <h3 class="certificate-title">
+              Training Centre Admin Profile Creation
+            </h3>
+            <p class="certificate-description">
+              Create and manage training centre administrator profiles
+            </p>
+          </div>
+        </div>
+
         <!-- Training Centre Data -->
         <!-- <div
           class="certificate-card"
