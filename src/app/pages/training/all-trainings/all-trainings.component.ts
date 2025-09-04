@@ -99,98 +99,6 @@ export class AllTrainingsComponent {
   userData: any = sessionStorage.getItem('user');
   trainingInstituteId: any;
 
-  // tableData: any[] = [
-  //   {
-  //     trainingTitle: 'ABC Training',
-  //     date: '01-May-2025',
-  //     scheme: 'PMKVY',
-  //     location: 'Kanpur,Uttar Pradesh',
-  //     submittedOn: '03-May-2025',
-  //     status: 'Approved',
-  //   },
-  //   {
-  //     trainingTitle: 'ABC Training',
-  //     date: '01-May-2025',
-  //     scheme: 'PMKVY',
-  //     location: 'Kanpur,Uttar Pradesh',
-  //     submittedOn: '03-May-2025',
-  //     status: 'Approved',
-  //   },
-  //   {
-  //     trainingTitle: 'XYZ ',
-  //     date: '05-May-2025',
-  //     scheme: 'PMKVYll',
-  //     location: 'Kanpur,Uttar Pradesh,INdia',
-  //     submittedOn: '03-May-2025',
-  //     status: 'Approved',
-  //   },
-  //   {
-  //     trainingTitle: 'ABC Training',
-  //     date: '01-May-2025',
-  //     scheme: 'PMKVY',
-  //     location: 'Kanpur,Uttar Pradesh',
-  //     submittedOn: '03-May-2025',
-  //     status: 'Approved',
-  //   },
-  //   {
-  //     trainingTitle: 'ABC Training',
-  //     date: '01-May-2025',
-  //     scheme: 'PMKVY',
-  //     location: 'Kanpur,Uttar Pradesh',
-  //     submittedOn: '03-May-2025',
-  //     status: 'Approved',
-  //   },
-  //   {
-  //     trainingTitle: 'ABC Training',
-  //     date: '01-May-2025',
-  //     scheme: 'PMKVY',
-  //     location: 'Kanpur Pradesh',
-  //     submittedOn: '03-May-2025',
-  //     status: 'Approved',
-  //   },
-  //   {
-  //     trainingTitle: 'ABC Training',
-  //     date: '01-May-2025',
-  //     scheme: 'PMKVY',
-  //     location: 'Kanpur,Uttar Pradesh',
-  //     submittedOn: '03-May-2025',
-  //     status: 'Approved',
-  //   },
-  //   {
-  //     trainingTitle: 'ABC Training',
-  //     date: '01-May-2025',
-  //     scheme: 'PMKVY',
-  //     location: 'Kanpur,Uttar Pradesh',
-  //     submittedOn: '03-May-2025',
-  //     status: 'Approved',
-  //   },
-  //   {
-  //     trainingTitle: 'ABC Training',
-  //     date: '01-May-2025',
-  //     scheme: 'PMKVY',
-  //     location: 'Kanpur',
-  //     submittedOn: '03-May-2025',
-  //     status: 'Approved',
-  //   },
-  //   {
-  //     trainingTitle: 'ABC Training',
-  //     date: '01-May-2025',
-  //     scheme: 'PMKVY',
-  //     location: 'Uttar Pradesh',
-  //     submittedOn: '03-May-2025',
-  //     status: 'Approved',
-  //   },
-  //   {
-  //     trainingTitle: 'ABC Training',
-  //     date: '01-May-2025',
-  //     scheme: 'PMKVY',
-  //     location: 'Uttar Pradesh',
-  //     submittedOn: '03-May-2025',
-  //     status: 'Approved',
-  //   },
-  // ];
-
-  // TRainee dummy data
   pdfHeadersTrainee: Array<string> = [
     'Sr.No.',
     'Name',
@@ -267,22 +175,6 @@ export class AllTrainingsComponent {
           index++;
         });
       });
-    this.trainingsList.push({
-      id: 1,
-      trainingTitle: 'Angular Fundamentals',
-      scheme: 'Skill Development',
-      trainingInstituteName: 'Tech Academy',
-      trainerName: 'John Doe',
-      venueState: 'Punjab',
-      venueDistrict: 'Ludhiana',
-      venueBlock: 'Block A',
-      trainingDate: '2025-08-15',
-      duration: '3 days',
-      trainingDescription: 'Introductory Angular',
-      modeOfTraining: 'Offline',
-      status: 'Scheduled',
-      location: 'Tech Academy Campus',
-    });
     this.filteredData = [...this.trainingsList];
     let index = 0;
     this.trainingsList.forEach((ele) => {

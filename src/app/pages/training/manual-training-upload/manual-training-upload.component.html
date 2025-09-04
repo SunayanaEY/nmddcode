@@ -197,22 +197,20 @@
             </div>
             <div class="col-md-6">
               <div class="mb-3">
-                <label for="fathersName" class="form-label"
-                  >Father's Name</label
-                >
+                <label for="fatherName" class="form-label">Father's Name</label>
                 <input
                   type="text"
                   class="form-control"
-                  id="fathersName"
-                  formControlName="fathersName"
+                  id="fatherName"
+                  formControlName="fatherName"
                   placeholder="Enter Father's Name"
                 />
 
                 <!-- Angular form validation -->
                 <div
                   *ngIf="
-                    participantForm.get('fathersName')?.touched &&
-                    participantForm.get('fathersName')?.invalid
+                    participantForm.get('fatherName')?.touched &&
+                    participantForm.get('fatherName')?.invalid
                   "
                 >
                   <!-- <small
@@ -232,7 +230,7 @@
             </div>
           </div>
           <div class="row">
-            <div class="col-12">
+            <div class="col-6">
               <div class="mb-3">
                 <label for="email" class="form-label">Email (Optional)</label>
                 <input
@@ -263,6 +261,26 @@
                     Invalid email format.
                   </small>
                 </div>
+              </div>
+            </div>
+            <div class="col-6">
+              <div class="mb-3">
+                <label for="email" class="form-label">Date of Birth</label>
+                <input
+                  type="date"
+                  class="form-control"
+                  id="dob"
+                  formControlName="dob"
+                  placeholder="Enter date of birth"
+                />
+
+                <!-- Angular built-in validation -->
+                <div
+                  *ngIf="
+                    participantForm.get('dob')?.touched &&
+                    participantForm.get('dob')?.invalid
+                  "
+                ></div>
               </div>
             </div>
           </div>
@@ -319,12 +337,13 @@
       <div class="modal-body p-4">
         <p><strong>Name:</strong> {{ selectedParticipant?.name }}</p>
         <p><strong>Age:</strong> {{ selectedParticipant?.age }}</p>
+        <p><strong>Date of Birth :</strong> {{ selectedParticipant?.dob }}</p>
         <p><strong>Gender:</strong> {{ selectedParticipant?.gender }}</p>
         <p>
           <strong>Contact:</strong> {{ selectedParticipant?.contactNumber }}
         </p>
         <p>
-          <strong>Father's Name:</strong> {{ selectedParticipant?.fathersName }}
+          <strong>Father's Name:</strong> {{ selectedParticipant?.fatherName }}
         </p>
         <p><strong>Email:</strong> {{ selectedParticipant?.email }}</p>
       </div>

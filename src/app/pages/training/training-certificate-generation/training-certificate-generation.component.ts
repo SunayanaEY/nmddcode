@@ -128,7 +128,9 @@ export class TrainingCertificateGenerationComponent implements OnInit {
     this.getTrainingTypes();
     this.trainingId = this.route.snapshot.queryParams['trainingId'];
     this.populate = this.route.snapshot.queryParams['populate'];
-
+    if (this.populate == undefined) {
+      this.populate = 'false';
+    }
     if (this.trainingId != null || this.trainingId != undefined) {
       this.getTrainingDetails(this.trainingId);
     } else {
@@ -369,9 +371,7 @@ export class TrainingCertificateGenerationComponent implements OnInit {
       data['trainingTypeId'] = data['trainingType'];
       delete data['trainingType'];
     }
-    // alert('coming to : ' + this.populate);
     if (this.populate == 'true') {
-      // alert('coming here !!');
       data['id'] = this.trainingId;
       const signatories = this.signaturesNew
         .filter((sig) => sig.name && sig.designation && sig.organization) // keep only valid entries
@@ -383,7 +383,6 @@ export class TrainingCertificateGenerationComponent implements OnInit {
           signatorySignaturePath: sig.signatorySignaturePath,
           fileName: sig.file ? `signatures${index + 1}` : null,
         }));
-      console.log('Coming here !!');
       console.log(JSON.stringify(signatories[0]));
 
       if (signatories.length > 0) {

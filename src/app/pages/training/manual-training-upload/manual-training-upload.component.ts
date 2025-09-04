@@ -25,8 +25,9 @@ interface Participant {
   age: number;
   gender: string;
   contactNumber: string;
-  fathersName: string;
+  fatherName: string;
   email: string;
+  dob: Date;
 }
 
 @Component({
@@ -52,6 +53,7 @@ export class ManualTrainingUploadComponent implements OnInit {
   isSpinning: boolean = false;
   trainingDetails: any = null;
   trainingId: any;
+  trainingInstituteId: any;
 
   breadcrumbItems: BreadcrumbItem[] = [
     { label: 'Training Module', url: '/admin/training-module' },
@@ -65,8 +67,9 @@ export class ManualTrainingUploadComponent implements OnInit {
     { key: 'name', header: 'Name' },
     { key: 'age', header: 'Age' },
     { key: 'gender', header: 'Gender' },
+    { key: 'dob', header: 'DOB' },
     { key: 'contactNumber', header: 'Contact Number' },
-    { key: 'fathersName', header: "Father's Name" },
+    { key: 'fatherName', header: "Father's Name" },
     { key: 'email', header: 'Email(Optional)' },
   ];
   tableActions: TableAction[] = [
@@ -89,10 +92,18 @@ export class ManualTrainingUploadComponent implements OnInit {
   ngOnInit(): void {
     // Get query params from snapshot (one-time read)
     this.trainingId = this.route.snapshot.queryParams['trainingId'];
-
+    this.getTrainingInstituteId();
     // Apply delay if needed
     this.getTrainingDetails(this.trainingId);
   }
+  getTrainingInstituteId() {
+    const userData = sessionStorage.getItem('user');
+    if (userData) {
+      const user = JSON.parse(userData);
+      this.trainingInstituteId = user.trainingHeadId;
+    }
+  }
+
   // loadTrainingDetails() {
   //   this.route.queryParams.subscribe((params) => {
   //     this.trainingId = params['trainingId'];
@@ -110,8 +121,9 @@ export class ManualTrainingUploadComponent implements OnInit {
         '',
         [Validators.required, Validators.pattern(/^[0-9]{10}$/)],
       ],
-      fathersName: ['', [Validators.required]],
+      fatherName: ['', [Validators.required]],
       email: ['', [Validators.email]],
+      dob: ['', [Validators.required]],
     });
   }
 
@@ -153,8 +165,9 @@ export class ManualTrainingUploadComponent implements OnInit {
         age: formValue.age,
         gender: formValue.gender,
         contactNumber: this.maskContactNumber(formValue.contactNumber),
-        fathersName: formValue.fathersName,
+        fatherName: formValue.fatherName,
         email: this.maskEmail(formValue.email),
+        dob: formValue.dob,
       };
 
       this.participants.push(participant);
@@ -173,8 +186,9 @@ export class ManualTrainingUploadComponent implements OnInit {
         age: formValue.age,
         gender: formValue.gender,
         contactNumber: this.maskContactNumber(formValue.contactNumber),
-        fathersName: formValue.fathersName,
+        fatherName: formValue.fatherName,
         email: this.maskEmail(formValue.email),
+        dob: formValue.dob,
       };
 
       this.participants[this.editingIndex] = updatedParticipant;
@@ -240,9 +254,10 @@ export class ManualTrainingUploadComponent implements OnInit {
     this.participantForm.patchValue({
       name: participant.name,
       age: participant.age,
+      dob: participant.dob,
       gender: participant.gender,
       contactNumber: participant.contactNumber, // Original unmasked value
-      fathersName: participant.fathersName, // Original unmasked value
+      fatherName: participant.fatherName, // Original unmasked value
       email: participant.email.includes('xxxx')
         ? 'user@example.com'
         : participant.email,
@@ -268,6 +283,7 @@ export class ManualTrainingUploadComponent implements OnInit {
     const payload = this.participants.map((participant) => ({
       ...participant,
       trainingId: trainingId,
+      trainingInstituteId: this.trainingInstituteId,
     }));
 
     this.isSpinning = true;
