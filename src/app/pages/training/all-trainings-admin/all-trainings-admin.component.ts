@@ -149,20 +149,20 @@ export class AllTrainingsAdminComponent {
   ];
 
   tableActionsTrainee: TableAction[] = [
-    {
-      name: 'approve',
-      icon: 'bi bi-check-circle',
-      class: 'btn-success',
-      title: 'Approve',
-      // condition: (row: any) => row.status === 'VERIFIED',
-    },
-    {
-      name: 'reject',
-      icon: 'bi bi-x-circle',
-      class: 'btn-danger',
-      title: 'Reject',
-      // condition: (row: any) => row.status === 'VERIFIED',
-    },
+    // {
+    //   name: 'approve',
+    //   icon: 'bi bi-check-circle',
+    //   class: 'btn-success',
+    //   title: 'Approve',
+    //   // condition: (row: any) => row.status === 'VERIFIED',
+    // },
+    // {
+    //   name: 'reject',
+    //   icon: 'bi bi-x-circle',
+    //   class: 'btn-danger',
+    //   title: 'Reject',
+    //   // condition: (row: any) => row.status === 'VERIFIED',
+    // },
     {
       name: 'download',
       icon: 'bi bi-download',
@@ -203,6 +203,32 @@ export class AllTrainingsAdminComponent {
   ngOnInit(): void {
     this.getTrainingInstituteId();
     this.getRole();
+    if(this.userRole === 3)
+    {
+      this.tableActionsTrainee = [
+    {
+      name: 'approve',
+      icon: 'bi bi-check-circle',
+      class: 'btn-success',
+      title: 'Approve',
+      // condition: (row: any) => row.status === 'VERIFIED',
+    },
+    {
+      name: 'reject',
+      icon: 'bi bi-x-circle',
+      class: 'btn-danger',
+      title: 'Reject',
+      // condition: (row: any) => row.status === 'VERIFIED',
+    },
+    {
+      name: 'download',
+      icon: 'bi bi-download',
+      class: 'btn-info',
+      title: 'Download certificate',
+      condition: (row: any) => row.status === 'APPROVED',
+    },
+  ];
+    }
     this.trainingForm = this.formBuilder.group({
       id: [''],
       comment: ['', [Validators.required]],
@@ -401,7 +427,7 @@ export class AllTrainingsAdminComponent {
       </div>
     </div>
   </div>
-  
+
 </div>
 `;
       // const element = document.querySelector('#certificate')!;
