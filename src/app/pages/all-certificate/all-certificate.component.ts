@@ -188,7 +188,6 @@ export class AllCertificateComponent {
     );
   }
   onManualUpload() {
-    // alert('Training ID is : ' + this.trainingId);
     this.router.navigate(['/admin/manual-training-upload'], {
       queryParams: { trainingId: this.trainingId },
     });

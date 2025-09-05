@@ -22,7 +22,8 @@ export class TrainingService {
   uploadTraineeExcel(
     file: File,
     trainingId: number,
-    trainingInstituteId: string
+    trainingInstituteId: string,
+    trainingManagerId: string
   ): Observable<any> {
     const url = `${this.apiUrl}/trainees/upload-trainees-excel`;
 
@@ -30,6 +31,7 @@ export class TrainingService {
     formData.append('file', file);
     formData.append('trainingId', trainingId.toString());
     formData.append('trainingInstituteId', trainingInstituteId);
+    formData.append('trainingManagerId', trainingManagerId);
 
     return this.http.post(url, formData);
   }

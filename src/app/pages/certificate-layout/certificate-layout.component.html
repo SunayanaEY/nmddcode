@@ -25,7 +25,10 @@
     <div class="certificate-footer">
       <div class="signatures">
         <div class="signature">
-          <p>{{ data.signatures[0].signatorySignaturePath }}</p>
+          <img
+            *ngIf="data?.signatures?.length > 1"
+            [src]="data.signatures[0].signatorySignaturePath"
+          />
           <p>_____________________</p>
           <p>{{ data.signatures[0].signatoryName }}</p>
           <p>{{ data.signatures[0].signatoryDesignation }}</p>
@@ -41,7 +44,11 @@
           <p class="uid">UIN: {{ finalUniqueId }}</p>
         </div>
         <div class="signature">
-          <p>{{ data.signatures[1].signatorySignaturePath }}</p>
+          <img
+            *ngIf="data?.signatures?.length > 1"
+            [src]="data.signatures[1].signatorySignaturePath"
+          />
+
           <p>_____________________</p>
           <p>{{ data.signatures[1].signatoryName }}</p>
           <p>{{ data.signatures[1].signatoryDesignation }}</p>

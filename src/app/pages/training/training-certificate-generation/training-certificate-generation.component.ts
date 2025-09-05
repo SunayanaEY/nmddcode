@@ -147,6 +147,7 @@ export class TrainingCertificateGenerationComponent implements OnInit {
         console.log(response);
         this.trainingDetails = response;
         const formattedDate = this.trainingDetails.trainingDate.split('T')[0];
+        const institutePopulate = {};
         this.trainingForm.patchValue({
           trainingTitle: this.trainingDetails.trainingTitle,
           scheme: this.trainingDetails.schemeId,
@@ -329,6 +330,7 @@ export class TrainingCertificateGenerationComponent implements OnInit {
     const selectedInstitute = this.trainingForm.get(
       'trainingInstituteName'
     )?.value;
+    alert(JSON.stringify(selectedInstitute));
     this.selectedTrainingInstituteName =
       selectedInstitute.trainingInstituteName;
     this.selectedTrainingInstituteId = selectedInstitute.id;

@@ -53,6 +53,7 @@ export class ManualTrainingUploadComponent implements OnInit {
   isSpinning: boolean = false;
   trainingDetails: any = null;
   trainingId: any;
+  trainingManagerId: any;
   trainingInstituteId: any;
 
   breadcrumbItems: BreadcrumbItem[] = [
@@ -93,6 +94,7 @@ export class ManualTrainingUploadComponent implements OnInit {
     // Get query params from snapshot (one-time read)
     this.trainingId = this.route.snapshot.queryParams['trainingId'];
     this.getTrainingInstituteId();
+    this.getTrainingManagerId();
     // Apply delay if needed
     this.getTrainingDetails(this.trainingId);
   }
@@ -101,6 +103,13 @@ export class ManualTrainingUploadComponent implements OnInit {
     if (userData) {
       const user = JSON.parse(userData);
       this.trainingInstituteId = user.trainingHeadId;
+    }
+  }
+  getTrainingManagerId() {
+    const userData = sessionStorage.getItem('user');
+    if (userData) {
+      const user = JSON.parse(userData);
+      this.trainingInstituteId = user.trainingManagerId;
     }
   }
 
@@ -284,6 +293,7 @@ export class ManualTrainingUploadComponent implements OnInit {
       ...participant,
       trainingId: trainingId,
       trainingInstituteId: this.trainingInstituteId,
+      trainingManagerId: this.trainingManagerId,
     }));
 
     this.isSpinning = true;
