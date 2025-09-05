@@ -79,6 +79,7 @@ export class AllTrainingsAdminComponent {
   fileName: String = 'All_trainings_';
   fileNameTrainees: String = 'All_trainee_List_';
   traineesFile: String = 'All_trainee_List_';
+  falseVariable:boolean = false;
   pdfHeaders: Array<string> = [
     'Sr.No.',
     'Training Title',
@@ -149,20 +150,20 @@ export class AllTrainingsAdminComponent {
   ];
 
   tableActionsTrainee: TableAction[] = [
-    {
-      name: 'approve',
-      icon: 'bi bi-check-circle',
-      class: 'btn-success',
-      title: 'Approve',
-      // condition: (row: any) => row.status === 'VERIFIED',
-    },
-    {
-      name: 'reject',
-      icon: 'bi bi-x-circle',
-      class: 'btn-danger',
-      title: 'Reject',
-      // condition: (row: any) => row.status === 'VERIFIED',
-    },
+    // {
+    //   name: 'approve',
+    //   icon: 'bi bi-check-circle',
+    //   class: 'btn-success',
+    //   title: 'Approve',
+    //   // condition: (row: any) => row.status === 'VERIFIED',
+    // },
+    // {
+    //   name: 'reject',
+    //   icon: 'bi bi-x-circle',
+    //   class: 'btn-danger',
+    //   title: 'Reject',
+    //   // condition: (row: any) => row.status === 'VERIFIED',
+    // },
     {
       name: 'download',
       icon: 'bi bi-download',
@@ -203,6 +204,32 @@ export class AllTrainingsAdminComponent {
   ngOnInit(): void {
     this.getTrainingInstituteId();
     this.getRole();
+    if(this.userRole === 3)
+    {
+      this.tableActionsTrainee = [
+    {
+      name: 'approve',
+      icon: 'bi bi-check-circle',
+      class: 'btn-success',
+      title: 'Approve',
+      condition: (row: any) => row.status === 'IN PROGRESS',
+    },
+    {
+      name: 'reject',
+      icon: 'bi bi-x-circle',
+      class: 'btn-danger',
+      title: 'Reject',
+      condition: (row: any) => row.status === 'IN PROGRESS',
+    },
+    {
+      name: 'download',
+      icon: 'bi bi-download',
+      class: 'btn-info',
+      title: 'Download certificate',
+      condition: (row: any) => row.status === 'APPROVED',
+    },
+  ];
+    }
     this.trainingForm = this.formBuilder.group({
       id: [''],
       comment: ['', [Validators.required]],
@@ -353,8 +380,8 @@ export class AllTrainingsAdminComponent {
   <div class="certificate-border">
     <div class="certificate-logos">
       <img src="${cert.logoPath1}" alt="Logo 1" crossorigin="anonymous" />
-      <img src="${cert.logoPath2}" alt="Logo 2" crossorigin="anonymous" />
-      <img src="${cert.logoPath3}" alt="Logo 3" crossorigin="anonymous" />
+      <img *ngIf="${cert.logoPath2}" src="${cert.logoPath2}" alt="Logo 2" crossorigin="anonymous" />
+      <img *ngIf="${cert.logoPath3}"  src="${cert.logoPath3}" alt="Logo 3" crossorigin="anonymous" />
     </div>
     <div class="certificate-header">
       <h2>Certificate of Completion</h2>
@@ -391,17 +418,17 @@ export class AllTrainingsAdminComponent {
           ></qrcode>
           <p class="uid">UIN: ${cert.uin}</p>
         </div>
-        <div class="signature">
-          <p><img src="${cert.signatures[1].signatorySignaturePath}" alt="Logo 1" crossorigin="anonymous" /></p>
+        <div class="signature" [hidden]="${cert.signatures.length}>1">
+          <p><img src="${cert.signatures[1]?.signatorySignaturePath}" alt="Logo 1" crossorigin="anonymous" /></p>
            <p>_____________________</p>
-          <p>${cert.signatures[1].signatoryName}</p>
-          <p>${cert.signatures[1].signatoryDesignation}</p>
-          <p>${cert.signatures[1].signatoryOrganization}</p>
+          <p>${cert.signatures[1]?.signatoryName}</p>
+          <p>${cert.signatures[1]?.signatoryDesignation}</p>
+          <p>${cert.signatures[1]?.signatoryOrganization}</p>
         </div>
       </div>
     </div>
   </div>
-  
+
 </div>
 `;
       // const element = document.querySelector('#certificate')!;
@@ -449,7 +476,7 @@ export class AllTrainingsAdminComponent {
         const pdfBlob = pdf.output('blob');
         this.certificateZip.file(
           `Certificate-${
-            cert?.name + '_' + cert?.aadharMasked || 'Trainee'
+            cert?.name + '_' + cert?.uin || 'Trainee'
           }.pdf`,
           pdfBlob
         );

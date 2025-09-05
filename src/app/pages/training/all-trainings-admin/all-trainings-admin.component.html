@@ -220,7 +220,8 @@
         (actionClick)="handleTableAction($event)" [enableMultiSelect]="enableMultiSelectTrainee"
         [bulkActions]="bulkActionsTrainee" (bulkActionClick)="handleBulkAction($event)" [isExportCSV]="isExportCSV"
         [isExportPDF]="isExportPdf" [pdfHeaders]="pdfHeadersTrainee" [columnKeys]="columnKeysTrainee"
-        [fileName]="fileNameTrainees" [isBulkCertDownload]="allTraineesApproved" (downloadAllCerts)="download($event)">
+        [fileName]="fileNameTrainees" [isBulkCertDownload]="falseVariable" (downloadAllCerts)="download($event)">
+        <!-- [fileName]="fileNameTrainees" [isBulkCertDownload]="allTraineesApproved" (downloadAllCerts)="download($event)"> -->
       </app-table>
 
     </div>
