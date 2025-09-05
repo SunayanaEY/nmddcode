@@ -154,7 +154,7 @@ export const AdminLayoutRoutes: Routes = [
     path: 'approvedrejectedTrainings',
     component: ApprovedRejectedTrainingsComponent,
     canActivate: [RoleGuard],
-    data: { allowedRoles: [3] },
+    data: { allowedRoles: [4] },
   },
 
   // Default route based on user role

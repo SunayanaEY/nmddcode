@@ -2,8 +2,8 @@
   <div class="certificate-border">
     <div class="certificate-logos">
       <img src="{{ data.logoPath1 }}" alt="Logo 1" crossorigin="anonymous" />
-      <img src="{{ data.logoPath2 }}" alt="Logo 2" crossorigin="anonymous" />
-      <img src="{{ data.logoPath3 }}" alt="Logo 3" crossorigin="anonymous" />
+      <img *ngIf="data.logoPath2" src="{{ data.logoPath2 }}" alt="Logo 2" crossorigin="anonymous" />
+      <img *ngIf="data.logoPath3" src="{{ data.logoPath3 }}" alt="Logo 3" crossorigin="anonymous" />
     </div>
     <div class="certificate-header">
       <h2>Certificate of Completion</h2>
@@ -25,7 +25,7 @@
     <div class="certificate-footer">
       <div class="signatures">
         <div class="signature">
-          <p>{{ data.signatures[0].signatorySignaturePath }}</p>
+          <p><img src="{{ data.signatures[0].signatorySignaturePath }}" alt="Logo 1" crossorigin="anonymous" /></p>
           <p>_____________________</p>
           <p>{{ data.signatures[0].signatoryName }}</p>
           <p>{{ data.signatures[0].signatoryDesignation }}</p>
@@ -40,12 +40,12 @@
           ></qrcode>
           <p class="uid">UIN: {{ finalUniqueId }}</p>
         </div>
-        <div class="signature">
-          <p>{{ data.signatures[1].signatorySignaturePath }}</p>
+        <div class="signature" *ngIf="data.signatures.length>1">
+          <p><img src="{{ data.signatures[1]?.signatorySignaturePath }}"alt="Logo 1" crossorigin="anonymous" /></p>
           <p>_____________________</p>
-          <p>{{ data.signatures[1].signatoryName }}</p>
-          <p>{{ data.signatures[1].signatoryDesignation }}</p>
-          <p>{{ data.signatures[1].signatoryOrganization }}</p>
+          <p>{{ data.signatures[1]?.signatoryName }}</p>
+          <p>{{ data.signatures[1]?.signatoryDesignation }}</p>
+          <p>{{ data.signatures[1]?.signatoryOrganization }}</p>
         </div>
       </div>
     </div>
