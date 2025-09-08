@@ -66,7 +66,7 @@ export class AllTrainingsComponent {
     'trainingDate',
   ];
   breadcrumbItems: BreadcrumbItem[] = [
-    { label: 'Training Module', url: '/dashboard/training-module' },
+    { label: 'Training Module', url: '/admin/training-module' },
     { label: 'All Registered Trainings' },
   ];
   tableColumns: TableColumn[] = [

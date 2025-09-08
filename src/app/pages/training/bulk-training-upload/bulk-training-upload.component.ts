@@ -217,7 +217,8 @@ export class BulkTrainingUploadComponent implements OnInit {
     });
   }
   uploadExcelFile(): void {
-    const trainingId = 10;
+    // const trainingId = 10;
+    const trainingId = this.trainingId;
     this.isSpinning = true;
     if (this.user) {
       const user = JSON.parse(this.user);

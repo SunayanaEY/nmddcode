@@ -114,16 +114,49 @@ export class ManualTrainingUploadComponent implements OnInit {
 
   initializeForm(): void {
     this.participantForm = this.fb.group({
-      name: ['', [Validators.required, Validators.minLength(2)]],
-      age: ['', [Validators.required, Validators.min(1), Validators.max(120)]],
+      name: [
+        '',
+        [
+          Validators.required,
+          Validators.minLength(2),
+          Validators.maxLength(50),
+          Validators.pattern(/^[a-zA-Z\s]+$/)
+        ]
+      ],
+      age: [
+        '',
+        [
+          Validators.required,
+          Validators.min(1),
+          Validators.max(120),
+          Validators.pattern(/^[0-9]+$/)
+        ]
+      ],
       gender: ['', Validators.required],
       contactNumber: [
         '',
-        [Validators.required, Validators.pattern(/^[0-9]{10}$/)],
+        [
+          Validators.required,
+          Validators.pattern(/^[6-9][0-9]{9}$/)
+        ]
       ],
-      fatherName: ['', [Validators.required]],
+      fatherName: [
+        '',
+        [
+          Validators.required,
+          Validators.minLength(2),
+          Validators.maxLength(50),
+          Validators.pattern(/^[a-zA-Z\s]+$/)
+        ]
+      ],
       email: ['', [Validators.email]],
-      dob: ['', [Validators.required]],
+      dob: [
+        '',
+        [
+          Validators.required,
+          this.dateValidator
+        ]
+      ],
     });
   }
 
@@ -174,6 +207,11 @@ export class ManualTrainingUploadComponent implements OnInit {
 
       this.closeModal();
       this.participantForm.reset();
+      this.toastr.success('Participant added successfully!');
+    } else {
+      // Mark all fields as touched to show validation errors
+      this.participantForm.markAllAsTouched();
+      this.toastr.error('Please fill all required fields correctly!');
     }
   }
   //update participant
@@ -192,10 +230,15 @@ export class ManualTrainingUploadComponent implements OnInit {
       };
 
       this.participants[this.editingIndex] = updatedParticipant;
+      this.editingIndex = -1;
 
       this.closeModal();
       this.participantForm.reset();
-      this.editingIndex = -1;
+      this.toastr.success('Participant updated successfully!');
+    } else {
+      // Mark all fields as touched to show validation errors
+      this.participantForm.markAllAsTouched();
+      this.toastr.error('Please fill all required fields correctly!');
     }
   }
   allowOnlyNumbers(event: KeyboardEvent): void {
@@ -335,5 +378,32 @@ export class ManualTrainingUploadComponent implements OnInit {
   // Helper method for template
   formatSerialNumber(index: number): string {
     return String(index + 1).padStart(2, '0');
+  }
+
+  // Custom date validator
+  dateValidator(control: any) {
+    if (!control.value) {
+      return null; // Let required validator handle empty values
+    }
+
+    const selectedDate = new Date(control.value);
+    const today = new Date();
+    const minDate = new Date();
+    minDate.setFullYear(today.getFullYear() - 120); // 120 years ago
+
+    // Reset time to compare only dates
+    today.setHours(0, 0, 0, 0);
+    selectedDate.setHours(0, 0, 0, 0);
+    minDate.setHours(0, 0, 0, 0);
+
+    if (selectedDate > today) {
+      return { futureDate: true };
+    }
+
+    if (selectedDate < minDate) {
+      return { tooOld: true };
+    }
+
+    return null;
   }
 }

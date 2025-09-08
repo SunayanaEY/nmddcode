@@ -92,6 +92,9 @@ export class TrainingCertificateGenerationComponent implements OnInit {
   signature_2_id: number = 0;
 
   populate: any = 'false';
+  signatureValidationError: string = '';
+  logoValidationError: string = '';
+  signatureFieldErrors: { [key: number]: { name: boolean, designation: boolean, organization: boolean } } = {};
 
   constructor(
     private fb: FormBuilder,
@@ -339,6 +342,19 @@ export class TrainingCertificateGenerationComponent implements OnInit {
       return;
     }
 
+    // Validate signature and logo uploads
+    if (!this.validateSignatureUpload()) {
+      return;
+    }
+
+    if (!this.validateSignatureFields()) {
+      return;
+    }
+
+    if (!this.validateLogoUpload()) {
+      return;
+    }
+
     const formData = this.trainingForm.value;
     const payload = new FormData();
 
@@ -477,7 +493,7 @@ export class TrainingCertificateGenerationComponent implements OnInit {
   }
 
   onBulkUpload() {
-    const trainingId = 10;
+    const trainingId = this.trainingId;
     this.router.navigate(['/admin/bulk-training-upload'], {
       queryParams: { trainingId: trainingId },
     });
@@ -490,28 +506,43 @@ export class TrainingCertificateGenerationComponent implements OnInit {
 
   onSignatureNameChange(event: Event, index: number) {
     const target = event.target as HTMLInputElement;
-    if (this.populate == 'false') {
-      this.signatures[index].name = target.value;
-    } else {
+    if (this.populate === 'true') {
       this.signaturesNew[index].name = target.value;
+    } else {
+      this.signatures[index].name = target.value;
+    }
+    
+    // Clear validation error for this field
+    if (this.signatureFieldErrors[index]) {
+      this.signatureFieldErrors[index].name = false;
     }
   }
 
   onSignatureDesignationChange(event: Event, index: number) {
     const target = event.target as HTMLInputElement;
-    if (this.populate == 'false') {
-      this.signatures[index].designation = target.value;
-    } else {
+    if (this.populate === 'true') {
       this.signaturesNew[index].designation = target.value;
+    } else {
+      this.signatures[index].designation = target.value;
+    }
+    
+    // Clear validation error for this field
+    if (this.signatureFieldErrors[index]) {
+      this.signatureFieldErrors[index].designation = false;
     }
   }
 
   onSignatureOrganizationChange(event: Event, index: number) {
     const target = event.target as HTMLInputElement;
-    if (this.populate == 'false') {
-      this.signatures[index].organization = target.value;
-    } else {
+    if (this.populate === 'true') {
       this.signaturesNew[index].organization = target.value;
+    } else {
+      this.signatures[index].organization = target.value;
+    }
+    
+    // Clear validation error for this field
+    if (this.signatureFieldErrors[index]) {
+      this.signatureFieldErrors[index].organization = false;
     }
   }
 
@@ -520,5 +551,83 @@ export class TrainingCertificateGenerationComponent implements OnInit {
       const control = this.trainingForm.get(key);
       control?.markAsTouched();
     });
+  }
+
+  validateSignatureUpload(): boolean {
+    this.signatureValidationError = '';
+    
+    if (this.populate === 'true') {
+      // For update mode, check signaturesNew array
+      const hasValidSignature = this.signaturesNew.some(sig => 
+        sig.file || sig.signatorySignaturePath
+      );
+      
+      if (!hasValidSignature) {
+        this.signatureValidationError = 'At least 1 signature is required';
+        return false;
+      }
+    } else {
+      // For create mode, check signatures array
+      const hasValidSignature = this.signatures.some(sig => sig.file);
+      
+      if (!hasValidSignature) {
+        this.signatureValidationError = 'At least 1 signature is required';
+        return false;
+      }
+    }
+    
+    return true;
+  }
+
+  validateSignatureFields(): boolean {
+    this.signatureFieldErrors = {};
+    let isValid = true;
+    
+    const signaturesArray = this.populate === 'true' ? this.signaturesNew : this.signatures;
+    
+    signaturesArray.forEach((signature, index) => {
+      // Only validate fields if a signature file is uploaded or exists
+      const hasSignatureFile = signature.file || signature.signatorySignaturePath;
+      
+      if (hasSignatureFile) {
+        const errors = {
+          name: !signature.name || signature.name.trim() === '',
+          designation: !signature.designation || signature.designation.trim() === '',
+          organization: !signature.organization || signature.organization.trim() === ''
+        };
+        
+        if (errors.name || errors.designation || errors.organization) {
+          this.signatureFieldErrors[index] = errors;
+          isValid = false;
+        }
+      }
+    });
+    
+    return isValid;
+  }
+
+  validateLogoUpload(): boolean {
+    this.logoValidationError = '';
+    
+    if (this.populate === 'true') {
+      // For update mode, check logosNew array and mySelectedLogo
+      const hasValidLogo = this.logosNew.some(logo => logo.file) || 
+                          this.mySelectedLogo.some(logo => logo);
+      
+      if (!hasValidLogo) {
+        this.logoValidationError = 'At least 1 logo is required';
+        return false;
+      }
+    } else {
+      // For create mode, check logos array
+      const hasValidLogo = this.logos.some(logo => logo.file);
+      
+      if (!hasValidLogo) {
+        this.logoValidationError = 'At least 1 logo is required';
+        return false;
+      }
+    }
+    
+    return true;
   }
 }
