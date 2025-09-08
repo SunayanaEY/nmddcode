@@ -242,16 +242,22 @@ export class TrainingCertificateGenerationComponent implements OnInit {
   }
 
   onFileSelect(file: File, type: 'signature' | 'logo', index: number) {
-    if (this.populate == 'false') {
+    // Fix: Handle undefined populate value - default to create mode (false)
+    const isUpdateMode = this.populate === 'true';
+    
+    if (!isUpdateMode) {
       if (type === 'signature') {
         this.signatures[index].file = file;
+        // Clear validation error when file is uploaded
+        this.signatureValidationError = '';
       } else {
         this.logos[index].file = file;
       }
     } else {
       if (type === 'signature') {
         this.signaturesNew[index].file = file;
-        console.log(JSON.stringify(this.signaturesNew[index]));
+        // Clear validation error when file is uploaded
+        this.signatureValidationError = '';
       } else {
         this.logosNew[index].file = file;
       }
@@ -259,7 +265,8 @@ export class TrainingCertificateGenerationComponent implements OnInit {
   }
 
   removeSignature(index: number) {
-    if (this.populate == 'false') {
+    const isUpdateMode = this.populate === 'true';
+    if (!isUpdateMode) {
       this.signatures[index].file = null;
     } else {
       this.signaturesNew[index].file = null;
@@ -267,7 +274,8 @@ export class TrainingCertificateGenerationComponent implements OnInit {
   }
 
   removeLogo(index: number) {
-    if (this.populate == 'false') {
+    const isUpdateMode = this.populate === 'true';
+    if (!isUpdateMode) {
       this.logos[index].file = null;
     } else {
       this.logosNew[index].file = null;
