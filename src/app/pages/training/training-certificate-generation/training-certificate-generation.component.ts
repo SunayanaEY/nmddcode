@@ -128,9 +128,7 @@ export class TrainingCertificateGenerationComponent implements OnInit {
     this.getTrainingTypes();
     this.trainingId = this.route.snapshot.queryParams['trainingId'];
     this.populate = this.route.snapshot.queryParams['populate'];
-    if (this.populate == undefined) {
-      this.populate = 'false';
-    }
+
     if (this.trainingId != null || this.trainingId != undefined) {
       this.getTrainingDetails(this.trainingId);
     } else {
@@ -147,7 +145,6 @@ export class TrainingCertificateGenerationComponent implements OnInit {
         console.log(response);
         this.trainingDetails = response;
         const formattedDate = this.trainingDetails.trainingDate.split('T')[0];
-        const institutePopulate = {};
         this.trainingForm.patchValue({
           trainingTitle: this.trainingDetails.trainingTitle,
           scheme: this.trainingDetails.schemeId,
@@ -330,7 +327,6 @@ export class TrainingCertificateGenerationComponent implements OnInit {
     const selectedInstitute = this.trainingForm.get(
       'trainingInstituteName'
     )?.value;
-    alert(JSON.stringify(selectedInstitute));
     this.selectedTrainingInstituteName =
       selectedInstitute.trainingInstituteName;
     this.selectedTrainingInstituteId = selectedInstitute.id;
@@ -373,7 +369,9 @@ export class TrainingCertificateGenerationComponent implements OnInit {
       data['trainingTypeId'] = data['trainingType'];
       delete data['trainingType'];
     }
+    // alert('coming to : ' + this.populate);
     if (this.populate == 'true') {
+      // alert('coming here !!');
       data['id'] = this.trainingId;
       const signatories = this.signaturesNew
         .filter((sig) => sig.name && sig.designation && sig.organization) // keep only valid entries
@@ -385,6 +383,7 @@ export class TrainingCertificateGenerationComponent implements OnInit {
           signatorySignaturePath: sig.signatorySignaturePath,
           fileName: sig.file ? `signatures${index + 1}` : null,
         }));
+      console.log('Coming here !!');
       console.log(JSON.stringify(signatories[0]));
 
       if (signatories.length > 0) {
@@ -479,7 +478,11 @@ export class TrainingCertificateGenerationComponent implements OnInit {
   }
 
   onBulkUpload() {
-    const trainingId = 10;
+    if (this.trainingForm.invalid) {
+      this.trainingForm.markAllAsTouched();
+      return;
+    }
+    const trainingId = this.trainingId;
     this.router.navigate(['/admin/bulk-training-upload'], {
       queryParams: { trainingId: trainingId },
     });

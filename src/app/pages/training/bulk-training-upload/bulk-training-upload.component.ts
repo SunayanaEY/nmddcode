@@ -41,7 +41,6 @@ export class BulkTrainingUploadComponent implements OnInit {
   trainingDetails: any = null;
   trainingId: any;
   trainingInstituteId: any;
-  trainingManagerId: any;
   user: any = sessionStorage.getItem('user');
 
   constructor(
@@ -218,12 +217,11 @@ export class BulkTrainingUploadComponent implements OnInit {
     });
   }
   uploadExcelFile(): void {
-    const trainingId = this.trainingId;
+    const trainingId = 10;
     this.isSpinning = true;
     if (this.user) {
       const user = JSON.parse(this.user);
       this.trainingInstituteId = user.trainingHeadId;
-      this.trainingManagerId = user.trainingManagerId;
     }
 
     if (this.selectedFile != undefined) {
@@ -231,8 +229,7 @@ export class BulkTrainingUploadComponent implements OnInit {
         .uploadTraineeExcel(
           this.selectedFile,
           trainingId,
-          this.trainingInstituteId,
-          this.trainingManagerId
+          this.trainingInstituteId
         )
         .subscribe({
           next: (response) => {
