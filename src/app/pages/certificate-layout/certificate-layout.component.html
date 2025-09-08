@@ -15,6 +15,7 @@
         crossorigin="anonymous"
       />
     </div>
+
     <div class="certificate-header">
       <h2>Certificate of Completion</h2>
       <p class="subtitle">This Certificate Is Proudly Presented To</p>
@@ -34,20 +35,27 @@
 
     <div class="certificate-footer">
       <div class="signatures">
+        <!-- Left Signature -->
         <div class="signature">
-          <p>
-            <img
-              src="{{ data.signatures[0].signatorySignaturePath }}"
-              alt="Logo 1"
-              crossorigin="anonymous"
-            />
-          </p>
-          <p>_____________________</p>
-          <p>{{ data.signatures[0].signatoryName }}</p>
-          <p>{{ data.signatures[0].signatoryDesignation }}</p>
-          <p>{{ data.signatures[0].signatoryOrganization }}</p>
+          <ng-container *ngIf="data.signatures.length > 0; else emptySignature">
+            <p>
+              <img
+                src="{{ data.signatures[0].signatorySignaturePath }}"
+                alt="Signature 1"
+                crossorigin="anonymous"
+              />
+            </p>
+            <p>_____________________</p>
+            <p>{{ data.signatures[0].signatoryName }}</p>
+            <p>{{ data.signatures[0].signatoryDesignation }}</p>
+            <p>{{ data.signatures[0].signatoryOrganization }}</p>
+          </ng-container>
+          <ng-template #emptySignature>
+            <div class="signature-placeholder"></div>
+          </ng-template>
         </div>
 
+        <!-- QR Code (always in center) -->
         <div class="qr-code">
           <qrcode
             [qrdata]="qrData"
@@ -56,22 +64,27 @@
           ></qrcode>
           <p class="uid">UIN: {{ finalUniqueId }}</p>
         </div>
-        <div class="signature" *ngIf="data.signatures.length > 1">
-          <p>
-            <img
-              src="{{ data.signatures[1]?.signatorySignaturePath }}"
-              alt="Logo 1"
-              crossorigin="anonymous"
-            />
-          </p>
-          <p>_____________________</p>
-          <p>{{ data.signatures[1]?.signatoryName }}</p>
-          <p>{{ data.signatures[1]?.signatoryDesignation }}</p>
-          <p>{{ data.signatures[1]?.signatoryOrganization }}</p>
+
+        <!-- Right Signature -->
+        <div class="signature">
+          <ng-container *ngIf="data.signatures.length > 1; else emptySignature">
+            <p>
+              <img
+                src="{{ data.signatures[1].signatorySignaturePath }}"
+                alt="Signature 2"
+                crossorigin="anonymous"
+              />
+            </p>
+            <p>_____________________</p>
+            <p>{{ data.signatures[1].signatoryName }}</p>
+            <p>{{ data.signatures[1].signatoryDesignation }}</p>
+            <p>{{ data.signatures[1].signatoryOrganization }}</p>
+          </ng-container>
         </div>
       </div>
     </div>
   </div>
+
   <div class="modal-actions mt-3 text-end">
     <button class="btn btn-primary" (click)="download()">Download</button>
   </div>

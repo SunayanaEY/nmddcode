@@ -209,8 +209,8 @@
 }
 
 .certificate-logos .logo {
-  width: 80px; /* Fixed width */
-  height: 80px; /* Fixed height */
+  max-width: 120px; /* Fixed width */
+  max-height: 120px; /* Fixed height */
   object-fit: contain; /* Ensures the whole logo fits inside */
 }
 .certificate-logos {
@@ -221,6 +221,6 @@
 }
 
 .certificate-logos img {
-  height: 60px; /* Adjust as needed */
+  /* height: 60px;  */
   object-fit: contain;
 }

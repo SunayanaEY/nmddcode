@@ -132,14 +132,6 @@ export class BulkTrainingUploadComponent implements OnInit {
         });
       }
 
-      const aadhar = row['Aadhar Masked']?.toString() || '';
-      if (!/^\d{12}$/.test(aadhar)) {
-        rowErrors.push({
-          column: 'Aadhar Masked',
-          message: 'Aadhar must be exactly 12 digits',
-        });
-      }
-
       const email = row['Email'] || '';
       if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.toString().toLowerCase())) {
         rowErrors.push({

@@ -18831,7 +18831,6 @@ ngb-datepicker .ngb-dp-months ngb-datepicker-month-view .ngb-dp-week .ngb-dp-day
 }
 
 .certificate-logos img {
-  height: 60px; /* Adjust as needed */
   object-fit: contain;
 }
 

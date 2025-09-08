@@ -504,11 +504,158 @@ export class TrainingCertificateGenerationComponent implements OnInit {
       this.trainingForm.markAllAsTouched();
       return;
     }
-    const trainingId = this.trainingId;
-    this.router.navigate(['/admin/bulk-training-upload'], {
-      queryParams: { trainingId: trainingId },
+
+    // Validate signature and logo uploads
+    if (!this.validateSignatureUpload()) {
+      return;
+    }
+
+    if (!this.validateSignatureFields()) {
+      return;
+    }
+
+    if (!this.validateLogoUpload()) {
+      return;
+    }
+
+    const formData = this.trainingForm.value;
+    const payload = new FormData();
+
+    const data: any = {};
+    Object.keys(formData).forEach((key) => {
+      data[key] = formData[key];
     });
-    this.isSpinner = false;
+
+    if (data.hasOwnProperty('trainingInstituteName')) {
+      data['trainingInstituteName'] = this.selectedTrainingInstituteName;
+    }
+    data['trainingInstituteId'] = this.selectedTrainingInstituteId;
+
+    if (data.hasOwnProperty('venueState')) {
+      data['venueStateId'] = data['venueState'];
+      delete data['venueState'];
+    }
+
+    if (data.hasOwnProperty('venueDistrict')) {
+      data['venueDistrictId'] = data['venueDistrict'];
+      delete data['venueDistrict'];
+    }
+
+    if (data.hasOwnProperty('scheme')) {
+      data['schemeId'] = data['scheme'];
+      delete data['scheme'];
+    }
+
+    if (data.hasOwnProperty('trainingType')) {
+      data['trainingTypeId'] = data['trainingType'];
+      delete data['trainingType'];
+    }
+    // alert('coming to : ' + this.populate);
+    if (this.populate == 'true') {
+      // alert('coming here !!');
+      data['id'] = this.trainingId;
+      const signatories = this.signaturesNew
+        .filter((sig) => sig.name && sig.designation && sig.organization) // keep only valid entries
+        .map((sig, index) => ({
+          id: sig.id,
+          signatoryName: sig.name,
+          signatoryDesignation: sig.designation,
+          signatoryOrganization: sig.organization,
+          signatorySignaturePath: sig.signatorySignaturePath,
+          fileName: sig.file ? `signatures${index + 1}` : null,
+        }));
+      console.log('Coming here !!');
+      console.log(JSON.stringify(signatories[0]));
+
+      if (signatories.length > 0) {
+        data['signatories'] = signatories;
+      }
+
+      payload.append('data', JSON.stringify(data));
+
+      this.signaturesNew.forEach((item, index) => {
+        if (item.file) {
+          payload.append(`signatures${index + 1}`, item.file); // if file exists
+        }
+      });
+
+      this.logosNew.forEach((item, index) => {
+        if (item && item.file) {
+          payload.append(`logos${index + 1}`, item.file); // logos1, logos2, logos3
+        } else {
+          payload.append(`logos${index + 1}`, ''); // empty string if no file
+        }
+      });
+
+      this.isSpinner = true;
+      this.trainingService.updateTraining(payload).subscribe({
+        next: (response) => {
+          this.toastr.success(
+            'Training Details Updated Successfully!',
+            'Success'
+          );
+          const trainingId = response.data.id;
+          this.router.navigate(['/admin/bulk-training-upload'], {
+            queryParams: { trainingId: trainingId },
+          });
+          this.isSpinner = false;
+        },
+        error: (error) => {
+          this.isSpinner = false;
+          this.toastr.error('Failed to update training', 'Error');
+        },
+      });
+    } else {
+      const signatories = this.signatures
+        .filter((sig) => sig.name && sig.designation && sig.organization) // keep only valid entries
+        .map((sig) => ({
+          signatoryName: sig.name,
+          signatoryDesignation: sig.designation,
+          signatoryOrganization: sig.organization,
+        }));
+
+      if (signatories.length > 0) {
+        data['signatories'] = signatories;
+      }
+
+      const logos = [0, 1, 2]
+        .map((i) =>
+          this.logos[i] && this.logos[i].file ? this.logos[i].file : null
+        )
+        .filter((file) => file !== null);
+
+      if (logos.length > 0) {
+        logos.forEach((logo) => {
+          payload.append('logos', logo);
+        });
+      }
+
+      payload.append('data', JSON.stringify(data));
+
+      this.signatures.forEach((item) => {
+        if (item.file) {
+          payload.append('signatures', item.file);
+        }
+      });
+      this.isSpinner = true;
+      this.trainingService.saveTraining(payload).subscribe({
+        next: (response) => {
+          this.toastr.success(
+            'Training Details Saved Successfully!',
+            'Success'
+          );
+          const trainingId = response.data.id;
+          this.router.navigate(['/admin/bulk-training-upload'], {
+            queryParams: { trainingId: trainingId },
+          });
+          this.isSpinner = false;
+        },
+        error: (error) => {
+          this.isSpinner = false;
+          this.toastr.error('Failed to save training', 'Error');
+        },
+      });
+    }
   }
 
   goBack() {

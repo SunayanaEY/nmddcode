@@ -47,7 +47,7 @@
 .signatures {
   display: flex;
   justify-content: space-between;
-  align-items: center;
+  align-items: flex-start;
   margin-top: 30px;
 }
 
@@ -57,9 +57,25 @@
   font-size: 14px;
 }
 
+.signature img {
+  max-width: 150px;   /* Restricts large uploads */
+  max-height: 80px;   /* Adjusts proportionally */
+  object-fit: contain;
+  display: block;
+  margin: 0 auto 5px;
+}
+
+.signature-placeholder {
+  height: 80px;  /* Keeps empty space if no signature */
+}
+
 .qr-code {
   width: 30%;
   text-align: center;
+}
+
+.qr-code qrcode {
+  display: inline-block;
 }
 
 .qr-code .uid {
@@ -75,19 +91,15 @@
   gap: 20px;
 }
 
-.certificate-logos .logo {
-  width: 80px;      /* Fixed width */
-  height: 80px;     /* Fixed height */
-  object-fit: contain; /* Ensures the whole logo fits inside */
-}
 .certificate-logos {
   display: flex;
-  justify-content: space-between; /* Pushes logos to edges with one in middle */
+  justify-content: space-between;
   align-items: center;
-  margin-bottom: 20px; /* Space before heading */
+  margin-bottom: 20px;
 }
 
 .certificate-logos img {
-  height: 60px; /* Adjust as needed */
+  max-height: 120px;
+  max-width: 150px;
   object-fit: contain;
 }
