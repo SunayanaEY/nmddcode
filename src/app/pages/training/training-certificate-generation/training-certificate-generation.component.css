@@ -50,6 +50,43 @@
   margin: 0 auto;
 }
 
+/* Validation Styles */
+.invalid-feedback {
+  display: block;
+  margin-top: 0.25rem;
+}
+
+.invalid-feedback .text-danger {
+  color: #dc3545 !important;
+  font-size: 0.875rem;
+  font-weight: 400;
+  margin: 0;
+  display: block;
+}
+
+.form-control.is-invalid {
+  border-color: #dc3545;
+  box-shadow: 0 0 0 0.2rem rgba(220, 53, 69, 0.25);
+}
+
+.form-control.is-invalid:focus {
+  border-color: #dc3545;
+  box-shadow: 0 0 0 0.2rem rgba(220, 53, 69, 0.25);
+}
+
+/* Validation error section for file uploads */
+.validation-error-section {
+  margin-top: 8px;
+  margin-bottom: 16px;
+}
+
+.validation-error-section .text-danger {
+  display: block;
+  font-size: 0.875rem;
+  color: #dc3545;
+  font-weight: 400;
+}
+
 /* Form Sections */
 .form-section {
   background: white;

@@ -1,5 +1,6 @@
 .sidebar-nav {
-  background: linear-gradient(135deg, #1e3c72 0%, #2a5298 50%, #153060 100%);
+  /* background: linear-gradient(135deg, #1e3c72 0%, #2a5298 50%, #153060 100%); */
+  background: #002952;
   color: #fff;
   position: fixed;
   top: 0;
@@ -23,7 +24,7 @@
 
 .sidebar-nav.collapsed {
   width: 95px;
-  padding: 1.5rem 10px;
+  padding: 0.2rem 10px;
   overflow-x: visible;
 }
 
@@ -121,8 +122,14 @@
 }
 
 .sidebar-link.active {
-  background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+  /* background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%); */
   box-shadow: 0 8px 25px 0 rgba(79, 172, 254, 0.3), 0 0 0 1px rgba(255, 255, 255, 0.3);
+}
+.sidebar-brand-logo{
+  width: 50px;
+  border-radius: 5px;
+  padding: 5px 9px;
+  background: #bab7b7;
 }
 
 .sidebar-label {
@@ -291,7 +298,7 @@ nav.flex-grow-1::-webkit-scrollbar-thumb:hover {
   display: flex;
   align-items: center;
   gap: 1rem;
-  padding: 2rem 1rem;
+  padding: 0.5rem 1rem;
   margin-bottom: 1rem;
   border-bottom: 1px solid rgba(255, 255, 255, 0.1);
   position: relative;
@@ -332,7 +339,9 @@ nav.flex-grow-1::-webkit-scrollbar-thumb:hover {
 .brand-text {
   flex: 1;
   transition: opacity 0.2s ease-out;
-  white-space: nowrap;
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
 }
 
 .sidebar-nav.collapsed .brand-text {

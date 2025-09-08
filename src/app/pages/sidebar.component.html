@@ -1,24 +1,24 @@
 <div class="sidebar-nav" [class.collapsed]="collapsed">
   <!-- Brand Section -->
   <div class="sidebar-brand" *ngIf="!collapsed">
-    <div class="brand-logo">
-      <i class="bi bi-shield-check"></i>
-    </div>
-    <div class="brand-text">
-      <h6 class="brand-title">NDDB Portal</h6>
-      <small class="brand-subtitle">Dairy Dashboard</small>
-    </div>
+      <img class="sidebar-brand-logo" src="assets/login/emblem.png" alt="" srcset="">
+      <div class="brand-text">
+        <h6 class="brand-title">भारत सरकार</h6>
+        <small class="brand-subtitle">Government Of India</small>
+      </div>
   </div>
 
   <!-- Collapsed Brand -->
   <div class="sidebar-brand-collapsed" *ngIf="collapsed">
     <div class="brand-logo-small">
-      <i class="bi bi-shield-check"></i>
+      <!-- <i class="bi bi-shield-check"></i>
+        -->
+      <img class="sidebar-brand-logo" src="assets/login/emblem.png" alt="" srcset="">
     </div>
   </div>
 
   <!-- Top Row: Collapse Button -->
-  <div class="sidebar-top-row d-flex align-items-center justify-content-start">
+  <div class="sidebar-top-row">
     <button
       class="sidebar-toggle-btn"
       (click)="toggleSidebar()"

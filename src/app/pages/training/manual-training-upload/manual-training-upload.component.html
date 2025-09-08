@@ -136,95 +136,98 @@
           <div class="row">
             <div class="col-md-4">
               <div class="mb-3">
-                <label for="name" class="form-label">Name</label>
+                <label for="name" class="form-label">Name <span class="text-danger">*</span></label>
                 <input
                   type="text"
                   class="form-control"
+                  [class.is-invalid]="participantForm.get('name')?.invalid && participantForm.get('name')?.touched"
                   id="name"
                   formControlName="name"
                   placeholder="Enter Name"
                 />
+                <div class="invalid-feedback" *ngIf="participantForm.get('name')?.invalid && participantForm.get('name')?.touched">
+                  <div *ngIf="participantForm.get('name')?.errors?.['required']">Name is required.</div>
+                  <div *ngIf="participantForm.get('name')?.errors?.['minlength']">Name must be at least 2 characters long.</div>
+                  <div *ngIf="participantForm.get('name')?.errors?.['maxlength']">Name cannot exceed 50 characters.</div>
+                  <div *ngIf="participantForm.get('name')?.errors?.['pattern']">Name can only contain letters and spaces.</div>
+                </div>
               </div>
             </div>
             <div class="col-md-4">
               <div class="mb-3">
-                <label for="gender" class="form-label">Gender</label>
-                <select
-                  class="form-select"
-                  id="gender"
-                  formControlName="gender"
-                >
-                  <option value="">Select Gender</option>
+                <label for="gender" class="form-label">Gender <span class="text-danger">*</span></label>
+                <select 
+                  class="form-select" 
+                  [class.is-invalid]="participantForm.get('gender')?.invalid && participantForm.get('gender')?.touched"
+                  id="gender" 
+                  formControlName="gender">
+                  <option value="" disabled>Select Gender</option>
                   <option value="Male">Male</option>
                   <option value="Female">Female</option>
                   <option value="Other">Other</option>
                 </select>
+                <div class="invalid-feedback" *ngIf="participantForm.get('gender')?.invalid && participantForm.get('gender')?.touched">
+                  <div *ngIf="participantForm.get('gender')?.errors?.['required']">Gender is required.</div>
+                </div>
               </div>
             </div>
             <div class="col-md-4">
               <div class="mb-3">
-                <label for="age" class="form-label">Age</label>
+                <label for="age" class="form-label">Age <span class="text-danger">*</span></label>
                 <input
                   type="number"
                   class="form-control"
+                  [class.is-invalid]="participantForm.get('age')?.invalid && participantForm.get('age')?.touched"
                   id="age"
                   formControlName="age"
                   placeholder="Enter Age"
                 />
+                <div class="invalid-feedback" *ngIf="participantForm.get('age')?.invalid && participantForm.get('age')?.touched">
+                  <div *ngIf="participantForm.get('age')?.errors?.['required']">Age is required.</div>
+                  <div *ngIf="participantForm.get('age')?.errors?.['min']">Age must be at least 1 year.</div>
+                  <div *ngIf="participantForm.get('age')?.errors?.['max']">Age cannot exceed 120 years.</div>
+                  <div *ngIf="participantForm.get('age')?.errors?.['pattern']">Age must be a valid number.</div>
+                </div>
               </div>
             </div>
           </div>
           <div class="row">
             <div class="col-md-6">
               <div class="mb-3">
-                <label for="contactNumber" class="form-label"
-                  >Contact Number</label
-                >
+                <label for="contactNumber" class="form-label">Contact Number <span class="text-danger">*</span></label>
                 <input
-                  type="tel"
+                  type="text"
                   class="form-control"
+                  [class.is-invalid]="participantForm.get('contactNumber')?.invalid && participantForm.get('contactNumber')?.touched"
                   id="contactNumber"
                   formControlName="contactNumber"
-                  placeholder="Enter Phone Number"
-                  maxlength="10"
+                  placeholder="Enter Contact Number"
                   pattern="[0-9]{10}"
                   (keypress)="allowOnlyNumbers($event)"
                 />
-                <small *ngIf="alphabetError" class="text-danger">
-                  Alphabets or special characters are not allowed.
-                </small>
+                <div class="invalid-feedback" *ngIf="participantForm.get('contactNumber')?.invalid && participantForm.get('contactNumber')?.touched">
+                  <div *ngIf="participantForm.get('contactNumber')?.errors?.['required']">Contact number is required.</div>
+                  <div *ngIf="participantForm.get('contactNumber')?.errors?.['pattern']">Contact number must be exactly 10 digits.</div>
+                  <div *ngIf="participantForm.get('contactNumber')?.errors?.['minlength'] || participantForm.get('contactNumber')?.errors?.['maxlength']">Contact number must be exactly 10 digits.</div>
+                </div>
               </div>
             </div>
             <div class="col-md-6">
               <div class="mb-3">
-                <label for="fatherName" class="form-label">Father's Name</label>
+                <label for="fatherName" class="form-label">Father's Name <span class="text-danger">*</span></label>
                 <input
                   type="text"
                   class="form-control"
+                  [class.is-invalid]="participantForm.get('fatherName')?.invalid && participantForm.get('fatherName')?.touched"
                   id="fatherName"
                   formControlName="fatherName"
                   placeholder="Enter Father's Name"
                 />
-
-                <!-- Angular form validation -->
-                <div
-                  *ngIf="
-                    participantForm.get('fatherName')?.touched &&
-                    participantForm.get('fatherName')?.invalid
-                  "
-                >
-                  <!-- <small
-                    class="text-danger"
-                    *ngIf="participantForm.get('aadhar')?.errors?.['required']"
-                  >
-                    Aadhar is required.
-                  </small> -->
-                  <!-- <small
-                    class="text-danger"
-                    *ngIf="participantForm.get('aadhar')?.errors?.['pattern']"
-                  >
-                    Aadhar must be exactly 12 digits.
-                  </small> -->
+                <div class="invalid-feedback" *ngIf="participantForm.get('fatherName')?.invalid && participantForm.get('fatherName')?.touched">
+                  <div *ngIf="participantForm.get('fatherName')?.errors?.['required']">Father's name is required.</div>
+                  <div *ngIf="participantForm.get('fatherName')?.errors?.['minlength']">Father's name must be at least 2 characters long.</div>
+                  <div *ngIf="participantForm.get('fatherName')?.errors?.['maxlength']">Father's name cannot exceed 50 characters.</div>
+                  <div *ngIf="participantForm.get('fatherName')?.errors?.['pattern']">Father's name can only contain letters and spaces.</div>
                 </div>
               </div>
             </div>
@@ -232,55 +235,35 @@
           <div class="row">
             <div class="col-6">
               <div class="mb-3">
-                <label for="email" class="form-label">Email (Optional)</label>
+                <label for="email" class="form-label">Email</label>
                 <input
                   type="email"
                   class="form-control"
+                  [class.is-invalid]="participantForm.get('email')?.invalid && participantForm.get('email')?.touched"
                   id="email"
                   formControlName="email"
                   placeholder="Enter Email"
-                  (input)="validateEmail()"
                 />
-
-                <!-- Real-time warning -->
-                <small *ngIf="emailError" class="text-danger">
-                  Please enter a valid email address.
-                </small>
-
-                <!-- Angular built-in validation -->
-                <div
-                  *ngIf="
-                    participantForm.get('email')?.touched &&
-                    participantForm.get('email')?.invalid
-                  "
-                >
-                  <small
-                    class="text-danger"
-                    *ngIf="participantForm.get('email')?.errors?.['email']"
-                  >
-                    Invalid email format.
-                  </small>
+                <div class="invalid-feedback" *ngIf="participantForm.get('email')?.invalid && participantForm.get('email')?.touched">
+                  <div *ngIf="participantForm.get('email')?.errors?.['email']">Please enter a valid email address.</div>
                 </div>
               </div>
             </div>
             <div class="col-6">
               <div class="mb-3">
-                <label for="email" class="form-label">Date of Birth</label>
+                <label for="dob" class="form-label">Date of Birth <span class="text-danger">*</span></label>
                 <input
                   type="date"
                   class="form-control"
+                  [class.is-invalid]="participantForm.get('dob')?.invalid && participantForm.get('dob')?.touched"
                   id="dob"
                   formControlName="dob"
-                  placeholder="Enter date of birth"
                 />
-
-                <!-- Angular built-in validation -->
-                <div
-                  *ngIf="
-                    participantForm.get('dob')?.touched &&
-                    participantForm.get('dob')?.invalid
-                  "
-                ></div>
+                <div class="invalid-feedback" *ngIf="participantForm.get('dob')?.invalid && participantForm.get('dob')?.touched">
+                  <div *ngIf="participantForm.get('dob')?.errors?.['required']">Date of birth is required.</div>
+                  <div *ngIf="participantForm.get('dob')?.errors?.['futureDate']">Date of birth cannot be in the future.</div>
+                  <div *ngIf="participantForm.get('dob')?.errors?.['tooOld']">Date of birth cannot be more than 120 years ago.</div>
+                </div>
               </div>
             </div>
           </div>

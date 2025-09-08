@@ -1,7 +1,9 @@
 /* Main Navbar Styling */
 .custom-navbar {
   min-height: 50px;
-  background: linear-gradient(135deg, #1e3c72 0%, #2a5298 50%, #3b82f6 100%);
+  /* background: linear-gradient(135deg, #1e3c72 0%, #2a5298 50%, #3b82f6 100%);
+   */
+  background: #002952;
   border-bottom: none;
   box-shadow: 0 4px 20px rgba(30, 60, 114, 0.15);
   position: relative;
@@ -70,7 +72,7 @@
 }
 
 .brand-title {
-  font-size: 1.2rem;
+  font-size: 15px;
   font-weight: 700;
   color: white;
   letter-spacing: 0.5px;

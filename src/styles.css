@@ -18834,3 +18834,12 @@ ngb-datepicker .ngb-dp-months ngb-datepicker-month-view .ngb-dp-week .ngb-dp-day
   height: 60px; /* Adjust as needed */
   object-fit: contain;
 }
+
+/* Global login background class for consistent asset path resolution */
+.login-background {
+  background-image: url('assets/login/BG Photo.png');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+}

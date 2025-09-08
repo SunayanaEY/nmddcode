@@ -204,9 +204,9 @@ export class IndiaMapComponent implements OnInit, AfterViewInit, OnDestroy {
     console.log('=== loadIndiaMap START ===');
     
     try {
-      console.log('🌐 Attempting to fetch GeoJSON data from: /assets/geoJsonData/India.geojson');
+      console.log('🌐 Attempting to fetch GeoJSON data from: assets/geoJsonData/India.geojson');
       
-      const response = await fetch('/assets/geoJsonData/India.geojson');
+      const response = await fetch('assets/geoJsonData/India.geojson');
       console.log('📡 Fetch response received:', {
         status: response.status,
         statusText: response.statusText,
