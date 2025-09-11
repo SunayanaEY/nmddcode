@@ -1,129 +1,33 @@
+
+<app-breadcrumb [items]="breadcrumbItems"></app-breadcrumb>
+
+  <div class="page-header">
+    <h2>Pending Trainings</h2>
+  </div>
+  <div class="trainings-summary">
+    <!-- <h4>All Trainings</h4> -->
+    <span class="badge bg-secondary">Total - {{ trainingsList.length }} Trainings</span>
+  </div>
+
+  <app-table
+    [columns]="tableColumnsPending"
+    [data]="trainingsList3"
+    [actions]="tableActionsPending"
+    (actionClick)="handleTableAction($event)"
+    [isExportCSV]="isExportCSV" [isExportPDF]="isExportPdf"
+    [pdfHeaders]="pdfHeaders" [columnKeys]="columnKeys"
+    [fileName]="fileName">
+  </app-table>
+
+
+
+
+
 <div class="approved-certificate-container">
-  <app-breadcrumb [items]="breadcrumbItems"></app-breadcrumb>
 
   <div class="page-header">
     <h2>Approved Trainings</h2>
   </div>
-<!-- <div style="
-
-    height: 34px;
-"> <span><h3>Filter By</h3></span>
-    <br></div> -->
-
-  <!--<div class="filter-container">
-
-    <div class="filter-controls">
-
-
-      <ng-select class="custom-ng-select form-control" placeholder="Title" [(ngModel)]="filters.trainingTitle" style="height: 100%;
-                    width: 100%;
-                    font-weight: 400;
-                    line-height: 1.5;
-                    color: #121213;
-                    background-color: #fff;
-                    background-clip: padding-box;
-                    box-shadow: none;" (change)="applyFilters()">
-
-
-                      <ng-option class="cutom-option" *ngFor="let name of uniqueValuesTrainingTitle()" [value]="name">{{name}}</ng-option>
-                                          </ng-select>
-
-
-      <ng-select class=" custom-ng-select form-control" placeholder="Scheme" [(ngModel)]="filters.scheme" style="height: 100%;
-                    width: 100%;
-                    font-weight: 400;
-                    line-height: 1.5;
-                    color: #121213;
-                    background-color: #fff;
-                    background-clip: padding-box;
-                    box-shadow: none;" (change)="applyFilters()">
-
-
-                      <ng-option *ngFor="let name of uniqueValuesScheme()" [value]="name">{{name}}</ng-option>
-
-
-                    </ng-select>
-                    <ng-select class="custom-ng-select form-control" placeholder="Institute Name" [(ngModel)]="filters.trainingInstituteName" style="height: 100%;
-                    width: 100%;
-                    font-weight: 400;
-                    line-height: 1.5;
-                    color: #121213;
-                    background-color: #fff;
-                    background-clip: padding-box;
-                    box-shadow: none;" (change)="applyFilters()">
-
-
-                      <ng-option *ngFor="let name of uniqueValuesInstituteName()" [value]="name">{{name}}</ng-option>
-
-
-                    </ng-select>
-                    <ng-select class="custom-ng-select form-control" placeholder="Trainer Name" [(ngModel)]="filters.trainerName" style="height: 100%;
-                    width: 100%;
-                    font-weight: 400;
-                    line-height: 1.5;
-                    color: #121213;
-                    background-color: #fff;
-                    background-clip: padding-box;
-                    box-shadow: none;" (change)="applyFilters()">
-
-
-                      <ng-option *ngFor="let name of uniqueValuesTrainerName()" [value]="name">{{name}}</ng-option>
-
-
-                    </ng-select>
-
-                    <ng-select class="custom-ng-select form-control" placeholder="Location" [(ngModel)]="filters.location" style="height: 100%;
-                    width: 100%;
-                    font-weight: 400;
-                    line-height: 1.5;
-                    color: #121213;
-                    background-color: #fff;
-                    background-clip: padding-box;
-                    box-shadow: none;" (change)="applyFilters()">
-
-
-                      <ng-option *ngFor="let name of uniqueValueslocation()" [value]="name">{{name}}</ng-option>
-
-
-                    </ng-select>
-                    <ng-select class="custom-ng-select form-control" placeholder="Training Date" [(ngModel)]="filters.trainingDate" style="height: 100%;
-                    width: 100%;
-                    font-weight: 400;
-                    line-height: 1.5;
-                    color: #121213;
-                    background-color: #fff;
-                    background-clip: padding-box;
-                    box-shadow: none;" (change)="applyFilters()">
-
-
-                      <ng-option *ngFor="let name of uniqueValuesTrainingDate()" [value]="name">{{name}}</ng-option>
-
-
-                    </ng-select>
-
-
-                    <ng-select class="custom-ng-select form-control" placeholder="Status" [(ngModel)]="filters.status" style="height: 100%;
-                    width: 100%;
-                    font-weight: 400;
-                    line-height: 1.5;
-                    color: #121213;
-                    background-color: #fff;
-                    background-clip: padding-box;
-                    box-shadow: none;" (change)="applyFilters()">
-
-
-                      <ng-option class="form-control" *ngFor="let name of uniqueValuesStatus()" [value]="name">{{name}}</ng-option>
-
-
-                    </ng-select>
-
-
-
-
-    </div>
-
-  </div>-->
-
   <div class="trainings-summary">
     <!-- <h4>All Trainings</h4> -->
     <span class="badge bg-secondary">Total - {{ trainingsList.length }} Trainings</span>
@@ -142,131 +46,10 @@
 
 <!--Rejected Trainings start-->
 <div class="approved-certificate-container">
-  <app-breadcrumb [items]="breadcrumbItems2"></app-breadcrumb>
 
   <div class="page-header">
     <h2>Rejected Trainings</h2>
   </div>
-<!-- <div style="
-
-    height: 34px;
-"> <span><h3>Filter By</h3></span>
-    <br></div> -->
-
-  <!--<div class="filter-container">
-
-    <div class="filter-controls">
-
-
-      <ng-select class="custom-ng-select form-control" placeholder="Title" [(ngModel)]="filters.trainingTitle" style="height: 100%;
-                    width: 100%;
-                    font-weight: 400;
-                    line-height: 1.5;
-                    color: #121213;
-                    background-color: #fff;
-                    background-clip: padding-box;
-                    box-shadow: none;" (change)="applyFilters()">
-
-
-                      <ng-option class="cutom-option" *ngFor="let name of uniqueValuesTrainingTitle()" [value]="name">{{name}}</ng-option>
-                                          </ng-select>
-
-
-      <ng-select class=" custom-ng-select form-control" placeholder="Scheme" [(ngModel)]="filters.scheme" style="height: 100%;
-                    width: 100%;
-                    font-weight: 400;
-                    line-height: 1.5;
-                    color: #121213;
-                    background-color: #fff;
-                    background-clip: padding-box;
-                    box-shadow: none;" (change)="applyFilters()">
-
-
-                      <ng-option *ngFor="let name of uniqueValuesScheme()" [value]="name">{{name}}</ng-option>
-
-
-                    </ng-select>
-                    <ng-select class="custom-ng-select form-control" placeholder="Institute Name" [(ngModel)]="filters.trainingInstituteName" style="height: 100%;
-                    width: 100%;
-                    font-weight: 400;
-                    line-height: 1.5;
-                    color: #121213;
-                    background-color: #fff;
-                    background-clip: padding-box;
-                    box-shadow: none;" (change)="applyFilters()">
-
-
-                      <ng-option *ngFor="let name of uniqueValuesInstituteName()" [value]="name">{{name}}</ng-option>
-
-
-                    </ng-select>
-                    <ng-select class="custom-ng-select form-control" placeholder="Trainer Name" [(ngModel)]="filters.trainerName" style="height: 100%;
-                    width: 100%;
-                    font-weight: 400;
-                    line-height: 1.5;
-                    color: #121213;
-                    background-color: #fff;
-                    background-clip: padding-box;
-                    box-shadow: none;" (change)="applyFilters()">
-
-
-                      <ng-option *ngFor="let name of uniqueValuesTrainerName()" [value]="name">{{name}}</ng-option>
-
-
-                    </ng-select>
-
-                    <ng-select class="custom-ng-select form-control" placeholder="Location" [(ngModel)]="filters.location" style="height: 100%;
-                    width: 100%;
-                    font-weight: 400;
-                    line-height: 1.5;
-                    color: #121213;
-                    background-color: #fff;
-                    background-clip: padding-box;
-                    box-shadow: none;" (change)="applyFilters()">
-
-
-                      <ng-option *ngFor="let name of uniqueValueslocation()" [value]="name">{{name}}</ng-option>
-
-
-                    </ng-select>
-                    <ng-select class="custom-ng-select form-control" placeholder="Training Date" [(ngModel)]="filters.trainingDate" style="height: 100%;
-                    width: 100%;
-                    font-weight: 400;
-                    line-height: 1.5;
-                    color: #121213;
-                    background-color: #fff;
-                    background-clip: padding-box;
-                    box-shadow: none;" (change)="applyFilters()">
-
-
-                      <ng-option *ngFor="let name of uniqueValuesTrainingDate()" [value]="name">{{name}}</ng-option>
-
-
-                    </ng-select>
-
-
-                    <ng-select class="custom-ng-select form-control" placeholder="Status" [(ngModel)]="filters.status" style="height: 100%;
-                    width: 100%;
-                    font-weight: 400;
-                    line-height: 1.5;
-                    color: #121213;
-                    background-color: #fff;
-                    background-clip: padding-box;
-                    box-shadow: none;" (change)="applyFilters()">
-
-
-                      <ng-option class="form-control" *ngFor="let name of uniqueValuesStatus()" [value]="name">{{name}}</ng-option>
-
-
-                    </ng-select>
-
-
-
-
-    </div>
-
-  </div>-->
-
   <div class="trainings-summary">
     <!-- <h4>All Trainings</h4> -->
     <span class="badge bg-secondary">Total - {{ trainingsList2.length }} Trainings</span>
@@ -428,7 +211,7 @@
           </div>
         </div>
 
-        <div class="card-header col-12 mb-4 mt-4 bg-appColor">
+        <div class="card-header col-12 mb-4 mt-4 bg-appColor" *ngIf="trainingDetails.status !== 'NEW'" >
           <!-- <ngx-spinner bdColor="rgba(51, 51, 51, 0.5)" size="default"  type="ball-beat" [fullScreen]="false" [name]="'dataSpinner3'"></ngx-spinner> -->
           <h3 class="mb-0 text-white">
             {{'Trainee List'}}
@@ -436,14 +219,14 @@
         </div>
         <div class="card-body">
           <app-table
-    [columns]="tableColumnsTrainee"
-    [data]="traineeList"
-    [actions]="tableActionsTrainee"
-    (actionClick)="handleTableAction($event)"
-    [isExportCSV]="isExportCSV" [isExportPDF]="isExportPdf"
-    [pdfHeaders]="pdfHeadersTrainee" [columnKeys]="columnKeysTrainee"
-    [fileName]="fileNameTrainees" [isBulkCertDownload]="isBulkCertDownload">
-  </app-table>
+          [columns]="tableColumnsTrainee"
+          [data]="traineeList"
+          [actions]="tableActionsTrainee"
+          (actionClick)="handleTableAction($event)"
+          [isExportCSV]="isExportCSV" [isExportPDF]="isExportPdf"
+          [pdfHeaders]="pdfHeadersTrainee" [columnKeys]="columnKeysTrainee"
+          [fileName]="fileNameTrainees" [isBulkCertDownload]="isBulkCertDownload">
+        </app-table>
 
         </div>
       </div>
@@ -455,6 +238,20 @@
         </button>
       </div>
     </ng-template>
+
+<!-- Certificate Modal -->
+<ng-template #certificateModal let-modal>
+  <div class="modal-header border-0">
+    <h4 class="modal-title text-dark">Training Certificate</h4>
+    <button type="button" class="btn-close" aria-label="Close" (click)="modal.dismiss('Cross click')">
+    </button>
+  </div>
+  <div class="modal-body p-0">
+    <app-certificate-layout *ngIf="certificateData" [data]="certificateData"
+      [uniqueId]="selectedTraineeForCertificate?.uin || 'UIN2025345780991'">
+    </app-certificate-layout>
+  </div>
+</ng-template>
     <!-- </div>
     </div>
     </div> -->

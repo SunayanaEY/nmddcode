@@ -23,6 +23,7 @@ import { CertificateLayoutComponent } from '../certificate-layout/certificate-la
     BreadcrumbComponent,
     TableComponent,
     CertificateLayoutComponent,
+    
   ],
   templateUrl: './all-certificate.component.html',
   styleUrl: './all-certificate.component.css',

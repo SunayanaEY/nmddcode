@@ -3,7 +3,7 @@
     <!-- Header Section -->
     <div class="form-header">
       <app-breadcrumb [items]="breadcrumbItems"></app-breadcrumb>
-      <h1 class="page-title">Training Certificate Generation</h1>
+      <h1 class="page-title">Training Calender</h1>
     </div>
 
     <!-- Form Content -->
@@ -451,16 +451,22 @@
         <!-- Action Buttons -->
         <div class="form-actions">
           <button type="submit" class="btn btn-primary btn-lg">
-            Manual Training Upload
+            <!-- Manual Training Upload -->
+             Submit Details
           </button>
-          <button
+          <!-- <button
             type="button"
             class="btn btn-secondary btn-lg"
             (click)="onBulkUpload()"
           >
             Bulk Upload
-          </button>
+          </button> -->
         </div>
+        <!-- <div class="form-actions">
+          <button type="submit" class="btn btn-primary btn-lg" (click)="onManualUpload()">
+           Submit Details
+          </button>
+        </div> -->
       </form>
     </div>
   </div>

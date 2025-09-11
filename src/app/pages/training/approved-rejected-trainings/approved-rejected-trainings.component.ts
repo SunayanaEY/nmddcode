@@ -22,6 +22,8 @@ import { TrainingService } from '../services/training.service';
 import { NgSelectModule } from '@ng-select/ng-select';
 import { error } from 'console';
 import { ToastrService } from 'ngx-toastr';
+import { Router } from '@angular/router';
+import { CertificateLayoutComponent } from '../../certificate-layout/certificate-layout.component';
 
 @Component({
   selector: 'app-approved-rejected-trainings',
@@ -32,6 +34,7 @@ import { ToastrService } from 'ngx-toastr';
     NgSelectModule,
     ReactiveFormsModule,
     FormsModule,
+    CertificateLayoutComponent,
   ],
   templateUrl: './approved-rejected-trainings.component.html',
   styleUrl: './approved-rejected-trainings.component.css',
@@ -40,7 +43,11 @@ export class ApprovedRejectedTrainingsComponent {
   trainingDetails: any;
   @ViewChild('trainingDetailsModal')
   trainingDetailsModal!: ElementRef;
+  @ViewChild('certificateModal')
+  certificateModal!: ElementRef;
   submitted: Boolean = false;
+  certificateData: any = null;
+  selectedTraineeForCertificate: any = null;
   trainingForm!: FormGroup;
   isExportCSV: Boolean = true;
   isExportPdf: Boolean = true;
@@ -68,36 +75,55 @@ export class ApprovedRejectedTrainingsComponent {
     'status',
   ];
   breadcrumbItems: BreadcrumbItem[] = [
-      { label: 'Training Module', url: '/admin/training-module' },
-      { label: 'Approved Trainings' }
-    ];
-      breadcrumbItems2: BreadcrumbItem[] = [
-      { label: 'Training Module', url: '/admin/training-module' },
-      { label: 'Rejected Trainings' }
-    ];
-    tableColumns: TableColumn[] = [
-        { key: 'trainingTitle', header: 'Training Title' },
-        { key: 'scheme', header: 'Scheme' },
-        { key: 'trainingInstituteName', header: 'Training Institute' },
-        { key: 'trainerName', header: 'Trainer Name' },
+    { label: 'Training Module', url: '/admin/training-module' },
+    { label: 'Approved/Rejected Trainings' }
+  ];
+
+  tableColumns: TableColumn[] = [
+    {
+      key: 'trainingTitle',
+      header: 'Training Title',
+      isLink: true,
+      linkHandler: (row) => this.openTrainingDetails(row),
+    },
+    { key: 'scheme', header: 'Scheme' },
+    { key: 'trainingInstituteName', header: 'Training Institute' },
+    { key: 'trainerName', header: 'Trainer Name' },
 
     { key: 'location', header: 'Location' },
     { key: 'trainingDate', header: 'Training Date' },
     { key: 'status', header: 'Status' },
   ];
 
-      tableActions: TableAction[] = [
-        { name: 'view', icon: 'bi bi-eye', class: 'btn-info', title: 'View' },
-        { name: 'download', icon: 'bi bi-download', class: 'btn-success', title: 'Download' },
-      ];
-      tableActions2: TableAction[] = [
-        { name: 'view', icon: 'bi bi-eye', class: 'btn-info', title: 'View' },
-        // { name: 'download', icon: 'bi bi-download', class: 'btn-success', title: 'Download' },
-      ];
+  tableColumnsPending: TableColumn[] = [
+    {
+      key: 'trainingTitle',
+      header: 'Training Title'
+    },
+    { key: 'scheme', header: 'Scheme' },
+    { key: 'trainingInstituteName', header: 'Training Institute' },
+    { key: 'trainerName', header: 'Trainer Name' },
 
-      trainingsList: TrainingsList[]=[];
-      trainingsList2: TrainingsList[]=[];
-      traineeList:TraineeDetails[]=[];
+    { key: 'location', header: 'Location' },
+    { key: 'trainingDate', header: 'Training Date' },
+    { key: 'status', header: 'Status' },
+  ];
+  tableActionsPending: TableAction[] = [
+    { name: 'view', icon: 'bi bi-eye', class: 'btn-info', title: 'View' },
+  ];
+
+  tableActions: TableAction[] = [
+    { name: 'view', icon: 'bi bi-eye', class: 'btn-info', title: 'View' },
+  ];
+  tableActions2: TableAction[] = [
+    { name: 'view', icon: 'bi bi-eye', class: 'btn-info', title: 'View' },
+    // { name: 'download', icon: 'bi bi-download', class: 'btn-success', title: 'Download' },
+  ];
+
+  trainingsList: TrainingsList[] = [];
+  trainingsList2: TrainingsList[] = [];
+  trainingsList3: TrainingsList[] = [];
+  traineeList: TraineeDetails[] = [];
 
   pdfHeadersTrainee: Array<string> = [
     'Sr.No.',
@@ -130,74 +156,110 @@ export class ApprovedRejectedTrainingsComponent {
       icon: 'bi bi-download',
       class: 'btn-success',
       title: 'Download certificate',
+      condition: (row: any) => row.status === 'APPROVED_BY_STATE_ADMIN',
     },
   ];
 
 
 
-      constructor(private formBuilder: FormBuilder,
-        private modalService: NgbModal, private trainingsService: TrainingService,
-        private toastr: ToastrService
-      ){
+  constructor(private formBuilder: FormBuilder,
+    private modalService: NgbModal, private trainingsService: TrainingService,
+    private toastr: ToastrService, private router: Router
+  ) {
 
-      }
-      filteredData = [...this.trainingsList];
+  }
+  filteredData = [...this.trainingsList];
 
-      ngOnInit(): void {
-        this.trainingForm = this.formBuilder.group({
-        id: [''],
-        comment: ['', [Validators.required]],
-        status: ['', [Validators.required]]
-      });
-      this.trainingsService.getApprovedTrainings().subscribe({
-        next:(res) => {
-        this.trainingsList = res;
-        this.filteredData = [...this.trainingsList];
-        let index=0;
-        this.trainingsList.forEach(ele => {
+  ngOnInit(): void {
+    this.trainingForm = this.formBuilder.group({
+      id: [''],
+      comment: ['', [Validators.required]],
+      status: ['', [Validators.required]]
+    });
+    this.trainingsService.getAllInitialStageTrainings().subscribe({
+      next: (res) => {
+        this.trainingsList3 = res;
+        this.filteredData = [...this.trainingsList3];
+        let index = 0;
+        this.trainingsList3.forEach(ele => {
           const datePipe = new DatePipe('en-US');
-          ele['location'] = ele['venueBlock']+","+
-          ele['venueDistrict']+","+ele["venueState"];
-          ele['trainingDate']= datePipe.transform(ele['trainingDate'], 'dd/MM/yyyy')!;
-          this.trainingsList[index]=ele;
+          ele['location'] = ele['venueBlock'] + "," +
+            ele['venueDistrict'] + "," + ele["venueState"];
+          ele['trainingDate'] = datePipe.transform(ele['trainingDate'], 'dd/MM/yyyy')!;
+          this.trainingsList3[index] = ele;
           index++;
         })
       },
-      error: (err)=>{
+      error: (err) => {
         this.toastr.error("Error while fetching data!");
       }
+    }
+
+    );
+
+
+    this.trainingsService.getApprovedTrainings().subscribe({
+      next: (res) => {
+        this.trainingsList = res;
+        this.filteredData = [...this.trainingsList];
+        let index = 0;
+        this.trainingsList.forEach(ele => {
+          const datePipe = new DatePipe('en-US');
+          ele['location'] = ele['venueBlock'] + "," +
+            ele['venueDistrict'] + "," + ele["venueState"];
+          ele['trainingDate'] = datePipe.transform(ele['trainingDate'], 'dd/MM/yyyy')!;
+          this.trainingsList[index] = ele;
+          index++;
+        })
+      },
+      error: (err) => {
+        this.toastr.error("Error while fetching data!");
       }
+    }
 
     );
 
     this.trainingsService.getRejectedTrainings().subscribe({
-        next:(res) => {
+      next: (res) => {
         this.trainingsList2 = res;
         //this.filteredData = [...this.trainingsList];
-        let index=0;
+        let index = 0;
         this.trainingsList2.forEach(ele => {
           const datePipe = new DatePipe('en-US');
-          ele['location'] = ele['venueBlock']+","+
-          ele['venueDistrict']+","+ele["venueState"];
-          ele['trainingDate']= datePipe.transform(ele['trainingDate'], 'dd/MM/yyyy')!;
-          this.trainingsList2[index]=ele;
+          ele['location'] = ele['venueBlock'] + "," +
+            ele['venueDistrict'] + "," + ele["venueState"];
+          ele['trainingDate'] = datePipe.transform(ele['trainingDate'], 'dd/MM/yyyy')!;
+          this.trainingsList2[index] = ele;
           index++;
         })
       },
-      error: (err)=>{
+      error: (err) => {
         this.toastr.error("Error while fetching data!");
       }
-      }
+    }
 
     );
 
 
-      }
-
+  }
+  openTrainingDetails(row: any) {
+    // alert('Training insititue : ' + this.trainingInstituteId);
+    this.router.navigate(['/admin/all-certificate'], {
+      state: {
+        trainingData: row,
+      },
+    });
+  }
   handleTableAction(event: { action: string; item: any; index: number }): void {
     console.log('Action:', event.action, 'Item:', event.item);
-    // const modal = new this.bootstrap.Modal(this.trainingDetailsModal.nativeElement);
-    //modal.show();
+    
+    if (event.action === 'download') {
+      // Handle certificate download for trainee
+      this.downloadCertificate(event.item);
+      return;
+    }
+    
+    // Handle view action
     this.traineeList = [];
     this.trainingDetails = event.item;
     this.fileNameTrainees = this.traineesFile;
@@ -286,17 +348,56 @@ export class ApprovedRejectedTrainingsComponent {
     return [...new Set(this.trainingsList.map((item) => item['status']))];
   }
 
-  reset() {}
+  reset() { }
 
-  open() {}
+  open() { }
   get formControls() {
     return this.trainingForm.controls;
   }
 
-  keyFunc() {}
+  keyFunc() { }
 
   modalDismiss() {
     this.modalService.dismissAll();
     this.ngOnInit();
+  }
+
+  downloadCertificate(trainee: any): void {
+    console.log('Downloading certificate for trainee:', trainee);
+    this.selectedTraineeForCertificate = trainee;
+
+    // Call the getCertificateDetails API
+    this.trainingsService
+      .getCertificateDetails(
+        trainee.uin || '',
+        trainee.email || '',
+        trainee.contactNumber || ''
+      )
+      .subscribe({
+        next: (response) => {
+          if (response && response.success) {
+            this.certificateData = response.data;
+            // Open certificate modal
+            this.modalService.open(this.certificateModal, {
+              size: 'xl',
+              scrollable: true,
+              backdrop: 'static',
+              keyboard: false,
+            });
+          } else {
+            this.toastr.error(
+              response.message || 'Failed to load certificate details',
+              'Error'
+            );
+          }
+        },
+        error: (error) => {
+          const errorMessage =
+            error.error?.message ||
+            'An error occurred while loading certificate details';
+          this.toastr.error(errorMessage, 'Error');
+          console.error('Error loading certificate details:', error);
+        },
+      });
   }
 }
