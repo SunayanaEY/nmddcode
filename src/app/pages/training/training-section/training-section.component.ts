@@ -87,6 +87,10 @@ export class TrainingSectionComponent implements OnInit {
     this.router.navigate(['/admin/registered-data-entry-operators']);
   }
 
+   navigateToAddTrainers(): void {
+    this.router.navigate(['/admin/add-trainers']);
+  }
+
   navigateToTrainingCentre() {
     this.router.navigate(['/admin/training-centre']);
   }

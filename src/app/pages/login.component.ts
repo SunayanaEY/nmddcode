@@ -15,11 +15,15 @@ import { GeocodingService, GeocodeResult } from '../services/geocoding.service';
 import { ToastrService } from 'ngx-toastr';
 import { OnInit } from '@angular/core';
 import { RouterModule } from '@angular/router';
+import { IndiaMapComponent } from "./public-dashboard/components/india-map/india-map.component";
+import { StateData } from './public-dashboard/public-dashboard.component';
+import { ModalConfig, ModalComponent } from '../components/modal/modal.component';
+import { TrainingService } from './training/services/training.service';
 
 @Component({
   selector: 'app-login',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, RouterModule],
+  imports: [CommonModule, ReactiveFormsModule, RouterModule, IndiaMapComponent, ModalComponent],
   templateUrl: './login.component.html',
   styleUrls: ['./login.component.css'],
 })
@@ -47,6 +51,95 @@ export class LoginComponent implements OnInit {
   addressLatitude: number | null = null;
   addressLongitude: number | null = null;
 
+  //India Map
+  selectedState: StateData | null = null;
+  onStateSelected(stateData: StateData): void {
+      this.selectedState = stateData;
+      // Update charts and stats based on selected state
+      console.log('Selected state:', stateData);
+    }
+
+    //Certificate Dwonload
+    downloadCertificate(): void {
+    // TODO: Implement certificate download functionality
+    this.showModal = true;
+  }
+  showModal = false;
+    modalConfig: ModalConfig = {
+      title: 'Certificate Download',
+      showCloseButton: true,
+      showFooter: true,
+      primaryButtonText: 'Submit',
+      secondaryButtonText: 'Close',
+      fields: [
+        {
+          id: 'uin',
+          label: 'UIN',
+          type: 'text',
+          placeholder: 'Enter UIN',
+          required: true,
+        },
+        {
+          id: 'gmail',
+          label: 'Gmail',
+          type: 'email',
+          placeholder: 'Enter your Gmail',
+          required: true,
+        },
+        {
+          id: 'phone',
+          label: 'Phone',
+          type: 'tel',
+          placeholder: 'Enter phone number',
+          required: true,
+        },
+      ],
+    };
+
+    onClose() {
+    this.showModal = false;
+  }
+  selectedItem: any;
+
+  onSubmit(formData: any) {
+    this.trainingsService
+      .getCertificateDetails(formData.uin, formData.gmail, formData.phone)
+      .subscribe({
+        next: (res) => {
+          if (res && res.data) {
+            // Clone the data so we don’t overwrite directly
+            const modifiedData = {
+              ...res.data,
+              location: `${res.data.venueBlock}, ${res.data.venueDistrict}, ${res.data.venueState}`,
+              trainingDate: new Date(res.data.trainingDate).toLocaleDateString(
+                'en-GB'
+              ), // dd/mm/yyyy
+            };
+
+            this.selectedItem = modifiedData;
+
+            const modalElement = document.getElementById(
+              'viewCertificateModal'
+            );
+            if (modalElement) {
+              const modal = new (window as any).bootstrap.Modal(modalElement);
+              modal.show();
+            }
+          } else {
+            console.warn('No data found in response:', res);
+          }
+        },
+        error: (err) => {
+          console.error('Error fetching trainees:', err);
+        },
+      });
+
+    this.showModal = false; // close modal after submit
+  }
+   onSecondaryAction() {
+    this.showModal = false;
+  }
+
   // Custom validator for password matching
   passwordMatchValidator(control: AbstractControl): ValidationErrors | null {
     const password = control.get('password');
@@ -68,7 +161,8 @@ export class LoginComponent implements OnInit {
     private route: ActivatedRoute,
     private toastr: ToastrService,
     private locationService: LocationService,
-    private geocodingService: GeocodingService
+    private geocodingService: GeocodingService,
+    private trainingsService: TrainingService
   ) {
     this.signInForm = this.fb.group({
       email: ['', [Validators.required, Validators.email]],

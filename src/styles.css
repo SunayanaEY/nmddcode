@@ -18836,7 +18836,7 @@ ngb-datepicker .ngb-dp-months ngb-datepicker-month-view .ngb-dp-week .ngb-dp-day
 
 /* Global login background class for consistent asset path resolution */
 .login-background {
-  background-image: url('assets/login/BG Photo.png');
+  background-image: url('assets/login/cow.JPG');
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;

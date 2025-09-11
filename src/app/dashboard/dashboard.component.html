@@ -1,0 +1,301 @@
+<!-- Government Header -->
+<!-- <div class="gov-header">
+  <div class="container-fluid">
+    <div class="row align-items-center">
+      <div class="col-md-8 d-flex align-items-center">
+        <div class="emblem-container">
+          <img
+            src="assets/login/emblem.png"
+            alt="Government Emblem"
+            class="gov-emblem"
+          />
+        </div>
+        <div class="gov-text">
+          <h1 class="gov-title">भारत सरकार | GOVERNMENT OF INDIA</h1>
+          <p class="dept-text-hindi">पशुपालन और डेयरी विभाग</p>
+          <p class="dept-text-english">
+            DEPARTMENT OF ANIMAL HUSBANDRY AND DAIRYING
+          </p>
+        </div>
+      </div>
+      <div class="col-md-4 text-end">
+        <div class="header-actions">
+          <button class="btn-login" (click)="navigateToLogin()">
+            <i class="fas fa-user"></i>
+            Sign In
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div> -->
+
+<!-- Main Dashboard Content -->
+<div class="dashboard-container">
+  <div class="container-fluid">
+    <!-- Dashboard Header -->
+    <div class="dashboard-header mb-4">
+      <div class="dashboard-header-bg"></div>
+      <div class="dashboard-header-content">
+        <div class="row align-items-center">
+          <div class="col-md-12">
+            <div class="dashboard-title-section">
+              <div class="title-icon-wrapper">
+                <i class="fas fa-tachometer-alt dashboard-main-icon"></i>
+              </div>
+              <div class="title-content">
+                <h2 class="dashboard-title mb-1">
+                 Training Dashboard
+                  <!-- <span class="title-accent"></span> -->
+                </h2>
+                <p class="dashboard-welcome mb-0">
+                  <i class="fas fa-user-circle welcome-icon"></i>
+                 <span>Welcome back to Training Dashboard!</span>
+                </p>
+              </div>
+            </div>
+          </div>
+          <!-- <div class="col-md-6 text-end">
+            <div class="dashboard-actions">
+              <button
+                class="btn btn-primary me-2"
+                (click)="downloadCertificate()"
+              >
+                <i class="fas fa-download me-2"></i>Download Certificate
+              </button>
+              <app-modal
+                [show]="showModal"
+                [config]="modalConfig"
+                mode="create"
+                (close)="onClose()"
+                (primaryAction)="onSubmit($event)"
+                (secondaryAction)="onSecondaryAction()"
+              >
+              </app-modal>
+
+            </div>
+          </div> -->
+        </div>
+      </div>
+    </div>
+
+    <!-- Public View Section -->
+    <div class="public-view-section mb-4">
+      <div class="d-flex justify-content-between align-items-center mb-3">
+        <div>
+          <!-- <h4 class="section-title mb-1">Public View</h4> -->
+          <p class="text-muted mb-0">Training Summary</p>
+        </div>
+      </div>
+
+      <!-- Filter Section -->
+      <div class="filter-section mb-4" [formGroup]="filterForm">
+        <div class="row g-3">
+          <div class="col-md-4">
+            <label for="stateSelect" class="form-label fw-semibold"
+              >State</label
+            >
+            <select
+              id="stateSelect"
+              class="form-select"
+              formControlName="stateId"
+              [disabled]="isLoadingStates"
+            >
+              <!-- <option value="null" selected disabled>Select State</option> -->
+              <option value="" selected>All States</option>
+              <option *ngFor="let state of states" [value]="state.id">
+                {{ state.stateName }}
+              </option>
+            </select>
+            <div *ngIf="isLoadingStates" class="text-muted small mt-1">
+              <i class="fas fa-spinner fa-spin me-1"></i>Loading states...
+            </div>
+          </div>
+
+          <div class="col-md-4">
+            <label for="districtSelect" class="form-label fw-semibold"
+              >District</label
+            >
+            <select
+              id="districtSelect"
+              class="form-select"
+              formControlName="districtId"
+              [disabled]="isLoadingDistricts || !selectedStateId"
+            >
+            <!-- <option value="null" selected disabled>Select District</option> -->
+              <option value=""selected>All Districts</option>
+              <option *ngFor="let district of districts" [value]="district.id">
+                {{ district.districtName }}
+              </option>
+            </select>
+            <div *ngIf="isLoadingDistricts" class="text-muted small mt-1">
+              <i class="fas fa-spinner fa-spin me-1"></i>Loading districts...
+            </div>
+            <!-- <div
+
+              class="text-muted small mt-1"
+            >
+             <span *ngIf="!selectedStateId && !isLoadingStates">Select a state first</span>
+
+            </div> -->
+          </div>
+
+          <div class="col-md-4" style="
+    align-content: end;
+">
+            <button
+              type="button"
+              class="btn btn-outline-secondary"
+              (click)="clearFilters()"
+              [disabled]="!selectedStateId && !selectedDistrictId"
+            >
+              <i class="fas fa-times me-1"></i>Clear Filters
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Stats Cards -->
+      <app-stats-cards [stats]="dashboardStats" [isLoading]="isLoading">
+      </app-stats-cards>
+    </div>
+
+    <!-- First Row: Monthly Trainings and Age Group -->
+    <div class="row g-4 mb-4">
+      <!-- Monthly Trainings Chart -->
+      <div class="col-lg-6">
+        <div class="card h-100">
+          <div class="card-header">
+            <h5 class="card-title mb-0">
+              <i class="fas fa-chart-line text-success me-2"></i>
+              Monthly Trainings Conducted
+            </h5>
+          </div>
+          <div class="card-body">
+            <app-monthly-chart
+              [selectedState]="selectedState"
+              [isLoading]="isLoading"
+              [stateId]="selectedStateId"
+              [districtId]="selectedDistrictId"
+            >
+            </app-monthly-chart>
+          </div>
+        </div>
+      </div>
+
+      <!-- Age Group Chart -->
+      <div class="col-lg-6">
+        <div class="card h-100">
+          <div class="card-header">
+            <h5 class="card-title mb-0">
+              <i class="fas fa-users text-warning me-2"></i>
+              Age Group
+            </h5>
+          </div>
+          <div class="card-body">
+            <app-age-group-chart
+              [selectedState]="selectedState"
+              [isLoading]="isLoading"
+              [stateId]="selectedStateId"
+              [districtId]="selectedDistrictId"
+            >
+            </app-age-group-chart>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Second Row: Training Institutes and Mode of Training -->
+    <div class="row g-4">
+      <!-- India Map -->
+      <div class="col-lg-6">
+        <div class="card">
+          <div
+            class="card-header d-flex justify-content-between align-items-center"
+          >
+            <h5 class="card-title mb-0">
+              <i class="fas fa-map-marked-alt text-primary me-2"></i>
+              Training Institutes in India
+            </h5>
+          </div>
+          <div class="card-body">
+            <app-india-map
+              [selectedState]="selectedState"
+              (stateSelected)="onStateSelected($event)"
+            >
+            </app-india-map>
+          </div>
+        </div>
+      </div>
+
+      <!-- Mode of Training Chart -->
+      <div class="col-lg-6">
+        <div class="card">
+          <div class="card-header">
+            <h5 class="card-title mb-0">
+              <i class="fas fa-chart-pie text-info me-2"></i>
+              Mode of Training
+            </h5>
+          </div>
+          <div class="card-body">
+            <app-mode-of-training-chart
+              [selectedState]="selectedState"
+              [isLoading]="isLoading"
+              [stateId]="selectedStateId"
+              [districtId]="selectedDistrictId"
+            >
+            </app-mode-of-training-chart>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- Modal -->
+  <div
+    class="modal fade"
+    id="viewCertificateModal"
+    tabindex="-1"
+    aria-labelledby="viewCertificateModalLabel"
+    aria-hidden="true"
+  >
+    <div class="modal-dialog modal-xl modal-dialog-centered">
+      <div class="modal-content p-4">
+        <div class="modal-header">
+          <h2 class="modal-title" id="viewCertificateModalLabel">
+            Approved Certificate
+          </h2>
+          <button
+            type="button"
+            class="btn-close"
+            data-bs-dismiss="modal"
+            aria-label="Close"
+          ></button>
+        </div>
+        <div class="modal-body">
+          <ng-container *ngIf="selectedItem">
+            <app-certificate-layout
+              [data]="selectedItem"
+            ></app-certificate-layout>
+          </ng-container>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Loading Overlay -->
+<div class="loading-overlay" *ngIf="isLoading">
+  <div class="spinner-border text-primary" role="status">
+    <span class="visually-hidden">Loading...</span>
+  </div>
+  <button
+    type="button"
+    class="btn btn-primary"
+    data-bs-toggle="modal"
+    data-bs-target="#exampleModal"
+    id="modalBtn"
+    style="display: none"
+  >
+    Launch demo modal
+  </button>
+</div>

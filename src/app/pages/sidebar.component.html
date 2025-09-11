@@ -37,14 +37,25 @@
   <div class="nav-container">
     <nav class="flex-grow-1">
       <!-- Common Dashboard -->
+             <a
+        class="sidebar-link d-flex align-items-center mb-2 fw-bold"
+        [routerLink]="['dashboard']"
+        routerLinkActive="active"
+        [attr.title]="collapsed ? 'Dashboard' : null"
+        *ngIf="canAccessAdminFeatures()"
+      >
+        <i class="bi bi-speedometer2 me-2"></i>
+        <span class="sidebar-label" *ngIf="!collapsed">Dashboard</span>
+      </a>
+      <!--Training Modules-->
       <a
         class="sidebar-link d-flex align-items-center mb-2 fw-bold"
         [routerLink]="['training-module']"
         routerLinkActive="active"
-        [attr.title]="collapsed ? 'Dashboard' : null"
+        [attr.title]="collapsed ? 'Training Modules' : null"
       >
         <i class="bi bi-speedometer2 me-2"></i>
-        <span class="sidebar-label" *ngIf="!collapsed">Training Dashboard</span>
+        <span class="sidebar-label" *ngIf="!collapsed">Training Modules</span>
       </a>
       <!-- Change Password -->
       <a
