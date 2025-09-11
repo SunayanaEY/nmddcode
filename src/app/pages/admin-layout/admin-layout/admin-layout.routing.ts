@@ -82,11 +82,11 @@ export const AdminLayoutRoutes: Routes = [
   {
     path: 'training-centre-admin-profile',
     loadComponent: () =>
-      import('../../training/training-centre-admin-profile/training-centre-admin-profile.component').then(
-        (m) => m.TrainingCentreAdminProfileComponent
-      ),
+      import(
+        '../../training/training-centre-admin-profile/training-centre-admin-profile.component'
+      ).then((m) => m.TrainingCentreAdminProfileComponent),
     canActivate: [RoleGuard],
-    data: { allowedRoles: [1] },
+    data: { allowedRoles: [1, 5] },
   },
   {
     path: 'update-profile',

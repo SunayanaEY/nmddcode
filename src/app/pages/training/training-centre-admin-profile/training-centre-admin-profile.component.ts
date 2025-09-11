@@ -8,10 +8,17 @@ import {
   AbstractControl,
   ValidationErrors,
 } from '@angular/forms';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
-import { BreadcrumbComponent, BreadcrumbItem } from '../../../components/breadcrumb/breadcrumb.component';
-import { LocationService, State, District } from '../../../services/location.service';
+import {
+  BreadcrumbComponent,
+  BreadcrumbItem,
+} from '../../../components/breadcrumb/breadcrumb.component';
+import {
+  LocationService,
+  State,
+  District,
+} from '../../../services/location.service';
 import { AuthService } from '../../../services/auth.service';
 
 @Component({
@@ -19,16 +26,23 @@ import { AuthService } from '../../../services/auth.service';
   standalone: true,
   imports: [CommonModule, ReactiveFormsModule, BreadcrumbComponent],
   templateUrl: './training-centre-admin-profile.component.html',
-  styleUrls: ['./training-centre-admin-profile.component.css']
+  styleUrls: ['./training-centre-admin-profile.component.css'],
 })
 export class TrainingCentreAdminProfileComponent implements OnInit {
   profileForm: FormGroup;
   selectedFile: File | null = null;
+  selectedFileDoc: File | null = null;
   selectedImagePreview: string | null = null;
+  selectedDocPreview: string | null = null;
   isDragOver = false;
+  isDragOverDoc = false;
   showPassword = false;
   showConfirmPassword = false;
   isLoading = false;
+  userRole: any;
+  instituteData: any;
+  trainingInstituteId: any;
+  userId: any;
 
   // Location data
   states: State[] = [];
@@ -38,7 +52,7 @@ export class TrainingCentreAdminProfileComponent implements OnInit {
 
   breadcrumbItems: BreadcrumbItem[] = [
     { label: 'Training', url: '/admin/training-module' },
-    { label: 'Training Centre Admin Profile Creation' }
+    { label: 'Training Centre Admin Profile Creation' },
   ];
 
   // Custom validator for password matching
@@ -60,57 +74,107 @@ export class TrainingCentreAdminProfileComponent implements OnInit {
     private router: Router,
     private toastr: ToastrService,
     private locationService: LocationService,
-    private authService: AuthService
+    private authService: AuthService,
+    private route: ActivatedRoute
   ) {
-    this.profileForm = this.fb.group(
-      {
-        username: ['', [Validators.required, Validators.minLength(3)]],
+    this.getRole();
+    if (this.userRole == 5) {
+      const nav = this.router.getCurrentNavigation();
+      const passedData = nav?.extras.state?.['data'];
+      this.trainingInstituteId = passedData.id;
+      this.instituteData = passedData;
+    }
+
+    if (this.userRole == 1) {
+      this.profileForm = this.fb.group({
         trainingInstituteName: [
           '',
           [Validators.required, Validators.minLength(3)],
         ],
         state: ['', [Validators.required]],
         district: ['', [Validators.required]],
-        contactPersonName: ['', [Validators.required, Validators.minLength(2)]],
-        designation: ['', [Validators.required]],
-        contactNumber: [
-          '',
-          [Validators.required, Validators.pattern(/^[0-9]{10}$/)],
-        ],
-        emailId: ['', [Validators.required, Validators.email]],
-        address: ['', [Validators.required, Validators.minLength(10)]],
-        latitude: ['', [Validators.required, Validators.min(-90), Validators.max(90)]],
-        longitude: ['', [Validators.required, Validators.min(-180), Validators.max(180)]],
-        password: [
-          '',
-          [
-            Validators.required,
-            Validators.minLength(8),
-            Validators.pattern(
-              /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]/
-            ),
-          ],
-        ],
-        confirmPassword: ['', [Validators.required]],
-      },
-      { validators: this.passwordMatchValidator }
-    );
 
-    // Subscribe to state changes to load districts
-    this.profileForm.get('state')?.valueChanges.subscribe((stateId) => {
-      if (stateId) {
-        this.loadDistricts(stateId);
-        // Reset district selection when state changes
-        this.profileForm.get('district')?.setValue('');
-      } else {
-        this.districts = [];
-        this.profileForm.get('district')?.setValue('');
-      }
-    });
+        address: ['', [Validators.required, Validators.minLength(10)]],
+        latitude: [
+          '',
+          [Validators.required, Validators.min(-90), Validators.max(90)],
+        ],
+        longitude: [
+          '',
+          [Validators.required, Validators.min(-180), Validators.max(180)],
+        ],
+      });
+
+      // Subscribe to state changes to load districts
+      this.profileForm.get('state')?.valueChanges.subscribe((stateId) => {
+        if (stateId) {
+          this.loadDistricts(stateId);
+          // Reset district selection when state changes
+          this.profileForm.get('district')?.setValue('');
+        } else {
+          this.districts = [];
+          this.profileForm.get('district')?.setValue('');
+        }
+      });
+    } else {
+      this.profileForm = this.fb.group(
+        {
+          contactPersonName: [
+            '',
+            [Validators.required, Validators.minLength(2)],
+          ],
+          designation: ['', [Validators.required]],
+          contactNumber: [
+            '',
+            [Validators.required, Validators.pattern(/^[0-9]{10}$/)],
+          ],
+          emailId: ['', [Validators.required, Validators.email]],
+          password: [
+            '',
+            [
+              Validators.required,
+              Validators.minLength(8),
+              Validators.pattern(
+                /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]/
+              ),
+            ],
+          ],
+          confirmPassword: ['', [Validators.required]],
+          trainingInstituteName: [
+            '',
+            [Validators.required, Validators.minLength(3)],
+          ],
+          state: ['', [Validators.required]],
+          district: ['', [Validators.required]],
+
+          address: ['', [Validators.required, Validators.minLength(10)]],
+          latitude: [
+            '',
+            [Validators.required, Validators.min(-90), Validators.max(90)],
+          ],
+          longitude: [
+            '',
+            [Validators.required, Validators.min(-180), Validators.max(180)],
+          ],
+        },
+        { validators: this.passwordMatchValidator }
+      );
+    }
   }
 
   ngOnInit() {
     this.loadStates();
+    if (this.userRole == 5) {
+      this.initializeForm();
+    }
+  }
+  getRole() {
+    const userData = sessionStorage.getItem('user');
+    if (userData) {
+      const user = JSON.parse(userData);
+      this.userRole = user.role;
+      this.userId = user.id;
+    }
   }
 
   /**
@@ -148,7 +212,19 @@ export class TrainingCentreAdminProfileComponent implements OnInit {
       },
     });
   }
-
+  initializeForm() {
+    this.profileForm.patchValue({
+      trainingInstituteName: this.instituteData.trainingInstituteName,
+      state: this.instituteData.stateId,
+      address: this.instituteData.address,
+      latitude: this.instituteData.latitude,
+      longitude: this.instituteData.longitude,
+    });
+    this.loadDistricts(this.instituteData.stateId);
+    this.profileForm.patchValue({
+      district: this.instituteData.districtId,
+    });
+  }
   /**
    * Handle form submission
    */
@@ -161,76 +237,137 @@ export class TrainingCentreAdminProfileComponent implements OnInit {
       );
       return;
     }
-
-    if (!this.selectedFile) {
-      this.toastr.error('Please select an institute image', 'Validation Error');
-      return;
-    }
-
-    this.isLoading = true;
-
-    // Create FormData for multipart request
     const formData = new FormData();
 
-    // Create instituteDetails object matching the API structure
-    const instituteDetails = {
-      username: this.profileForm.get('username')?.value || '',
-      trainingInstituteName: this.profileForm.get('trainingInstituteName')?.value || '',
-      stateId: parseInt(this.profileForm.get('state')?.value) || 0,
-      districtId: parseInt(this.profileForm.get('district')?.value) || 0,
-      block: '', // Not in current form, can be added if needed
-      contactPersonName: this.profileForm.get('contactPersonName')?.value || '',
-      designation: this.profileForm.get('designation')?.value || '',
-      contactNumber: this.profileForm.get('contactNumber')?.value || '',
-      emailId: this.profileForm.get('emailId')?.value || '',
-      address: this.profileForm.get('address')?.value || '',
-      latitude: this.profileForm.get('latitude')?.value || null,
-      longitude: this.profileForm.get('longitude')?.value || null,
-      password: this.profileForm.get('password')?.value || '',
-    };
+    if (this.userRole == 1) {
+      if (!this.selectedFile) {
+        this.toastr.error(
+          'Please select an institute image',
+          'Validation Error'
+        );
+        return;
+      }
+      if (!this.selectedFileDoc) {
+        this.toastr.error(
+          'Please select a security document',
+          'Validation Error'
+        );
+        return;
+      }
+      this.isLoading = true;
 
-    // Append instituteDetails as JSON string with explicit content type
-    const instituteDetailsBlob = new Blob([JSON.stringify(instituteDetails)], {
-      type: 'application/json',
-    });
-    formData.append('instituteDetails', instituteDetailsBlob);
+      // Create instituteDetails object matching the API structure
+      const instituteDetails = {
+        instituteName:
+          this.profileForm.get('trainingInstituteName')?.value || '',
+        stateId: parseInt(this.profileForm.get('state')?.value) || 0,
+        districtId: parseInt(this.profileForm.get('district')?.value) || 0,
+        address: this.profileForm.get('address')?.value || '',
+        latitude: this.profileForm.get('latitude')?.value || null,
+        longitude: this.profileForm.get('longitude')?.value || null,
+      };
 
-    // Append image file
-    formData.append('instituteImage', this.selectedFile);
-
-    // Call the registration API
-    this.authService.register(formData).subscribe({
-      next: (response) => {
-        this.isLoading = false;
-        if (response.success) {
-          // Show success message with registration details
-          const registrationId = response.data?.registrationId || 'N/A';
-          const instituteName = response.data?.trainingInstituteName || 'N/A';
-          const status = response.data?.status || 'PENDING';
-
-          // Reset form after successful registration
-          this.profileForm.reset();
-          this.selectedFile = null;
-          this.selectedImagePreview = null;
-
-          this.toastr.success(
-             `Training Centre Admin profile created successfully! Registration ID: ${registrationId}`,
-             'Success'
-           );
-           
-           // Navigate to training centre component after successful registration
-           this.router.navigate(['/admin/training-centre']);
-        } else {
-          this.toastr.error(response.message || 'Registration failed', 'Error');
+      // Append instituteDetails as JSON string with explicit content type
+      const instituteDetailsBlob = new Blob(
+        [JSON.stringify(instituteDetails)],
+        {
+          type: 'application/json',
         }
-      },
-      error: (error) => {
-        this.isLoading = false;
-        const errorMessage = error.error?.message || 'Registration failed. Please try again.';
-        this.toastr.error(errorMessage, 'Error');
-        console.error('Registration error:', error);
-      },
-    });
+      );
+      formData.append('data', instituteDetailsBlob);
+
+      // Append image file
+      formData.append('registrationDoc', this.selectedFileDoc);
+      formData.append('instituteImage', this.selectedFile);
+      this.authService.createInstitute(this.userId, formData).subscribe({
+        next: (response) => {
+          this.isLoading = false;
+          if (response.success) {
+            // Show success message with registration details
+            const registrationId = response.data?.registrationId || 'N/A';
+            const instituteName = response.data?.trainingInstituteName || 'N/A';
+            const status = response.data?.status || 'PENDING';
+
+            // Reset form after successful registration
+            this.profileForm.reset();
+            this.selectedFile = null;
+            this.selectedImagePreview = null;
+
+            this.toastr.success(
+              `Training Centre Admin profile created successfully! Registration ID: ${registrationId}`,
+              'Success'
+            );
+
+            // Navigate to training centre component after successful registration
+            this.router.navigate(['/admin/training-centre']);
+          } else {
+            this.toastr.error(
+              response.message || 'Registration failed',
+              'Error'
+            );
+          }
+        },
+        error: (error) => {
+          this.isLoading = false;
+          const errorMessage =
+            error.error?.message || 'Registration failed. Please try again.';
+          this.toastr.error(errorMessage, 'Error');
+          console.error('Registration error:', error);
+        },
+      });
+    } else {
+      this.isLoading = true;
+
+      // Create FormData for multipart request
+      // Create instituteDetails object matching the API structure
+      const instituteDetails = {
+        contactPersonName:
+          this.profileForm.get('contactPersonName')?.value || '',
+        designation: this.profileForm.get('designation')?.value || '',
+        contactNumber: this.profileForm.get('contactNumber')?.value || '',
+        emailId: this.profileForm.get('emailId')?.value || '',
+        password: this.profileForm.get('password')?.value || '',
+      };
+
+      // Append instituteDetails as JSON string with explicit content type
+
+      this.authService
+        .updateInstitute(this.trainingInstituteId, instituteDetails)
+        .subscribe({
+          next: (response) => {
+            this.isLoading = false;
+            if (response.success) {
+              // Show success message with registration details
+              const registrationId = response.data?.registrationId || 'N/A';
+              const instituteName =
+                response.data?.trainingInstituteName || 'N/A';
+              const status = response.data?.status || 'PENDING';
+
+              // Reset form after successful registration
+              this.profileForm.reset();
+              this.selectedFile = null;
+              this.selectedImagePreview = null;
+
+              this.toastr.success(
+                `Training Centre Admin profile updated successfully! Registration ID: ${registrationId}`,
+                'Success'
+              );
+
+              // Navigate to training centre component after successful registration
+              this.router.navigate(['/admin/training-centre']);
+            } else {
+              this.toastr.error(response.message || 'Updation failed', 'Error');
+            }
+          },
+          error: (error) => {
+            this.isLoading = false;
+            const errorMessage =
+              error.error?.message || 'Registration failed. Please try again.';
+            this.toastr.error(errorMessage, 'Error');
+            console.error('Registration error:', error);
+          },
+        });
+    }
   }
 
   /**
@@ -240,25 +377,52 @@ export class TrainingCentreAdminProfileComponent implements OnInit {
     const input = event.target as HTMLInputElement;
     if (input.files && input.files[0]) {
       const file = input.files[0];
-      
+
       // Validate file size (5MB limit)
       if (file.size > 5 * 1024 * 1024) {
         this.toastr.error('File size must be less than 5MB', 'File Error');
         return;
       }
-      
+
       // Validate file type
       if (!file.type.startsWith('image/')) {
         this.toastr.error('Please select a valid image file', 'File Error');
         return;
       }
-      
+
       this.selectedFile = file;
-      
+
       // Create preview
       const reader = new FileReader();
       reader.onload = (e) => {
         this.selectedImagePreview = e.target?.result as string;
+      };
+      reader.readAsDataURL(file);
+    }
+  }
+  onFileSelectedDoc(event: Event) {
+    const input = event.target as HTMLInputElement;
+    if (input.files && input.files[0]) {
+      const file = input.files[0];
+
+      // Validate file size (5MB limit)
+      if (file.size > 5 * 1024 * 1024) {
+        this.toastr.error('File size must be less than 5MB', 'File Error');
+        return;
+      }
+
+      // Validate file type
+      if (!file.type.startsWith('application/pdf')) {
+        this.toastr.error('Please select a valid PDF file', 'File Error');
+        return;
+      }
+
+      this.selectedFileDoc = file;
+
+      // Create preview (if needed)
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        this.selectedDocPreview = file.name as string;
       };
       reader.readAsDataURL(file);
     }
@@ -268,8 +432,16 @@ export class TrainingCentreAdminProfileComponent implements OnInit {
    * Trigger file input click
    */
   triggerFileInput() {
-    const fileInput = document.querySelector('input[type="file"]') as HTMLInputElement;
+    const fileInput = document.querySelector(
+      'input[type="file"]'
+    ) as HTMLInputElement;
     fileInput?.click();
+  }
+
+  triggerFileInputImage() {
+    const fileInputs = document.querySelectorAll('input[type="file"]');
+    const secondFileInput = fileInputs[1] as HTMLInputElement;
+    secondFileInput?.click();
   }
 
   /**
@@ -279,6 +451,10 @@ export class TrainingCentreAdminProfileComponent implements OnInit {
     event.preventDefault();
     this.isDragOver = true;
   }
+  onDragOverDoc(event: DragEvent) {
+    event.preventDefault();
+    this.isDragOverDoc = true;
+  }
 
   /**
    * Handle drag leave event
@@ -287,6 +463,10 @@ export class TrainingCentreAdminProfileComponent implements OnInit {
     event.preventDefault();
     this.isDragOver = false;
   }
+  onDragLeaveDoc(event: DragEvent) {
+    event.preventDefault();
+    this.isDragOverDoc = false;
+  }
 
   /**
    * Handle drop event
@@ -294,29 +474,59 @@ export class TrainingCentreAdminProfileComponent implements OnInit {
   onDrop(event: DragEvent) {
     event.preventDefault();
     this.isDragOver = false;
-    
+
     const files = event.dataTransfer?.files;
     if (files && files[0]) {
       const file = files[0];
-      
+
       // Validate file size (5MB limit)
       if (file.size > 5 * 1024 * 1024) {
         this.toastr.error('File size must be less than 5MB', 'File Error');
         return;
       }
-      
+
       // Validate file type
       if (!file.type.startsWith('image/')) {
         this.toastr.error('Please select a valid image file', 'File Error');
         return;
       }
-      
+
       this.selectedFile = file;
-      
+
       // Create preview
       const reader = new FileReader();
       reader.onload = (e) => {
         this.selectedImagePreview = e.target?.result as string;
+      };
+      reader.readAsDataURL(file);
+    }
+  }
+  onDropDoc(event: DragEvent) {
+    event.preventDefault();
+    this.isDragOver = false;
+
+    const files = event.dataTransfer?.files;
+    if (files && files[0]) {
+      const file = files[0];
+
+      // Validate file size (5MB limit)
+      if (file.size > 5 * 1024 * 1024) {
+        this.toastr.error('File size must be less than 5MB', 'File Error');
+        return;
+      }
+
+      // Validate file type
+      if (!file.type.startsWith('application/pdf')) {
+        this.toastr.error('Please select a valid document file', 'File Error');
+        return;
+      }
+
+      this.selectedFileDoc = file;
+
+      // Create preview
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        this.selectedDocPreview = file.name as string;
       };
       reader.readAsDataURL(file);
     }
@@ -329,9 +539,24 @@ export class TrainingCentreAdminProfileComponent implements OnInit {
     event.stopPropagation();
     this.selectedFile = null;
     this.selectedImagePreview = null;
-    
+
     // Reset file input
-    const fileInput = document.querySelector('input[type="file"]') as HTMLInputElement;
+    const fileInput = document.querySelector(
+      'input[type="file"]'
+    ) as HTMLInputElement;
+    if (fileInput) {
+      fileInput.value = '';
+    }
+  }
+  removeDoc(event: Event) {
+    event.stopPropagation();
+    this.selectedFileDoc = null;
+    this.selectedDocPreview = null;
+
+    // Reset file input
+    const fileInput = document.querySelector(
+      'input[type="file"]'
+    ) as HTMLInputElement;
     if (fileInput) {
       fileInput.value = '';
     }
@@ -355,10 +580,10 @@ export class TrainingCentreAdminProfileComponent implements OnInit {
    * Mark all form fields as touched
    */
   markFormGroupTouched(formGroup: FormGroup) {
-    Object.keys(formGroup.controls).forEach(key => {
+    Object.keys(formGroup.controls).forEach((key) => {
       const control = formGroup.get(key);
       control?.markAsTouched();
-      
+
       if (control instanceof FormGroup) {
         this.markFormGroupTouched(control);
       }

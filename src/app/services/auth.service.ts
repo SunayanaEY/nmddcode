@@ -148,6 +148,49 @@ export class AuthService {
         })
       );
   }
+  updateInstitute(
+    trainingInstituteId: any,
+    instituteDetails: any
+  ): Observable<RegisterResponse> {
+    return this.http
+      .put<RegisterResponse>(
+        `${this.apiUrl}trainingInstitutes/updateByState/${trainingInstituteId}`,
+        instituteDetails, // plain JSON body
+        {
+          headers: new HttpHeaders({ 'Content-Type': 'application/json' }),
+        }
+      )
+      .pipe(
+        catchError((error) => {
+          console.error('Update failed', error);
+          throw error;
+        })
+      );
+  }
+
+  createInstitute(
+    userId: any,
+    formData: FormData
+  ): Observable<RegisterResponse> {
+    // Explicitly set headers to let browser handle multipart/form-data
+    const headers = new HttpHeaders();
+    // Do NOT set Content-Type - let browser set it automatically for FormData
+
+    return this.http
+      .post<RegisterResponse>(
+        `${this.apiUrl}trainingInstitutes/create/${userId}`,
+        formData,
+        {
+          headers: headers,
+        }
+      )
+      .pipe(
+        catchError((error) => {
+          console.error('Registration failed', error);
+          throw error;
+        })
+      );
+  }
 
   // Session timeout management methods
   private startSessionMonitoring(): void {
