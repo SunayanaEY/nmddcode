@@ -89,7 +89,7 @@ export class IndiaMapComponent implements OnInit, AfterViewInit, OnDestroy {
     console.log('MapContainer exists:', !!this.mapContainer);
     console.log('MapContainer nativeElement exists:', !!(this.mapContainer && this.mapContainer.nativeElement));
     console.log('isLoading state:', this.isLoading);
-    
+
     // Check if we can initialize immediately or need to wait for loading to complete
     if (!this.isLoading) {
       this.initializeMapWhenReady();
@@ -97,7 +97,7 @@ export class IndiaMapComponent implements OnInit, AfterViewInit, OnDestroy {
       // Watch for isLoading to become false
       this.waitForLoadingComplete();
     }
-    
+
     console.log('=== ngAfterViewInit END ===');
   }
 
@@ -139,23 +139,23 @@ export class IndiaMapComponent implements OnInit, AfterViewInit, OnDestroy {
 
   private initializeMap(): void {
     console.log('=== initializeMap START ===');
-    
+
     if (!this.mapContainer || !this.mapContainer.nativeElement) {
       console.error('❌ Map container not found during initialization');
       console.log('MapContainer:', this.mapContainer);
       console.log('NativeElement:', this.mapContainer?.nativeElement);
       return;
     }
-    
+
     const container = this.mapContainer.nativeElement;
     console.log('✅ Container element found:', container);
-    
+
     const rect = container.getBoundingClientRect();
     console.log('Container getBoundingClientRect():', rect);
-    
+
     this.width = rect.width || 500;
     this.height = rect.height || 400;
-    
+
     console.log('✅ Map dimensions calculated:', { width: this.width, height: this.height });
 
     // Create SVG
@@ -165,7 +165,9 @@ export class IndiaMapComponent implements OnInit, AfterViewInit, OnDestroy {
       .attr('width', '100%')
       .attr('height', '100%')
       .attr('viewBox', `0 0 ${this.width} ${this.height}`)
-      .style('background', '#f8f9fa');
+      //.style('background', '#f8f9fa');
+      .style('background','rgba(255, 255, 255, 0.08)')
+      .style('backdrop-filter','blur(25px)');
     console.log('✅ SVG created:', this.svg.node());
 
     // Create main group
@@ -195,17 +197,17 @@ export class IndiaMapComponent implements OnInit, AfterViewInit, OnDestroy {
     this.svg.call(this.zoom);
     console.log('✅ Zoom behavior applied');
     console.log('=== initializeMap COMPLETED SUCCESSFULLY ===');
-    
+
     // Load the India map data
     this.loadIndiaMap();
   }
 
   private async loadIndiaMap(): Promise<void> {
     console.log('=== loadIndiaMap START ===');
-    
+
     try {
       console.log('🌐 Attempting to fetch GeoJSON data from: assets/geoJsonData/India.geojson');
-      
+
       const response = await fetch('assets/geoJsonData/India.geojson');
       console.log('📡 Fetch response received:', {
         status: response.status,
@@ -213,11 +215,11 @@ export class IndiaMapComponent implements OnInit, AfterViewInit, OnDestroy {
         ok: response.ok,
         url: response.url
       });
-      
+
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status} - ${response.statusText}`);
       }
-      
+
       console.log('📄 Parsing JSON response...');
       const geoData = await response.json();
       console.log('✅ GeoJSON data loaded successfully!');
@@ -230,13 +232,13 @@ export class IndiaMapComponent implements OnInit, AfterViewInit, OnDestroy {
           geometryType: geoData.features[0].geometry?.type
         } : 'No features'
       });
-      
+
       console.log('🗺️ Creating map from GeoJSON...');
       this.createMapFromGeoJSON(geoData);
       console.log('📍 Adding institute markers...');
       this.addInstituteMarkers();
       console.log('=== loadIndiaMap COMPLETED SUCCESSFULLY ===');
-      
+
     } catch (error) {
       console.error('❌ Error loading India map:', error);
       const errorObj = error as Error;
@@ -258,7 +260,7 @@ export class IndiaMapComponent implements OnInit, AfterViewInit, OnDestroy {
       type: geoData.type,
       featuresCount: geoData.features?.length
     });
-    
+
     // Set up projection for India
     console.log('🌍 Setting up projection...');
     this.projection = d3.geoMercator()
@@ -270,21 +272,21 @@ export class IndiaMapComponent implements OnInit, AfterViewInit, OnDestroy {
       scale: 1000,
       translate: [this.width / 2, this.height / 2]
     });
-    
+
     this.path = d3.geoPath().projection(this.projection);
     console.log('✅ Path generator created');
-    
+
     // Draw states/features from GeoJSON
     console.log('🎨 Drawing states from GeoJSON features...');
     const stateSelection = this.g.selectAll('.state')
       .data(geoData.features);
     console.log('Data bound to selection, features count:', geoData.features.length);
-    
+
     const stateEnter = stateSelection.enter()
       .append('path')
       .attr('class', 'state');
     console.log('✅ Path elements created for', geoData.features.length, 'features');
-    
+
     stateEnter
       .attr('d', (d: any) => {
         const pathData = this.path(d);
@@ -314,11 +316,11 @@ export class IndiaMapComponent implements OnInit, AfterViewInit, OnDestroy {
           this.stateSelected.emit(this.statesData[stateCode]);
         }
       });
-    
+
     console.log('✅ State paths rendered with interactions');
     console.log('=== createMapFromGeoJSON COMPLETED ===');
   }
-  
+
   private getStateCodeFromName(stateName: string): string | null {
     const stateMapping: { [key: string]: string } = {
       'Uttar Pradesh': 'UP',
@@ -337,7 +339,7 @@ export class IndiaMapComponent implements OnInit, AfterViewInit, OnDestroy {
   private createSimplifiedIndiaMap(): void {
     console.log('=== createSimplifiedIndiaMap START ===');
     console.log('🔄 Using fallback simplified map');
-    
+
     // Simplified state boundaries (you would replace this with actual TopoJSON data)
     const states = [
       { name: 'Uttar Pradesh', code: 'UP', path: 'M200,150 L300,150 L300,200 L200,200 Z' },
@@ -376,7 +378,7 @@ export class IndiaMapComponent implements OnInit, AfterViewInit, OnDestroy {
         console.log('Simplified state clicked:', d.name);
         this.onStateClick(d);
       });
-    
+
     console.log('✅ Simplified map rendered successfully');
     console.log('=== createSimplifiedIndiaMap COMPLETED ===');
   }
@@ -385,17 +387,17 @@ export class IndiaMapComponent implements OnInit, AfterViewInit, OnDestroy {
     console.log('=== addInstituteMarkers START ===');
     console.log('📍 Institute data:', this.institutes.length, 'institutes');
     console.log('🗺️ Projection available:', !!this.projection);
-    
+
     // Add institute markers
     const markerSelection = this.g.selectAll('.institute-marker')
       .data(this.institutes);
     console.log('Data bound to marker selection');
-    
+
     const markerEnter = markerSelection.enter()
       .append('circle')
       .attr('class', 'institute-marker');
     console.log('✅ Circle elements created for', this.institutes.length, 'institutes');
-    
+
     markerEnter
       .attr('cx', (d: InstituteMarker) => {
         // Use projection if available (for GeoJSON), otherwise use simplified positioning
@@ -435,7 +437,7 @@ export class IndiaMapComponent implements OnInit, AfterViewInit, OnDestroy {
         this.onInstituteHover(event, d);
       })
       .on('mouseout', () => this.hideTooltip());
-      
+
     console.log('✅ Institute markers rendered successfully');
     console.log('=== addInstituteMarkers COMPLETED ===');
   }
@@ -492,7 +494,7 @@ export class IndiaMapComponent implements OnInit, AfterViewInit, OnDestroy {
 
   private showTooltip(event: any, text: string): void {
     const tooltip = d3.select('body').selectAll('.map-tooltip').data([0]);
-    
+
     const tooltipEnter = tooltip.enter()
       .append('div')
       .attr('class', 'map-tooltip')

@@ -4,6 +4,7 @@ import {
   BreadcrumbComponent,
   BreadcrumbItem,
 } from '../../../components/breadcrumb/breadcrumb.component';
+import { Router } from '@angular/router';
 import {
   TableComponent,
   TableColumn,
@@ -55,6 +56,7 @@ export class TrainingCentreComponent implements OnInit {
   confirmationText = '';
   pendingToggleItem: any = null;
   statusFilter: string = '';
+  userRole: any;
   modalConfig: ModalConfig = {
     title: 'Training Institute Admin Details',
     size: 'l',
@@ -193,7 +195,8 @@ export class TrainingCentreComponent implements OnInit {
   constructor(
     private adminService: AdminService,
     private authService: AuthService,
-    private locationService: LocationService
+    private locationService: LocationService,
+    private router: Router
   ) {}
 
   tableColumns: TableColumn[] = [
@@ -217,12 +220,6 @@ export class TrainingCentreComponent implements OnInit {
       class: 'btn-warning',
       title: 'Edit Details',
     },
-    {
-      name: 'toggle',
-      icon: 'bi-power',
-      class: 'btn-toggle',
-      title: 'Toggle Active/Inactive',
-    },
   ];
 
   trainingCentres: any[] = [];
@@ -245,6 +242,29 @@ export class TrainingCentreComponent implements OnInit {
   ];
 
   ngOnInit(): void {
+    this.getRole();
+    if (this.userRole === 5) {
+      this.tableActions.splice(1, 0, {
+        name: 'fill',
+        icon: 'bi-pencil',
+        class: 'btn-success',
+        title: 'Fill Details',
+        condition: (row: any) => row.status === 'PENDING STATE INPUT',
+      });
+    }
+    if (this.userRole === 1) {
+      this.tableActions.splice(1, 0, {
+        name: 'toggle',
+        icon: 'bi-power',
+        class: 'btn-toggle',
+        title: 'Toggle Active/Inactive',
+        condition: (row: any) =>
+          row.status === 'PENDING CENTRAL APPROVAL' ||
+          row.status === 'ACTIVE' ||
+          row.status === 'DEACTIVE',
+      });
+    }
+
     this.loadTrainingInstitutes();
     this.loadStates();
   }
@@ -284,6 +304,13 @@ export class TrainingCentreComponent implements OnInit {
         console.error('Error loading states:', error);
       },
     });
+  }
+  getRole() {
+    const userData = sessionStorage.getItem('user');
+    if (userData) {
+      const user = JSON.parse(userData);
+      this.userRole = user.role;
+    }
   }
 
   loadDistrictsByState(stateId: number): void {
@@ -328,6 +355,9 @@ export class TrainingCentreComponent implements OnInit {
         break;
       case 'edit':
         this.editTrainingCentre(event.item);
+        break;
+      case 'fill':
+        this.fillTrainingCentre(event.item);
         break;
       case 'toggle':
         this.toggleCentreStatus(event.item);
@@ -375,6 +405,11 @@ export class TrainingCentreComponent implements OnInit {
     this.restoreStateDistrictFields();
 
     this.showModal = true;
+  }
+  fillTrainingCentre(centre: any) {
+    this.router.navigate(['/admin/training-centre-admin-profile'], {
+      state: { data: centre },
+    });
   }
 
   restoreStateDistrictFields() {

@@ -4,23 +4,117 @@
     <div class="background-overlay"></div>
   </div>
 
-  <!-- Form Section -->
-  <div class="form-section">
-    <!-- Government Logo Header -->
-    <div class="government-logo">
+      <!-- Government Logo Header -->
+    <div class="government-logo" style="display: flex
+">
+    <div class="row" style="
+    display: contents;
+">
+      <div class="col-lg-6" style="
+    display: flex;
+    align-content: center;
+">
       <img
         src="assets/login/emblem.png"
         alt="Government Emblem"
         class="logo-image"
       />
-      <div class="logo-text">भारत सरकार | GOVERNMENT OF INDIA</div>
-      <div class="logo-subtext">
+      <div class="logo-text" style="
+    align-content: center;
+">भारत सरकार | GOVERNMENT OF INDIA
+        <div class="logo-subtext">
         पशुपालन और डेयरी विभाग<br />
         DEPARTMENT OF ANIMAL HUSBANDRY AND DAIRYING
       </div>
+      </div>
+      </div>
+      <div class="col-lg-6" style="
+    align-content: center;
+">
+      <div class="dashboard-actions">
+              <button
+                class="btn btn-primary me-2 "
+                (click)="downloadCertificate()"
+                style="background: #1e3a8a;
+    border: 1px solid #1e3a8a;
+    color: #ffffff;border-radius: 12px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    letter-spacing: 0.025em;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    text-shadow: none;"
+              >
+                <i class="fas fa-download me-2"></i>Download Certificate
+              </button>
+
+              <!-- <button
+                class="btn btn-outline-primary"
+                (click)="filterByPeriod()"
+              >
+              <!-- <button class="btn btn-outline-primary" (click)="filterByPeriod()">
+                <i class="fas fa-calendar me-2"></i>Filter Period
+                <small class="d-block">01 Jan 2024 - 31 Jan 2024</small>
+              </button> -->
+            </div> </div>
+      </div>
+
     </div>
 
+
+  <!-- Form Section -->
+   <div class = "row">
+    <!-- India Map -->
+      <div class="col-lg-5">
+        <!-- <div class="card" style=" -->
+        <div class="card"style="
+        background: rgba(255, 255, 255, 0.08);
+
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    border-right: none;
+    padding-left: 20%;
+    height: 100%;
+    width: 100%;
+">
+ <!-- backdrop-filter: blur(25px); -->
+          <!-- <div
+            class="card-header d-flex justify-content-between align-items-center"
+            style="background: rgba(255, 255, 255, 0.08);
+    backdrop-filter: blur(25px);
+    color: white;"
+          >
+            <h5 class="card-title mb-0">
+              <i class="fas fa-map-marked-alt text-primary me-2"></i>
+              Training Institutes in India
+            </h5>
+          </div> -->
+          <!-- <div class="card-body"> -->
+            <app-india-map
+              [selectedState]="selectedState"
+              (stateSelected)="onStateSelected($event)"
+            >
+            </app-india-map>
+          <!-- </div> -->
+        </div>
+      </div>
+      <div class="col-lg-2 " style="align-content: center;">
+        <app-modal
+                [show]="showModal"
+                [config]="modalConfig"
+                mode="create"
+                (close)="onClose()"
+                (primaryAction)="onSubmit($event)"
+                (secondaryAction)="onSecondaryAction()"
+              >
+              </app-modal>
+          </div>
+    <div class="col-lg-5">
+  <!-- <div class="form-section"> -->
+
     <!-- Form Container -->
+     <div style="
+    padding-right: 20%;
+">
     <div class="form-container">
       <!-- <div class="toggle-container">
         <button
@@ -688,6 +782,8 @@
           </button>
         </form>
       </div>
-    </div>
+    </div></div>
+  <!-- </div> -->
+  </div>
   </div>
 </div>

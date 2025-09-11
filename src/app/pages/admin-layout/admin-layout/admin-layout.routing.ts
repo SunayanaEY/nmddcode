@@ -17,6 +17,8 @@ import { RoleGuard } from '../../../guards/role.guard';
 import { ChangePasswordComponent } from '../../change-password/change-password.component';
 import { AllTrainingsAdminComponent } from '../../training/all-trainings-admin/all-trainings-admin.component';
 import { UpdateProfileComponent } from '../../training/update-profile/update-profile.component';
+import { PublicDashboardComponent } from '../../public-dashboard/public-dashboard.component';
+import { DashboardComponent } from '../../../dashboard/dashboard.component';
 
 export const AdminLayoutRoutes: Routes = [
   // Central Admin Only Routes (Role 1)
@@ -25,6 +27,12 @@ export const AdminLayoutRoutes: Routes = [
     component: SchemeManagementComponent,
     canActivate: [RoleGuard],
     data: { allowedRoles: [1, 5] },
+  },
+  {
+    path: 'dashboard',
+    component: DashboardComponent,
+    canActivate: [RoleGuard],
+    data: { allowedRoles: [1] },
   },
   {
     path: 'training-type-management',
@@ -59,6 +67,15 @@ export const AdminLayoutRoutes: Routes = [
     data: { allowedRoles: [3] },
   },
   {
+    path: 'add-trainers',
+    loadComponent: () =>
+      import(
+        '../../training/add-trainers/add-trainers.component'
+      ).then((m) => m.AddTrainersComponent),
+    canActivate: [RoleGuard],
+    data: { allowedRoles: [3] },
+  },
+  {
     path: 'training-module',
     component: TrainingSectionComponent,
     canActivate: [RoleGuard],
@@ -82,11 +99,11 @@ export const AdminLayoutRoutes: Routes = [
   {
     path: 'training-centre-admin-profile',
     loadComponent: () =>
-      import('../../training/training-centre-admin-profile/training-centre-admin-profile.component').then(
-        (m) => m.TrainingCentreAdminProfileComponent
-      ),
+      import(
+        '../../training/training-centre-admin-profile/training-centre-admin-profile.component'
+      ).then((m) => m.TrainingCentreAdminProfileComponent),
     canActivate: [RoleGuard],
-    data: { allowedRoles: [1] },
+    data: { allowedRoles: [1, 5] },
   },
   {
     path: 'update-profile',

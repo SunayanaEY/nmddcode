@@ -90,10 +90,10 @@
           </div>
           <div class="certificate-content">
             <h3 class="certificate-title">
-              Training Centre Admin Profile Creation
+              Training Centre Creation
             </h3>
             <p class="certificate-description">
-              Create and manage training centre administrator profiles
+              Create and manage training centre profiles
             </p>
           </div>
         </div>
@@ -521,6 +521,54 @@
             </p>
           </div>
         </div>
+
+        <!-- Add Trainers-->
+         <div
+          class="certificate-card"
+          (click)="navigateToAddTrainers()"
+          *ngIf="userRole === 3"
+        >
+          <div class="certificate-icon">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="48"
+              height="48"
+              viewBox="0 0 24 24"
+              fill="none"
+            >
+              <path
+                opacity="0.5"
+                d="M12 2C13.1046 2 14 2.89543 14 4C14 5.10457 13.1046 6 12 6C10.8954 6 10 5.10457 10 4C10 2.89543 10.8954 2 12 2Z"
+                fill="#1C274C"
+              />
+              <path
+                d="M7.5 8C6.11929 8 5 9.11929 5 10.5V11.5C5 12.8807 6.11929 14 7.5 14H16.5C17.8807 14 19 12.8807 19 11.5V10.5C19 9.11929 17.8807 8 16.5 8H7.5Z"
+                fill="#1C274C"
+              />
+              <path
+                opacity="0.5"
+                d="M7.5 16C6.11929 16 5 17.1193 5 18.5V19.5C5 20.8807 6.11929 22 7.5 22H16.5C17.8807 22 19 20.8807 19 19.5V18.5C19 17.1193 17.8807 16 16.5 16H7.5Z"
+                fill="#1C274C"
+              />
+              <path
+                d="M2 10.5C2 9.11929 3.11929 8 4.5 8C5.88071 8 7 9.11929 7 10.5V11.5C7 12.8807 5.88071 14 4.5 14C3.11929 14 2 12.8807 2 11.5V10.5Z"
+                fill="#1C274C"
+              />
+              <path
+                opacity="0.5"
+                d="M17 10.5C17 9.11929 18.1193 8 19.5 8C20.8807 8 22 9.11929 22 10.5V11.5C22 12.8807 20.8807 14 19.5 14C18.1193 14 17 12.8807 17 11.5V10.5Z"
+                fill="#1C274C"
+              />
+            </svg>
+          </div>
+          <div class="certificate-content">
+            <h3 class="certificate-title">Register Trainers</h3>
+            <p class="certificate-description">
+              Add, View and Manage Trainers
+            </p>
+          </div>
+        </div>
+
         <!-- Approved Certificate -->
         <div
           class="certificate-card"

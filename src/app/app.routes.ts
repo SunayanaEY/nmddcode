@@ -8,19 +8,20 @@ import { VerifyCertificateComponent } from './pages/verify-certificate/verify-ce
 
 export const routes: Routes = [
   // Public Dashboard - Landing Page
-  {
-    path: '',
-    loadChildren: () =>
-      import('./pages/public-dashboard/public-dashboard.module').then(
-        (m) => m.PublicDashboardModule
-      ),
-    data: {
-      title: 'National Dairy Development Programme - Public Dashboard',
-      description: 'View training statistics and farmer data across India',
-    },
-  },
+  // {
+  //   path: '',
+  //   loadChildren: () =>
+  //     import('./pages/public-dashboard/public-dashboard.module').then(
+  //       (m) => m.PublicDashboardModule
+  //     ),
+  //   data: {
+  //     title: 'National Dairy Development Programme - Public Dashboard',
+  //     description: 'View training statistics and farmer data across India',
+  //   },
+  // },
 
   // Authentication
+  { path:'', component: LoginComponent },
   { path: 'login', component: LoginComponent },
   { path: 'signup', component: LoginComponent }, // TODO: Create separate signup component
   { path: 'forget-password', component: ForgetPasswordComponent },

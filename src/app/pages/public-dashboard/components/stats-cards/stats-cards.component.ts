@@ -12,7 +12,7 @@ import { DashboardStats } from '../../public-dashboard.component';
 export class StatsCardsComponent {
   @Input() stats!: DashboardStats;
   @Input() isLoading = false;
-  
+
   Math = Math;
 
   getStatsCards() {
@@ -28,7 +28,7 @@ export class StatsCardsComponent {
         textColor: '#2e7d32'
       },
       {
-        title: 'Total Farmers Trained',
+        title: 'Total Personnel Trained',
         value: this.stats?.totalFarmers || 0,
         growth: this.stats?.farmerGrowth || 0,
         growthText: 'from June',
