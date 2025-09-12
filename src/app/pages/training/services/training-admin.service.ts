@@ -215,4 +215,26 @@ export class AdminService {
       this.getHttpOptions()
     );
   }
+  sendTrainingToValidate(trainingId: string): Observable<{success: boolean, message: string, data: any, statusCode: number}>  {
+    return this.http.get<{success: boolean, message: string, data: any, statusCode: number}>(
+      `${this.apiUrl}training/validateByInstituteHead/${trainingId}`,
+      this.getHttpOptions()
+    );
+  }
+  rejectTrainingSchedule(trainingId: string): Observable<{success: boolean, message: string, data: any, statusCode: number}>  {
+    return this.http.get<{success: boolean, message: string, data: any, statusCode: number}>(
+      `${this.apiUrl}training/rejectTrainingSchedule/${trainingId}`,
+      this.getHttpOptions()
+    );
+  }
+
+
+  approveTrainingSchedule(trainingId: string): Observable<{success: boolean, message: string, data: any, statusCode: number}>  {
+    return this.http.get<{success: boolean, message: string, data: any, statusCode: number}>(
+      `${this.apiUrl}training/approveTrainingSchedule/${trainingId}`,
+      this.getHttpOptions()
+    );
+  }
+
+
 }

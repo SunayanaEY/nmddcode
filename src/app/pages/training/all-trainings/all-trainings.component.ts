@@ -70,11 +70,15 @@ export class AllTrainingsComponent {
     { label: 'All Registered Trainings' },
   ];
   tableColumns: TableColumn[] = [
+    // {
+    //   key: 'trainingTitle',
+    //   header: 'Training Title',
+    //   isLink: true,
+    //   linkHandler: (row) => this.openTrainingDetails(row),
+    // },
     {
       key: 'trainingTitle',
       header: 'Training Title',
-      isLink: true,
-      linkHandler: (row) => this.openTrainingDetails(row),
     },
     { key: 'scheme', header: 'Scheme' },
     { key: 'trainingInstituteName', header: 'Training Institute' },
