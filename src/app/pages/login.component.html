@@ -107,6 +107,7 @@
                 (secondaryAction)="onSecondaryAction()"
               >
               </app-modal>
+
           </div>
     <div class="col-lg-5">
   <!-- <div class="form-section"> -->
@@ -786,4 +787,38 @@
   <!-- </div> -->
   </div>
   </div>
+
+
+<!--Certificate-->
+      <div
+    class="modal fade"
+    id="viewCertificateModal"
+    tabindex="-1"
+    aria-labelledby="viewCertificateModalLabel"
+    aria-hidden="true"
+  >
+    <div class="modal-dialog modal-xl modal-dialog-centered">
+      <div class="modal-content p-4">
+        <div class="modal-header">
+          <h2 class="modal-title" id="viewCertificateModalLabel">
+            Approved Certificate
+          </h2>
+          <button
+            type="button"
+            class="btn-close"
+            data-bs-dismiss="modal"
+            aria-label="Close"
+          ></button>
+        </div>
+        <div class="modal-body">
+          <ng-container *ngIf="selectedItem">
+            <app-certificate-layout
+              [data]="selectedItem"
+            ></app-certificate-layout>
+          </ng-container>
+        </div>
+      </div>
+    </div>
+  </div>
+
 </div>

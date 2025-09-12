@@ -71,6 +71,10 @@ export interface TrainingSummaryResponse {
   success: boolean;
   message: string;
   data: {
+    farmerGrowth: number;
+    approvedGrowth: number;
+    issuedGrowth: number;
+    trainingGrowth: number;
     totalCertificatesIssued: number;
     totalTrainingsConducted: number;
     totalFarmersTrained: number;
@@ -137,7 +141,7 @@ export interface InstituteLocationResponse {
 })
 export class DashboardDataService {
   private readonly API_BASE_URL = environment.apiUrl;
-  
+
   // BehaviorSubjects for reactive data
   private dashboardStatsSubject = new BehaviorSubject<DashboardStats | null>(null);
   private selectedStateSubject = new BehaviorSubject<StateData | null>(null);
@@ -267,7 +271,7 @@ export class DashboardDataService {
   // Initialize data on service creation
   private loadInitialData(): void {
     this.loadingSubject.next(true);
-    
+
     // Simulate API call delay
     setTimeout(() => {
       this.dashboardStatsSubject.next(this.mockDashboardStats);
@@ -279,7 +283,7 @@ export class DashboardDataService {
   getDashboardStats(): Observable<DashboardStats> {
     // TODO: Replace with actual HTTP call
     // return this.http.get<DashboardStats>(`${this.API_BASE_URL}/stats`);
-    
+
     return of(this.mockDashboardStats).pipe(delay(500));
   }
 
@@ -287,7 +291,7 @@ export class DashboardDataService {
   getStatesData(): Observable<StateData[]> {
     // TODO: Replace with actual HTTP call
     // return this.http.get<StateData[]>(`${this.API_BASE_URL}/states`);
-    
+
     return of(this.mockStatesData).pipe(delay(300));
   }
 
@@ -296,12 +300,12 @@ export class DashboardDataService {
     // TODO: Replace with actual HTTP call
     // const url = stateId ? `${this.API_BASE_URL}/institutes?stateId=${stateId}` : `${this.API_BASE_URL}/institutes`;
     // return this.http.get<InstituteData[]>(url);
-    
+
     let data = this.mockInstitutesData;
     if (stateId) {
       data = data.filter(institute => institute.stateId === stateId);
     }
-    
+
     return of(data).pipe(delay(300));
   }
 
@@ -310,7 +314,7 @@ export class DashboardDataService {
     // TODO: Replace with actual HTTP call
     // const url = stateId ? `${this.API_BASE_URL}/monthly?stateId=${stateId}` : `${this.API_BASE_URL}/monthly`;
     // return this.http.get<MonthlyData[]>(url);
-    
+
     // For demo, return same data regardless of state
     return of(this.mockMonthlyData).pipe(delay(400));
   }
@@ -320,14 +324,14 @@ export class DashboardDataService {
     // TODO: Replace with actual HTTP call
     // const url = stateId ? `${this.API_BASE_URL}/age-groups?stateId=${stateId}` : `${this.API_BASE_URL}/age-groups`;
     // return this.http.get<AgeGroupData[]>(url);
-    
+
     const mockAgeGroupData: AgeGroupData[] = [
       { ageGroup: '18-25', count: 0, percentage: 0, color: '#FF6B6B' },
       { ageGroup: '26-35', count: 0, percentage: 0, color: '#4ECDC4' },
       { ageGroup: '36-45', count: 0, percentage: 0, color: '#45B7D1' },
       { ageGroup: '46-60', count: 0, percentage: 0, color: '#96CEB4' }
     ];
-    
+
     return of(mockAgeGroupData).pipe(delay(400));
   }
 
@@ -336,14 +340,14 @@ export class DashboardDataService {
     // TODO: Replace with actual HTTP call
     // const url = stateId ? `${this.API_BASE_URL}/training-modes?stateId=${stateId}` : `${this.API_BASE_URL}/training-modes`;
     // return this.http.get<ModeOfTrainingData[]>(url);
-    
+
     const mockTrainingModeData: ModeOfTrainingData[] = [
       { mode: 'Online', count: 0, percentage: 0, color: '#4F46E5', icon: 'laptop' },
       { mode: 'Offline', count: 0, percentage: 0, color: '#059669', icon: 'users' },
       { mode: 'Hybrid', count: 0, percentage: 0, color: '#DC2626', icon: 'globe' },
       { mode: 'Field Training', count: 0, percentage: 0, color: '#D97706', icon: 'map-marker-alt' }
     ];
-    
+
     return of(mockTrainingModeData).pipe(delay(400));
   }
 
@@ -376,7 +380,7 @@ export class DashboardDataService {
   exportData(format: 'csv' | 'excel' | 'pdf'): Observable<Blob> {
     // TODO: Implement actual export functionality
     console.log(`Exporting data in ${format} format`);
-    
+
     // Mock implementation
     const mockData = 'Mock exported data';
     const blob = new Blob([mockData], { type: 'text/plain' });
@@ -387,7 +391,7 @@ export class DashboardDataService {
   downloadCertificate(certificateId: string): Observable<Blob> {
     // TODO: Implement actual certificate download
     console.log(`Downloading certificate: ${certificateId}`);
-    
+
     // Mock implementation
     const mockPdf = 'Mock PDF certificate data';
     const blob = new Blob([mockPdf], { type: 'application/pdf' });
@@ -398,85 +402,85 @@ export class DashboardDataService {
   searchData(query: string, filters?: any): Observable<any[]> {
     // TODO: Implement actual search functionality
     console.log(`Searching for: ${query}`, filters);
-    
+
     // Mock implementation
     const mockResults = [
       { id: 1, title: 'Mock Result 1', type: 'training' },
       { id: 2, title: 'Mock Result 2', type: 'farmer' }
     ];
-    
+
     return of(mockResults).pipe(delay(500));
   }
 
   getTrainingSummaryCount(stateId?: number, districtId?: number): Observable<TrainingSummaryResponse> {
     let url = `${this.API_BASE_URL}public/dashboard/trainingSummaryCount`;
     const params = new URLSearchParams();
-    
+
     if (stateId) {
       params.append('stateId', stateId.toString());
     }
     if (districtId) {
       params.append('districtId', districtId.toString());
     }
-    
+
     if (params.toString()) {
       url += `?${params.toString()}`;
     }
-    
+
     return this.http.get<TrainingSummaryResponse>(url);
   }
 
   getMonthlyTrainingCount(stateId?: number, districtId?: number): Observable<MonthlyTrainingResponse> {
     let url = `${this.API_BASE_URL}public/dashboard/monthlyTrainingCount`;
     const params = new URLSearchParams();
-    
+
     if (stateId) {
       params.append('stateId', stateId.toString());
     }
     if (districtId) {
       params.append('districtId', districtId.toString());
     }
-    
+
     if (params.toString()) {
       url += `?${params.toString()}`;
     }
-    
+
     return this.http.get<MonthlyTrainingResponse>(url);
   }
 
   getModeOfTrainingDistribution(stateId?: number, districtId?: number): Observable<ModeOfTrainingDistributionResponse> {
     let url = `${this.API_BASE_URL}public/dashboard/modeOfTrainingDistribution`;
     const params = new URLSearchParams();
-    
+
     if (stateId) {
       params.append('stateId', stateId.toString());
     }
     if (districtId) {
       params.append('districtId', districtId.toString());
     }
-    
+
     if (params.toString()) {
       url += `?${params.toString()}`;
     }
-    
+
     return this.http.get<ModeOfTrainingDistributionResponse>(url);
   }
 
   getAgeWiseDistribution(stateId?: number, districtId?: number): Observable<AgeWiseDistributionResponse> {
     let url = `${this.API_BASE_URL}public/dashboard/ageWiseDistribution`;
     const params = new URLSearchParams();
-    
+
     if (stateId) {
       params.append('stateId', stateId.toString());
     }
     if (districtId) {
       params.append('districtId', districtId.toString());
     }
-    
+
     if (params.toString()) {
       url += `?${params.toString()}`;
     }
-    
+
     return this.http.get<AgeWiseDistributionResponse>(url);
   }
 

@@ -19,11 +19,12 @@ import { IndiaMapComponent } from "./public-dashboard/components/india-map/india
 import { StateData } from './public-dashboard/public-dashboard.component';
 import { ModalConfig, ModalComponent } from '../components/modal/modal.component';
 import { TrainingService } from './training/services/training.service';
+import { CertificateLayoutComponent } from "./certificate-layout/certificate-layout.component";
 
 @Component({
   selector: 'app-login',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, RouterModule, IndiaMapComponent, ModalComponent],
+  imports: [CommonModule, ReactiveFormsModule, RouterModule, IndiaMapComponent, ModalComponent, CertificateLayoutComponent],
   templateUrl: './login.component.html',
   styleUrls: ['./login.component.css'],
 })
@@ -581,7 +582,7 @@ export class LoginComponent implements OnInit {
   private redirectBasedOnRole(role: number): void {
     switch (role) {
       case 1: // Central Admin
-        this.router.navigate(['/admin/training-module']);
+        this.router.navigate(['/admin/dashboard']);
         break;
       case 3: // Training Institute Head
         this.router.navigate(['/admin/training-module']);

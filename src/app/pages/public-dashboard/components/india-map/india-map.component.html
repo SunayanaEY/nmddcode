@@ -1,4 +1,6 @@
-<div class="map-wrapper">
+<div class="map-wrapper" style="
+    background: rgba(255, 255, 255, 0.1);
+">
   <!-- Loading State -->
   <div *ngIf="isLoading" class="map-loading">
     <div class="spinner-border text-primary" role="status">
@@ -14,8 +16,8 @@
 
   <!-- Map Controls -->
   <div *ngIf="!isLoading" class="map-controls">
-    <button 
-      class="btn btn-sm btn-outline-primary" 
+    <button
+      class="btn btn-sm btn-outline-primary"
       (click)="resetZoom()"
       title="Reset Zoom">
       <i class="fas fa-expand-arrows-alt"></i>

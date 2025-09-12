@@ -213,10 +213,10 @@ export class DashboardComponent {
               totalFarmers: response.data.totalFarmersTrained,
               totalCertificatesApproved: response.data.totalCertificatesApproved,
               totalCertificatesIssued: response.data.totalCertificatesIssued,
-              trainingGrowth: 8, // Keep existing growth values or calculate from API
-              farmerGrowth: 24,
-              approvedGrowth: 37,
-              issuedGrowth: 26,
+              trainingGrowth: response.data.trainingGrowth, // Keep existing growth values or calculate from API
+              farmerGrowth: response.data.farmerGrowth,
+              approvedGrowth: response.data.approvedGrowth,
+              issuedGrowth: response.data.issuedGrowth,
             };
           }
           this.isLoading = false;
