@@ -58,10 +58,6 @@ export class ManualTrainingUploadComponent implements OnInit {
 
   breadcrumbItems: BreadcrumbItem[] = [
     { label: 'Training Module', url: '/admin/training-module' },
-    {
-      label: 'Training Certificate Generation',
-      url: '/admin/training-certificate-generation',
-    },
     { label: 'Manual Training Upload' },
   ];
   tableColumns: TableColumn[] = [

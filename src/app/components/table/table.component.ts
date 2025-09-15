@@ -45,6 +45,8 @@ export interface TableAction {
 export class TableComponent {
   @Input() data: any[] = [];
   @Input() tableName: string = '';
+  @Input() isLoading: boolean = false;
+  @Input() userRole: number = 0;
   schemesTableString: string = 'schemes';
   tableNamesArray: Array<string> = ['schemes', 'trainingTypes'];
   @Input() addNew: String = '';
@@ -247,7 +249,10 @@ export class TableComponent {
       {
          this.selectedItems.add(item);
       }
-        else if (this.tableName!=='Verify-Trainings' && item.status === 'VERIFIED') {
+        else if (this.tableName === 'Trainee-List' && (item.status === 'TRAINEE_UPLOADED' || (this.userRole === 5 && item.status === 'VALIDATED_BY_INSTITUTE_HEAD'))) {
+           this.selectedItems.add(item);
+         }
+        else if (this.tableName!=='Verify-Trainings' && this.tableName!=='Trainee-List' && item.status === 'VERIFIED') {
           this.selectedItems.add(item);
         }
       });
@@ -285,6 +290,8 @@ export class TableComponent {
   get eligibleItemsCount(): number {
     if(this.tableName==='Verify-Trainings')
       return this.data.filter(item => item.status === 'IN PROGRESS').length;
+    else if(this.tableName==='Trainee-List')
+      return this.data.filter(item => item.status === 'TRAINEE_UPLOADED' || (this.userRole === 5 && item.status === 'VALIDATED_BY_INSTITUTE_HEAD')).length;
     else
     return this.data.filter(item => item.status === 'VERIFIED' ).length;
   }
