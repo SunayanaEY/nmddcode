@@ -59,7 +59,7 @@ export class ManualTrainingUploadComponent implements OnInit {
   breadcrumbItems: BreadcrumbItem[] = [
     { label: 'Training Module', url: '/admin/training-module' },
     {
-      label: 'Training Certificate Generation',
+      label: 'Schedule Training',
       url: '/admin/training-certificate-generation',
     },
     { label: 'Manual Training Upload' },
@@ -129,8 +129,8 @@ export class ManualTrainingUploadComponent implements OnInit {
           Validators.required,
           Validators.minLength(2),
           Validators.maxLength(50),
-          Validators.pattern(/^[a-zA-Z\s]+$/)
-        ]
+          Validators.pattern(/^[a-zA-Z\s]+$/),
+        ],
       ],
       age: [
         '',
@@ -138,16 +138,13 @@ export class ManualTrainingUploadComponent implements OnInit {
           Validators.required,
           Validators.min(1),
           Validators.max(120),
-          Validators.pattern(/^[0-9]+$/)
-        ]
+          Validators.pattern(/^[0-9]+$/),
+        ],
       ],
       gender: ['', Validators.required],
       contactNumber: [
         '',
-        [
-          Validators.required,
-          Validators.pattern(/^[6-9][0-9]{9}$/)
-        ]
+        [Validators.required, Validators.pattern(/^[6-9][0-9]{9}$/)],
       ],
       fatherName: [
         '',
@@ -155,17 +152,11 @@ export class ManualTrainingUploadComponent implements OnInit {
           Validators.required,
           Validators.minLength(2),
           Validators.maxLength(50),
-          Validators.pattern(/^[a-zA-Z\s]+$/)
-        ]
+          Validators.pattern(/^[a-zA-Z\s]+$/),
+        ],
       ],
       email: ['', [Validators.email]],
-      dob: [
-        '',
-        [
-          Validators.required,
-          this.dateValidator
-        ]
-      ],
+      dob: ['', [Validators.required, this.dateValidator]],
     });
   }
 

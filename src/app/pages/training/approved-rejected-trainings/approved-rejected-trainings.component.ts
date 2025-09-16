@@ -76,7 +76,7 @@ export class ApprovedRejectedTrainingsComponent {
   ];
   breadcrumbItems: BreadcrumbItem[] = [
     { label: 'Training Module', url: '/admin/training-module' },
-    { label: 'Approved/Rejected Trainings' }
+    { label: 'Approved/Rejected Trainings' },
   ];
 
   tableColumns: TableColumn[] = [
@@ -98,7 +98,7 @@ export class ApprovedRejectedTrainingsComponent {
   tableColumnsPending: TableColumn[] = [
     {
       key: 'trainingTitle',
-      header: 'Training Title'
+      header: 'Training Title',
     },
     { key: 'scheme', header: 'Scheme' },
     { key: 'trainingInstituteName', header: 'Training Institute' },
@@ -114,6 +114,12 @@ export class ApprovedRejectedTrainingsComponent {
 
   tableActions: TableAction[] = [
     { name: 'view', icon: 'bi bi-eye', class: 'btn-info', title: 'View' },
+    {
+      name: 'edit',
+      icon: 'bi bi-pencil-fill',
+      class: 'btn-info',
+      title: 'Add Data',
+    },
   ];
   tableActions2: TableAction[] = [
     { name: 'view', icon: 'bi bi-eye', class: 'btn-info', title: 'View' },
@@ -160,91 +166,102 @@ export class ApprovedRejectedTrainingsComponent {
     },
   ];
 
-
-
-  constructor(private formBuilder: FormBuilder,
-    private modalService: NgbModal, private trainingsService: TrainingService,
-    private toastr: ToastrService, private router: Router
-  ) {
-
-  }
+  constructor(
+    private formBuilder: FormBuilder,
+    private modalService: NgbModal,
+    private trainingsService: TrainingService,
+    private toastr: ToastrService,
+    private router: Router
+  ) {}
   filteredData = [...this.trainingsList];
 
   ngOnInit(): void {
     this.trainingForm = this.formBuilder.group({
       id: [''],
       comment: ['', [Validators.required]],
-      status: ['', [Validators.required]]
+      status: ['', [Validators.required]],
     });
     this.trainingsService.getAllInitialStageTrainings().subscribe({
       next: (res) => {
         this.trainingsList3 = res;
         this.filteredData = [...this.trainingsList3];
         let index = 0;
-        this.trainingsList3.forEach(ele => {
+        this.trainingsList3.forEach((ele) => {
           const datePipe = new DatePipe('en-US');
-          ele['location'] = ele['venueBlock'] + "," +
-            ele['venueDistrict'] + "," + ele["venueState"];
-          ele['trainingDate'] = datePipe.transform(ele['trainingDate'], 'dd/MM/yyyy')!;
+          ele['location'] =
+            ele['venueBlock'] +
+            ',' +
+            ele['venueDistrict'] +
+            ',' +
+            ele['venueState'];
+          ele['trainingDate'] = datePipe.transform(
+            ele['trainingDate'],
+            'dd/MM/yyyy'
+          )!;
           this.trainingsList3[index] = ele;
           index++;
-        })
+        });
       },
       error: (err) => {
-        this.toastr.error("Error while fetching data!");
-      }
-    }
-
-    );
-
+        this.toastr.error('Error while fetching data!');
+      },
+    });
 
     this.trainingsService.getApprovedTrainings().subscribe({
       next: (res) => {
         this.trainingsList = res;
         this.filteredData = [...this.trainingsList];
         let index = 0;
-        this.trainingsList.forEach(ele => {
+        this.trainingsList.forEach((ele) => {
           const datePipe = new DatePipe('en-US');
-          ele['location'] = ele['venueBlock'] + "," +
-            ele['venueDistrict'] + "," + ele["venueState"];
-          ele['trainingDate'] = datePipe.transform(ele['trainingDate'], 'dd/MM/yyyy')!;
+          ele['location'] =
+            ele['venueBlock'] +
+            ',' +
+            ele['venueDistrict'] +
+            ',' +
+            ele['venueState'];
+          ele['trainingDate'] = datePipe.transform(
+            ele['trainingDate'],
+            'dd/MM/yyyy'
+          )!;
           this.trainingsList[index] = ele;
           index++;
-        })
+        });
       },
       error: (err) => {
-        this.toastr.error("Error while fetching data!");
-      }
-    }
-
-    );
+        this.toastr.error('Error while fetching data!');
+      },
+    });
 
     this.trainingsService.getRejectedTrainings().subscribe({
       next: (res) => {
         this.trainingsList2 = res;
         //this.filteredData = [...this.trainingsList];
         let index = 0;
-        this.trainingsList2.forEach(ele => {
+        this.trainingsList2.forEach((ele) => {
           const datePipe = new DatePipe('en-US');
-          ele['location'] = ele['venueBlock'] + "," +
-            ele['venueDistrict'] + "," + ele["venueState"];
-          ele['trainingDate'] = datePipe.transform(ele['trainingDate'], 'dd/MM/yyyy')!;
+          ele['location'] =
+            ele['venueBlock'] +
+            ',' +
+            ele['venueDistrict'] +
+            ',' +
+            ele['venueState'];
+          ele['trainingDate'] = datePipe.transform(
+            ele['trainingDate'],
+            'dd/MM/yyyy'
+          )!;
           this.trainingsList2[index] = ele;
           index++;
-        })
+        });
       },
       error: (err) => {
-        this.toastr.error("Error while fetching data!");
-      }
-    }
-
-    );
-
-
+        this.toastr.error('Error while fetching data!');
+      },
+    });
   }
   openTrainingDetails(row: any) {
     // alert('Training insititue : ' + this.trainingInstituteId);
-    this.router.navigate(['/admin/all-certificate'], {
+    this.router.navigate(['/admin/All-Trainings'], {
       state: {
         trainingData: row,
       },
@@ -252,35 +269,42 @@ export class ApprovedRejectedTrainingsComponent {
   }
   handleTableAction(event: { action: string; item: any; index: number }): void {
     console.log('Action:', event.action, 'Item:', event.item);
-    
+
     if (event.action === 'download') {
       // Handle certificate download for trainee
       this.downloadCertificate(event.item);
       return;
     }
-    
-    // Handle view action
-    this.traineeList = [];
-    this.trainingDetails = event.item;
-    this.fileNameTrainees = this.traineesFile;
-    this.fileNameTrainees =
-      this.fileNameTrainees +
-      this.trainingDetails.trainingInstituteName +
-      '_' +
-      this.trainingDetails.trainingTitle +
-      '_';
-    this.trainingsService
-      .getTraineeList(this.trainingDetails.id)
-      .subscribe((res) => {
-        this.traineeList = res.data;
-      });
 
-    this.modalService.open(this.trainingDetailsModal, {
-      size: 'xl',
-      scrollable: true,
-      backdrop: 'static',
-      keyboard: false,
-    });
+    if (event.action === 'edit') {
+      this.openTrainingDetails(event.item);
+    }
+
+    if (event.action === 'view') {
+      // Handle view action
+
+      this.traineeList = [];
+      this.trainingDetails = event.item;
+      this.fileNameTrainees = this.traineesFile;
+      this.fileNameTrainees =
+        this.fileNameTrainees +
+        this.trainingDetails.trainingInstituteName +
+        '_' +
+        this.trainingDetails.trainingTitle +
+        '_';
+      this.trainingsService
+        .getTraineeList(this.trainingDetails.id)
+        .subscribe((res) => {
+          this.traineeList = res.data;
+        });
+
+      this.modalService.open(this.trainingDetailsModal, {
+        size: 'xl',
+        scrollable: true,
+        backdrop: 'static',
+        keyboard: false,
+      });
+    }
   }
 
   filters = {
@@ -348,14 +372,14 @@ export class ApprovedRejectedTrainingsComponent {
     return [...new Set(this.trainingsList.map((item) => item['status']))];
   }
 
-  reset() { }
+  reset() {}
 
-  open() { }
+  open() {}
   get formControls() {
     return this.trainingForm.controls;
   }
 
-  keyFunc() { }
+  keyFunc() {}
 
   modalDismiss() {
     this.modalService.dismissAll();

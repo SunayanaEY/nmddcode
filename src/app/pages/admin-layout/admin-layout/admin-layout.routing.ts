@@ -69,9 +69,9 @@ export const AdminLayoutRoutes: Routes = [
   {
     path: 'add-trainers',
     loadComponent: () =>
-      import(
-        '../../training/add-trainers/add-trainers.component'
-      ).then((m) => m.AddTrainersComponent),
+      import('../../training/add-trainers/add-trainers.component').then(
+        (m) => m.AddTrainersComponent
+      ),
     canActivate: [RoleGuard],
     data: { allowedRoles: [3] },
   },
@@ -146,7 +146,7 @@ export const AdminLayoutRoutes: Routes = [
     data: { allowedRoles: [1, 3, 4, 5] },
   },
   {
-    path: 'all-certificate',
+    path: 'All-Trainings',
     component: AllCertificateComponent,
   },
   {

@@ -38,7 +38,7 @@ import {
 export class TrainingCertificateGenerationComponent implements OnInit {
   breadcrumbItems: BreadcrumbItem[] = [
     { label: 'Training Module', url: '/admin/training-module' },
-    { label: 'Training Certificate Generation' },
+    { label: 'Schedule Training' },
   ];
   trainingForm: FormGroup;
   schemes: any;
@@ -242,8 +242,17 @@ export class TrainingCertificateGenerationComponent implements OnInit {
   }
 
   onFileSelect(file: File, type: 'signature' | 'logo', index: number) {
-    console.log('File selected:', file.name, 'Type:', type, 'Index:', index, 'Populate mode:', this.populate);
-    
+    console.log(
+      'File selected:',
+      file.name,
+      'Type:',
+      type,
+      'Index:',
+      index,
+      'Populate mode:',
+      this.populate
+    );
+
     // Check if we're in update mode (populate is 'true') or create mode (populate is 'false', undefined, or null)
     if (this.populate === 'true') {
       if (type === 'signature') {
@@ -383,9 +392,8 @@ export class TrainingCertificateGenerationComponent implements OnInit {
     data['trainingInstituteId'] = this.selectedTrainingInstituteId;
     // Get data from session storage
 
-      // Assign trainingManagerId
-      data['trainingManagerId'] = userData.trainingManagerId;
-
+    // Assign trainingManagerId
+    data['trainingManagerId'] = userData.trainingManagerId;
 
     if (data.hasOwnProperty('venueState')) {
       data['venueStateId'] = data['venueState'];

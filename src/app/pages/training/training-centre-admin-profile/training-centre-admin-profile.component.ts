@@ -91,6 +91,10 @@ export class TrainingCentreAdminProfileComponent implements OnInit {
           '',
           [Validators.required, Validators.minLength(3)],
         ],
+        trainingInstituteRegistration: [
+          '',
+          [Validators.required, Validators.minLength(3)],
+        ],
         state: ['', [Validators.required]],
         district: ['', [Validators.required]],
 
@@ -141,6 +145,10 @@ export class TrainingCentreAdminProfileComponent implements OnInit {
           ],
           confirmPassword: ['', [Validators.required]],
           trainingInstituteName: [
+            '',
+            [Validators.required, Validators.minLength(3)],
+          ],
+          trainingInstituteRegistration: [
             '',
             [Validators.required, Validators.minLength(3)],
           ],
@@ -215,6 +223,8 @@ export class TrainingCentreAdminProfileComponent implements OnInit {
   initializeForm() {
     this.profileForm.patchValue({
       trainingInstituteName: this.instituteData.trainingInstituteName,
+      trainingInstituteRegistration:
+        this.instituteData.trainingInstituteRegistration,
       state: this.instituteData.stateId,
       address: this.instituteData.address,
       latitude: this.instituteData.latitude,
@@ -260,6 +270,8 @@ export class TrainingCentreAdminProfileComponent implements OnInit {
       const instituteDetails = {
         instituteName:
           this.profileForm.get('trainingInstituteName')?.value || '',
+        registrationNumber:
+          this.profileForm.get('trainingInstituteRegistration')?.value || '',
         stateId: parseInt(this.profileForm.get('state')?.value) || 0,
         districtId: parseInt(this.profileForm.get('district')?.value) || 0,
         address: this.profileForm.get('address')?.value || '',
