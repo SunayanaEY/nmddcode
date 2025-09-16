@@ -32,9 +32,9 @@
       <button *ngIf="isExportCSV  && !hasSelectedItems" class="btn btn-warning" (click)="exportExcel()">
         Export Excel
       </button>
-      <button *ngIf="isBulkCertDownload" class="btn btn-primary" (click)="downloadCerts('Download Certs')">
+      <!-- <button *ngIf="isBulkCertDownload" class="btn btn-primary" (click)="downloadCerts('Download Certs')">
         <i class="bi bi-download"></i> Download Certificates
-      </button>
+      </button> -->
       <!-- Add new row -->
       <button *ngIf="tableNamesArray.includes(tableName)" class="btn btn-link add-more-btn"
         (click)="addNewRow(data.length)">

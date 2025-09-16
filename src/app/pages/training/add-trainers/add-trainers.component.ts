@@ -2,9 +2,10 @@ import { Component } from '@angular/core';
 import { FormGroup, FormBuilder, Validators, AbstractControl, ReactiveFormsModule } from '@angular/forms';
 import { ToastrService } from 'ngx-toastr';
 import { BreadcrumbComponent, BreadcrumbItem } from '../../../components/breadcrumb/breadcrumb.component';
-import { RegisterDataEntryOperatorRequest } from '../../user-profile-creation/models/user-profile.model';
+import { AddTrainerData, RegisterDataEntryOperatorRequest } from '../../user-profile-creation/models/user-profile.model';
 import { UserProfileService } from '../../user-profile-creation/services/user-profile.service';
 import { CommonModule } from '@angular/common';
+import { AdminService } from '../services/training-admin.service';
 
 @Component({
   selector: 'app-add-trainers',
@@ -23,13 +24,14 @@ export class AddTrainersComponent {
   constructor(
     private fb: FormBuilder,
     private userProfileService: UserProfileService,
-    private toastr: ToastrService
+    private toastr: ToastrService,
+    private adminService: AdminService
   ) {
     this.profileForm = this.fb.group({
-      operatorName: ['', Validators.required],
-      designation: ['', Validators.required],
-      contactNumber: ['', [Validators.required, Validators.pattern(/^[0-9]{10}$/)]],
-      emailId: ['', [Validators.required, Validators.email]],
+      trainerName: ['', Validators.required],
+      expertiseIn: ['', Validators.required],
+      mobile: ['', [Validators.required, Validators.pattern(/^[0-9]{10}$/)]],
+      email: ['', [Validators.required, Validators.email]],
       // password: ['', [Validators.required, Validators.minLength(8)]],
       // confirmPassword: ['', Validators.required]
     // }, { validators: this.passwordMatchValidator
@@ -44,38 +46,40 @@ export class AddTrainersComponent {
       const sessionData = sessionStorage.getItem('user');
       let trainingHeadId = '';
 
-      if (sessionData) {
-        try {
-          const userData = JSON.parse(sessionData);
-          trainingHeadId = userData.trainingHeadId || '';
-        } catch (error) {
-          console.error('Error parsing session data:', error);
-          this.toastr.error('Session data error. Please login again.', 'Error');
-          this.isLoading = false;
-          return;
-        }
-      }
+      // if (sessionData) {
+      //   try {
+      //     const userData = JSON.parse(sessionData);
+      //     trainingHeadId = userData.trainingHeadId || '';
+      //   } catch (error) {
+      //     console.error('Error parsing session data:', error);
+      //     this.toastr.error('Session data error. Please login again.', 'Error');
+      //     this.isLoading = false;
+      //     return;
+      //   }
+      // }
 
-      if (!trainingHeadId) {
-        this.toastr.error('Training Head ID not found. Please login again.', 'Error');
-        this.isLoading = false;
-        return;
-      }
+      // if (!trainingHeadId) {
+      //   this.toastr.error('Training Head ID not found. Please login again.', 'Error');
+      //   this.isLoading = false;
+      //   return;
+      // }
 
-      const formData: RegisterDataEntryOperatorRequest = {
-        operatorName: this.profileForm.value.operatorName,
-        designation: this.profileForm.value.designation,
-        contactNumber: this.profileForm.value.contactNumber,
-        emailId: this.profileForm.value.emailId,
-         password: this.profileForm.value.password,
-        trainingHeadId: trainingHeadId
+      const formData: AddTrainerData = {
+        trainerName: this.profileForm.value.trainerName,
+        mobile: this.profileForm.value.mobile,
+        email: this.profileForm.value.email,
+        expertiseIn: this.profileForm.value.expertiseIn
+
+
       };
 
-      this.userProfileService.registerDataEntryOperator(formData).subscribe({
+      this.adminService.addTrainer(formData).subscribe();
+
+      this.adminService.addTrainer(formData).subscribe({
         next: (response) => {
           this.isLoading = false;
           if (response.success) {
-            this.toastr.success(response.message || 'Data Entry Operator registered successfully!', 'Success');
+            this.toastr.success(response.message || 'Trainer registered successfully!', 'Success');
             this.profileForm.reset();
           } else {
             this.toastr.error(response.message || 'Registration failed. Please try again.', 'Error');

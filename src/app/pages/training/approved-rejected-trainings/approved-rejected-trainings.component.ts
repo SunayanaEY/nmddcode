@@ -252,13 +252,13 @@ export class ApprovedRejectedTrainingsComponent {
   }
   handleTableAction(event: { action: string; item: any; index: number }): void {
     console.log('Action:', event.action, 'Item:', event.item);
-    
+
     if (event.action === 'download') {
       // Handle certificate download for trainee
       this.downloadCertificate(event.item);
       return;
     }
-    
+
     // Handle view action
     this.traineeList = [];
     this.trainingDetails = event.item;
@@ -377,6 +377,10 @@ export class ApprovedRejectedTrainingsComponent {
         next: (response) => {
           if (response && response.success) {
             this.certificateData = response.data;
+             this.certificateData.location = response.data.venueBlock?response.data.venueBlock:''+
+            response.data.venueBlock && response.data.venueDistrict?', ':''+
+            response.data.venueDistrict?response.data.venueDistrict:''+response.data.venueDistrict&& response.data.venueState?', ':''
+            + response.data.venueState? response.data.venueState:'';
             // Open certificate modal
             this.modalService.open(this.certificateModal, {
               size: 'xl',

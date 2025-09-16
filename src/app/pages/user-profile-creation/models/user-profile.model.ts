@@ -14,6 +14,12 @@ export interface RegisterDataEntryOperatorRequest {
   password: string;
   trainingHeadId: string;
 }
+export interface AddTrainerData {
+  trainerName: string;
+  mobile: string;
+  email: string;
+  expertiseIn: string;
+}
 
 export interface RegisterInstituteData {
   id: string;

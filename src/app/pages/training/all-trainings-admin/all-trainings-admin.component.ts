@@ -236,6 +236,16 @@ export class AllTrainingsAdminComponent {
   ngOnInit(): void {
     this.getTrainingInstituteId();
     this.getRole();
+    if(this.userRole === 1){
+       this.tableActionsTrainee = [
+       {
+      name: 'download',
+      icon: 'bi bi-download',
+      class: 'btn-info',
+      title: 'Download certificate',
+      condition: (row: any) => row.status === 'APPROVED_BY_STATE_ADMIN',
+    }]
+    }
     if(this.userRole === 3)
     {
       this.tableActionsTrainee = [
@@ -387,7 +397,7 @@ export class AllTrainingsAdminComponent {
           this.falseVariable = false;
           this.modalService.dismissAll();
         }
-      },  
+      },
       error: (error) => {
         this.spinner.hide();
         const errorMessage =
@@ -421,7 +431,7 @@ export class AllTrainingsAdminComponent {
           this.falseVariable = false;
           this.modalService.dismissAll();
         }
-      },  
+      },
       error: (error) => {
         this.spinner.hide();
         const errorMessage =
@@ -456,7 +466,7 @@ export class AllTrainingsAdminComponent {
           this.falseVariable = false;
           this.modalService.dismissAll();
         }
-      },  
+      },
       error: (error) => {
         this.spinner.hide();
         const errorMessage =
@@ -916,6 +926,10 @@ export class AllTrainingsAdminComponent {
         next: (response) => {
           if (response && response.success) {
             this.certificateData = response.data;
+            this.certificateData.location = response.data.venueBlock?response.data.venueBlock:''+
+            response.data.venueBlock && response.data.venueDistrict?', ':''+
+            response.data.venueDistrict?response.data.venueDistrict:''+response.data.venueDistrict&& response.data.venueState?', ':''
+            + response.data.venueState? response.data.venueState:'';
             // Open certificate modal
             this.modalService.open(this.certificateModal, {
               size: 'xl',
