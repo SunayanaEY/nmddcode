@@ -234,6 +234,14 @@ export class TrainingCentreAdminProfileComponent implements OnInit {
     this.profileForm.patchValue({
       district: this.instituteData.districtId,
     });
+    // Disable controls
+    this.profileForm.get('trainingInstituteName')?.disable();
+    this.profileForm.get('trainingInstituteRegistration')?.disable();
+    this.profileForm.get('state')?.disable();
+    this.profileForm.get('address')?.disable();
+    this.profileForm.get('latitude')?.disable();
+    this.profileForm.get('longitude')?.disable();
+    this.profileForm.get('district')?.disable();
   }
   /**
    * Handle form submission
