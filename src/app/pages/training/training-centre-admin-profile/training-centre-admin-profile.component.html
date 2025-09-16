@@ -53,6 +53,39 @@
 
             <div class="form-row">
               <div class="form-group">
+                <label for="instituteType"
+                  >Institute Type<span class="required">*</span></label
+                >
+                <select
+                  id="instituteType"
+                  formControlName="instituteType"
+                  class="form-control"
+                  [class.is-invalid]="
+                    profileForm.get('instituteType')?.invalid &&
+                    profileForm.get('instituteType')?.touched
+                  "
+                >
+                  <option value="" disabled>Select Institute Type</option>
+                  <option *ngFor="let type of instituteTypes" [value]="type.value">
+                    {{ type.label }}
+                  </option>
+                </select>
+                <div
+                  class="invalid-feedback"
+                  *ngIf="
+                    profileForm.get('instituteType')?.invalid &&
+                    profileForm.get('instituteType')?.touched
+                  "
+                >
+                  <span *ngIf="profileForm.get('instituteType')?.errors?.['required']"
+                    >Institute type is required</span
+                  >
+                </div>
+              </div>
+            </div>
+
+            <div class="form-row">
+              <div class="form-group">
                 <label for="state">State<span class="required">*</span></label>
                 <select
                   id="state"
