@@ -49,7 +49,7 @@ export class SchemeManagementComponent {
     'status',
   ];
   breadcrumbItems: BreadcrumbItem[] = [
-    { label: 'Central Admin Login', url: '/dashboard' },
+    { label: 'Dashboard', url: '/admin/training-module' },
     { label: 'Scheme Management' },
   ];
   tableColumns: TableColumn[] = [{ key: 'title', header: 'Scheme' }];

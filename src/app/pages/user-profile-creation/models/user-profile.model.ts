@@ -19,6 +19,7 @@ export interface AddTrainerData {
   mobile: string;
   email: string;
   expertiseIn: string;
+  trainingHeadId: string;
 }
 
 export interface RegisterInstituteData {

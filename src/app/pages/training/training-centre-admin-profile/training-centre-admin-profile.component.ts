@@ -51,7 +51,7 @@ export class TrainingCentreAdminProfileComponent implements OnInit {
   isLoadingDistricts = false;
 
   breadcrumbItems: BreadcrumbItem[] = [
-    { label: 'Training', url: '/admin/training-module' },
+    { label: 'Dashboard', url: '/admin/training-module' },
     { label: 'Training Centre Admin Profile Creation' },
   ];
 

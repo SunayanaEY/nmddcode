@@ -152,7 +152,18 @@
         </div>
       </form>
     </div>
+
+    <!-- Trainers Table Section -->
+    <div class="form-content mt-4">
+      <div class="form-section">
+        <h3 class="section-title">Available Trainers</h3>
+        <app-table
+          [data]="trainersData"
+          [columns]="tableColumns"
+          [isLoading]="isTableLoading"
+          tableName="trainers">
+        </app-table>
+      </div>
+    </div>
   </div>
 </div>
-
-<!--Table-->

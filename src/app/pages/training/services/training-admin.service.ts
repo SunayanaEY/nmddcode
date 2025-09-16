@@ -237,9 +237,7 @@ export class AdminService {
   }
 
   addTrainer(payload: {
-
-    //traineeIds: number[];
-    //cancelRemarks: string;
+    trainingHeadId: string,
     trainerName: string,
   mobile: string,
   email: string,
@@ -248,6 +246,14 @@ export class AdminService {
     return this.http.post<{success: boolean, message: string, data: any, statusCode: number}>(
       `${this.apiUrl}trainers/save`,
       payload,
+      this.getHttpOptions()
+    );
+  }
+
+  // Get trainers by training head ID
+  getTrainersByTrainingHead(trainingHeadId: string): Observable<{success: boolean, message: string, data: any[], statusCode: number}> {
+    return this.http.get<{success: boolean, message: string, data: any[], statusCode: number}>(
+      `${this.apiUrl}trainers/getByTrainingHead/${trainingHeadId}`,
       this.getHttpOptions()
     );
   }

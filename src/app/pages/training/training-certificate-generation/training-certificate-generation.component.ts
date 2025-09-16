@@ -21,6 +21,7 @@ import {
   BreadcrumbComponent,
   BreadcrumbItem,
 } from '../../../components/breadcrumb/breadcrumb.component';
+import { AdminService } from '../services/training-admin.service';
 
 @Component({
   selector: 'app-training-certificate-generation',
@@ -82,6 +83,9 @@ export class TrainingCertificateGenerationComponent implements OnInit {
   allTrainingType: any;
   selectedTrainingInstituteName: any;
   selectedTrainingInstituteId: any;
+  trainers: any[] = [];
+  isLoadingTrainers = false;
+  showGuestTrainerField = false;
   isSpinner: boolean = false;
   trainingId: any = null;
   trainingDetails: any = null;
@@ -109,12 +113,14 @@ export class TrainingCertificateGenerationComponent implements OnInit {
     private toastr: ToastrService,
     private locationService: LocationService,
     private trainingService: TrainingService,
-    private route: ActivatedRoute
+    private route: ActivatedRoute,
+    private adminService: AdminService
   ) {
     this.trainingForm = this.fb.group({
       trainingTitle: ['', Validators.required],
       scheme: ['', Validators.required],
       trainerName: ['', Validators.required],
+      guestTrainerName: [''],
       trainingInstituteName: ['', Validators.required],
       venueState: ['', Validators.required],
       venueDistrict: ['', Validators.required],
@@ -135,6 +141,7 @@ export class TrainingCertificateGenerationComponent implements OnInit {
     this.getInstituteNames();
     this.loadStates();
     this.getTrainingTypes();
+    this.loadTrainers();
     this.trainingId = this.route.snapshot.queryParams['trainingId'];
     this.populate = this.route.snapshot.queryParams['populate'];
 
@@ -341,7 +348,45 @@ export class TrainingCertificateGenerationComponent implements OnInit {
       },
     });
   }
-  onTrainingInstituteChange() {
+
+  loadTrainers(): void {
+    const userData = JSON.parse(sessionStorage.getItem('user') || '{}');
+    const trainingHeadId = userData.trainingHeadId;
+    if (!trainingHeadId) {
+      this.toastr.error('Training Head ID not found in session');
+      return;
+    }
+
+    this.isLoadingTrainers = true;
+    this.adminService.getTrainersByTrainingHead(trainingHeadId).subscribe({
+      next: (response) => {
+        this.trainers = response.data || [];
+        this.isLoadingTrainers = false;
+        console.log('Trainers loaded:', this.trainers);
+      },
+      error: (error) => {
+        console.error('Error loading trainers:', error);
+        this.toastr.error('Failed to load trainers');
+        this.isLoadingTrainers = false;
+      }
+    });
+   }
+
+   onTrainerChange(): void {
+     const selectedTrainer = this.trainingForm.get('trainerName')?.value;
+     this.showGuestTrainerField = selectedTrainer === 'Other';
+     
+     const guestTrainerControl = this.trainingForm.get('guestTrainerName');
+     if (this.showGuestTrainerField) {
+       guestTrainerControl?.setValidators([Validators.required]);
+     } else {
+       guestTrainerControl?.clearValidators();
+       guestTrainerControl?.setValue('');
+     }
+     guestTrainerControl?.updateValueAndValidity();
+   }
+
+   onTrainingInstituteChange() {
     const selectedInstitute = this.trainingForm.get(
       'trainingInstituteName'
     )?.value;
@@ -405,6 +450,22 @@ export class TrainingCertificateGenerationComponent implements OnInit {
     if (data.hasOwnProperty('trainingType')) {
       data['trainingTypeId'] = data['trainingType'];
       delete data['trainingType'];
+    }
+
+    // Handle trainer data based on selection
+    if (data.hasOwnProperty('trainerName')) {
+      if (data['trainerName'] === 'Other') {
+        // When "Other" is selected, use guest trainer name and set trainerId to 0
+        data['trainerName'] = data['guestTrainerName'];
+        data['trainerId'] = 0;
+      } else {
+        // When specific trainer is selected, find trainerId and set trainerName to null
+        const selectedTrainer = this.trainers.find(trainer => trainer.trainerName === data['trainerName']);
+        data['trainerId'] = selectedTrainer ? selectedTrainer.id : null;
+        data['trainerName'] = null;
+      }
+      // Remove guestTrainerName from final data
+      delete data['guestTrainerName'];
     }
     // alert('coming to : ' + this.populate);
     if (this.populate == 'true') {
