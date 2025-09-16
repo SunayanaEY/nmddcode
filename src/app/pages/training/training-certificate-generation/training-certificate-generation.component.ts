@@ -6,6 +6,8 @@ import {
   FormBuilder,
   FormGroup,
   Validators,
+  AbstractControl,
+  ValidationErrors,
 } from '@angular/forms';
 import { SchemeService } from '../../training/services/scheme.service';
 import { TrainingService } from '../../../pages/training/services/training.service';
@@ -106,6 +108,37 @@ export class TrainingCertificateGenerationComponent implements OnInit {
     };
   } = {};
 
+  // Custom validators
+  futureDateValidator(control: AbstractControl): ValidationErrors | null {
+    if (!control.value) {
+      return null; // Let required validator handle empty values
+    }
+    
+    const selectedDate = new Date(control.value);
+    const today = new Date();
+    today.setHours(0, 0, 0, 0); // Reset time to start of day
+    
+    if (selectedDate < today) {
+      return { pastDate: true };
+    }
+    
+    return null;
+  }
+
+  positiveDurationValidator(control: AbstractControl): ValidationErrors | null {
+    if (!control.value) {
+      return null; // Let required validator handle empty values
+    }
+    
+    const duration = Number(control.value);
+    
+    if (duration <= 0) {
+      return { invalidDuration: true };
+    }
+    
+    return null;
+  }
+
   constructor(
     private fb: FormBuilder,
     private router: Router,
@@ -125,8 +158,8 @@ export class TrainingCertificateGenerationComponent implements OnInit {
       venueState: ['', Validators.required],
       venueDistrict: ['', Validators.required],
       venueBlock: ['', Validators.required],
-      trainingDate: ['', Validators.required],
-      duration: ['', Validators.required],
+      trainingDate: ['', [Validators.required, this.futureDateValidator.bind(this)]],
+      duration: ['', [Validators.required, this.positiveDurationValidator.bind(this)]],
       durationType: ['Days', Validators.required],
       trainingDescription: [
         '',
@@ -161,10 +194,31 @@ export class TrainingCertificateGenerationComponent implements OnInit {
         console.log(response);
         this.trainingDetails = response;
         const formattedDate = this.trainingDetails.trainingDate.split('T')[0];
+        // Handle trainer selection based on trainerId
+        if (this.trainingDetails.trainerId === 0) {
+          // Guest trainer case
+          this.showGuestTrainerField = true;
+          this.trainingForm.patchValue({
+            trainerName: 'Other',
+            guestTrainerName: this.trainingDetails.trainerName,
+          });
+          // Update validation for guest trainer
+          this.trainingForm.get('guestTrainerName')?.setValidators([Validators.required]);
+          this.trainingForm.get('guestTrainerName')?.updateValueAndValidity();
+        } else {
+          // Regular trainer case
+          this.showGuestTrainerField = false;
+          this.trainingForm.patchValue({
+            trainerName: this.trainingDetails.trainerName,
+          });
+          // Remove validation for guest trainer
+          this.trainingForm.get('guestTrainerName')?.clearValidators();
+          this.trainingForm.get('guestTrainerName')?.updateValueAndValidity();
+        }
+
         this.trainingForm.patchValue({
           trainingTitle: this.trainingDetails.trainingTitle,
           scheme: this.trainingDetails.schemeId,
-          trainerName: this.trainingDetails.trainerName,
           venueState: this.trainingDetails.venueStateId,
           venueBlock: this.trainingDetails.venueBlock,
           trainingDate: formattedDate,
@@ -174,6 +228,9 @@ export class TrainingCertificateGenerationComponent implements OnInit {
           trainingType: this.trainingDetails.trainingTypeId,
           modeOfTraining: this.trainingDetails.modeOfTraining,
         });
+
+        // Set training institute after institutes are loaded
+        this.setTrainingInstitute();
         this.loadDistricts(this.trainingDetails.venueStateId);
         this.trainingForm.patchValue({
           venueDistrict: this.trainingDetails.venueDistrictId,
@@ -217,6 +274,30 @@ export class TrainingCertificateGenerationComponent implements OnInit {
       },
     });
   }
+
+  setTrainingInstitute(): void {
+    if (this.trainingDetails && this.instituteNames) {
+      const selectedInstitute = this.instituteNames.find(
+        (institute: any) => institute.id === this.trainingDetails.trainingInstituteId
+      );
+      
+      if (selectedInstitute) {
+        this.trainingForm.patchValue({
+          trainingInstituteName: selectedInstitute
+        });
+      } else {
+        // If institute not found in list, create a temporary object
+        const tempInstitute = {
+          id: this.trainingDetails.trainingInstituteId,
+          trainingInstituteName: this.trainingDetails.trainingInstituteName
+        };
+        this.trainingForm.patchValue({
+          trainingInstituteName: tempInstitute
+        });
+      }
+    }
+  }
+
   getSchemes(): void {
     this.schemeService.getAllSchemes().subscribe({
       next: (res) => {
@@ -233,6 +314,10 @@ export class TrainingCertificateGenerationComponent implements OnInit {
       next: (res) => {
         this.instituteNames = res.data;
         console.log('Institutes fetched:', this.instituteNames);
+        // Set training institute if training details are already loaded
+        if (this.trainingDetails) {
+          this.setTrainingInstitute();
+        }
       },
       error: (err) => {
         console.error('Error fetching institutes:', err);

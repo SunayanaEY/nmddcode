@@ -50,6 +50,12 @@ export class TrainingCentreAdminProfileComponent implements OnInit {
   isLoadingStates = false;
   isLoadingDistricts = false;
 
+  // Institute Type options
+  instituteTypes = [
+    { value: 'Government', label: 'Government' },
+    { value: 'Private', label: 'Private' },
+  ];
+
   breadcrumbItems: BreadcrumbItem[] = [
     { label: 'Dashboard', url: '/admin/training-module' },
     { label: 'Training Centre Admin Profile Creation' },
@@ -91,6 +97,7 @@ export class TrainingCentreAdminProfileComponent implements OnInit {
           '',
           [Validators.required, Validators.minLength(3)],
         ],
+        instituteType: ['', [Validators.required]],
         trainingInstituteRegistration: [
           '',
           [Validators.required, Validators.minLength(3)],
@@ -223,6 +230,7 @@ export class TrainingCentreAdminProfileComponent implements OnInit {
   initializeForm() {
     this.profileForm.patchValue({
       trainingInstituteName: this.instituteData.trainingInstituteName,
+      instituteType: this.instituteData.instituteType,
       trainingInstituteRegistration:
         this.instituteData.trainingInstituteRegistration,
       state: this.instituteData.stateId,
@@ -280,6 +288,7 @@ export class TrainingCentreAdminProfileComponent implements OnInit {
           this.profileForm.get('trainingInstituteName')?.value || '',
         registrationNumber:
           this.profileForm.get('trainingInstituteRegistration')?.value || '',
+        instituteType: this.profileForm.get('instituteType')?.value || '',
         stateId: parseInt(this.profileForm.get('state')?.value) || 0,
         districtId: parseInt(this.profileForm.get('district')?.value) || 0,
         address: this.profileForm.get('address')?.value || '',

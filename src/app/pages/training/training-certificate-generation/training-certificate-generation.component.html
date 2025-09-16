@@ -84,6 +84,7 @@
                 <option *ngFor="let trainer of trainers" [value]="trainer.trainerName">
                   {{ trainer.trainerName }}
                 </option>
+                <option value="Other">Other</option>
               </select>
               <div *ngIf="trainingForm.get('trainerName')?.invalid && trainingForm.get('trainerName')?.touched" class="invalid-feedback">
                 <small *ngIf="trainingForm.get('trainerName')?.errors?.['required']" class="text-danger">
@@ -241,6 +242,9 @@
                 <small *ngIf="trainingForm.get('trainingDate')?.errors?.['required']" class="text-danger">
                   This field is required
                 </small>
+                <small *ngIf="trainingForm.get('trainingDate')?.errors?.['pastDate']" class="text-danger">
+                  Please select today's date or a future date
+                </small>
               </div>
             </div>
             <div class="form-group third-width">
@@ -261,6 +265,9 @@
               <div *ngIf="trainingForm.get('duration')?.invalid && trainingForm.get('duration')?.touched" class="invalid-feedback">
                 <small *ngIf="trainingForm.get('duration')?.errors?.['required']" class="text-danger">
                   This field is required
+                </small>
+                <small *ngIf="trainingForm.get('duration')?.errors?.['invalidDuration']" class="text-danger">
+                  Duration must be a positive number
                 </small>
               </div>
             </div>
