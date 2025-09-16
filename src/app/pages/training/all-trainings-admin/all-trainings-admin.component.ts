@@ -155,14 +155,28 @@ export class AllTrainingsAdminComponent {
       icon: 'bi bi-check-circle',
       class: 'btn-success',
       title: 'Approve',
-      condition: (row: any) => row.status === 'TRAINEE_UPLOADED' || row.status === 'VALIDATED_BY_INSTITUTE_HEAD',
+      condition: (row: any) => {
+        // For Institute Head (role 3), only show approve button for TRAINEE_UPLOADED status
+        if (this.userRole === 3) {
+          return row.status === 'TRAINEE_UPLOADED';
+        }
+        // For other roles, show approve button for TRAINEE_UPLOADED or VALIDATED_BY_INSTITUTE_HEAD
+        return row.status === 'TRAINEE_UPLOADED' || row.status === 'VALIDATED_BY_INSTITUTE_HEAD';
+      },
     },
     {
       name: 'reject',
       icon: 'bi bi-x-circle',
       class: 'btn-danger',
       title: 'Reject',
-      condition: (row: any) => row.status === 'TRAINEE_UPLOADED' || row.status === 'VALIDATED_BY_INSTITUTE_HEAD',
+      condition: (row: any) => {
+        // For Institute Head (role 3), only show reject button for TRAINEE_UPLOADED status
+        if (this.userRole === 3) {
+          return row.status === 'TRAINEE_UPLOADED';
+        }
+        // For other roles, show reject button for TRAINEE_UPLOADED or VALIDATED_BY_INSTITUTE_HEAD
+        return row.status === 'TRAINEE_UPLOADED' || row.status === 'VALIDATED_BY_INSTITUTE_HEAD';
+      },
     },
     {
       name: 'download',
@@ -180,16 +194,34 @@ export class AllTrainingsAdminComponent {
       icon: 'bi bi-check-circle',
       class: 'btn-success',
       title: 'Bulk Approve',
+      condition: (rows: any[]) => {
+        // For Institute Head (role 3), only show bulk approve if there are TRAINEE_UPLOADED status items
+        if (this.userRole === 3) {
+          return rows.some(row => row.status === 'TRAINEE_UPLOADED');
+        }
+        // For other roles, show bulk approve if there are eligible items
+        return rows.some(row => row.status === 'TRAINEE_UPLOADED' || row.status === 'VALIDATED_BY_INSTITUTE_HEAD');
+      },
     },
     {
       name: 'bulkReject',
       icon: 'bi bi-x-circle',
       class: 'btn-danger',
       title: 'Bulk Reject',
+      condition: (rows: any[]) => {
+        // For Institute Head (role 3), only show bulk reject if there are TRAINEE_UPLOADED status items
+        if (this.userRole === 3) {
+          return rows.some(row => row.status === 'TRAINEE_UPLOADED');
+        }
+        // For other roles, show bulk reject if there are eligible items
+        return rows.some(row => row.status === 'TRAINEE_UPLOADED' || row.status === 'VALIDATED_BY_INSTITUTE_HEAD');
+      },
     },
   ];
 
   enableMultiSelectTrainee: boolean = true;
+  isTableLoading: boolean = false;
+  rejectModalRef: any = null;
 
   constructor(
     private formBuilder: FormBuilder,
@@ -204,6 +236,16 @@ export class AllTrainingsAdminComponent {
   ngOnInit(): void {
     this.getTrainingInstituteId();
     this.getRole();
+    if(this.userRole === 1){
+       this.tableActionsTrainee = [
+       {
+      name: 'download',
+      icon: 'bi bi-download',
+      class: 'btn-info',
+      title: 'Download certificate',
+      condition: (row: any) => row.status === 'APPROVED_BY_STATE_ADMIN',
+    }]
+    }
     if(this.userRole === 3)
     {
       this.tableActionsTrainee = [
@@ -227,6 +269,54 @@ export class AllTrainingsAdminComponent {
       class: 'btn-info',
       title: 'Download certificate',
       condition: (row: any) => row.status === 'APPROVED',
+    },
+  ];
+    }
+    
+    if(this.userRole === 5)
+    {
+      this.tableActionsTrainee = [
+    {
+      name: 'approve',
+      icon: 'bi bi-check-circle',
+      class: 'btn-success',
+      title: 'Approve',
+      condition: (row: any) => row.status === 'VALIDATED_BY_INSTITUTE_HEAD',
+    },
+    {
+      name: 'reject',
+      icon: 'bi bi-x-circle',
+      class: 'btn-danger',
+      title: 'Reject',
+      condition: (row: any) => row.status === 'VALIDATED_BY_INSTITUTE_HEAD',
+    },
+    {
+      name: 'download',
+      icon: 'bi bi-download',
+      class: 'btn-info',
+      title: 'Download certificate',
+      condition: (row: any) => row.status === 'APPROVED_BY_STATE_ADMIN',
+    },
+  ];
+  
+      this.bulkActionsTrainee = [
+    {
+      name: 'bulkApprove',
+      icon: 'bi bi-check-circle',
+      class: 'btn-success',
+      title: 'Bulk Approve',
+      condition: (rows: any[]) => {
+        return rows.some(row => row.status === 'VALIDATED_BY_INSTITUTE_HEAD');
+      },
+    },
+    {
+      name: 'bulkReject',
+      icon: 'bi bi-x-circle',
+      class: 'btn-danger',
+      title: 'Bulk Reject',
+      condition: (rows: any[]) => {
+        return rows.some(row => row.status === 'VALIDATED_BY_INSTITUTE_HEAD');
+      },
     },
   ];
     }
@@ -307,7 +397,7 @@ export class AllTrainingsAdminComponent {
           this.falseVariable = false;
           this.modalService.dismissAll();
         }
-      },  
+      },
       error: (error) => {
         this.spinner.hide();
         const errorMessage =
@@ -341,7 +431,7 @@ export class AllTrainingsAdminComponent {
           this.falseVariable = false;
           this.modalService.dismissAll();
         }
-      },  
+      },
       error: (error) => {
         this.spinner.hide();
         const errorMessage =
@@ -376,7 +466,7 @@ export class AllTrainingsAdminComponent {
           this.falseVariable = false;
           this.modalService.dismissAll();
         }
-      },  
+      },
       error: (error) => {
         this.spinner.hide();
         const errorMessage =
@@ -467,7 +557,7 @@ export class AllTrainingsAdminComponent {
     } else if (event.action === 'reject') {
       this.selectedTraineeForReject = event.item;
       this.rejectForm.reset();
-      this.modalService.open(this.rejectModal, {
+      this.rejectModalRef = this.modalService.open(this.rejectModal, {
         size: 'md',
         backdrop: 'static',
         keyboard: false,
@@ -699,14 +789,27 @@ export class AllTrainingsAdminComponent {
       traineeIds: [trainee.id],
     };
 
+    this.isTableLoading = true;
+    this.spinner.show('modalSpinner');
     this.adminService.approveTrainees(payload).subscribe({
       next: (response) => {
+        this.isTableLoading = false;
         this.spinner.hide('modalSpinner');
         if (response.success) {
+          // Update trainee status based on user role
+          if (this.userRole === 3) {
+            trainee.status = 'VALIDATED_BY_INSTITUTE_HEAD';
+          } else {
+            trainee.status = 'APPROVED';
+          }
+          
           this.toastr.success(
             response.data.message || 'Trainee approved successfully',
             'Success'
           );
+          
+          // Refresh the trainee list to reflect updated status
+          this.refreshTraineeList();
         } else {
           this.toastr.error(
             response.message || 'Failed to approve trainee',
@@ -715,6 +818,7 @@ export class AllTrainingsAdminComponent {
         }
       },
       error: (error) => {
+        this.isTableLoading = false;
         this.spinner.hide('modalSpinner');
         const errorMessage =
           error.error?.message || 'An error occurred while approving trainee';
@@ -726,6 +830,7 @@ export class AllTrainingsAdminComponent {
 
   rejectTrainee(): void {
     if (this.rejectForm.valid) {
+      this.isTableLoading = true;
       const remarks = this.rejectForm.get('remarks')?.value;
 
       // Check if this is bulk rejection or individual rejection
@@ -747,34 +852,63 @@ export class AllTrainingsAdminComponent {
           next: (response) => {
             this.spinner.hide('modalSpinner');
             if (response.success) {
-              this.selectedTraineeForReject.status = 'REJECTED';
+              // Update trainee status based on user role
+              if (this.userRole === 3) {
+                this.selectedTraineeForReject.status = 'REJECTED_BY_INSTITUTE_HEAD';
+              } else {
+                this.selectedTraineeForReject.status = 'REJECTED';
+              }
               this.selectedTraineeForReject.remarks = remarks;
               this.toastr.success(
                 response.data.message || 'Trainee rejected successfully',
                 'Success'
               );
+              
+              // Refresh the trainee list to reflect updated status
+              this.refreshTraineeList();
             } else {
               this.toastr.error(
                 response.message || 'Failed to reject trainee',
                 'Error'
               );
             }
-            this.modalService.dismissAll();
+            this.isTableLoading = false;
+            // Close only the reject modal, not all modals
+            if (this.rejectModalRef) {
+              this.rejectModalRef.close();
+              this.rejectModalRef = null;
+            }
             this.selectedTraineeForReject = null;
+            this.rejectForm.reset();
           },
           error: (error) => {
             this.spinner.hide('modalSpinner');
             const errorMessage =
               error.error?.message ||
               'An error occurred while rejecting trainee';
+            this.isTableLoading = false;
             this.toastr.error(errorMessage, 'Error');
             console.error('Error rejecting trainee:', error);
-            this.modalService.dismissAll();
+            // Close only the reject modal, not all modals
+            if (this.rejectModalRef) {
+              this.rejectModalRef.close();
+              this.rejectModalRef = null;
+            }
             this.selectedTraineeForReject = null;
+            this.rejectForm.reset();
           },
         });
       }
     }
+  }
+
+  refreshTraineeList(): void {
+    // Refresh the trainee list to get updated statuses
+    this.trainingsService
+      .getTraineeList(this.currentTrainingId)
+      .subscribe((res) => {
+        this.traineeList = res.data;
+      });
   }
 
   downloadCertificate(trainee: any): void {
@@ -792,6 +926,10 @@ export class AllTrainingsAdminComponent {
         next: (response) => {
           if (response && response.success) {
             this.certificateData = response.data;
+            this.certificateData.location = response.data.venueBlock?response.data.venueBlock:''+
+            response.data.venueBlock && response.data.venueDistrict?', ':''+
+            response.data.venueDistrict?response.data.venueDistrict:''+response.data.venueDistrict&& response.data.venueState?', ':''
+            + response.data.venueState? response.data.venueState:'';
             // Open certificate modal
             this.modalService.open(this.certificateModal, {
               size: 'xl',
@@ -857,6 +995,7 @@ export class AllTrainingsAdminComponent {
       return;
     }
 
+    this.isTableLoading = true;
     const payload = {
       trainingInstituteId: this.currentTrainingInstituteId,
       trainingId: this.currentTrainingId,
@@ -865,17 +1004,32 @@ export class AllTrainingsAdminComponent {
 
     this.adminService.approveTrainees(payload).subscribe({
       next: (response) => {
-        this.toastr.success(
-          `${eligibleTrainees.length} trainees approved successfully!`
-        );
-        // Refresh the trainee list
-        this.trainingsService
-          .getTraineeList(this.trainingDetails.id)
-          .subscribe((res) => {
-            this.traineeList = res.data;
+        this.isTableLoading = false;
+        if (response.success) {
+          // Update status for all approved trainees based on user role
+          eligibleTrainees.forEach((trainee) => {
+            if (this.userRole === 3) {
+              trainee.status = 'VALIDATED_BY_INSTITUTE_HEAD';
+            } else {
+              trainee.status = 'APPROVED';
+            }
           });
+          
+          this.toastr.success(
+            `${eligibleTrainees.length} trainees approved successfully!`
+          );
+          
+          // Refresh the trainee list
+          this.refreshTraineeList();
+        } else {
+          this.toastr.error(
+            response.message || 'Failed to approve trainees',
+            'Error'
+          );
+        }
       },
       error: (error) => {
+        this.isTableLoading = false;
         this.toastr.error('Error approving trainees');
         console.error('Bulk approve error:', error);
       },
@@ -887,10 +1041,11 @@ export class AllTrainingsAdminComponent {
     // Keeping for backward compatibility if needed
     this.selectedTraineesForBulkReject = trainees;
     this.rejectForm.reset();
-    this.modalService.open(this.rejectModal, { centered: true });
+    this.rejectModalRef = this.modalService.open(this.rejectModal, { centered: true });
   }
 
   bulkRejectTraineesWithRemarks(trainees: any[], remarks: string): void {
+    this.isTableLoading = true;
     // Filter trainees that can be rejected (not already approved or rejected)
     const eligibleTrainees = trainees.filter(
       (trainee) =>
@@ -898,8 +1053,12 @@ export class AllTrainingsAdminComponent {
     );
 
     if (eligibleTrainees.length === 0) {
+      this.isTableLoading = false;
       this.toastr.warning('No eligible trainees to reject', 'Warning');
-      this.modalService.dismissAll();
+      if (this.rejectModalRef) {
+        this.rejectModalRef.close();
+        this.rejectModalRef = null;
+      }
       this.selectedTraineesForBulkReject = [];
       return;
     }
@@ -914,36 +1073,44 @@ export class AllTrainingsAdminComponent {
     this.adminService.rejectTrainees(payload).subscribe({
       next: (response) => {
         if (response.success) {
-          // Update status for all rejected trainees
-          eligibleTrainees.forEach((trainee) => {
+          // Update status for all rejected trainees based on user role
+        eligibleTrainees.forEach((trainee) => {
+          if (this.userRole === 3) {
+            trainee.status = 'REJECTED_BY_INSTITUTE_HEAD';
+          } else {
             trainee.status = 'REJECTED';
-            trainee.remarks = remarks;
-          });
+          }
+          trainee.remarks = remarks;
+        });
           this.toastr.success(
             `${eligibleTrainees.length} trainee(s) rejected successfully`,
             'Success'
           );
           // Refresh the trainee list
-          this.trainingsService
-            .getTraineeList(this.trainingDetails.id)
-            .subscribe((res) => {
-              this.traineeList = res.data;
-            });
+          this.refreshTraineeList();
         } else {
           this.toastr.error(
             response.message || 'Failed to reject trainees',
             'Error'
           );
         }
-        this.modalService.dismissAll();
+        this.isTableLoading = false;
+        if (this.rejectModalRef) {
+          this.rejectModalRef.close();
+          this.rejectModalRef = null;
+        }
         this.selectedTraineesForBulkReject = [];
       },
       error: (error) => {
         const errorMessage =
           error.error?.message || 'An error occurred while rejecting trainees';
+        this.isTableLoading = false;
         this.toastr.error(errorMessage, 'Error');
         console.error('Error rejecting trainees:', error);
-        this.modalService.dismissAll();
+        if (this.rejectModalRef) {
+          this.rejectModalRef.close();
+          this.rejectModalRef = null;
+        }
         this.selectedTraineesForBulkReject = [];
       },
     });

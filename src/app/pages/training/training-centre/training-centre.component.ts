@@ -44,7 +44,7 @@ export class TrainingCentreComponent implements OnInit {
   @ViewChild('editModal') editModal!: ModalComponent;
 
   breadcrumbItems: BreadcrumbItem[] = [
-    { label: 'Central Admin Login', url: '/admin/training-module' },
+    { label: 'Dashboard', url: '/admin/training-module' },
     { label: 'Training Centre Data' },
   ];
 

@@ -48,7 +48,7 @@ export class TrainingTypeManagementComponent {
     'status',
   ];
   breadcrumbItems: BreadcrumbItem[] = [
-    { label: 'Central Admin Login', url: '/dashboard' },
+    { label: 'Dashboard', url: '/admin/training-module' },
     { label: 'Training Type Management' },
   ];
   tableColumns: TableColumn[] = [{ key: 'title', header: 'Training Type' }];

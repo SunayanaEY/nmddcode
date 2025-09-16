@@ -120,7 +120,7 @@ export class AdminService {
       'Authorization': `Bearer ${token}`
       // Don't set Content-Type for FormData, let browser set it with boundary
     });
-    
+
     return this.http.post<TrainingInstitute>(
       `${this.apiUrl}api/auth/registerInstitute`,
       formData,
@@ -205,7 +205,7 @@ export class AdminService {
     );
   }
   cancelTrainees(payload: {
-   
+
     traineeIds: number[];
     cancelRemarks: string;
   }): Observable<{success: boolean, message: string, data: any, statusCode: number}>  {
@@ -236,5 +236,26 @@ export class AdminService {
     );
   }
 
+  addTrainer(payload: {
+    trainingHeadId: string,
+    trainerName: string,
+  mobile: string,
+  email: string,
+  expertiseIn: string
+  }): Observable<{success: boolean, message: string, data: any, statusCode: number}>  {
+    return this.http.post<{success: boolean, message: string, data: any, statusCode: number}>(
+      `${this.apiUrl}trainers/save`,
+      payload,
+      this.getHttpOptions()
+    );
+  }
+
+  // Get trainers by training head ID
+  getTrainersByTrainingHead(trainingHeadId: string): Observable<{success: boolean, message: string, data: any[], statusCode: number}> {
+    return this.http.get<{success: boolean, message: string, data: any[], statusCode: number}>(
+      `${this.apiUrl}trainers/getByTrainingHead/${trainingHeadId}`,
+      this.getHttpOptions()
+    );
+  }
 
 }

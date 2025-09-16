@@ -401,6 +401,17 @@ export class ApprovedRejectedTrainingsComponent {
         next: (response) => {
           if (response && response.success) {
             this.certificateData = response.data;
+            this.certificateData.location = response.data.venueBlock
+              ? response.data.venueBlock
+              : '' + response.data.venueBlock && response.data.venueDistrict
+              ? ', '
+              : '' + response.data.venueDistrict
+              ? response.data.venueDistrict
+              : '' + response.data.venueDistrict && response.data.venueState
+              ? ', '
+              : '' + response.data.venueState
+              ? response.data.venueState
+              : '';
             // Open certificate modal
             this.modalService.open(this.certificateModal, {
               size: 'xl',

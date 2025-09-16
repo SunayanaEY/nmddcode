@@ -1,4 +1,11 @@
-<div class="table-container">
+<div class="table-container" style="position: relative;">
+  <!-- Loading Overlay -->
+  <div *ngIf="isLoading" class="loading-overlay" style="position: absolute; top: 0; left: 0; right: 0; bottom: 0; background: rgba(255, 255, 255, 0.8); display: flex; justify-content: center; align-items: center; z-index: 1000;">
+    <div class="spinner-border text-primary" role="status">
+      <span class="visually-hidden">Loading...</span>
+    </div>
+  </div>
+  
   <div class="d-flex justify-content-between align-items-center mb-3" style="margin-top: 3%">
     <div class="input-group search mb-4" style="max-width: 500px">
       <div class="input-group-prepend">
@@ -25,9 +32,9 @@
       <button *ngIf="isExportCSV  && !hasSelectedItems" class="btn btn-warning" (click)="exportExcel()">
         Export Excel
       </button>
-      <button *ngIf="isBulkCertDownload" class="btn btn-primary" (click)="downloadCerts('Download Certs')">
+      <!-- <button *ngIf="isBulkCertDownload" class="btn btn-primary" (click)="downloadCerts('Download Certs')">
         <i class="bi bi-download"></i> Download Certificates
-      </button>
+      </button> -->
       <!-- Add new row -->
       <button *ngIf="tableNamesArray.includes(tableName)" class="btn btn-link add-more-btn"
         (click)="addNewRow(data.length)">
@@ -64,7 +71,7 @@
           " [class.odd-row]="i % 2 === 0">
           <td *ngIf="enableMultiSelect && eligibleItemsCount>0" style="width: 50px;">
             <input
-              *ngIf=" (tableName==='Verify-Trainings' && item.status === 'IN PROGRESS') || (tableName!=='Verify-Trainings' && item.status === 'VERIFIED')"
+              *ngIf=" (tableName==='Verify-Trainings' && item.status === 'IN PROGRESS') || (tableName==='Trainee-List' && (item.status === 'TRAINEE_UPLOADED' || (userRole === 5 && item.status === 'VALIDATED_BY_INSTITUTE_HEAD'))) || (tableName!=='Verify-Trainings' && tableName!=='Trainee-List' && item.status === 'VERIFIED')"
               type="checkbox"
               class="form-check-input"
               [checked]="isItemSelected(item)"
