@@ -95,7 +95,7 @@ export class SidebarComponent {
   }
 
   canAccessAdminFeatures(): boolean {
-    return this.authService.hasRole([1]);
+    return this.authService.hasRole([1,5]);
   }
 
   canAccessTrainingFeatures(): boolean {

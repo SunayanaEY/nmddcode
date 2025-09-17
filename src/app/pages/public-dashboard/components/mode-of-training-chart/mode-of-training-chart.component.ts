@@ -5,8 +5,8 @@ import { EChartsOption } from 'echarts';
 import { Subscription } from 'rxjs';
 import { DashboardDataService, ModeOfTrainingDistributionResponse } from '../../services/dashboard-data.service';
 
-export interface ModeOfTrainingData {
-  mode: string;
+export interface InstituteRegistrationData {
+  type: string;
   count: number;
   percentage: number;
   color: string;
@@ -36,30 +36,24 @@ export class ModeOfTrainingChartComponent implements OnInit, OnChanges, OnDestro
   chartInstance: any;
   private dataSubscription?: Subscription;
   private isLoadingData = false;
-  private apiData: ModeOfTrainingData[] = [];
+  private apiData: InstituteRegistrationData[] = [];
 
   constructor(private dashboardService: DashboardDataService) {}
 
-  // Mock data for training modes
-  private allIndiaData: ModeOfTrainingData[] = [
-    { mode: 'Online', count: 0, percentage: 0, color: '#4F46E5', icon: 'laptop' },
-    { mode: 'Offline', count: 0, percentage: 0, color: '#059669', icon: 'users' },
-    { mode: 'Hybrid', count: 0, percentage: 0, color: '#DC2626', icon: 'globe' },
-    { mode: 'Field Training', count: 0, percentage: 0, color: '#D97706', icon: 'map-marker-alt' }
+  // Mock data for institute registration types
+  private allIndiaData: InstituteRegistrationData[] = [
+    { type: 'Government Registered', count: 1250, percentage: 65, color: '#059669', icon: 'university' },
+    { type: 'Private Institutes', count: 675, percentage: 35, color: '#DC2626', icon: 'building' }
   ];
 
-  private stateSpecificData: { [key: string]: ModeOfTrainingData[] } = {
+  private stateSpecificData: { [key: string]: InstituteRegistrationData[] } = {
     'UP': [
-      { mode: 'Online', count: 0, percentage: 0, color: '#4F46E5', icon: 'laptop' },
-      { mode: 'Offline', count: 0, percentage: 0, color: '#059669', icon: 'users' },
-      { mode: 'Hybrid', count: 0, percentage: 0, color: '#DC2626', icon: 'globe' },
-      { mode: 'Field Training', count: 0, percentage: 0, color: '#D97706', icon: 'map-marker-alt' }
+      { type: 'Government Registered', count: 320, percentage: 70, color: '#059669', icon: 'university' },
+      { type: 'Private Institutes', count: 137, percentage: 30, color: '#DC2626', icon: 'building' }
     ],
     'MH': [
-      { mode: 'Online', count: 0, percentage: 0, color: '#4F46E5', icon: 'laptop' },
-      { mode: 'Offline', count: 0, percentage: 0, color: '#059669', icon: 'users' },
-      { mode: 'Hybrid', count: 0, percentage: 0, color: '#DC2626', icon: 'globe' },
-      { mode: 'Field Training', count: 0, percentage: 0, color: '#D97706', icon: 'map-marker-alt' }
+      { type: 'Government Registered', count: 180, percentage: 60, color: '#059669', icon: 'university' },
+      { type: 'Private Institutes', count: 120, percentage: 40, color: '#DC2626', icon: 'building' }
     ]
   };
 
@@ -89,7 +83,7 @@ export class ModeOfTrainingChartComponent implements OnInit, OnChanges, OnDestro
     }, 500);
   }
 
-  private getChartData(): ModeOfTrainingData[] {
+  private getChartData(): InstituteRegistrationData[] {
     // Use API data if available
     if (this.apiData && this.apiData.length > 0) {
       return this.apiData;
@@ -136,36 +130,32 @@ export class ModeOfTrainingChartComponent implements OnInit, OnChanges, OnDestro
     });
   }
 
-  private transformApiData(data: any): ModeOfTrainingData[] {
+  private transformApiData(data: any): InstituteRegistrationData[] {
     const colorMap: { [key: string]: string } = {
-      'Online': '#4F46E5',
-      'Offline': '#059669', 
-      'Hybrid': '#DC2626',
-      'Field': '#D97706'
+      'Government': '#059669',
+      'Private': '#DC2626'
     };
     
     const iconMap: { [key: string]: string } = {
-      'Online': 'laptop',
-      'Offline': 'users',
-      'Hybrid': 'globe', 
-      'Field': 'map-marker-alt'
+      'Government': 'university',
+      'Private': 'building'
     };
 
-    return Object.entries(data).map(([mode, percentage]) => ({
-      mode: mode === 'Field' ? 'Field Training' : mode,
+    return Object.entries(data).map(([type, percentage]) => ({
+      type: type === 'Government' ? 'Government Registered' : 'Private Institutes',
       count: Math.round((percentage as number) * 10), // Approximate count based on percentage
       percentage: percentage as number,
-      color: colorMap[mode] || '#6B7280',
-      icon: iconMap[mode] || 'chart-bar'
+      color: colorMap[type] || '#6B7280',
+      icon: iconMap[type] || 'building'
     }));
   }
 
-  private createChartOption(data: ModeOfTrainingData[]): EChartsOption {
+  private createChartOption(data: InstituteRegistrationData[]): EChartsOption {
     const total = data.reduce((sum, item) => sum + item.count, 0);
 
     return {
       title: {
-        text: this.selectedState ? `Training Modes - ${this.selectedState.stateName}` : 'Training Modes - All India',
+        text: this.selectedState ? `Institute Registration - ${this.selectedState.stateName}` : 'Institute Registration - All India',
         left: 'center',
         top: 10,
         textStyle: {
@@ -213,13 +203,13 @@ export class ModeOfTrainingChartComponent implements OnInit, OnChanges, OnDestro
           color: '#666'
         },
         formatter: (name: string) => {
-          const item = data.find(d => d.mode === name);
+          const item = data.find(d => d.type === name);
           return `${name} (${item?.percentage}%)`;
         }
       },
       series: [
         {
-          name: 'Training Modes',
+          name: 'Institute Registration Types',
           type: 'pie',
           radius: ['45%', '75%'],
           center: ['50%', '50%'],
@@ -274,7 +264,7 @@ export class ModeOfTrainingChartComponent implements OnInit, OnChanges, OnDestro
             scaleSize: 5
           },
           data: data.map(item => ({
-            name: item.mode,
+            name: item.type,
             value: item.count,
             percentage: item.percentage,
             color: item.color,
@@ -321,15 +311,15 @@ export class ModeOfTrainingChartComponent implements OnInit, OnChanges, OnDestro
     this.loadModeOfTrainingData();
   }
 
-  getMostPopularMode(): string {
+  getMostPopularType(): string {
     const data = this.getChartData();
     const maxItem = data.reduce((prev, current) => 
       (prev.count > current.count) ? prev : current
     );
-    return maxItem.mode;
+    return maxItem.type;
   }
 
-  getTotalModes(): number {
+  getTotalTypes(): number {
     return this.getChartData().length;
   }
 

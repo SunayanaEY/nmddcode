@@ -84,7 +84,6 @@
                 <option *ngFor="let trainer of trainers" [value]="trainer.trainerName">
                   {{ trainer.trainerName }}
                 </option>
-                <option value="Other">Other</option>
               </select>
               <div *ngIf="trainingForm.get('trainerName')?.invalid && trainingForm.get('trainerName')?.touched" class="invalid-feedback">
                 <small *ngIf="trainingForm.get('trainerName')?.errors?.['required']" class="text-danger">

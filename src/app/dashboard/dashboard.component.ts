@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, ChangeDetectorRef } from '@angular/core';
 import { FormGroup, FormBuilder, ReactiveFormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { ModalConfig, ModalComponent } from '../components/modal/modal.component';
@@ -10,6 +10,7 @@ import { StatsCardsComponent } from "../pages/public-dashboard/components/stats-
 import { MonthlyChartComponent } from "../pages/public-dashboard/components/monthly-chart/monthly-chart.component";
 import { AgeGroupChartComponent } from "../pages/public-dashboard/components/age-group-chart/age-group-chart.component";
 import { ModeOfTrainingChartComponent } from "../pages/public-dashboard/components/mode-of-training-chart/mode-of-training-chart.component";
+import { InstituteTypeChartComponent } from "../pages/public-dashboard/components/institute-type-chart/institute-type-chart.component";
 import { IndiaMapComponent } from "../pages/public-dashboard/components/india-map/india-map.component";
 import { CertificateLayoutComponent } from "../pages/certificate-layout/certificate-layout.component";
 import { CommonModule } from '@angular/common';
@@ -18,8 +19,8 @@ import { CommonModule } from '@angular/common';
   selector: 'app-dashboard',
   imports: [StatsCardsComponent, ModalComponent,
     MonthlyChartComponent, AgeGroupChartComponent,
-    ModeOfTrainingChartComponent, IndiaMapComponent,
-    CertificateLayoutComponent, ReactiveFormsModule, CommonModule],
+    ModeOfTrainingChartComponent, InstituteTypeChartComponent,
+    IndiaMapComponent, CertificateLayoutComponent, ReactiveFormsModule, CommonModule],
   templateUrl: './dashboard.component.html',
   styleUrl: './dashboard.component.css'
 })
@@ -127,26 +128,50 @@ export class DashboardComponent {
     isLoadingDistricts = false;
     selectedStateId: number | null = null;
     selectedDistrictId: number | null = null;
+    userRole: number | null = null;
+    isStateAdmin: boolean = false;
+    stateAdminStateId: string | null = null;
 
     constructor(
       private router: Router,
       private dashboardService: DashboardDataService,
       private locationService: LocationService,
       private fb: FormBuilder,
-      private trainingsService: TrainingService
+      private trainingsService: TrainingService,
+      private cdr: ChangeDetectorRef
     ) {
       this.filterForm = this.fb.group({
-        // stateId: [null],
-        // districtId: [null]
-         stateId: [''],
+        stateId: [''],
         districtId: ['']
       });
     }
 
     ngOnInit(): void {
+      this.checkUserRole();
       this.loadStates();
       this.loadDashboardData();
       this.setupFilterSubscriptions();
+    }
+
+    checkUserRole(): void {
+      const userDataString = sessionStorage.getItem('user');
+      if (userDataString) {
+        try {
+          const userData = JSON.parse(userDataString);
+          this.userRole = userData.role;
+          
+          // Check if user is state admin (role 5)
+          if (this.userRole === 5 && userData.stateId) {
+            this.isStateAdmin = true;
+            this.stateAdminStateId = userData.stateId;
+            this.filterForm.get('stateId')?.setValue(this.stateAdminStateId);
+            this.filterForm.get('stateId')?.disable();
+          }
+          this.cdr.detectChanges();
+        } catch (error) {
+          console.error('Error parsing user data from session storage:', error);
+        }
+      }
     }
 
     loadStates(): void {
@@ -155,6 +180,12 @@ export class DashboardComponent {
         next: (states) => {
           this.states = states;
           this.isLoadingStates = false;
+          
+          // Auto-select state for state admin
+          if (this.isStateAdmin && this.stateAdminStateId) {
+            this.filterForm.patchValue({ stateId: this.stateAdminStateId });
+            this.selectedStateId = parseInt(this.stateAdminStateId);
+          }
         },
         error: (error) => {
           console.error('Error loading states:', error);

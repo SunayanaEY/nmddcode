@@ -152,8 +152,18 @@
         </tr>
       </tbody>
     </table>
+    
+    <!-- No Records Available Message -->
+    <div *ngIf="!isLoading && (data | tableSearch : searchTextActive).length === 0" class="text-center py-5">
+      <div class="no-data-message">
+        <i class="bi bi-inbox" style="font-size: 3rem; color: #6c757d; margin-bottom: 1rem;"></i>
+        <h5 class="text-muted">No Records Available</h5>
+        <p class="text-muted mb-0">{{ searchTextActive ? 'No records match your search criteria.' : 'There are no records to display.' }}</p>
+      </div>
+    </div>
   </div>
-  <div class="card-footer py-4">
+  
+  <div class="card-footer py-4" *ngIf="!isLoading && (data | tableSearch : searchTextActive).length > 0">
     <nav aria-label="..." class="text-right">
       <pagination-controls id="pagination2" (pageChange)="p = $event"></pagination-controls>
     </nav>

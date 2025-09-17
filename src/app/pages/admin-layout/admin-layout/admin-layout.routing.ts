@@ -32,7 +32,7 @@ export const AdminLayoutRoutes: Routes = [
     path: 'dashboard',
     component: DashboardComponent,
     canActivate: [RoleGuard],
-    data: { allowedRoles: [1] },
+    data: { allowedRoles: [1,5] },
   },
   {
     path: 'training-type-management',

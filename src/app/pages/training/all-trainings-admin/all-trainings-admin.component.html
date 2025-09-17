@@ -77,6 +77,29 @@
           >{{ name }}</ng-option
         >
       </ng-select>
+
+      <ng-select
+        class="custom-ng-select form-control"
+        placeholder="Status"
+        [(ngModel)]="filters.status"
+        style="
+          height: 100%;
+          width: 100%;
+          font-weight: 400;
+          line-height: 1.5;
+          color: #121213;
+          background-color: #fff;
+          background-clip: padding-box;
+          box-shadow: none;
+        "
+        (change)="applyFilters()"
+      >
+        <ng-option
+          *ngFor="let status of uniqueValuesStatus()"
+          [value]="status"
+          >{{ status }}</ng-option
+        >
+      </ng-select>
     </div>
   </div>
 
@@ -97,6 +120,7 @@
     [pdfHeaders]="pdfHeaders"
     [columnKeys]="columnKeys"
     [fileName]="fileName"
+    [isLoading]="isTableLoading"
   >
   </app-table>
 </div>
@@ -285,11 +309,10 @@
     <div
       class="card-header col-12 mb-4 mt-4 bg-appColor"
       *ngIf="
-        (trainingDetails.status !== 'NEW' &&
-          trainingDetails.status !== 'VALIDATED_BY_INSTITUTE_HEAD' &&
-          trainingDetails.status !== 'APPROVED_BY_STATE_ADMIN') ||
-        (trainingDetails.status === 'VALIDATED_BY_INSTITUTE_HEAD' &&
-          userRole === 5)
+        trainingDetails.status !== 'NEW' &&
+        trainingDetails.status !== 'VALIDATED_BY_INSTITUTE_HEAD' &&
+        trainingDetails.status !== 'APPROVED_BY_STATE_ADMIN' &&
+        trainingDetails.status !== 'VALIDATED_BY_INSTITUTE_HEAD'
       "
     >
       <h3 class="mb-0 text-white">
@@ -299,11 +322,10 @@
     <div
       class="card-body"
       *ngIf="
-        (trainingDetails.status !== 'NEW' &&
-          trainingDetails.status !== 'VALIDATED_BY_INSTITUTE_HEAD' &&
-          trainingDetails.status !== 'APPROVED_BY_STATE_ADMIN') ||
-        (trainingDetails.status === 'VALIDATED_BY_INSTITUTE_HEAD' &&
-          userRole === 5)
+        trainingDetails.status !== 'NEW' &&
+        trainingDetails.status !== 'VALIDATED_BY_INSTITUTE_HEAD' &&
+        trainingDetails.status !== 'APPROVED_BY_STATE_ADMIN' &&
+        trainingDetails.status !== 'VALIDATED_BY_INSTITUTE_HEAD'
       "
     >
       <app-table

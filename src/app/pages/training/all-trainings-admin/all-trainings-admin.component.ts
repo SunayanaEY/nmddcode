@@ -246,12 +246,13 @@ export class AllTrainingsAdminComponent {
     private adminService: AdminService,
     private toastr: ToastrService,
     private spinner: NgxSpinnerService
-  ) {}
+  ) {
+    this.getRole();
+  }
   filteredData = [...this.trainingsList];
 
   ngOnInit(): void {
     this.getTrainingInstituteId();
-    this.getRole();
     if (this.userRole === 1) {
       this.tableActionsTrainee = [
         {
@@ -349,9 +350,40 @@ export class AllTrainingsAdminComponent {
       remarks: ['', [Validators.required]],
     });
     if (this.userRole == 3) {
+      this.isTableLoading = true;
       this.trainingsService
         .getAllTrainings(this.trainingInstituteHeadId)
-        .subscribe((res) => {
+        .subscribe({
+          next: (res) => {
+            this.trainingsList = res.data;
+            this.filteredData = [...this.trainingsList];
+            let index = 0;
+            this.trainingsList.forEach((ele) => {
+              const datePipe = new DatePipe('en-US');
+              ele['location'] =
+                ele['venueBlock'] +
+                ',' +
+                ele['venueDistrict'] +
+                ',' +
+                ele['venueState'];
+              ele['trainingDate'] = datePipe.transform(
+                ele['trainingDate'],
+                'dd/MM/yyyy'
+              )!;
+              this.trainingsList[index] = ele;
+              index++;
+            });
+            this.isTableLoading = false;
+          },
+          error: (error) => {
+            console.error('Error loading trainings:', error);
+            this.isTableLoading = false;
+          },
+        });
+    } else {
+      this.isTableLoading = true;
+      this.trainingsService.getAllTraining().subscribe({
+        next: (res) => {
           this.trainingsList = res.data;
           this.filteredData = [...this.trainingsList];
           let index = 0;
@@ -370,27 +402,12 @@ export class AllTrainingsAdminComponent {
             this.trainingsList[index] = ele;
             index++;
           });
-        });
-    } else {
-      this.trainingsService.getAllTraining().subscribe((res) => {
-        this.trainingsList = res.data;
-        this.filteredData = [...this.trainingsList];
-        let index = 0;
-        this.trainingsList.forEach((ele) => {
-          const datePipe = new DatePipe('en-US');
-          ele['location'] =
-            ele['venueBlock'] +
-            ',' +
-            ele['venueDistrict'] +
-            ',' +
-            ele['venueState'];
-          ele['trainingDate'] = datePipe.transform(
-            ele['trainingDate'],
-            'dd/MM/yyyy'
-          )!;
-          this.trainingsList[index] = ele;
-          index++;
-        });
+          this.isTableLoading = false;
+        },
+        error: (error) => {
+          console.error('Error loading trainings:', error);
+          this.isTableLoading = false;
+        },
       });
     }
   }
@@ -792,7 +809,17 @@ export class AllTrainingsAdminComponent {
   }
 
   uniqueValuesStatus(): any[] {
-    return [...new Set(this.trainingsList.map((item) => item['status']))];
+    // Return predefined status values for filtering
+    return [
+      'NEW',
+      'VALIDATED_BY_INSTITUTE_HEAD',
+      'REJECTED_BY_INSTITUTE_HEAD',
+      'APPROVED_BY_STATE_ADMIN',
+      'REJECTED_BY_STATE_ADMIN',
+      'TRAINEE_UPLOADED',
+      'TRAINEE_PENDING_STATE_APPROVAL',
+      'TRAINEE_STATE_DECISIONS_COMPLETED',
+    ];
   }
 
   reset() {}
