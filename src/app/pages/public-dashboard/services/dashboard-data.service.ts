@@ -136,6 +136,16 @@ export interface InstituteLocationResponse {
   statusCode: number;
 }
 
+export interface TrainingInstituteTypeDistributionResponse {
+  success: boolean;
+  message: string;
+  data: {
+    Government: number;
+    Private: number;
+  };
+  statusCode: number;
+}
+
 @Injectable({
   providedIn: 'root'
 })
@@ -490,5 +500,23 @@ export class DashboardDataService {
       .pipe(
         map(response => response.data)
       );
+  }
+
+  getTrainingInstituteTypeDistribution(stateId?: number, districtId?: number): Observable<TrainingInstituteTypeDistributionResponse> {
+    let url = `${this.API_BASE_URL}public/dashboard/trainingInstituteTypeDistribution`;
+    const params = new URLSearchParams();
+
+    if (stateId) {
+      params.append('stateId', stateId.toString());
+    }
+    if (districtId) {
+      params.append('districtId', districtId.toString());
+    }
+
+    if (params.toString()) {
+      url += `?${params.toString()}`;
+    }
+
+    return this.http.get<TrainingInstituteTypeDistributionResponse>(url);
   }
 }
