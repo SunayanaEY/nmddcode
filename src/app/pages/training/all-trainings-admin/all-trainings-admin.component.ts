@@ -33,6 +33,7 @@ import saveAs from 'file-saver';
 import { ToastrService } from 'ngx-toastr';
 import { NgxSpinnerModule, NgxSpinnerService } from 'ngx-spinner';
 import { CertificateLayoutComponent } from '../../certificate-layout/certificate-layout.component';
+import { NewCertificateLayoutComponent } from '../../new-certificate-layout/new-certificate-layout.component';
 
 @Component({
   selector: 'app-all-trainings-admin',
@@ -45,6 +46,7 @@ import { CertificateLayoutComponent } from '../../certificate-layout/certificate
     FormsModule,
     CertificateLayoutComponent,
     NgxSpinnerModule,
+    NewCertificateLayoutComponent,
   ],
   templateUrl: './all-trainings-admin.component.html',
   styleUrl: './all-trainings-admin.component.css',
@@ -79,7 +81,7 @@ export class AllTrainingsAdminComponent {
   fileName: String = 'All_trainings_';
   fileNameTrainees: String = 'All_trainee_List_';
   traineesFile: String = 'All_trainee_List_';
-  falseVariable:boolean = false;
+  falseVariable: boolean = false;
   pdfHeaders: Array<string> = [
     'Sr.No.',
     'Training Title',
@@ -161,7 +163,10 @@ export class AllTrainingsAdminComponent {
           return row.status === 'TRAINEE_UPLOADED';
         }
         // For other roles, show approve button for TRAINEE_UPLOADED or VALIDATED_BY_INSTITUTE_HEAD
-        return row.status === 'TRAINEE_UPLOADED' || row.status === 'VALIDATED_BY_INSTITUTE_HEAD';
+        return (
+          row.status === 'TRAINEE_UPLOADED' ||
+          row.status === 'VALIDATED_BY_INSTITUTE_HEAD'
+        );
       },
     },
     {
@@ -175,7 +180,10 @@ export class AllTrainingsAdminComponent {
           return row.status === 'TRAINEE_UPLOADED';
         }
         // For other roles, show reject button for TRAINEE_UPLOADED or VALIDATED_BY_INSTITUTE_HEAD
-        return row.status === 'TRAINEE_UPLOADED' || row.status === 'VALIDATED_BY_INSTITUTE_HEAD';
+        return (
+          row.status === 'TRAINEE_UPLOADED' ||
+          row.status === 'VALIDATED_BY_INSTITUTE_HEAD'
+        );
       },
     },
     {
@@ -197,10 +205,14 @@ export class AllTrainingsAdminComponent {
       condition: (rows: any[]) => {
         // For Institute Head (role 3), only show bulk approve if there are TRAINEE_UPLOADED status items
         if (this.userRole === 3) {
-          return rows.some(row => row.status === 'TRAINEE_UPLOADED');
+          return rows.some((row) => row.status === 'TRAINEE_UPLOADED');
         }
         // For other roles, show bulk approve if there are eligible items
-        return rows.some(row => row.status === 'TRAINEE_UPLOADED' || row.status === 'VALIDATED_BY_INSTITUTE_HEAD');
+        return rows.some(
+          (row) =>
+            row.status === 'TRAINEE_UPLOADED' ||
+            row.status === 'VALIDATED_BY_INSTITUTE_HEAD'
+        );
       },
     },
     {
@@ -211,10 +223,14 @@ export class AllTrainingsAdminComponent {
       condition: (rows: any[]) => {
         // For Institute Head (role 3), only show bulk reject if there are TRAINEE_UPLOADED status items
         if (this.userRole === 3) {
-          return rows.some(row => row.status === 'TRAINEE_UPLOADED');
+          return rows.some((row) => row.status === 'TRAINEE_UPLOADED');
         }
         // For other roles, show bulk reject if there are eligible items
-        return rows.some(row => row.status === 'TRAINEE_UPLOADED' || row.status === 'VALIDATED_BY_INSTITUTE_HEAD');
+        return rows.some(
+          (row) =>
+            row.status === 'TRAINEE_UPLOADED' ||
+            row.status === 'VALIDATED_BY_INSTITUTE_HEAD'
+        );
       },
     },
   ];
@@ -236,89 +252,92 @@ export class AllTrainingsAdminComponent {
   ngOnInit(): void {
     this.getTrainingInstituteId();
     this.getRole();
-    if(this.userRole === 1){
-       this.tableActionsTrainee = [
-       {
-      name: 'download',
-      icon: 'bi bi-download',
-      class: 'btn-info',
-      title: 'Download certificate',
-      condition: (row: any) => row.status === 'APPROVED_BY_STATE_ADMIN',
-    }]
-    }
-    if(this.userRole === 3)
-    {
+    if (this.userRole === 1) {
       this.tableActionsTrainee = [
-    {
-      name: 'approve',
-      icon: 'bi bi-check-circle',
-      class: 'btn-success',
-      title: 'Approve',
-      condition: (row: any) => row.status === 'TRAINEE_UPLOADED',
-    },
-    {
-      name: 'reject',
-      icon: 'bi bi-x-circle',
-      class: 'btn-danger',
-      title: 'Reject',
-      condition: (row: any) => row.status === 'TRAINEE_UPLOADED',
-    },
-    {
-      name: 'download',
-      icon: 'bi bi-download',
-      class: 'btn-info',
-      title: 'Download certificate',
-      condition: (row: any) => row.status === 'APPROVED',
-    },
-  ];
+        {
+          name: 'download',
+          icon: 'bi bi-download',
+          class: 'btn-info',
+          title: 'Download certificate',
+          condition: (row: any) => row.status === 'APPROVED_BY_STATE_ADMIN',
+        },
+      ];
     }
-    
-    if(this.userRole === 5)
-    {
+    if (this.userRole === 3) {
       this.tableActionsTrainee = [
-    {
-      name: 'approve',
-      icon: 'bi bi-check-circle',
-      class: 'btn-success',
-      title: 'Approve',
-      condition: (row: any) => row.status === 'VALIDATED_BY_INSTITUTE_HEAD',
-    },
-    {
-      name: 'reject',
-      icon: 'bi bi-x-circle',
-      class: 'btn-danger',
-      title: 'Reject',
-      condition: (row: any) => row.status === 'VALIDATED_BY_INSTITUTE_HEAD',
-    },
-    {
-      name: 'download',
-      icon: 'bi bi-download',
-      class: 'btn-info',
-      title: 'Download certificate',
-      condition: (row: any) => row.status === 'APPROVED_BY_STATE_ADMIN',
-    },
-  ];
-  
+        {
+          name: 'approve',
+          icon: 'bi bi-check-circle',
+          class: 'btn-success',
+          title: 'Approve',
+          condition: (row: any) => row.status === 'TRAINEE_UPLOADED',
+        },
+        {
+          name: 'reject',
+          icon: 'bi bi-x-circle',
+          class: 'btn-danger',
+          title: 'Reject',
+          condition: (row: any) => row.status === 'TRAINEE_UPLOADED',
+        },
+        {
+          name: 'download',
+          icon: 'bi bi-download',
+          class: 'btn-info',
+          title: 'Download certificate',
+          condition: (row: any) => row.status === 'APPROVED',
+        },
+      ];
+    }
+
+    if (this.userRole === 5) {
+      this.tableActionsTrainee = [
+        {
+          name: 'approve',
+          icon: 'bi bi-check-circle',
+          class: 'btn-success',
+          title: 'Approve',
+          condition: (row: any) => row.status === 'VALIDATED_BY_INSTITUTE_HEAD',
+        },
+        {
+          name: 'reject',
+          icon: 'bi bi-x-circle',
+          class: 'btn-danger',
+          title: 'Reject',
+          condition: (row: any) => row.status === 'VALIDATED_BY_INSTITUTE_HEAD',
+        },
+        {
+          name: 'download',
+          icon: 'bi bi-download',
+          class: 'btn-info',
+          title: 'Download certificate',
+          condition: (row: any) => row.status === 'APPROVED_BY_STATE_ADMIN',
+        },
+      ];
+
       this.bulkActionsTrainee = [
-    {
-      name: 'bulkApprove',
-      icon: 'bi bi-check-circle',
-      class: 'btn-success',
-      title: 'Bulk Approve',
-      condition: (rows: any[]) => {
-        return rows.some(row => row.status === 'VALIDATED_BY_INSTITUTE_HEAD');
-      },
-    },
-    {
-      name: 'bulkReject',
-      icon: 'bi bi-x-circle',
-      class: 'btn-danger',
-      title: 'Bulk Reject',
-      condition: (rows: any[]) => {
-        return rows.some(row => row.status === 'VALIDATED_BY_INSTITUTE_HEAD');
-      },
-    },
-  ];
+        {
+          name: 'bulkApprove',
+          icon: 'bi bi-check-circle',
+          class: 'btn-success',
+          title: 'Bulk Approve',
+          condition: (rows: any[]) => {
+            return rows.some(
+              (row) => row.status === 'VALIDATED_BY_INSTITUTE_HEAD'
+            );
+          },
+        },
+        {
+          name: 'bulkReject',
+          icon: 'bi bi-x-circle',
+          class: 'btn-danger',
+          title: 'Bulk Reject',
+          condition: (rows: any[]) => {
+            return rows.some(
+              (row) => row.status === 'VALIDATED_BY_INSTITUTE_HEAD'
+            );
+          },
+        },
+      ];
     }
     this.trainingForm = this.formBuilder.group({
       id: [''],
@@ -378,109 +397,115 @@ export class AllTrainingsAdminComponent {
 
   sendForApproval() {
     this.spinner.show();
-    this.adminService.sendTrainingToValidate(this.trainingDetails.id).subscribe({
-      next: (response) => {
-        this.spinner.hide();
-        if (response.success) {
-          this.toastr.success(
-            response.data.message || 'Training sent for approval successfully',
-            'Success'
-          );
-          this.ngOnInit();
-          this.falseVariable = true;
-          this.modalService.dismissAll();
-        } else {
-          this.toastr.error(
-            response.message || 'Failed to send training for approval',
-            'Error'
-          );
+    this.adminService
+      .sendTrainingToValidate(this.trainingDetails.id)
+      .subscribe({
+        next: (response) => {
+          this.spinner.hide();
+          if (response.success) {
+            this.toastr.success(
+              response.data.message ||
+                'Training sent for approval successfully',
+              'Success'
+            );
+            this.ngOnInit();
+            this.falseVariable = true;
+            this.modalService.dismissAll();
+          } else {
+            this.toastr.error(
+              response.message || 'Failed to send training for approval',
+              'Error'
+            );
+            this.falseVariable = false;
+            this.modalService.dismissAll();
+          }
+        },
+        error: (error) => {
+          this.spinner.hide();
+          const errorMessage =
+            error.error?.message ||
+            'An error occurred while sending training for approval';
+          this.toastr.error(errorMessage, 'Error');
+          console.error('Error sending training for approval:', error);
           this.falseVariable = false;
           this.modalService.dismissAll();
-        }
-      },
-      error: (error) => {
-        this.spinner.hide();
-        const errorMessage =
-          error.error?.message || 'An error occurred while sending training for approval';
-        this.toastr.error(errorMessage, 'Error');
-        console.error('Error sending training for approval:', error);
-        this.falseVariable = false;
-        this.modalService.dismissAll();
-      },
-    });
-
+        },
+      });
   }
   rejectTrainingSchedule() {
     this.spinner.show();
-    this.adminService.rejectTrainingSchedule(this.trainingDetails.id).subscribe({
-      next: (response) => {
-        this.spinner.hide();
-        if (response.success) {
-          this.toastr.success(
-            response.data.message || 'Training rejected successfully',
-            'Success'
-          );
-          this.ngOnInit();
-          this.falseVariable = true;
-          this.modalService.dismissAll();
-        } else {
-          this.toastr.error(
-            response.message || 'Failed to reject training',
-            'Error'
-          );
+    this.adminService
+      .rejectTrainingSchedule(this.trainingDetails.id)
+      .subscribe({
+        next: (response) => {
+          this.spinner.hide();
+          if (response.success) {
+            this.toastr.success(
+              response.data.message || 'Training rejected successfully',
+              'Success'
+            );
+            this.ngOnInit();
+            this.falseVariable = true;
+            this.modalService.dismissAll();
+          } else {
+            this.toastr.error(
+              response.message || 'Failed to reject training',
+              'Error'
+            );
+            this.falseVariable = false;
+            this.modalService.dismissAll();
+          }
+        },
+        error: (error) => {
+          this.spinner.hide();
+          const errorMessage =
+            error.error?.message ||
+            'An error occurred while sending training for rejection';
+          this.toastr.error(errorMessage, 'Error');
+          console.error('Error sending training for rejection:', error);
           this.falseVariable = false;
           this.modalService.dismissAll();
-        }
-      },
-      error: (error) => {
-        this.spinner.hide();
-        const errorMessage =
-          error.error?.message || 'An error occurred while sending training for rejection';
-        this.toastr.error(errorMessage, 'Error');
-        console.error('Error sending training for rejection:', error);
-        this.falseVariable = false;
-        this.modalService.dismissAll();
-      },
-    });
-
+        },
+      });
   }
 
   approveTrainingSchedule() {
     this.spinner.show();
-    this.adminService.approveTrainingSchedule(this.trainingDetails.id).subscribe({
-      next: (response) => {
-        this.spinner.hide();
-        if (response.success) {
-          this.toastr.success(
-            response.data.message || 'Training Schedule approved successfully',
-            'Success'
-          );
-          this.ngOnInit();
-          this.falseVariable = true;
-          this.modalService.dismissAll();
-        } else {
-          this.toastr.error(
-            response.message || 'Failed to approve training schedule',
-            'Error'
-          );
+    this.adminService
+      .approveTrainingSchedule(this.trainingDetails.id)
+      .subscribe({
+        next: (response) => {
+          this.spinner.hide();
+          if (response.success) {
+            this.toastr.success(
+              response.data.message ||
+                'Training Schedule approved successfully',
+              'Success'
+            );
+            this.ngOnInit();
+            this.falseVariable = true;
+            this.modalService.dismissAll();
+          } else {
+            this.toastr.error(
+              response.message || 'Failed to approve training schedule',
+              'Error'
+            );
+            this.falseVariable = false;
+            this.modalService.dismissAll();
+          }
+        },
+        error: (error) => {
+          this.spinner.hide();
+          const errorMessage =
+            error.error?.message ||
+            'An error occurred while approving training schedule';
+          this.toastr.error(errorMessage, 'Error');
+          console.error('Error:', error);
           this.falseVariable = false;
           this.modalService.dismissAll();
-        }
-      },
-      error: (error) => {
-        this.spinner.hide();
-        const errorMessage =
-          error.error?.message || 'An error occurred while approving training schedule';
-        this.toastr.error(errorMessage, 'Error');
-        console.error('Error:', error);
-        this.falseVariable = false;
-        this.modalService.dismissAll();
-      },
-    });
-
+        },
+      });
   }
-
-
 
   getTrainingInstituteId() {
     const userData = sessionStorage.getItem('user');
@@ -672,9 +697,7 @@ export class AllTrainingsAdminComponent {
         //pdf.save(`Certificate-${cert?.name || 'Trainee'}.pdf`);
         const pdfBlob = pdf.output('blob');
         this.certificateZip.file(
-          `Certificate-${
-            cert?.name + '_' + cert?.uin || 'Trainee'
-          }.pdf`,
+          `Certificate-${cert?.name + '_' + cert?.uin || 'Trainee'}.pdf`,
           pdfBlob
         );
         //index++;
@@ -802,12 +825,12 @@ export class AllTrainingsAdminComponent {
           } else {
             trainee.status = 'APPROVED';
           }
-          
+
           this.toastr.success(
             response.data.message || 'Trainee approved successfully',
             'Success'
           );
-          
+
           // Refresh the trainee list to reflect updated status
           this.refreshTraineeList();
         } else {
@@ -854,7 +877,8 @@ export class AllTrainingsAdminComponent {
             if (response.success) {
               // Update trainee status based on user role
               if (this.userRole === 3) {
-                this.selectedTraineeForReject.status = 'REJECTED_BY_INSTITUTE_HEAD';
+                this.selectedTraineeForReject.status =
+                  'REJECTED_BY_INSTITUTE_HEAD';
               } else {
                 this.selectedTraineeForReject.status = 'REJECTED';
               }
@@ -863,7 +887,7 @@ export class AllTrainingsAdminComponent {
                 response.data.message || 'Trainee rejected successfully',
                 'Success'
               );
-              
+
               // Refresh the trainee list to reflect updated status
               this.refreshTraineeList();
             } else {
@@ -926,10 +950,17 @@ export class AllTrainingsAdminComponent {
         next: (response) => {
           if (response && response.success) {
             this.certificateData = response.data;
-            this.certificateData.location = response.data.venueBlock?response.data.venueBlock:''+
-            response.data.venueBlock && response.data.venueDistrict?', ':''+
-            response.data.venueDistrict?response.data.venueDistrict:''+response.data.venueDistrict&& response.data.venueState?', ':''
-            + response.data.venueState? response.data.venueState:'';
+            this.certificateData.location = response.data.venueBlock
+              ? response.data.venueBlock
+              : '' + response.data.venueBlock && response.data.venueDistrict
+              ? ', '
+              : '' + response.data.venueDistrict
+              ? response.data.venueDistrict
+              : '' + response.data.venueDistrict && response.data.venueState
+              ? ', '
+              : '' + response.data.venueState
+              ? response.data.venueState
+              : '';
             // Open certificate modal
             this.modalService.open(this.certificateModal, {
               size: 'xl',
@@ -1014,11 +1045,11 @@ export class AllTrainingsAdminComponent {
               trainee.status = 'APPROVED';
             }
           });
-          
+
           this.toastr.success(
             `${eligibleTrainees.length} trainees approved successfully!`
           );
-          
+
           // Refresh the trainee list
           this.refreshTraineeList();
         } else {
@@ -1041,7 +1072,9 @@ export class AllTrainingsAdminComponent {
     // Keeping for backward compatibility if needed
     this.selectedTraineesForBulkReject = trainees;
     this.rejectForm.reset();
-    this.rejectModalRef = this.modalService.open(this.rejectModal, { centered: true });
+    this.rejectModalRef = this.modalService.open(this.rejectModal, {
+      centered: true,
+    });
   }
 
   bulkRejectTraineesWithRemarks(trainees: any[], remarks: string): void {
@@ -1074,14 +1107,14 @@ export class AllTrainingsAdminComponent {
       next: (response) => {
         if (response.success) {
           // Update status for all rejected trainees based on user role
-        eligibleTrainees.forEach((trainee) => {
-          if (this.userRole === 3) {
-            trainee.status = 'REJECTED_BY_INSTITUTE_HEAD';
-          } else {
-            trainee.status = 'REJECTED';
-          }
-          trainee.remarks = remarks;
-        });
+          eligibleTrainees.forEach((trainee) => {
+            if (this.userRole === 3) {
+              trainee.status = 'REJECTED_BY_INSTITUTE_HEAD';
+            } else {
+              trainee.status = 'REJECTED';
+            }
+            trainee.remarks = remarks;
+          });
           this.toastr.success(
             `${eligibleTrainees.length} trainee(s) rejected successfully`,
             'Success'

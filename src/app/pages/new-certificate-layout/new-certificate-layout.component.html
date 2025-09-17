@@ -1,0 +1,64 @@
+<div class="certificate-border">
+  <!-- Corner Ornaments -->
+  <div class="corner top-left"></div>
+  <div class="corner top-right"></div>
+  <div class="corner bottom-left"></div>
+  <div class="corner bottom-right"></div>
+
+  <div class="certificate-container">
+    <!-- Header -->
+    <div class="certificate-header">
+      <div class="certificate-ref">Ref No: {{ data.uin }}</div>
+      <div class="certificate-date">
+        Date: {{ data.createDate | date : "dd/MM/yyyy" }}
+      </div>
+    </div>
+
+    <!-- Logo and Title -->
+    <div class="certificate-title">
+      <img src="" alt="logo" class="logo" />
+      <h2>{{ data.trainingInstituteName }}</h2>
+      <h3 class="training-centre mb-4">TRAINING CENTRE</h3>
+      <p class="sub-text">
+        (Accredited as Artificial Insemination Training Institute by Department
+        of Animal Husbandry and Dairying,<br />
+        Ministry of Fisheries, Animal Husbandry &amp; Dairying, Govt. of
+        INDIA)<br />
+        with Accreditation No.: CAAAHTII/19
+      </p>
+      <p class="location">PASHULOK RISHIKESH, PIN 209203, UTTARAKHAND, INDIA</p>
+    </div>
+
+    <!-- Certificate Heading -->
+    <h1 class="certificate-heading">Certificate</h1>
+
+    <!-- Body -->
+    <div class="certificate-body">
+      <p>This is to certify that</p>
+      <h2 class="name">{{ data.name }}</h2>
+      <p class="address">AVAS Komna</p>
+      <p class="dept">DEPARTMENT OF ANIMAL HUSBANDRY</p>
+      <p class="govt">Govt. of ODISHA</p>
+      <p>
+        Has undergone training in <br />
+        <span class="training">{{ data.trainingTitle }}</span>
+      </p>
+      <p>
+        Conducted <br />
+        On <b>{{ data.trainingDate | date : "longDate" }}</b>
+      </p>
+    </div>
+
+    <!-- Footer -->
+    <div class="certificate-footer">
+      <div class="sign">
+        <p>Joint Director</p>
+        <p>Training Centre</p>
+      </div>
+      <div class="sign">
+        <p>Chief Executive Officer</p>
+        <p>Uttarakhand Livestock Development Board</p>
+      </div>
+    </div>
+  </div>
+</div>
