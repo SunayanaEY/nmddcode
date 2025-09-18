@@ -13,6 +13,7 @@ import {
   TableAction,
 } from '../../components/table/table.component';
 import { CertificateLayoutComponent } from '../certificate-layout/certificate-layout.component';
+import { NewCertificateLayoutComponent } from '../new-certificate-layout/new-certificate-layout.component';
 
 @Component({
   selector: 'app-all-certificate',
@@ -22,8 +23,7 @@ import { CertificateLayoutComponent } from '../certificate-layout/certificate-la
     FormsModule,
     BreadcrumbComponent,
     TableComponent,
-    CertificateLayoutComponent,
-    
+    NewCertificateLayoutComponent,
   ],
   templateUrl: './all-certificate.component.html',
   styleUrl: './all-certificate.component.css',

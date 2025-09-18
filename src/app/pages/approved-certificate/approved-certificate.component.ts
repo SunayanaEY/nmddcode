@@ -12,6 +12,7 @@ import {
   TableAction,
 } from '../../components/table/table.component';
 import { CertificateLayoutComponent } from '../certificate-layout/certificate-layout.component';
+import { NewCertificateLayoutComponent } from '../new-certificate-layout/new-certificate-layout.component';
 
 @Component({
   selector: 'app-approved-certificate',
@@ -21,7 +22,7 @@ import { CertificateLayoutComponent } from '../certificate-layout/certificate-la
     FormsModule,
     BreadcrumbComponent,
     TableComponent,
-    CertificateLayoutComponent,
+    NewCertificateLayoutComponent,
   ],
   templateUrl: './approved-certificate.component.html',
   styleUrl: './approved-certificate.component.css',

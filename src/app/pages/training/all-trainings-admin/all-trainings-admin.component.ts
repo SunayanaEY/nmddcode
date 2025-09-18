@@ -44,7 +44,6 @@ import { NewCertificateLayoutComponent } from '../../new-certificate-layout/new-
     NgSelectModule,
     ReactiveFormsModule,
     FormsModule,
-    CertificateLayoutComponent,
     NgxSpinnerModule,
     NewCertificateLayoutComponent,
   ],
@@ -616,60 +615,60 @@ export class AllTrainingsAdminComponent {
     this.bulkCertificateDownload.forEach(async (cert) => {
       const targetDiv = document.getElementById('certificate')!;
       targetDiv.innerHTML = `<div class="certificate-wrapper" #certificateContent>
-  <div class="certificate-border">
-    <div class="certificate-logos">
-      <img src="${cert.logoPath1}" alt="Logo 1" crossorigin="anonymous" />
-      <img *ngIf="${cert.logoPath2}" src="${cert.logoPath2}" alt="Logo 2" crossorigin="anonymous" />
-      <img *ngIf="${cert.logoPath3}"  src="${cert.logoPath3}" alt="Logo 3" crossorigin="anonymous" />
-    </div>
-    <div class="certificate-header">
-      <h2>Certificate of Completion</h2>
-      <p class="subtitle">This Certificate Is Proudly Presented To</p>
-      <h1 class="trainee-name">${cert?.name}</h1>
-    </div>
+    <div class="certificate-border">
+      <div class="certificate-logos">
+        <img src="${cert.logoPath1}" alt="Logo 1" crossorigin="anonymous" />
+        <img *ngIf="${cert.logoPath2}" src="${cert.logoPath2}" alt="Logo 2" crossorigin="anonymous" />
+        <img *ngIf="${cert.logoPath3}"  src="${cert.logoPath3}" alt="Logo 3" crossorigin="anonymous" />
+      </div>
+      <div class="certificate-header">
+        <h2>Certificate of Completion</h2>
+        <p class="subtitle">This Certificate Is Proudly Presented To</p>
+        <h1 class="trainee-name">${cert?.name}</h1>
+      </div>
 
-    <div class="certificate-body">
-      <p>
-        From <strong>${cert?.trainingInstituteName}</strong> has successfully
-        completed the training program
-        <strong>${cert?.trainingTitle}</strong> on
-        <strong>${cert?.trainingDate}</strong
-        >, conducted at <strong>${cert?.location}</strong
-        >.
-      </p>
-    </div>
+      <div class="certificate-body">
+        <p>
+          From <strong>${cert?.trainingInstituteName}</strong> has successfully
+          completed the training program
+          <strong>${cert?.trainingTitle}</strong> on
+          <strong>${cert?.trainingDate}</strong
+          >, conducted at <strong>${cert?.location}</strong
+          >.
+        </p>
+      </div>
 
-    <div class="certificate-footer">
-      <div class="signatures">
-        <div class="signature">
-        <p><img src="${cert.signatures[0].signatorySignaturePath}" alt="Logo 1" crossorigin="anonymous" /></p>
-         <p>_____________________</p>
-          <p>${cert.signatures[0].signatoryName}</p>
-          <p>${cert.signatures[0].signatoryDesignation}</p>
-          <p>${cert.signatures[0].signatoryOrganization}</p>
-        </div>
-
-        <div class="qr-code">
-          <qrcode
-            [qrdata]="qrData"
-            [width]="100"
-            [errorCorrectionLevel]="'M'"
-          ></qrcode>
-          <p class="uid">UIN: ${cert.uin}</p>
-        </div>
-        <div class="signature" [hidden]="${cert.signatures.length}>1">
-          <p><img src="${cert.signatures[1]?.signatorySignaturePath}" alt="Logo 1" crossorigin="anonymous" /></p>
+      <div class="certificate-footer">
+        <div class="signatures">
+          <div class="signature">
+          <p><img src="${cert.signatures[0].signatorySignaturePath}" alt="Logo 1" crossorigin="anonymous" /></p>
            <p>_____________________</p>
-          <p>${cert.signatures[1]?.signatoryName}</p>
-          <p>${cert.signatures[1]?.signatoryDesignation}</p>
-          <p>${cert.signatures[1]?.signatoryOrganization}</p>
+            <p>${cert.signatures[0].signatoryName}</p>
+            <p>${cert.signatures[0].signatoryDesignation}</p>
+            <p>${cert.signatures[0].signatoryOrganization}</p>
+          </div>
+
+          <div class="qr-code">
+            <qrcode
+              [qrdata]="qrData"
+              [width]="100"
+              [errorCorrectionLevel]="'M'"
+            ></qrcode>
+            <p class="uid">UIN: ${cert.uin}</p>
+          </div>
+          <div class="signature" [hidden]="${cert.signatures.length}>1">
+            <p><img src="${cert.signatures[1]?.signatorySignaturePath}" alt="Logo 1" crossorigin="anonymous" /></p>
+             <p>_____________________</p>
+            <p>${cert.signatures[1]?.signatoryName}</p>
+            <p>${cert.signatures[1]?.signatoryDesignation}</p>
+            <p>${cert.signatures[1]?.signatoryOrganization}</p>
+          </div>
         </div>
       </div>
     </div>
-  </div>
 
-</div>
-`;
+  </div>
+  `;
       // const element = document.querySelector('#certificate')!;
       // html2canvas(this.certificateContent.nativeElement, {
       //promise.push(await this.createCertificatePDF(cert,index));

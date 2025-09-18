@@ -15,16 +15,27 @@ import { GeocodingService, GeocodeResult } from '../services/geocoding.service';
 import { ToastrService } from 'ngx-toastr';
 import { OnInit } from '@angular/core';
 import { RouterModule } from '@angular/router';
-import { IndiaMapComponent } from "./public-dashboard/components/india-map/india-map.component";
+import { IndiaMapComponent } from './public-dashboard/components/india-map/india-map.component';
 import { StateData } from './public-dashboard/public-dashboard.component';
-import { ModalConfig, ModalComponent } from '../components/modal/modal.component';
+import {
+  ModalConfig,
+  ModalComponent,
+} from '../components/modal/modal.component';
 import { TrainingService } from './training/services/training.service';
-import { CertificateLayoutComponent } from "./certificate-layout/certificate-layout.component";
+import { CertificateLayoutComponent } from './certificate-layout/certificate-layout.component';
+import { NewCertificateLayoutComponent } from './new-certificate-layout/new-certificate-layout.component';
 
 @Component({
   selector: 'app-login',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, RouterModule, IndiaMapComponent, ModalComponent, CertificateLayoutComponent],
+  imports: [
+    CommonModule,
+    ReactiveFormsModule,
+    RouterModule,
+    IndiaMapComponent,
+    ModalComponent,
+    NewCertificateLayoutComponent,
+  ],
   templateUrl: './login.component.html',
   styleUrls: ['./login.component.css'],
 })
@@ -55,49 +66,49 @@ export class LoginComponent implements OnInit {
   //India Map
   selectedState: StateData | null = null;
   onStateSelected(stateData: StateData): void {
-      this.selectedState = stateData;
-      // Update charts and stats based on selected state
-      console.log('Selected state:', stateData);
-    }
+    this.selectedState = stateData;
+    // Update charts and stats based on selected state
+    console.log('Selected state:', stateData);
+  }
 
-    //Certificate Dwonload
-    downloadCertificate(): void {
+  //Certificate Dwonload
+  downloadCertificate(): void {
     // TODO: Implement certificate download functionality
     this.showModal = true;
   }
   showModal = false;
-    modalConfig: ModalConfig = {
-      title: 'Certificate Download',
-      showCloseButton: true,
-      showFooter: true,
-      primaryButtonText: 'Submit',
-      secondaryButtonText: 'Close',
-      fields: [
-        {
-          id: 'uin',
-          label: 'UIN',
-          type: 'text',
-          placeholder: 'Enter UIN',
-          required: true,
-        },
-        {
-          id: 'gmail',
-          label: 'Gmail',
-          type: 'email',
-          placeholder: 'Enter your Gmail',
-          required: true,
-        },
-        {
-          id: 'phone',
-          label: 'Phone',
-          type: 'tel',
-          placeholder: 'Enter phone number',
-          required: true,
-        },
-      ],
-    };
+  modalConfig: ModalConfig = {
+    title: 'Certificate Download',
+    showCloseButton: true,
+    showFooter: true,
+    primaryButtonText: 'Submit',
+    secondaryButtonText: 'Close',
+    fields: [
+      {
+        id: 'uin',
+        label: 'UIN',
+        type: 'text',
+        placeholder: 'Enter UIN',
+        required: true,
+      },
+      {
+        id: 'gmail',
+        label: 'Gmail',
+        type: 'email',
+        placeholder: 'Enter your Gmail',
+        required: true,
+      },
+      {
+        id: 'phone',
+        label: 'Phone',
+        type: 'tel',
+        placeholder: 'Enter phone number',
+        required: true,
+      },
+    ],
+  };
 
-    onClose() {
+  onClose() {
     this.showModal = false;
   }
   selectedItem: any;
@@ -137,7 +148,7 @@ export class LoginComponent implements OnInit {
 
     this.showModal = false; // close modal after submit
   }
-   onSecondaryAction() {
+  onSecondaryAction() {
     this.showModal = false;
   }
 
