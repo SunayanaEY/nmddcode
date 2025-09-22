@@ -33,6 +33,8 @@ export class IndiaMapComponent implements OnInit, AfterViewInit, OnDestroy {
   private zoom: any;
   private width = 500;
   private height = 400;
+  private userRole: number = 0;
+  private userStateName: string = '';
 
   // Institute data from API
   private institutes: InstituteMarker[] = [];
@@ -58,8 +60,23 @@ export class IndiaMapComponent implements OnInit, AfterViewInit, OnDestroy {
       selectedState: this.selectedState,
       isLoading: this.isLoading
     });
+    this.checkUserRole();
     this.loadInstituteData();
     console.log('=== IndiaMapComponent ngOnInit END ===');
+  }
+
+  private checkUserRole(): void {
+    try {
+      const userData = sessionStorage.getItem('user');
+      if (userData) {
+        const user = JSON.parse(userData);
+        this.userRole = user.role || 0;
+        this.userStateName = user.stateName || '';
+        console.log('User role:', this.userRole, 'State:', this.userStateName);
+      }
+    } catch (error) {
+      console.error('Error parsing user data:', error);
+    }
   }
 
   private loadInstituteData(): void {
@@ -179,7 +196,7 @@ export class IndiaMapComponent implements OnInit, AfterViewInit, OnDestroy {
     console.log('Setting up projection...');
     this.projection = d3.geoMercator()
       .center([70.9629, 15.5937]) // Center of India
-      .scale(700)
+      .scale(500)
       .translate([this.width / 2, this.height / 2]);
 
     this.path = d3.geoPath().projection(this.projection);
@@ -265,7 +282,7 @@ export class IndiaMapComponent implements OnInit, AfterViewInit, OnDestroy {
     console.log('🌍 Setting up projection...');
     this.projection = d3.geoMercator()
       .center([82.9629, 20.5937]) // Center of India
-      .scale(1000)
+      .scale(650)
       .translate([this.width / 2, this.height / 2]);
     console.log('✅ Projection configured:', {
       center: [78.9629, 20.5937],
@@ -318,7 +335,66 @@ export class IndiaMapComponent implements OnInit, AfterViewInit, OnDestroy {
       });
 
     console.log('✅ State paths rendered with interactions');
+    
+    // Apply role-based zooming after map is created
+    setTimeout(() => {
+      this.applyRoleBasedZoom(geoData);
+    }, 100);
+    
     console.log('=== createMapFromGeoJSON COMPLETED ===');
+  }
+
+  private applyRoleBasedZoom(geoData: any): void {
+    console.log('Applying role-based zoom for role:', this.userRole, 'state:', this.userStateName);
+    
+    if (this.userRole === 5 && this.userStateName) {
+      // State admin - zoom to specific state
+      this.zoomToState(geoData, this.userStateName);
+    } else if (this.userRole === 1) {
+      // Center admin - show full India map (already default view)
+      console.log('Center admin - showing full India map');
+    }
+  }
+
+  private zoomToState(geoData: any, stateName: string): void {
+    console.log('Zooming to state:', stateName);
+    
+    // Find the state feature in GeoJSON data
+    const stateFeature = geoData.features.find((feature: any) => {
+      const featureName = feature.properties.NAME || feature.properties.name || '';
+      return featureName.toLowerCase().includes(stateName.toLowerCase()) || 
+             stateName.toLowerCase().includes(featureName.toLowerCase());
+    });
+    
+    if (stateFeature && this.svg && this.g) {
+      console.log('Found state feature for:', stateName);
+      
+      // Calculate bounds of the state
+      const bounds = this.path.bounds(stateFeature);
+      const dx = bounds[1][0] - bounds[0][0];
+      const dy = bounds[1][1] - bounds[0][1];
+      const x = (bounds[0][0] + bounds[1][0]) / 2;
+      const y = (bounds[0][1] + bounds[1][1]) / 2;
+      
+      // Calculate scale and translate for zooming
+      const scale = Math.min(8, 0.9 / Math.max(dx / this.width, dy / this.height));
+      const translate = [this.width / 2 - scale * x, this.height / 2 - scale * y];
+      
+      console.log('Zoom parameters:', { scale, translate, bounds });
+      
+      // Apply zoom transformation
+      const transform = d3.zoomIdentity
+        .translate(translate[0], translate[1])
+        .scale(scale);
+      
+      this.svg.transition()
+        .duration(1000)
+        .call(this.zoom.transform, transform);
+        
+      console.log('✅ Zoom applied to state:', stateName);
+    } else {
+      console.warn('State feature not found for:', stateName);
+    }
   }
 
   private getStateCodeFromName(stateName: string): string | null {
@@ -367,7 +443,7 @@ export class IndiaMapComponent implements OnInit, AfterViewInit, OnDestroy {
       })
       .attr('fill', '#ffd54f')
       .attr('stroke', '#ff8f00')
-      .attr('stroke-width', 2)
+      .attr('stroke-width', 1)
       .style('cursor', 'pointer')
       .on('mouseover', (event: any, d: any) => {
         console.log('Simplified state hovered:', d.name);
@@ -388,8 +464,15 @@ export class IndiaMapComponent implements OnInit, AfterViewInit, OnDestroy {
     console.log('📍 Institute data:', this.institutes.length, 'institutes');
     console.log('🗺️ Projection available:', !!this.projection);
 
-    // Add institute markers
-    const markerSelection = this.g.selectAll('.institute-marker')
+    // Create a separate group for markers to ensure they appear on top
+    let markersGroup = this.g.select('.markers-group');
+    if (markersGroup.empty()) {
+      markersGroup = this.g.append('g').attr('class', 'markers-group');
+      console.log('✅ Created markers group for layering');
+    }
+
+    // Add institute markers to the markers group
+    const markerSelection = markersGroup.selectAll('.institute-marker')
       .data(this.institutes);
     console.log('Data bound to marker selection');
 
@@ -427,10 +510,10 @@ export class IndiaMapComponent implements OnInit, AfterViewInit, OnDestroy {
           return y;
         }
       })
-      .attr('r', 6)
+      .attr('r', 2)
       .attr('fill', '#ff5722')
       .attr('stroke', '#ffffff')
-      .attr('stroke-width', 2)
+      .attr('stroke-width', 1)
       .style('cursor', 'pointer')
       .on('mouseover', (event: any, d: InstituteMarker) => {
         console.log('Institute marker hovered:', d.name);
@@ -451,7 +534,7 @@ export class IndiaMapComponent implements OnInit, AfterViewInit, OnDestroy {
       .attr('height', this.height - 100)
       .attr('fill', '#ffd54f')
       .attr('stroke', '#ff8f00')
-      .attr('stroke-width', 2)
+      .attr('stroke-width', 1)
       .attr('rx', 10);
 
     this.g.append('text')
@@ -467,7 +550,7 @@ export class IndiaMapComponent implements OnInit, AfterViewInit, OnDestroy {
     // Highlight state
     d3.select(event.target)
       .attr('fill', '#ffcc02')
-      .attr('stroke-width', 3);
+      .attr('stroke-width', 1);
 
     this.showTooltip(event, stateData.name);
   }
@@ -476,7 +559,7 @@ export class IndiaMapComponent implements OnInit, AfterViewInit, OnDestroy {
     // Reset state appearance
     this.g.selectAll('.state')
       .attr('fill', '#ffd54f')
-      .attr('stroke-width', 2);
+      .attr('stroke-width', 1);
 
     this.hideTooltip();
   }
