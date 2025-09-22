@@ -142,9 +142,9 @@ export class TrainingCentreComponent implements OnInit {
     if (this.userRole === 5) {
       this.tableActions.splice(1, 0, {
         name: 'fill',
-        icon: 'bi-pencil',
+        icon: 'bi-card-text',
         class: 'btn-success',
-        title: 'Fill Details',
+        title: 'Complete Form',
         condition: (row: any) => row.status === 'PENDING STATE INPUT',
       });
     }
@@ -410,6 +410,7 @@ export class TrainingCentreComponent implements OnInit {
     this.showModal = true;
   }
   fillTrainingCentre(centre: any) {
+    alert('Coming here !!');
     this.router.navigate(['/admin/training-centre-admin-profile'], {
       state: { data: centre },
     });

@@ -43,6 +43,7 @@ export class TrainingCentreAdminProfileComponent implements OnInit {
   instituteData: any;
   trainingInstituteId: any;
   userId: any;
+  today: string | undefined;
 
   // Location data
   states: State[] = [];
@@ -102,6 +103,7 @@ export class TrainingCentreAdminProfileComponent implements OnInit {
           '',
           [Validators.required, Validators.minLength(3)],
         ],
+        trainingInstituteExpiry: ['', []],
         state: ['', [Validators.required]],
         district: ['', [Validators.required]],
 
@@ -159,6 +161,7 @@ export class TrainingCentreAdminProfileComponent implements OnInit {
             '',
             [Validators.required, Validators.minLength(3)],
           ],
+          trainingInstituteExpiry: ['', []],
           state: ['', [Validators.required]],
           district: ['', [Validators.required]],
 
@@ -178,6 +181,8 @@ export class TrainingCentreAdminProfileComponent implements OnInit {
   }
 
   ngOnInit() {
+    const now = new Date();
+    this.today = now.toISOString().split('T')[0];
     this.loadStates();
     if (this.userRole == 5) {
       this.initializeForm();
@@ -230,9 +235,9 @@ export class TrainingCentreAdminProfileComponent implements OnInit {
   initializeForm() {
     this.profileForm.patchValue({
       trainingInstituteName: this.instituteData.trainingInstituteName,
+      trainingInstituteRegistration: this.instituteData.registrationId,
+      trainingInstituteExpiry: this.instituteData.registrationValidity,
       instituteType: this.instituteData.instituteType,
-      trainingInstituteRegistration:
-        this.instituteData.trainingInstituteRegistration,
       state: this.instituteData.stateId,
       address: this.instituteData.address,
       latitude: this.instituteData.latitude,
@@ -245,6 +250,7 @@ export class TrainingCentreAdminProfileComponent implements OnInit {
     // Disable controls
     this.profileForm.get('trainingInstituteName')?.disable();
     this.profileForm.get('trainingInstituteRegistration')?.disable();
+    this.profileForm.get('trainingInstituteExpiry')?.disable();
     this.profileForm.get('state')?.disable();
     this.profileForm.get('address')?.disable();
     this.profileForm.get('latitude')?.disable();
@@ -288,6 +294,8 @@ export class TrainingCentreAdminProfileComponent implements OnInit {
           this.profileForm.get('trainingInstituteName')?.value || '',
         registrationNumber:
           this.profileForm.get('trainingInstituteRegistration')?.value || '',
+        registrationValidity:
+          this.profileForm.get('trainingInstituteExpiry')?.value || '',
         instituteType: this.profileForm.get('instituteType')?.value || '',
         stateId: parseInt(this.profileForm.get('state')?.value) || 0,
         districtId: parseInt(this.profileForm.get('district')?.value) || 0,

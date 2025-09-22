@@ -85,6 +85,19 @@
 
             <div class="form-row">
               <div class="form-group">
+                <label for="trainingInstituteExpiry">
+                  Registration Validity
+                </label>
+                <input
+                  type="date"
+                  id="trainingInstituteExpiry"
+                  formControlName="trainingInstituteExpiry"
+                  placeholder="Select Registration Validity"
+                  class="form-control"
+                  [min]="today"
+                />
+              </div>
+              <div class="form-group">
                 <label for="instituteType"
                   >Institute Type<span class="required">*</span></label
                 >
@@ -98,7 +111,10 @@
                   "
                 >
                   <option value="" disabled>Select Institute Type</option>
-                  <option *ngFor="let type of instituteTypes" [value]="type.value">
+                  <option
+                    *ngFor="let type of instituteTypes"
+                    [value]="type.value"
+                  >
                     {{ type.label }}
                   </option>
                 </select>
@@ -109,7 +125,8 @@
                     profileForm.get('instituteType')?.touched
                   "
                 >
-                  <span *ngIf="profileForm.get('instituteType')?.errors?.['required']"
+                  <span
+                    *ngIf="profileForm.get('instituteType')?.errors?.['required']"
                     >Institute type is required</span
                   >
                 </div>
