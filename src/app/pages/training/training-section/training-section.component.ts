@@ -12,6 +12,7 @@ import { AuthService } from '../../../services/auth.service';
 })
 export class TrainingSectionComponent implements OnInit {
   userRole: number = 0;
+  certificateTitle: string = ''; // Add this property
 
   constructor(private router: Router, private authService: AuthService) {}
 
@@ -19,6 +20,13 @@ export class TrainingSectionComponent implements OnInit {
     const user = this.authService.getUser();
     if (user) {
       this.userRole = user.role;
+      
+      // Set certificate title based on user role
+      if (this.userRole === 4) {
+        this.certificateTitle = 'All Trainings';
+      } else {
+        this.certificateTitle = 'Approve and Reject Trainings';
+      }
     }
   }
 

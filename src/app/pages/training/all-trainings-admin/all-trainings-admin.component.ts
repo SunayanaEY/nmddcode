@@ -77,6 +77,7 @@ export class AllTrainingsAdminComponent {
   bulkCertificateDownload: any[] = [];
   trainingInstituteHeadId: any = null;
   userRole: any;
+  pageTitle: string = 'All Trainings';
   fileName: String = 'All_trainings_';
   fileNameTrainees: String = 'All_trainee_List_';
   traineesFile: String = 'All_trainee_List_';
@@ -102,7 +103,7 @@ export class AllTrainingsAdminComponent {
   ];
   breadcrumbItems: BreadcrumbItem[] = [
     { label: 'Training Module', url: '/admin/training-module' },
-    { label: 'Approve/Reject Trainings' },
+    { label: 'All Trainings' },
   ];
   tableColumns: TableColumn[] = [
     { key: 'trainingTitle', header: 'Training Title' },
@@ -245,13 +246,28 @@ export class AllTrainingsAdminComponent {
     private adminService: AdminService,
     private toastr: ToastrService,
     private spinner: NgxSpinnerService
-  ) {
-    this.getRole();
-  }
+  ) {}
   filteredData = [...this.trainingsList];
 
   ngOnInit(): void {
+    this.getRole();
     this.getTrainingInstituteId();
+    
+    // Set page title and breadcrumb based on user role
+    if (this.userRole === 5) {
+      this.pageTitle = 'Approve and Reject Trainings';
+      this.breadcrumbItems = [
+        { label: 'Training Module', url: '/admin/training-module' },
+        { label: 'Approve and Reject Trainings' },
+      ];
+    } else {
+      this.pageTitle = 'All Trainings';
+      this.breadcrumbItems = [
+        { label: 'Training Module', url: '/admin/training-module' },
+        { label: 'All Trainings' },
+      ];
+    }
+    
     if (this.userRole === 1) {
       this.tableActionsTrainee = [
         {
