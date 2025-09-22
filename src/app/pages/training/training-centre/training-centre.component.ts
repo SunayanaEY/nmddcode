@@ -44,8 +44,8 @@ export class TrainingCentreComponent implements OnInit {
   @ViewChild('editModal') editModal!: ModalComponent;
 
   breadcrumbItems: BreadcrumbItem[] = [
-    { label: 'Dashboard', url: '/admin/training-module' },
-    { label: 'Training Centre Data' },
+    { label: 'Training Module', url: '/admin/training-module' },
+    { label: 'Training Institute Data' },
   ];
 
   showModal = false;
@@ -784,7 +784,7 @@ export class TrainingCentreComponent implements OnInit {
 
     // Create workbook and add worksheet
     const wb = XLSX.utils.book_new();
-    XLSX.utils.book_append_sheet(wb, ws, 'Training Institute Admin Data');
+    XLSX.utils.book_append_sheet(wb, ws, 'Training Institute Data');
 
     // Generate filename with current date
     const date = new Date();
