@@ -512,7 +512,7 @@
                   (input)="onSignatureNameChange($event, i)"
                   placeholder="Enter the Name of Signatory here"
                   class="form-control"
-                  [class.is-invalid]="signatureFieldErrors[i].name"
+                  [class.is-invalid]="signatureFieldErrors[i]?.name"
                 />
                 <div
                   *ngIf="signatureFieldErrors[i]?.name"
@@ -532,7 +532,7 @@
                   (input)="onSignatureDesignationChange($event, i)"
                   placeholder="Enter the Designation of Signatory here"
                   class="form-control"
-                  [class.is-invalid]="signatureFieldErrors[i].designation"
+                  [class.is-invalid]="signatureFieldErrors[i]?.designation"
                 />
                 <div
                   *ngIf="signatureFieldErrors[i]?.designation"
@@ -554,7 +554,7 @@
                   (input)="onSignatureOrganizationChange($event, i)"
                   placeholder="Enter the Organization of Signatory here"
                   class="form-control"
-                  [class.is-invalid]="signatureFieldErrors[i].organization"
+                  [class.is-invalid]="signatureFieldErrors[i]?.organization"
                 />
                 <div
                   *ngIf="signatureFieldErrors[i]?.organization"
