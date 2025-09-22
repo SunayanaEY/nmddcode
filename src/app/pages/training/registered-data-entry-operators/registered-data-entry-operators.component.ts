@@ -14,8 +14,8 @@ import { DataEntryOperator } from '../models/data-entry-operator.model';
 })
 export class RegisteredDataEntryOperatorsComponent implements OnInit {
   breadcrumbItems: BreadcrumbItem[] = [
-    { label: 'Dashboard', url: '/admin/training-module' },
-    { label: 'Registered Data Entry Operators' }
+    { label: 'Training Module', url: '/admin/training-module' },
+    { label: 'Registered Training Managers' }
   ];
 
   tableColumns: TableColumn[] = [

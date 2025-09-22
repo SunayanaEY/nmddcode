@@ -24,7 +24,7 @@ export class ActivityLogComponent implements OnInit {
   
   // Breadcrumb configuration
   breadcrumbItems: BreadcrumbItem[] = [
-    { label: 'Dashboard', url: '/admin' },
+    { label: 'Training Module', url: '/admin' },
     { label: 'Activity Log Feed' }
   ];
   

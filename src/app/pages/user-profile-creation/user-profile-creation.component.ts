@@ -30,8 +30,8 @@ export class UserProfileCreationComponent {
   profileForm: FormGroup;
   isLoading = false;
   breadcrumbItems: BreadcrumbItem[] = [
-    { label: 'Dashboard', url: '/admin/training-module' },
-    { label: 'User Profile', url: '' },
+    { label: 'Training Module', url: '/admin/training-module' },
+    { label: 'Training Manager Profile Creation', url: '' },
   ];
 
   constructor(

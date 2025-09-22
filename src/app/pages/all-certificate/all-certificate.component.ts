@@ -130,6 +130,7 @@ export class AllCertificateComponent {
   selectedSignatureFile: File | null = null;
   breadcrumbItems: BreadcrumbItem[] = [
     { label: 'Training Module', url: '/admin/training-module' },
+    { label: 'Approved/Rejected Trainings', url: '/admin/approvedrejectedTrainings' },
     { label: 'Approved Certificate' },
   ];
 
