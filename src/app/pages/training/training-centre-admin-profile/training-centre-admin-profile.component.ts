@@ -57,8 +57,8 @@ export class TrainingCentreAdminProfileComponent implements OnInit {
   ];
 
   breadcrumbItems: BreadcrumbItem[] = [
-    { label: 'Dashboard', url: '/admin/training-module' },
-    { label: 'Training Centre Admin Profile Creation' },
+    { label: 'Training Module', url: '/admin/training-module' },
+    { label: 'Training Institute Registration' },
   ];
 
   // Custom validator for password matching
