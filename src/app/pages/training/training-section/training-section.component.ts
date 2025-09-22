@@ -23,7 +23,7 @@ export class TrainingSectionComponent implements OnInit {
   }
 
   navigateToTrainingCertificate() {
-    console.log('Navigating to Training Certificate Generation');
+    console.log('Navigating to Schedule Training');
     this.router.navigate(['/admin/training-certificate-generation']);
     this.router.navigate(['/admin/training-certificate-generation']);
   }
@@ -69,7 +69,7 @@ export class TrainingSectionComponent implements OnInit {
     // this.router.navigate(['/admin/certificate-approval']);
   }
   navigateToCertificateAll() {
-    this.router.navigate(['/admin/all-certificate']);
+    this.router.navigate(['/admin/All-Trainings']);
   }
 
   navigateToSchemeManagementMaster() {
@@ -87,7 +87,7 @@ export class TrainingSectionComponent implements OnInit {
     this.router.navigate(['/admin/registered-data-entry-operators']);
   }
 
-   navigateToAddTrainers(): void {
+  navigateToAddTrainers(): void {
     this.router.navigate(['/admin/add-trainers']);
   }
 

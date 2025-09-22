@@ -4,51 +4,45 @@
     <div class="background-overlay"></div>
   </div>
 
-      <!-- Government Logo Header -->
-    <div class="government-logo" style="display: flex
-">
-    <div class="row" style="
-    display: contents;
-">
-      <div class="col-lg-6" style="
-    display: flex;
-    align-content: center;
-">
-      <img
-        src="assets/login/emblem.png"
-        alt="Government Emblem"
-        class="logo-image"
-      />
-      <div class="logo-text" style="
-    align-content: center;
-">भारत सरकार | GOVERNMENT OF INDIA
-        <div class="logo-subtext">
-        पशुपालन और डेयरी विभाग<br />
-        DEPARTMENT OF ANIMAL HUSBANDRY AND DAIRYING
+  <!-- Government Logo Header -->
+  <div class="government-logo" style="display: flex">
+    <div class="row" style="display: contents">
+      <div class="col-lg-6" style="display: flex; align-content: center">
+        <img
+          src="assets/login/emblem.png"
+          alt="Government Emblem"
+          class="logo-image"
+        />
+        <div class="logo-text" style="align-content: center">
+          भारत सरकार | GOVERNMENT OF INDIA
+          <div class="logo-subtext">
+            पशुपालन और डेयरी विभाग<br />
+            DEPARTMENT OF ANIMAL HUSBANDRY AND DAIRYING
+          </div>
+        </div>
       </div>
-      </div>
-      </div>
-      <div class="col-lg-6" style="
-    align-content: center;
-">
-      <div class="dashboard-actions">
-              <button
-                class="btn btn-primary me-2 "
-                (click)="downloadCertificate()"
-                style="background: #1e3a8a;
-    border: 1px solid #1e3a8a;
-    color: #ffffff;border-radius: 12px;
-    font-size: 14px;
-    font-weight: 600;
-    cursor: pointer;
-    letter-spacing: 0.025em;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-    text-shadow: none;"
-              >
-                <i class="fas fa-download me-2"></i>Download Certificate
-              </button>
+      <div class="col-lg-6" style="align-content: center">
+        <div class="dashboard-actions">
+          <button
+            class="btn btn-primary me-2"
+            (click)="downloadCertificate()"
+            style="
+              background: #1e3a8a;
+              border: 1px solid #1e3a8a;
+              color: #ffffff;
+              border-radius: 12px;
+              font-size: 14px;
+              font-weight: 600;
+              cursor: pointer;
+              letter-spacing: 0.025em;
+              box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+              text-shadow: none;
+            "
+          >
+            <i class="fas fa-download me-2"></i>Download Certificate
+          </button>
 
-              <!-- <button
+          <!-- <button
                 class="btn btn-outline-primary"
                 (click)="filterByPeriod()"
               >
@@ -56,28 +50,30 @@
                 <i class="fas fa-calendar me-2"></i>Filter Period
                 <small class="d-block">01 Jan 2024 - 31 Jan 2024</small>
               </button> -->
-            </div> </div>
+        </div>
       </div>
-
     </div>
-
+  </div>
 
   <!-- Form Section -->
-   <div class = "row">
+  <div class="row">
     <!-- India Map -->
-      <div class="col-lg-5">
-        <!-- <div class="card" style=" -->
-        <div class="card"style="
-        background: rgba(255, 255, 255, 0.08);
+    <div class="col-lg-5">
+      <!-- <div class="card" style=" -->
+      <div
+        class="card"
+        style="
+          background: rgba(255, 255, 255, 0.08);
 
-    border: 1px solid rgba(255, 255, 255, 0.15);
-    border-right: none;
-    padding-left: 20%;
-    height: 100%;
-    width: 100%;
-">
- <!-- backdrop-filter: blur(25px); -->
-          <!-- <div
+          border: 1px solid rgba(255, 255, 255, 0.15);
+          border-right: none;
+          padding-left: 20%;
+          height: 100%;
+          width: 100%;
+        "
+      >
+        <!-- backdrop-filter: blur(25px); -->
+        <!-- <div
             class="card-header d-flex justify-content-between align-items-center"
             style="background: rgba(255, 255, 255, 0.08);
     backdrop-filter: blur(25px);
@@ -88,36 +84,33 @@
               Training Institutes in India
             </h5>
           </div> -->
-          <!-- <div class="card-body"> -->
-            <app-india-map
-              [selectedState]="selectedState"
-              (stateSelected)="onStateSelected($event)"
-            >
-            </app-india-map>
-          <!-- </div> -->
-        </div>
+        <!-- <div class="card-body"> -->
+        <app-india-map
+          [selectedState]="selectedState"
+          (stateSelected)="onStateSelected($event)"
+        >
+        </app-india-map>
+        <!-- </div> -->
       </div>
-      <div class="col-lg-2 " style="align-content: center;">
-        <app-modal
-                [show]="showModal"
-                [config]="modalConfig"
-                mode="create"
-                (close)="onClose()"
-                (primaryAction)="onSubmit($event)"
-                (secondaryAction)="onSecondaryAction()"
-              >
-              </app-modal>
-
-          </div>
+    </div>
+    <div class="col-lg-2" style="align-content: center">
+      <app-modal
+        [show]="showModal"
+        [config]="modalConfig"
+        mode="create"
+        (close)="onClose()"
+        (primaryAction)="onSubmit($event)"
+        (secondaryAction)="onSecondaryAction()"
+      >
+      </app-modal>
+    </div>
     <div class="col-lg-5">
-  <!-- <div class="form-section"> -->
+      <!-- <div class="form-section"> -->
 
-    <!-- Form Container -->
-     <div style="
-    padding-right: 20%;
-">
-    <div class="form-container">
-      <!-- <div class="toggle-container">
+      <!-- Form Container -->
+      <div style="padding-right: 20%">
+        <div class="form-container">
+          <!-- <div class="toggle-container">
         <button
           class="toggle-btn"
           (click)="isSignUp = false"
@@ -134,262 +127,267 @@
         </button>
       </div> -->
 
-      <!-- Sign In Form -->
-      <div *ngIf="!isSignUp" class="form-content">
-        <h1 class="form-title">Sign In</h1>
-        <form [formGroup]="signInForm" (ngSubmit)="onSignIn()">
-          <div class="form-group">
-            <label>Email Address</label>
-            <input
-              type="email"
-              formControlName="email"
-              placeholder="Enter Email"
-              [class.error]="
-                signInForm.get('email')?.invalid &&
-                signInForm.get('email')?.touched
-              "
-            />
-            <div
-              class="error-message"
-              *ngIf="
-                signInForm.get('email')?.invalid &&
-                signInForm.get('email')?.touched
-              "
-            >
-              <span *ngIf="signInForm.get('email')?.errors?.['required']"
-                >Email is required</span
-              >
-              <span *ngIf="signInForm.get('email')?.errors?.['email']"
-                >Please enter a valid email</span
-              >
-            </div>
-          </div>
-          <div class="form-group">
-            <label>Password</label>
-            <div style="position: relative">
-              <input
-                [type]="showPassword ? 'text' : 'password'"
-                formControlName="password"
-                placeholder="Password"
-                [class.error]="
-                  signInForm.get('password')?.invalid &&
-                  signInForm.get('password')?.touched
-                "
-              />
-              <button
-                type="button"
-                class="password-toggle"
-                (click)="togglePassword()"
-              >
-                <div class="eye-icon">
-                  <svg
-                    *ngIf="!showPassword"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
+          <!-- Sign In Form -->
+          <div *ngIf="!isSignUp" class="form-content">
+            <h1 class="form-title">Sign In</h1>
+            <form [formGroup]="signInForm" (ngSubmit)="onSignIn()">
+              <div class="form-group">
+                <label>Email Address</label>
+                <input
+                  type="email"
+                  formControlName="email"
+                  placeholder="Enter Email"
+                  [class.error]="
+                    signInForm.get('email')?.invalid &&
+                    signInForm.get('email')?.touched
+                  "
+                />
+                <div
+                  class="error-message"
+                  *ngIf="
+                    signInForm.get('email')?.invalid &&
+                    signInForm.get('email')?.touched
+                  "
+                >
+                  <span *ngIf="signInForm.get('email')?.errors?.['required']"
+                    >Email is required</span
                   >
-                    <path
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
-                      stroke-width="2"
-                      d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
-                    ></path>
-                    <path
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
-                      stroke-width="2"
-                      d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"
-                    ></path>
-                  </svg>
-                  <svg
-                    *ngIf="showPassword"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
+                  <span *ngIf="signInForm.get('email')?.errors?.['email']"
+                    >Please enter a valid email</span
                   >
-                    <path
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
-                      stroke-width="2"
-                      d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.878 9.878L3 3m6.878 6.878L21 21"
-                    ></path>
-                  </svg>
                 </div>
+              </div>
+              <div class="form-group">
+                <label>Password</label>
+                <div style="position: relative">
+                  <input
+                    [type]="showPassword ? 'text' : 'password'"
+                    formControlName="password"
+                    placeholder="Password"
+                    [class.error]="
+                      signInForm.get('password')?.invalid &&
+                      signInForm.get('password')?.touched
+                    "
+                  />
+                  <button
+                    type="button"
+                    class="password-toggle"
+                    (click)="togglePassword()"
+                  >
+                    <div class="eye-icon">
+                      <svg
+                        *ngIf="!showPassword"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          stroke-linecap="round"
+                          stroke-linejoin="round"
+                          stroke-width="2"
+                          d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
+                        ></path>
+                        <path
+                          stroke-linecap="round"
+                          stroke-linejoin="round"
+                          stroke-width="2"
+                          d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"
+                        ></path>
+                      </svg>
+                      <svg
+                        *ngIf="showPassword"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          stroke-linecap="round"
+                          stroke-linejoin="round"
+                          stroke-width="2"
+                          d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.878 9.878L3 3m6.878 6.878L21 21"
+                        ></path>
+                      </svg>
+                    </div>
+                  </button>
+                </div>
+                <div
+                  class="error-message"
+                  *ngIf="
+                    signInForm.get('password')?.invalid &&
+                    signInForm.get('password')?.touched
+                  "
+                >
+                  <span *ngIf="signInForm.get('password')?.errors?.['required']"
+                    >Password is required</span
+                  >
+                  <span
+                    *ngIf="signInForm.get('password')?.errors?.['minlength']"
+                    >Password must be at least 6 characters</span
+                  >
+                </div>
+              </div>
+              <div class="d-flex justify-content-between">
+                <div class="forgot-password">
+                  <a
+                    [routerLink]="['/forget-password']"
+                    [queryParams]="{ type: 'forget' }"
+                    >Forgot Password?</a
+                  >
+                </div>
+              </div>
+              <!-- Error Message -->
+              <div *ngIf="errorMessage" class="error-message">
+                {{ errorMessage }}
+              </div>
+
+              <button
+                type="submit"
+                class="sign-in-btn"
+                [disabled]="isLoading || signInForm.invalid"
+              >
+                <span *ngIf="!isLoading">Sign in</span>
+                <span *ngIf="isLoading">
+                  <i class="fas fa-spinner fa-spin"></i> Signing in...
+                </span>
               </button>
-            </div>
-            <div
-              class="error-message"
-              *ngIf="
-                signInForm.get('password')?.invalid &&
-                signInForm.get('password')?.touched
-              "
-            >
-              <span *ngIf="signInForm.get('password')?.errors?.['required']"
-                >Password is required</span
-              >
-              <span *ngIf="signInForm.get('password')?.errors?.['minlength']"
-                >Password must be at least 6 characters</span
-              >
-            </div>
-          </div>
-          <div class="d-flex justify-content-between">
-            <div class="forgot-password">
-              <a
-                [routerLink]="['/forget-password']"
-                [queryParams]="{ type: 'forget' }"
-                >Forgot Password?</a
-              >
-            </div>
-          </div>
-          <!-- Error Message -->
-          <div *ngIf="errorMessage" class="error-message">
-            {{ errorMessage }}
+            </form>
           </div>
 
-          <button
-            type="submit"
-            class="sign-in-btn"
-            [disabled]="isLoading || signInForm.invalid"
-          >
-            <span *ngIf="!isLoading">Sign in</span>
-            <span *ngIf="isLoading">
-              <i class="fas fa-spinner fa-spin"></i> Signing in...
-            </span>
-          </button>
-        </form>
-      </div>
-
-      <!-- Sign Up Form -->
-      <div *ngIf="isSignUp" class="form-content">
-        <h1 class="form-title">Create Account</h1>
-        <form [formGroup]="signUpForm" (ngSubmit)="onSignUp()">
-          <div class="form-group">
-            <label>Username</label>
-            <input
-              type="text"
-              formControlName="username"
-              placeholder="Enter Username"
-              [class.error]="
-                signUpForm.get('username')?.invalid &&
-                signUpForm.get('username')?.touched
-              "
-            />
-            <div
-              class="error-message"
-              *ngIf="
-                signUpForm.get('username')?.invalid &&
-                signUpForm.get('username')?.touched
-              "
-            >
-              <span *ngIf="signUpForm.get('username')?.errors?.['required']"
-                >Username is required</span
-              >
-              <span *ngIf="signUpForm.get('username')?.errors?.['minlength']"
-                >Username must be at least 3 characters</span
-              >
-            </div>
-          </div>
-          <div class="form-group">
-            <label>Training Institute Name</label>
-            <input
-              type="text"
-              formControlName="trainingInstituteName"
-              placeholder="Enter Training Institute Name"
-              [class.error]="
-                signUpForm.get('trainingInstituteName')?.invalid &&
-                signUpForm.get('trainingInstituteName')?.touched
-              "
-            />
-            <div
-              class="error-message"
-              *ngIf="
-                signUpForm.get('trainingInstituteName')?.invalid &&
-                signUpForm.get('trainingInstituteName')?.touched
-              "
-            >
-              <span
-                *ngIf="signUpForm.get('trainingInstituteName')?.errors?.['required']"
-                >Training institute name is required</span
-              >
-              <span
-                *ngIf="signUpForm.get('trainingInstituteName')?.errors?.['minlength']"
-                >Training institute name must be at least 3 characters</span
-              >
-            </div>
-          </div>
-
-          <div class="location-row">
-            <div class="form-group">
-              <label>State *</label>
-              <select
-                formControlName="state"
-                [class.error]="
-                  signUpForm.get('state')?.invalid &&
-                  signUpForm.get('state')?.touched
-                "
-                [disabled]="isLoadingStates"
-              >
-                <option value="" disabled>
-                  {{ isLoadingStates ? "Loading states..." : "Select State" }}
-                </option>
-                <option *ngFor="let state of states" [value]="state.id">
-                  {{ state.stateName }}
-                </option>
-              </select>
-              <div
-                class="error-message"
-                *ngIf="
-                  signUpForm.get('state')?.invalid &&
-                  signUpForm.get('state')?.touched
-                "
-              >
-                <span *ngIf="signUpForm.get('state')?.errors?.['required']"
-                  >State is required</span
+          <!-- Sign Up Form -->
+          <div *ngIf="isSignUp" class="form-content">
+            <h1 class="form-title">Create Account</h1>
+            <form [formGroup]="signUpForm" (ngSubmit)="onSignUp()">
+              <div class="form-group">
+                <label>Username</label>
+                <input
+                  type="text"
+                  formControlName="username"
+                  placeholder="Enter Username"
+                  [class.error]="
+                    signUpForm.get('username')?.invalid &&
+                    signUpForm.get('username')?.touched
+                  "
+                />
+                <div
+                  class="error-message"
+                  *ngIf="
+                    signUpForm.get('username')?.invalid &&
+                    signUpForm.get('username')?.touched
+                  "
                 >
+                  <span *ngIf="signUpForm.get('username')?.errors?.['required']"
+                    >Username is required</span
+                  >
+                  <span
+                    *ngIf="signUpForm.get('username')?.errors?.['minlength']"
+                    >Username must be at least 3 characters</span
+                  >
+                </div>
               </div>
-            </div>
-            <div class="form-group">
-              <label>District *</label>
-              <select
-                formControlName="district"
-                [class.error]="
-                  signUpForm.get('district')?.invalid &&
-                  signUpForm.get('district')?.touched
-                "
-                [disabled]="
-                  isLoadingDistricts || !signUpForm.get('state')?.value
-                "
-              >
-                <option value="" disabled>
-                  {{
-                    isLoadingDistricts
-                      ? "Loading districts..."
-                      : signUpForm.get("state")?.value
-                      ? "Select District"
-                      : "Select State First"
-                  }}
-                </option>
-                <option
-                  *ngFor="let district of districts"
-                  [value]="district.id"
+              <div class="form-group">
+                <label>Training Institute Name</label>
+                <input
+                  type="text"
+                  formControlName="trainingInstituteName"
+                  placeholder="Enter Training Institute Name"
+                  [class.error]="
+                    signUpForm.get('trainingInstituteName')?.invalid &&
+                    signUpForm.get('trainingInstituteName')?.touched
+                  "
+                />
+                <div
+                  class="error-message"
+                  *ngIf="
+                    signUpForm.get('trainingInstituteName')?.invalid &&
+                    signUpForm.get('trainingInstituteName')?.touched
+                  "
                 >
-                  {{ district.districtName }}
-                </option>
-              </select>
-              <div
-                class="error-message"
-                *ngIf="
-                  signUpForm.get('district')?.invalid &&
-                  signUpForm.get('district')?.touched
-                "
-              >
-                <span *ngIf="signUpForm.get('district')?.errors?.['required']"
-                  >District is required</span
-                >
+                  <span
+                    *ngIf="signUpForm.get('trainingInstituteName')?.errors?.['required']"
+                    >Training institute name is required</span
+                  >
+                  <span
+                    *ngIf="signUpForm.get('trainingInstituteName')?.errors?.['minlength']"
+                    >Training institute name must be at least 3 characters</span
+                  >
+                </div>
               </div>
-            </div>
-            <!-- Block field commented out as requested -->
-            <!-- <div class="form-group">
+
+              <div class="location-row">
+                <div class="form-group">
+                  <label>State *</label>
+                  <select
+                    formControlName="state"
+                    [class.error]="
+                      signUpForm.get('state')?.invalid &&
+                      signUpForm.get('state')?.touched
+                    "
+                    [disabled]="isLoadingStates"
+                  >
+                    <option value="" disabled>
+                      {{
+                        isLoadingStates ? "Loading states..." : "Select State"
+                      }}
+                    </option>
+                    <option *ngFor="let state of states" [value]="state.id">
+                      {{ state.stateName }}
+                    </option>
+                  </select>
+                  <div
+                    class="error-message"
+                    *ngIf="
+                      signUpForm.get('state')?.invalid &&
+                      signUpForm.get('state')?.touched
+                    "
+                  >
+                    <span *ngIf="signUpForm.get('state')?.errors?.['required']"
+                      >State is required</span
+                    >
+                  </div>
+                </div>
+                <div class="form-group">
+                  <label>District *</label>
+                  <select
+                    formControlName="district"
+                    [class.error]="
+                      signUpForm.get('district')?.invalid &&
+                      signUpForm.get('district')?.touched
+                    "
+                    [disabled]="
+                      isLoadingDistricts || !signUpForm.get('state')?.value
+                    "
+                  >
+                    <option value="" disabled>
+                      {{
+                        isLoadingDistricts
+                          ? "Loading districts..."
+                          : signUpForm.get("state")?.value
+                          ? "Select District"
+                          : "Select State First"
+                      }}
+                    </option>
+                    <option
+                      *ngFor="let district of districts"
+                      [value]="district.id"
+                    >
+                      {{ district.districtName }}
+                    </option>
+                  </select>
+                  <div
+                    class="error-message"
+                    *ngIf="
+                      signUpForm.get('district')?.invalid &&
+                      signUpForm.get('district')?.touched
+                    "
+                  >
+                    <span
+                      *ngIf="signUpForm.get('district')?.errors?.['required']"
+                      >District is required</span
+                    >
+                  </div>
+                </div>
+                <!-- Block field commented out as requested -->
+                <!-- <div class="form-group">
                <label>Block</label>
                <input type="text" formControlName="block" placeholder="Block"
                       [class.error]="signUpForm.get('block')?.invalid && signUpForm.get('block')?.touched">
@@ -397,400 +395,409 @@
                  <span *ngIf="signUpForm.get('block')?.errors?.['required']">Block is required</span>
                </div>
              </div> -->
-          </div>
-          <div class="form-row">
-            <div class="form-group">
-              <label>Contact Person Name</label>
-              <input
-                type="text"
-                formControlName="contactPersonName"
-                placeholder="Enter Contact Person Name"
-                [class.error]="
-                  signUpForm.get('contactPersonName')?.invalid &&
-                  signUpForm.get('contactPersonName')?.touched
-                "
-              />
-              <div
-                class="error-message"
-                *ngIf="
-                  signUpForm.get('contactPersonName')?.invalid &&
-                  signUpForm.get('contactPersonName')?.touched
-                "
-              >
-                <span
-                  *ngIf="signUpForm.get('contactPersonName')?.errors?.['required']"
-                  >Contact person name is required</span
-                >
-                <span
-                  *ngIf="signUpForm.get('contactPersonName')?.errors?.['minlength']"
-                  >Name must be at least 2 characters</span
-                >
               </div>
-            </div>
-            <div class="form-group">
-              <label>Designation</label>
-              <input
-                type="text"
-                formControlName="designation"
-                placeholder="Enter Designation"
-                [class.error]="
-                  signUpForm.get('designation')?.invalid &&
-                  signUpForm.get('designation')?.touched
-                "
-              />
-              <div
-                class="error-message"
-                *ngIf="
-                  signUpForm.get('designation')?.invalid &&
-                  signUpForm.get('designation')?.touched
-                "
-              >
-                <span
-                  *ngIf="signUpForm.get('designation')?.errors?.['required']"
-                  >Designation is required</span
-                >
-              </div>
-            </div>
-          </div>
-          <div class="form-row">
-            <div class="form-group">
-              <label>Contact Number</label>
-              <input
-                type="tel"
-                formControlName="contactNumber"
-                placeholder="Enter Contact Number"
-                [class.error]="
-                  signUpForm.get('contactNumber')?.invalid &&
-                  signUpForm.get('contactNumber')?.touched
-                "
-              />
-              <div
-                class="error-message"
-                *ngIf="
-                  signUpForm.get('contactNumber')?.invalid &&
-                  signUpForm.get('contactNumber')?.touched
-                "
-              >
-                <span
-                  *ngIf="signUpForm.get('contactNumber')?.errors?.['required']"
-                  >Contact number is required</span
-                >
-                <span
-                  *ngIf="signUpForm.get('contactNumber')?.errors?.['pattern']"
-                  >Please enter a valid 10-digit phone number</span
-                >
-              </div>
-            </div>
-            <div class="form-group">
-              <label>Email ID</label>
-              <input
-                type="email"
-                formControlName="emailId"
-                placeholder="Enter Email ID"
-                [class.error]="
-                  signUpForm.get('emailId')?.invalid &&
-                  signUpForm.get('emailId')?.touched
-                "
-              />
-              <div
-                class="error-message"
-                *ngIf="
-                  signUpForm.get('emailId')?.invalid &&
-                  signUpForm.get('emailId')?.touched
-                "
-              >
-                <span *ngIf="signUpForm.get('emailId')?.errors?.['required']"
-                  >Email is required</span
-                >
-                <span *ngIf="signUpForm.get('emailId')?.errors?.['email']"
-                  >Please enter a valid email</span
-                >
-              </div>
-            </div>
-          </div>
-          <div class="form-group">
-            <label>Address</label>
-            <div style="position: relative">
-              <textarea
-                formControlName="address"
-                placeholder="Enter complete address"
-                (blur)="onAddressChange()"
-                rows="3"
-                [class.error]="
-                  signUpForm.get('address')?.invalid &&
-                  signUpForm.get('address')?.touched
-                "
-              ></textarea>
-              <div *ngIf="isGeocodingAddress" class="geocoding-loader">
-                <svg
-                  width="16"
-                  height="16"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  stroke-width="2"
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  class="animate-spin"
-                >
-                  <path d="M21 12a9 9 0 11-6.219-8.56" />
-                </svg>
-              </div>
-              <div
-                *ngIf="addressLatitude && addressLongitude"
-                class="location-found"
-              >
-                <svg
-                  width="16"
-                  height="16"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  stroke-width="2"
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                >
-                  <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z" />
-                  <circle cx="12" cy="10" r="3" />
-                </svg>
-              </div>
-            </div>
-            <div
-              class="error-message"
-              *ngIf="
-                signUpForm.get('address')?.invalid &&
-                signUpForm.get('address')?.touched
-              "
-            >
-              <span *ngIf="signUpForm.get('address')?.errors?.['required']"
-                >Address is required</span
-              >
-              <span *ngIf="signUpForm.get('address')?.errors?.['minlength']"
-                >Address must be at least 10 characters</span
-              >
-            </div>
-            <div
-              *ngIf="addressLatitude && addressLongitude"
-              class="location-info"
-            >
-              <small
-                >📍 Location found: {{ addressLatitude | number : "1.4-4" }},
-                {{ addressLongitude | number : "1.4-4" }}</small
-              >
-            </div>
-          </div>
-          <div class="form-group">
-            <label>Password</label>
-            <div style="position: relative">
-              <input
-                [type]="showSignUpPassword ? 'text' : 'password'"
-                formControlName="password"
-                placeholder="Create Password"
-                [class.error]="
-                  signUpForm.get('password')?.invalid &&
-                  signUpForm.get('password')?.touched
-                "
-              />
-              <button
-                type="button"
-                class="password-toggle"
-                (click)="toggleSignUpPassword()"
-              >
-                <div class="eye-icon">
-                  <svg
-                    *ngIf="!showSignUpPassword"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
+              <div class="form-row">
+                <div class="form-group">
+                  <label>Contact Person Name</label>
+                  <input
+                    type="text"
+                    formControlName="contactPersonName"
+                    placeholder="Enter Contact Person Name"
+                    [class.error]="
+                      signUpForm.get('contactPersonName')?.invalid &&
+                      signUpForm.get('contactPersonName')?.touched
+                    "
+                  />
+                  <div
+                    class="error-message"
+                    *ngIf="
+                      signUpForm.get('contactPersonName')?.invalid &&
+                      signUpForm.get('contactPersonName')?.touched
+                    "
                   >
-                    <path
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
-                      stroke-width="2"
-                      d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
-                    ></path>
-                    <path
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
-                      stroke-width="2"
-                      d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"
-                    ></path>
-                  </svg>
-                  <svg
-                    *ngIf="showSignUpPassword"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                  >
-                    <path
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
-                      stroke-width="2"
-                      d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.878 9.878L3 3m6.878 6.878L21 21"
-                    ></path>
-                  </svg>
+                    <span
+                      *ngIf="signUpForm.get('contactPersonName')?.errors?.['required']"
+                      >Contact person name is required</span
+                    >
+                    <span
+                      *ngIf="signUpForm.get('contactPersonName')?.errors?.['minlength']"
+                      >Name must be at least 2 characters</span
+                    >
+                  </div>
                 </div>
-              </button>
-            </div>
-            <div
-              class="error-message"
-              *ngIf="
-                signUpForm.get('password')?.invalid &&
-                signUpForm.get('password')?.touched
-              "
-            >
-              <span *ngIf="signUpForm.get('password')?.errors?.['required']"
-                >Password is required</span
-              >
-              <span *ngIf="signUpForm.get('password')?.errors?.['minlength']"
-                >Password must be at least 8 characters</span
-              >
-              <span *ngIf="signUpForm.get('password')?.errors?.['pattern']"
-                >Password must contain uppercase, lowercase, number and special
-                character</span
-              >
-            </div>
-          </div>
-          <div class="form-group">
-            <label>Confirm Password</label>
-            <div style="position: relative">
-              <input
-                [type]="showConfirmPassword ? 'text' : 'password'"
-                formControlName="confirmPassword"
-                placeholder="Confirm Password"
-                [class.error]="signUpForm.get('confirmPassword')?.invalid && signUpForm.get('confirmPassword')?.touched || signUpForm.errors?.['passwordMismatch'] && signUpForm.get('confirmPassword')?.touched"
-              />
-              <button
-                type="button"
-                class="password-toggle"
-                (click)="toggleConfirmPassword()"
-              >
-                <div class="eye-icon">
-                  <svg
-                    *ngIf="!showConfirmPassword"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
+                <div class="form-group">
+                  <label>Designation</label>
+                  <input
+                    type="text"
+                    formControlName="designation"
+                    placeholder="Enter Designation"
+                    [class.error]="
+                      signUpForm.get('designation')?.invalid &&
+                      signUpForm.get('designation')?.touched
+                    "
+                  />
+                  <div
+                    class="error-message"
+                    *ngIf="
+                      signUpForm.get('designation')?.invalid &&
+                      signUpForm.get('designation')?.touched
+                    "
                   >
-                    <path
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
-                      stroke-width="2"
-                      d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
-                    ></path>
-                    <path
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
-                      stroke-width="2"
-                      d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"
-                    ></path>
-                  </svg>
-                  <svg
-                    *ngIf="showConfirmPassword"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                  >
-                    <path
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
-                      stroke-width="2"
-                      d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.878 9.878L3 3m6.878 6.878L21 21"
-                    ></path>
-                  </svg>
+                    <span
+                      *ngIf="signUpForm.get('designation')?.errors?.['required']"
+                      >Designation is required</span
+                    >
+                  </div>
                 </div>
-              </button>
-            </div>
-            <div
-              class="error-message"
-              *ngIf="signUpForm.get('confirmPassword')?.invalid && signUpForm.get('confirmPassword')?.touched || signUpForm.errors?.['passwordMismatch'] && signUpForm.get('confirmPassword')?.touched"
-            >
-              <span
-                *ngIf="signUpForm.get('confirmPassword')?.errors?.['required']"
-                >Confirm password is required</span
-              >
-              <span *ngIf="signUpForm.errors?.['passwordMismatch']"
-                >Passwords do not match</span
-              >
-            </div>
-          </div>
-          <div class="image-upload-container">
-            <label>Image of Training Institute</label>
-            <div
-              class="image-upload-area"
-              (click)="triggerFileInput()"
-              (dragover)="onDragOver($event)"
-              (dragleave)="onDragLeave($event)"
-              (drop)="onDrop($event)"
-              [class.drag-over]="isDragOver"
-            >
-              <div *ngIf="!selectedImagePreview" class="upload-placeholder">
-                <svg
-                  class="upload-icon"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    stroke-width="2"
-                    d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"
-                  ></path>
-                </svg>
-                <p>Drag and drop an image here or click to select</p>
-                <span class="file-types">PNG, JPG, JPEG up to 5MB</span>
               </div>
-              <div *ngIf="selectedImagePreview" class="image-preview">
-                <img
-                  [src]="selectedImagePreview"
-                  alt="Preview"
-                  class="preview-image"
-                />
-                <button
-                  type="button"
-                  class="remove-image"
-                  (click)="removeImage($event)"
-                >
-                  <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path
+              <div class="form-row">
+                <div class="form-group">
+                  <label>Contact Number</label>
+                  <input
+                    type="tel"
+                    formControlName="contactNumber"
+                    placeholder="Enter Contact Number"
+                    [class.error]="
+                      signUpForm.get('contactNumber')?.invalid &&
+                      signUpForm.get('contactNumber')?.touched
+                    "
+                  />
+                  <div
+                    class="error-message"
+                    *ngIf="
+                      signUpForm.get('contactNumber')?.invalid &&
+                      signUpForm.get('contactNumber')?.touched
+                    "
+                  >
+                    <span
+                      *ngIf="signUpForm.get('contactNumber')?.errors?.['required']"
+                      >Contact number is required</span
+                    >
+                    <span
+                      *ngIf="signUpForm.get('contactNumber')?.errors?.['pattern']"
+                      >Please enter a valid 10-digit phone number</span
+                    >
+                  </div>
+                </div>
+                <div class="form-group">
+                  <label>Email ID</label>
+                  <input
+                    type="email"
+                    formControlName="emailId"
+                    placeholder="Enter Email ID"
+                    [class.error]="
+                      signUpForm.get('emailId')?.invalid &&
+                      signUpForm.get('emailId')?.touched
+                    "
+                  />
+                  <div
+                    class="error-message"
+                    *ngIf="
+                      signUpForm.get('emailId')?.invalid &&
+                      signUpForm.get('emailId')?.touched
+                    "
+                  >
+                    <span
+                      *ngIf="signUpForm.get('emailId')?.errors?.['required']"
+                      >Email is required</span
+                    >
+                    <span *ngIf="signUpForm.get('emailId')?.errors?.['email']"
+                      >Please enter a valid email</span
+                    >
+                  </div>
+                </div>
+              </div>
+              <div class="form-group">
+                <label>Address</label>
+                <div style="position: relative">
+                  <textarea
+                    formControlName="address"
+                    placeholder="Enter complete address"
+                    (blur)="onAddressChange()"
+                    rows="3"
+                    [class.error]="
+                      signUpForm.get('address')?.invalid &&
+                      signUpForm.get('address')?.touched
+                    "
+                  ></textarea>
+                  <div *ngIf="isGeocodingAddress" class="geocoding-loader">
+                    <svg
+                      width="16"
+                      height="16"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="2"
                       stroke-linecap="round"
                       stroke-linejoin="round"
+                      class="animate-spin"
+                    >
+                      <path d="M21 12a9 9 0 11-6.219-8.56" />
+                    </svg>
+                  </div>
+                  <div
+                    *ngIf="addressLatitude && addressLongitude"
+                    class="location-found"
+                  >
+                    <svg
+                      width="16"
+                      height="16"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
                       stroke-width="2"
-                      d="M6 18L18 6M6 6l12 12"
-                    ></path>
-                  </svg>
-                </button>
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                    >
+                      <path
+                        d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"
+                      />
+                      <circle cx="12" cy="10" r="3" />
+                    </svg>
+                  </div>
+                </div>
+                <div
+                  class="error-message"
+                  *ngIf="
+                    signUpForm.get('address')?.invalid &&
+                    signUpForm.get('address')?.touched
+                  "
+                >
+                  <span *ngIf="signUpForm.get('address')?.errors?.['required']"
+                    >Address is required</span
+                  >
+                  <span *ngIf="signUpForm.get('address')?.errors?.['minlength']"
+                    >Address must be at least 10 characters</span
+                  >
+                </div>
+                <div
+                  *ngIf="addressLatitude && addressLongitude"
+                  class="location-info"
+                >
+                  <small
+                    >📍 Location found:
+                    {{ addressLatitude | number : "1.4-4" }},
+                    {{ addressLongitude | number : "1.4-4" }}</small
+                  >
+                </div>
               </div>
-              <input
-                #fileInput
-                type="file"
-                accept="image/*"
-                (change)="onFileSelected($event)"
-                style="display: none"
-              />
-            </div>
+              <div class="form-group">
+                <label>Password</label>
+                <div style="position: relative">
+                  <input
+                    [type]="showSignUpPassword ? 'text' : 'password'"
+                    formControlName="password"
+                    placeholder="Create Password"
+                    [class.error]="
+                      signUpForm.get('password')?.invalid &&
+                      signUpForm.get('password')?.touched
+                    "
+                  />
+                  <button
+                    type="button"
+                    class="password-toggle"
+                    (click)="toggleSignUpPassword()"
+                  >
+                    <div class="eye-icon">
+                      <svg
+                        *ngIf="!showSignUpPassword"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          stroke-linecap="round"
+                          stroke-linejoin="round"
+                          stroke-width="2"
+                          d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
+                        ></path>
+                        <path
+                          stroke-linecap="round"
+                          stroke-linejoin="round"
+                          stroke-width="2"
+                          d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"
+                        ></path>
+                      </svg>
+                      <svg
+                        *ngIf="showSignUpPassword"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          stroke-linecap="round"
+                          stroke-linejoin="round"
+                          stroke-width="2"
+                          d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.878 9.878L3 3m6.878 6.878L21 21"
+                        ></path>
+                      </svg>
+                    </div>
+                  </button>
+                </div>
+                <div
+                  class="error-message"
+                  *ngIf="
+                    signUpForm.get('password')?.invalid &&
+                    signUpForm.get('password')?.touched
+                  "
+                >
+                  <span *ngIf="signUpForm.get('password')?.errors?.['required']"
+                    >Password is required</span
+                  >
+                  <span
+                    *ngIf="signUpForm.get('password')?.errors?.['minlength']"
+                    >Password must be at least 8 characters</span
+                  >
+                  <span *ngIf="signUpForm.get('password')?.errors?.['pattern']"
+                    >Password must contain uppercase, lowercase, number and
+                    special character</span
+                  >
+                </div>
+              </div>
+              <div class="form-group">
+                <label>Confirm Password</label>
+                <div style="position: relative">
+                  <input
+                    [type]="showConfirmPassword ? 'text' : 'password'"
+                    formControlName="confirmPassword"
+                    placeholder="Confirm Password"
+                    [class.error]="signUpForm.get('confirmPassword')?.invalid && signUpForm.get('confirmPassword')?.touched || signUpForm.errors?.['passwordMismatch'] && signUpForm.get('confirmPassword')?.touched"
+                  />
+                  <button
+                    type="button"
+                    class="password-toggle"
+                    (click)="toggleConfirmPassword()"
+                  >
+                    <div class="eye-icon">
+                      <svg
+                        *ngIf="!showConfirmPassword"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          stroke-linecap="round"
+                          stroke-linejoin="round"
+                          stroke-width="2"
+                          d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
+                        ></path>
+                        <path
+                          stroke-linecap="round"
+                          stroke-linejoin="round"
+                          stroke-width="2"
+                          d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"
+                        ></path>
+                      </svg>
+                      <svg
+                        *ngIf="showConfirmPassword"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          stroke-linecap="round"
+                          stroke-linejoin="round"
+                          stroke-width="2"
+                          d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.878 9.878L3 3m6.878 6.878L21 21"
+                        ></path>
+                      </svg>
+                    </div>
+                  </button>
+                </div>
+                <div
+                  class="error-message"
+                  *ngIf="signUpForm.get('confirmPassword')?.invalid && signUpForm.get('confirmPassword')?.touched || signUpForm.errors?.['passwordMismatch'] && signUpForm.get('confirmPassword')?.touched"
+                >
+                  <span
+                    *ngIf="signUpForm.get('confirmPassword')?.errors?.['required']"
+                    >Confirm password is required</span
+                  >
+                  <span *ngIf="signUpForm.errors?.['passwordMismatch']"
+                    >Passwords do not match</span
+                  >
+                </div>
+              </div>
+              <div class="image-upload-container">
+                <label>Image of Training Institute</label>
+                <div
+                  class="image-upload-area"
+                  (click)="triggerFileInput()"
+                  (dragover)="onDragOver($event)"
+                  (dragleave)="onDragLeave($event)"
+                  (drop)="onDrop($event)"
+                  [class.drag-over]="isDragOver"
+                >
+                  <div *ngIf="!selectedImagePreview" class="upload-placeholder">
+                    <svg
+                      class="upload-icon"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        stroke-width="2"
+                        d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"
+                      ></path>
+                    </svg>
+                    <p>Drag and drop an image here or click to select</p>
+                    <span class="file-types">PNG, JPG, JPEG up to 5MB</span>
+                  </div>
+                  <div *ngIf="selectedImagePreview" class="image-preview">
+                    <img
+                      [src]="selectedImagePreview"
+                      alt="Preview"
+                      class="preview-image"
+                    />
+                    <button
+                      type="button"
+                      class="remove-image"
+                      (click)="removeImage($event)"
+                    >
+                      <svg
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          stroke-linecap="round"
+                          stroke-linejoin="round"
+                          stroke-width="2"
+                          d="M6 18L18 6M6 6l12 12"
+                        ></path>
+                      </svg>
+                    </button>
+                  </div>
+                  <input
+                    #fileInput
+                    type="file"
+                    accept="image/*"
+                    (change)="onFileSelected($event)"
+                    style="display: none"
+                  />
+                </div>
+              </div>
+              <button
+                type="submit"
+                class="sign-up-btn"
+                [disabled]="isLoading || signUpForm.invalid"
+              >
+                <span *ngIf="!isLoading">Sign Up</span>
+                <span *ngIf="isLoading">
+                  <i class="fas fa-spinner fa-spin"></i> Creating account...
+                </span>
+              </button>
+            </form>
           </div>
-          <button
-            type="submit"
-            class="sign-up-btn"
-            [disabled]="isLoading || signUpForm.invalid"
-          >
-            <span *ngIf="!isLoading">Sign Up</span>
-            <span *ngIf="isLoading">
-              <i class="fas fa-spinner fa-spin"></i> Creating account...
-            </span>
-          </button>
-        </form>
+        </div>
       </div>
-    </div></div>
-  <!-- </div> -->
-  </div>
+      <!-- </div> -->
+    </div>
   </div>
 
-
-<!--Certificate-->
-      <div
+  <!--Certificate-->
+  <div
     class="modal fade"
     id="viewCertificateModal"
     tabindex="-1"
@@ -812,13 +819,12 @@
         </div>
         <div class="modal-body">
           <ng-container *ngIf="selectedItem">
-            <app-certificate-layout
+            <app-new-certificate-layout
               [data]="selectedItem"
-            ></app-certificate-layout>
+            ></app-new-certificate-layout>
           </ng-container>
         </div>
       </div>
     </div>
   </div>
-
 </div>

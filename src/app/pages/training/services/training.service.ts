@@ -59,6 +59,15 @@ export class TrainingService {
       })
     );
   }
+  getInstituteDetails(trainingInstituteId: any) {
+    return this.http
+      .get<any>(this.url + `trainingInstitutes/getById/` + trainingInstituteId)
+      .pipe(
+        map((res: any) => {
+          return res;
+        })
+      );
+  }
   getTrainingTypes() {
     return this.http.get<any>(this.url + `trainingType/getTrainingType`).pipe(
       map((res: any) => {
@@ -148,7 +157,9 @@ export class TrainingService {
     return this.http.get<any>(this.url + `training/getAllApprovedTrainings`);
   }
   getAllInitialStageTrainings(): Observable<any> {
-    return this.http.get<any>(this.url + `training/getAllInitialStageTrainings`);
+    return this.http.get<any>(
+      this.url + `training/getAllInitialStageTrainings`
+    );
   }
 
   getRejectedTrainings(): Observable<any> {

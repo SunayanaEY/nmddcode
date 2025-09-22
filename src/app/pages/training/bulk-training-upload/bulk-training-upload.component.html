@@ -90,7 +90,61 @@
     </div>
   </div>
 
-  <div class="upload-section" ng>
+  <!-- ✅ Data Preview Table -->
+  <div *ngIf="excelData.length > 0" class="mt-4">
+    <div class="d-flex justify-content-between align-items-center mb-2">
+      <h2 class="mb-0">Data Preview</h2>
+      <button class="btn btn-reupload" (click)="reUploadFile()">
+        Re-Upload File
+      </button>
+    </div>
+
+    <div class="table-responsive">
+      <table class="table table-bordered table-striped table-sm align-middle">
+        <thead class="table-light">
+          <tr>
+            <th *ngFor="let col of headers">
+              {{ col }}
+            </th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let row of paginatedData; let i = index">
+            <td *ngFor="let col of headers">
+              {{ row[col] }}
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Pagination Controls -->
+    <nav class="d-flex justify-content-between align-items-center mt-2 mb-4">
+      <button
+        class="btn btn-sm btn-secondary"
+        (click)="goToPage(currentPage - 1)"
+        [disabled]="currentPage === 1"
+      >
+        Previous
+      </button>
+      <span>Page {{ currentPage }} of {{ totalPages }}</span>
+      <button
+        class="btn btn-sm btn-secondary"
+        (click)="goToPage(currentPage + 1)"
+        [disabled]="currentPage === totalPages"
+      >
+        Next
+      </button>
+    </nav>
+  </div>
+  <button
+    class="btn btn-primary mb-4"
+    (click)="submitData()"
+    *ngIf="excelData.length != 0 && errorCount == 0"
+  >
+    Submit Data
+  </button>
+  <div class="upload-section">
     <h2>Upload Your File</h2>
     <app-file-upload
       *ngIf="showFileUpload"
@@ -104,6 +158,8 @@
     >
     </app-file-upload>
   </div>
+
+  <!-- Progress -->
   <div *ngIf="showValidationReport" class="progress-section">
     <div class="progress-bar-container">
       <div class="progress-bar" [style.width.%]="uploadProgress"></div>
@@ -116,6 +172,7 @@
     </div>
   </div>
 
+  <!-- Validation Report -->
   <div *ngIf="showValidationReport" class="report-section">
     <div
       class="report-header d-flex justify-content-between align-items-center"

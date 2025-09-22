@@ -29,8 +29,17 @@
                   trainingForm.get('trainingTitle')?.touched
                 "
               />
-              <div *ngIf="trainingForm.get('trainingTitle')?.invalid && trainingForm.get('trainingTitle')?.touched" class="invalid-feedback">
-                <small *ngIf="trainingForm.get('trainingTitle')?.errors?.['required']" class="text-danger">
+              <div
+                *ngIf="
+                  trainingForm.get('trainingTitle')?.invalid &&
+                  trainingForm.get('trainingTitle')?.touched
+                "
+                class="invalid-feedback"
+              >
+                <small
+                  *ngIf="trainingForm.get('trainingTitle')?.errors?.['required']"
+                  class="text-danger"
+                >
                   This field is required
                 </small>
               </div>
@@ -56,8 +65,17 @@
                   {{ scheme.schemeName }}
                 </option>
               </select>
-              <div *ngIf="trainingForm.get('scheme')?.invalid && trainingForm.get('scheme')?.touched" class="invalid-feedback">
-                <small *ngIf="trainingForm.get('scheme')?.errors?.['required']" class="text-danger">
+              <div
+                *ngIf="
+                  trainingForm.get('scheme')?.invalid &&
+                  trainingForm.get('scheme')?.touched
+                "
+                class="invalid-feedback"
+              >
+                <small
+                  *ngIf="trainingForm.get('scheme')?.errors?.['required']"
+                  class="text-danger"
+                >
                   This field is required
                 </small>
               </div>
@@ -80,17 +98,33 @@
                 [disabled]="isLoadingTrainers"
                 (change)="onTrainerChange()"
               >
-                <option value="" disabled>{{ isLoadingTrainers ? 'Loading trainers...' : 'Select Trainer' }}</option>
-                <option *ngFor="let trainer of trainers" [value]="trainer.trainerName">
+                <option value="" disabled>
+                  {{
+                    isLoadingTrainers ? "Loading trainers..." : "Select Trainer"
+                  }}
+                </option>
+                <option
+                  *ngFor="let trainer of trainers"
+                  [value]="trainer.trainerName"
+                >
                   {{ trainer.trainerName }}
                 </option>
               </select>
-              <div *ngIf="trainingForm.get('trainerName')?.invalid && trainingForm.get('trainerName')?.touched" class="invalid-feedback">
-                <small *ngIf="trainingForm.get('trainerName')?.errors?.['required']" class="text-danger">
+              <div
+                *ngIf="
+                  trainingForm.get('trainerName')?.invalid &&
+                  trainingForm.get('trainerName')?.touched
+                "
+                class="invalid-feedback"
+              >
+                <small
+                  *ngIf="trainingForm.get('trainerName')?.errors?.['required']"
+                  class="text-danger"
+                >
                   This field is required
                 </small>
               </div>
-              
+
               <!-- Guest Trainer Name Field -->
               <div *ngIf="showGuestTrainerField" class="mt-3">
                 <label for="guestTrainerName"
@@ -107,8 +141,17 @@
                     trainingForm.get('guestTrainerName')?.touched
                   "
                 />
-                <div *ngIf="trainingForm.get('guestTrainerName')?.invalid && trainingForm.get('guestTrainerName')?.touched" class="invalid-feedback">
-                  <small *ngIf="trainingForm.get('guestTrainerName')?.errors?.['required']" class="text-danger">
+                <div
+                  *ngIf="
+                    trainingForm.get('guestTrainerName')?.invalid &&
+                    trainingForm.get('guestTrainerName')?.touched
+                  "
+                  class="invalid-feedback"
+                >
+                  <small
+                    *ngIf="trainingForm.get('guestTrainerName')?.errors?.['required']"
+                    class="text-danger"
+                  >
                     This field is required
                   </small>
                 </div>
@@ -136,8 +179,17 @@
                   {{ institute.trainingInstituteName }}
                 </option>
               </select>
-              <div *ngIf="trainingForm.get('trainingInstituteName')?.invalid && trainingForm.get('trainingInstituteName')?.touched" class="invalid-feedback">
-                <small *ngIf="trainingForm.get('trainingInstituteName')?.errors?.['required']" class="text-danger">
+              <div
+                *ngIf="
+                  trainingForm.get('trainingInstituteName')?.invalid &&
+                  trainingForm.get('trainingInstituteName')?.touched
+                "
+                class="invalid-feedback"
+              >
+                <small
+                  *ngIf="trainingForm.get('trainingInstituteName')?.errors?.['required']"
+                  class="text-danger"
+                >
                   This field is required
                 </small>
               </div>
@@ -171,8 +223,17 @@
                   {{ state.stateName }}
                 </option>
               </select>
-              <div *ngIf="trainingForm.get('venueState')?.invalid && trainingForm.get('venueState')?.touched" class="invalid-feedback">
-                <small *ngIf="trainingForm.get('venueState')?.errors?.['required']" class="text-danger">
+              <div
+                *ngIf="
+                  trainingForm.get('venueState')?.invalid &&
+                  trainingForm.get('venueState')?.touched
+                "
+                class="invalid-feedback"
+              >
+                <small
+                  *ngIf="trainingForm.get('venueState')?.errors?.['required']"
+                  class="text-danger"
+                >
                   This field is required
                 </small>
               </div>
@@ -195,8 +256,17 @@
                   {{ district.districtName }}
                 </option>
               </select>
-              <div *ngIf="trainingForm.get('venueDistrict')?.invalid && trainingForm.get('venueDistrict')?.touched" class="invalid-feedback">
-                <small *ngIf="trainingForm.get('venueDistrict')?.errors?.['required']" class="text-danger">
+              <div
+                *ngIf="
+                  trainingForm.get('venueDistrict')?.invalid &&
+                  trainingForm.get('venueDistrict')?.touched
+                "
+                class="invalid-feedback"
+              >
+                <small
+                  *ngIf="trainingForm.get('venueDistrict')?.errors?.['required']"
+                  class="text-danger"
+                >
                   This field is required
                 </small>
               </div>
@@ -212,8 +282,17 @@
                   trainingForm.get('venueBlock')?.touched
                 "
               />
-              <div *ngIf="trainingForm.get('venueBlock')?.invalid && trainingForm.get('venueBlock')?.touched" class="invalid-feedback">
-                <small *ngIf="trainingForm.get('venueBlock')?.errors?.['required']" class="text-danger">
+              <div
+                *ngIf="
+                  trainingForm.get('venueBlock')?.invalid &&
+                  trainingForm.get('venueBlock')?.touched
+                "
+                class="invalid-feedback"
+              >
+                <small
+                  *ngIf="trainingForm.get('venueBlock')?.errors?.['required']"
+                  class="text-danger"
+                >
                   This field is required
                 </small>
               </div>
@@ -237,11 +316,23 @@
                   trainingForm.get('trainingDate')?.touched
                 "
               />
-              <div *ngIf="trainingForm.get('trainingDate')?.invalid && trainingForm.get('trainingDate')?.touched" class="invalid-feedback">
-                <small *ngIf="trainingForm.get('trainingDate')?.errors?.['required']" class="text-danger">
+              <div
+                *ngIf="
+                  trainingForm.get('trainingDate')?.invalid &&
+                  trainingForm.get('trainingDate')?.touched
+                "
+                class="invalid-feedback"
+              >
+                <small
+                  *ngIf="trainingForm.get('trainingDate')?.errors?.['required']"
+                  class="text-danger"
+                >
                   This field is required
                 </small>
-                <small *ngIf="trainingForm.get('trainingDate')?.errors?.['pastDate']" class="text-danger">
+                <small
+                  *ngIf="trainingForm.get('trainingDate')?.errors?.['pastDate']"
+                  class="text-danger"
+                >
                   Please select today's date or a future date
                 </small>
               </div>
@@ -261,11 +352,23 @@
                   trainingForm.get('duration')?.touched
                 "
               />
-              <div *ngIf="trainingForm.get('duration')?.invalid && trainingForm.get('duration')?.touched" class="invalid-feedback">
-                <small *ngIf="trainingForm.get('duration')?.errors?.['required']" class="text-danger">
+              <div
+                *ngIf="
+                  trainingForm.get('duration')?.invalid &&
+                  trainingForm.get('duration')?.touched
+                "
+                class="invalid-feedback"
+              >
+                <small
+                  *ngIf="trainingForm.get('duration')?.errors?.['required']"
+                  class="text-danger"
+                >
                   This field is required
                 </small>
-                <small *ngIf="trainingForm.get('duration')?.errors?.['invalidDuration']" class="text-danger">
+                <small
+                  *ngIf="trainingForm.get('duration')?.errors?.['invalidDuration']"
+                  class="text-danger"
+                >
                   Duration must be a positive number
                 </small>
               </div>
@@ -301,11 +404,23 @@
                   trainingForm.get('trainingDescription')?.touched
                 "
               ></textarea>
-              <div *ngIf="trainingForm.get('trainingDescription')?.invalid && trainingForm.get('trainingDescription')?.touched" class="invalid-feedback">
-                <small *ngIf="trainingForm.get('trainingDescription')?.errors?.['required']" class="text-danger">
+              <div
+                *ngIf="
+                  trainingForm.get('trainingDescription')?.invalid &&
+                  trainingForm.get('trainingDescription')?.touched
+                "
+                class="invalid-feedback"
+              >
+                <small
+                  *ngIf="trainingForm.get('trainingDescription')?.errors?.['required']"
+                  class="text-danger"
+                >
                   This field is required
                 </small>
-                <small *ngIf="trainingForm.get('trainingDescription')?.errors?.['maxlength']" class="text-danger">
+                <small
+                  *ngIf="trainingForm.get('trainingDescription')?.errors?.['maxlength']"
+                  class="text-danger"
+                >
                   Maximum 100 characters allowed
                 </small>
               </div>
@@ -328,8 +443,17 @@
                   {{ type.trainingTypeName }}
                 </option>
               </select>
-              <div *ngIf="trainingForm.get('trainingType')?.invalid && trainingForm.get('trainingType')?.touched" class="invalid-feedback">
-                <small *ngIf="trainingForm.get('trainingType')?.errors?.['required']" class="text-danger">
+              <div
+                *ngIf="
+                  trainingForm.get('trainingType')?.invalid &&
+                  trainingForm.get('trainingType')?.touched
+                "
+                class="invalid-feedback"
+              >
+                <small
+                  *ngIf="trainingForm.get('trainingType')?.errors?.['required']"
+                  class="text-danger"
+                >
                   This field is required
                 </small>
               </div>
@@ -353,8 +477,17 @@
                 <option value="field">Field</option>
                 <option value="hybrid">Hybrid</option>
               </select>
-              <div *ngIf="trainingForm.get('modeOfTraining')?.invalid && trainingForm.get('modeOfTraining')?.touched" class="invalid-feedback">
-                <small *ngIf="trainingForm.get('modeOfTraining')?.errors?.['required']" class="text-danger">
+              <div
+                *ngIf="
+                  trainingForm.get('modeOfTraining')?.invalid &&
+                  trainingForm.get('modeOfTraining')?.touched
+                "
+                class="invalid-feedback"
+              >
+                <small
+                  *ngIf="trainingForm.get('modeOfTraining')?.errors?.['required']"
+                  class="text-danger"
+                >
                   This field is required
                 </small>
               </div>
@@ -379,38 +512,57 @@
                   (input)="onSignatureNameChange($event, i)"
                   placeholder="Enter the Name of Signatory here"
                   class="form-control"
-                  [class.is-invalid]="signatureFieldErrors[i]?.name"
+                  [class.is-invalid]="signatureFieldErrors[i].name"
                 />
-                <div *ngIf="signatureFieldErrors[i]?.name" class="invalid-feedback">
+                <div
+                  *ngIf="signatureFieldErrors[i]?.name"
+                  class="invalid-feedback"
+                >
                   <small class="text-danger">Signatory name is required</small>
                 </div>
               </div>
               <div class="form-group third-width">
-                <label>Signatory Designation <span class="text-danger">*</span></label>
+                <label
+                  >Signatory Designation
+                  <span class="text-danger">*</span></label
+                >
                 <input
                   type="text"
                   [value]="signature.designation"
                   (input)="onSignatureDesignationChange($event, i)"
                   placeholder="Enter the Designation of Signatory here"
                   class="form-control"
-                  [class.is-invalid]="signatureFieldErrors[i]?.designation"
+                  [class.is-invalid]="signatureFieldErrors[i].designation"
                 />
-                <div *ngIf="signatureFieldErrors[i]?.designation" class="invalid-feedback">
-                  <small class="text-danger">Signatory designation is required</small>
+                <div
+                  *ngIf="signatureFieldErrors[i]?.designation"
+                  class="invalid-feedback"
+                >
+                  <small class="text-danger"
+                    >Signatory designation is required</small
+                  >
                 </div>
               </div>
               <div class="form-group third-width">
-                <label>Signatory Organization <span class="text-danger">*</span></label>
+                <label
+                  >Signatory Organization
+                  <span class="text-danger">*</span></label
+                >
                 <input
                   type="text"
                   [value]="signature.organization"
                   (input)="onSignatureOrganizationChange($event, i)"
                   placeholder="Enter the Organization of Signatory here"
                   class="form-control"
-                  [class.is-invalid]="signatureFieldErrors[i]?.organization"
+                  [class.is-invalid]="signatureFieldErrors[i].organization"
                 />
-                <div *ngIf="signatureFieldErrors[i]?.organization" class="invalid-feedback">
-                  <small class="text-danger">Signatory organization is required</small>
+                <div
+                  *ngIf="signatureFieldErrors[i]?.organization"
+                  class="invalid-feedback"
+                >
+                  <small class="text-danger"
+                    >Signatory organization is required</small
+                  >
                 </div>
               </div>
             </div>
@@ -437,9 +589,12 @@
               <i class="bi bi-plus-circle"></i> Add More
             </button>
           </div>
-          
+
           <!-- Signature Validation Error -->
-          <div *ngIf="signatureValidationError" class="validation-error-section">
+          <div
+            *ngIf="signatureValidationError"
+            class="validation-error-section"
+          >
             <small class="text-danger">
               {{ signatureValidationError }}
             </small>
@@ -473,7 +628,7 @@
               <i class="bi bi-plus-circle"></i> Add More
             </button>
           </div>
-          
+
           <!-- Logo Validation Error -->
           <div *ngIf="logoValidationError" class="validation-error-section">
             <small class="text-danger">
@@ -486,7 +641,7 @@
         <div class="form-actions">
           <button type="submit" class="btn btn-primary btn-lg">
             <!-- Manual Training Upload -->
-             Submit Details
+            Submit Details
           </button>
           <!-- <button
             type="button"

@@ -57,111 +57,7 @@ export class TrainingCentreComponent implements OnInit {
   pendingToggleItem: any = null;
   statusFilter: string = '';
   userRole: any;
-  modalConfig: ModalConfig = {
-    title: 'Training Institute Admin Details',
-    size: 'l',
-    showCloseButton: true,
-    showFooter: true,
-    primaryButtonText: 'Close',
-    fields: [
-      {
-        id: 'instituteImage',
-        label: 'Institute Image',
-        type: 'file',
-        accept: '.jpg,.jpeg,.png,.gif',
-        placeholder: 'Select institute image',
-      },
-      {
-        id: 'trainingInstituteName',
-        label: 'Institute Name',
-        type: 'text',
-        required: true,
-        placeholder: 'Enter institute name',
-      },
-      {
-        id: 'state',
-        label: 'Current State',
-        type: 'text',
-        disabled: true,
-        placeholder: 'Current state',
-      },
-      {
-        id: 'district',
-        label: 'Current District',
-        type: 'text',
-        disabled: true,
-        placeholder: 'Current district',
-      },
-      {
-        id: 'newStateId',
-        label: 'Change State (Optional)',
-        type: 'select',
-        placeholder: 'Select new state if you want to change',
-        options: [],
-      },
-      {
-        id: 'newDistrictId',
-        label: 'Change District (Optional)',
-        type: 'select',
-        placeholder: 'Select new district if you want to change',
-        options: [],
-        disabled: true,
-      },
-      {
-        id: 'contactPersonName',
-        label: 'Contact Person',
-        type: 'text',
-        required: true,
-        placeholder: 'Enter contact person name',
-      },
-      {
-        id: 'contactNumber',
-        label: 'Contact Number',
-        type: 'tel',
-        required: true,
-        placeholder: 'Enter contact number',
-        pattern: '[0-9]{10}',
-      },
-      {
-        id: 'emailId',
-        label: 'Email ID',
-        type: 'email',
-        required: true,
-        placeholder: 'Enter email address',
-      },
-      {
-        id: 'designation',
-        label: 'Designation',
-        type: 'text',
-        placeholder: 'Enter designation',
-      },
-      {
-        id: 'registrationId',
-        label: 'Registration ID',
-        type: 'text',
-        disabled: true,
-        placeholder: 'Enter registration ID',
-      },
-      {
-        id: 'address',
-        label: 'Address',
-        type: 'textarea',
-        placeholder: 'Enter complete address',
-      },
-      {
-        id: 'latitude',
-        label: 'Latitude',
-        type: 'number',
-        placeholder: 'Enter latitude (e.g., 28.6139)',
-      },
-      {
-        id: 'longitude',
-        label: 'Longitude',
-        type: 'number',
-        placeholder: 'Enter longitude (e.g., 77.2090)',
-      },
-    ],
-  };
+  modalConfig!: ModalConfig; // declare only, initialize in ngOnInit
 
   confirmModalConfig: ModalConfig = {
     title: 'Confirm Status Change',
@@ -263,6 +159,113 @@ export class TrainingCentreComponent implements OnInit {
           row.status === 'ACTIVE' ||
           row.status === 'DEACTIVE',
       });
+      this.modalConfig = {
+        title: 'Training Institute Admin Details',
+        size: 'l',
+        showCloseButton: true,
+        showFooter: true,
+        primaryButtonText: 'Close',
+        fields: [
+          {
+            id: 'instituteImage',
+            label: 'Institute Image',
+            type: 'file',
+            accept: '.jpg,.jpeg,.png,.gif',
+            placeholder: 'Select institute image',
+          },
+          {
+            id: 'trainingInstituteName',
+            label: 'Institute Name',
+            type: 'text',
+            required: true,
+            placeholder: 'Enter institute name',
+          },
+          {
+            id: 'state',
+            label: 'Current State',
+            type: 'text',
+            disabled: true,
+            placeholder: 'Current state',
+          },
+          {
+            id: 'district',
+            label: 'Current District',
+            type: 'text',
+            disabled: true,
+            placeholder: 'Current district',
+          },
+          {
+            id: 'newStateId',
+            label: 'Change State (Optional)',
+            type: 'select',
+            placeholder: 'Select new state if you want to change',
+            options: [],
+          },
+          {
+            id: 'newDistrictId',
+            label: 'Change District (Optional)',
+            type: 'select',
+            placeholder: 'Select new district if you want to change',
+            options: [],
+          },
+          {
+            id: 'contactPersonName',
+            label: 'Contact Person',
+            type: 'text',
+            required: true,
+            placeholder: 'Enter contact person name',
+            disabled: this.userRole == 1,
+          },
+          {
+            id: 'contactNumber',
+            label: 'Contact Number',
+            type: 'tel',
+            required: true,
+            placeholder: 'Enter contact number',
+            pattern: '[0-9]{10}',
+            disabled: this.userRole == 1,
+          },
+          {
+            id: 'emailId',
+            label: 'Email ID',
+            type: 'email',
+            required: true,
+            placeholder: 'Enter email address',
+            disabled: this.userRole == 1,
+          },
+          {
+            id: 'designation',
+            label: 'Designation',
+            type: 'text',
+            placeholder: 'Enter designation',
+          },
+          {
+            id: 'registrationId',
+            label: 'Registration ID',
+            type: 'text',
+            disabled: true,
+            placeholder: 'Enter registration ID',
+          },
+          {
+            id: 'address',
+            label: 'Address',
+            type: 'textarea',
+            placeholder: 'Enter complete address',
+          },
+          {
+            id: 'latitude',
+            label: 'Latitude',
+            type: 'number',
+            placeholder: 'Enter latitude (e.g., 28.6139)',
+          },
+          {
+            id: 'longitude',
+            label: 'Longitude',
+            type: 'number',
+            placeholder: 'Enter longitude (e.g., 77.2090)',
+          },
+        ],
+      };
     }
 
     this.loadTrainingInstitutes();

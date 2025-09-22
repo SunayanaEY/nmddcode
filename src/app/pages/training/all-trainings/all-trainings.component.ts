@@ -200,7 +200,7 @@ export class AllTrainingsComponent {
   }
   openTrainingDetails(row: any) {
     // alert('Training insititue : ' + this.trainingInstituteId);
-    this.router.navigate(['/admin/all-certificate'], {
+    this.router.navigate(['/admin/All-Trainings'], {
       state: {
         trainingData: row,
       },

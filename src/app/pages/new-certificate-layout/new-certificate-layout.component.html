@@ -1,0 +1,119 @@
+<div>
+  <div class="certificate-border" #certificateContent>
+    <!-- Corner Ornaments -->
+    <div class="corner top-left"></div>
+    <div class="corner top-right"></div>
+    <div class="corner bottom-left"></div>
+    <div class="corner bottom-right"></div>
+
+    <div class="certificate-container">
+      <!-- Header -->
+      <div class="certificate-header">
+        <div class="certificate-ref">Ref No: {{ data.uin }}</div>
+        <div class="certificate-date">
+          Date: {{ data.createDate | date : "dd/MM/yyyy" }}
+        </div>
+      </div>
+
+      <!-- Logo and Title -->
+      <div class="certificate-title">
+        <div>
+          <img
+            src="{{ data.logoPath1 }}"
+            alt="Logo 1"
+            crossorigin="anonymous"
+          />
+          <img
+            *ngIf="data.logoPath2"
+            src="{{ data.logoPath2 }}"
+            alt="Logo 2"
+            crossorigin="anonymous"
+          />
+          <img
+            *ngIf="data.logoPath3"
+            src="{{ data.logoPath3 }}"
+            alt="Logo 3"
+            crossorigin="anonymous"
+          />
+        </div>
+        <h2>{{ data.trainingInstituteName }}</h2>
+        <h3 class="training-centre mb-4">TRAINING CENTRE</h3>
+        <p class="sub-text"></p>
+        <p class="location">{{ instituteDetails.address }}, India</p>
+      </div>
+
+      <!-- Certificate Heading -->
+      <h1 class="certificate-heading">Certificate</h1>
+
+      <!-- Body -->
+      <div class="certificate-body">
+        <p>This is to certify that</p>
+        <h2 class="name mb-3">{{ data.name }}</h2>
+        <p class="mb-3">
+          Has undergone training in <br />
+          <span class="training">{{ data.trainingTitle }}</span>
+        </p>
+        <p>Held in {{ data.location ?? data.venueState }},India</p>
+        <p>
+          Conducted On<br />
+          <b>{{ data.trainingDate | date : "longDate" }}</b>
+        </p>
+      </div>
+
+      <!-- Footer -->
+      <div class="certificate-footer">
+        <div class="signatures">
+          <!-- Left Signature -->
+          <div class="signature">
+            <ng-container *ngIf="data.signatures.length > 0">
+              <p>
+                <img
+                  src="{{ data.signatures[0].signatorySignaturePath }}"
+                  alt="Signature 1"
+                  crossorigin="anonymous"
+                />
+              </p>
+              <p>_____________________</p>
+              <p>{{ data.signatures[0].signatoryName }}</p>
+              <p>{{ data.signatures[0].signatoryDesignation }}</p>
+              <p>{{ data.signatures[0].signatoryOrganization }}</p>
+            </ng-container>
+            <ng-template #emptySignature>
+              <div class="signature-placeholder"></div>
+            </ng-template>
+          </div>
+
+          <!-- QR Code (always in center) -->
+          <div class="qr-code">
+            <qrcode
+              [qrdata]="qrData"
+              [width]="100"
+              [errorCorrectionLevel]="'M'"
+            ></qrcode>
+            <p class="uid">UIN: {{ finalUniqueId }}</p>
+          </div>
+
+          <!-- Right Signature -->
+          <div class="signature">
+            <ng-container *ngIf="data.signatures.length > 1">
+              <p>
+                <img
+                  src="{{ data.signatures[1].signatorySignaturePath }}"
+                  alt="Signature 2"
+                  crossorigin="anonymous"
+                />
+              </p>
+              <p>_____________________</p>
+              <p>{{ data.signatures[1].signatoryName }}</p>
+              <p>{{ data.signatures[1].signatoryDesignation }}</p>
+              <p>{{ data.signatures[1].signatoryOrganization }}</p>
+            </ng-container>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="modal-actions mt-3 mb-4 text-end">
+    <button class="btn btn-primary" (click)="download()">Download</button>
+  </div>
+</div>

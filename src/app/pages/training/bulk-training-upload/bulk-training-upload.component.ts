@@ -20,6 +20,10 @@ import { TrainingService } from '../../../pages/training/services/training.servi
 export class BulkTrainingUploadComponent implements OnInit {
   breadcrumbItems: BreadcrumbItem[] = [
     { label: 'Training Module', url: '/admin/training-module' },
+    {
+      label: 'Schedule Training',
+      url: '/admin/training-certificate-generation',
+    },
     { label: 'Bulk Training Upload' },
   ];
 
@@ -39,6 +43,23 @@ export class BulkTrainingUploadComponent implements OnInit {
   trainingInstituteId: any;
   user: any = sessionStorage.getItem('user');
 
+  // ✅ For Data Preview + Pagination
+  excelData: any[] = [];
+  headers: string[] = [];
+  currentPage: number = 1;
+  pageSize: number = 10;
+  excelHeaders: string[] = [];
+  pagedData: any[] = [];
+
+  get totalPages(): number {
+    return Math.ceil(this.excelData.length / this.pageSize);
+  }
+
+  get paginatedData(): any[] {
+    const startIndex = (this.currentPage - 1) * this.pageSize;
+    return this.excelData.slice(startIndex, startIndex + this.pageSize);
+  }
+
   constructor(
     private trainingService: TrainingService,
     private toastr: ToastrService,
@@ -47,21 +68,18 @@ export class BulkTrainingUploadComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    // Get query params from snapshot (one-time read)
     this.trainingId = this.route.snapshot.queryParams['trainingId'];
-
-    // Apply delay if needed
     this.getTrainingDetails(this.trainingId);
   }
+
   getTrainingDetails(trainingId: number) {
     this.isSpinning = true;
     this.trainingService.getTrainingDetails(trainingId).subscribe({
       next: (response) => {
         this.isSpinning = false;
-        console.log(response);
         this.trainingDetails = response;
       },
-      error: (error) => {
+      error: () => {
         this.isSpinning = false;
       },
     });
@@ -71,6 +89,9 @@ export class BulkTrainingUploadComponent implements OnInit {
     this.validationErrors = [];
     this.invalidRowsData = [];
     this.showValidationReport = false;
+    this.excelData = [];
+    this.headers = [];
+    this.currentPage = 1;
 
     const reader: FileReader = new FileReader();
 
@@ -79,24 +100,51 @@ export class BulkTrainingUploadComponent implements OnInit {
       const workbook: XLSX.WorkBook = XLSX.read(bstr, { type: 'binary' });
       const sheetName: string = workbook.SheetNames[0];
       const worksheet: XLSX.WorkSheet = workbook.Sheets[sheetName];
-      const data: any[] = XLSX.utils.sheet_to_json(worksheet, { defval: '' });
 
-      this.validateExcelData(data);
+      // ✅ get raw data including headers
+      const data: any[] = XLSX.utils.sheet_to_json(worksheet, {
+        defval: '',
+        header: 1,
+      });
+
+      if (data.length > 0) {
+        this.headers = data[0]; // first row are headers
+        this.excelData = data.slice(1).map((row) => {
+          let obj: any = {};
+          this.headers.forEach((h, i) => {
+            obj[h] = row[i] ?? '';
+          });
+          return obj;
+        });
+      }
+
+      this.validateExcelData(this.excelData);
     };
 
     reader.readAsBinaryString(file);
     this.selectedFile = file;
   }
+  setPage(page: number): void {
+    this.currentPage = page;
+    const startIndex = (page - 1) * this.pageSize;
+    const endIndex = startIndex + this.pageSize;
+    this.pagedData = this.excelData.slice(startIndex, endIndex);
+  }
+
+  goToPage(page: number) {
+    if (page >= 1 && page <= this.totalPages) {
+      this.currentPage = page;
+    }
+  }
+
   groupValidationErrorsByRow(): { row: number; errors: any[] }[] {
     const grouped: { [key: number]: any[] } = {};
-
     for (const error of this.validationErrors) {
       if (!grouped[error.row]) {
         grouped[error.row] = [];
       }
       grouped[error.row].push(error);
     }
-
     return Object.keys(grouped).map((row) => ({
       row: Number(row),
       errors: grouped[Number(row)],
@@ -108,8 +156,6 @@ export class BulkTrainingUploadComponent implements OnInit {
 
     data.forEach((row, index) => {
       const excelRow = index + 2;
-
-      // Track all errors for this row
       const rowErrors: { column: string; message: string }[] = [];
 
       const gender = (row['Gender'] || '').toString().toLowerCase();
@@ -148,6 +194,7 @@ export class BulkTrainingUploadComponent implements OnInit {
     this.validationErrors = rawErrors;
     this.errorCount = rawErrors.length;
     this.errorRowCount = new Set(rawErrors.map((e) => e.row)).size;
+
     if (this.errorCount > 0) {
       this.showValidationReport = true;
     }
@@ -156,16 +203,17 @@ export class BulkTrainingUploadComponent implements OnInit {
     this.invalidRowsData = data
       .map((row, index) => ({ rowNumber: index + 2, ...row }))
       .filter((row) => invalidRowNumbers.has(row.rowNumber));
-
-    if (this.errorCount == 0) {
+  }
+  submitData() {
+    if (this.errorCount === 0) {
       this.uploadExcelFile();
     }
   }
 
   getInvalidRowColumns(): string[] {
     if (this.invalidRowsData.length === 0) return [];
-    const allKeys = Object.keys(this.invalidRowsData[0]);
-    return allKeys.filter((k) => k !== 'rowNumber');
+    // ✅ Use headers so order remains the same
+    return this.headers;
   }
 
   reUploadFile(): void {
@@ -173,7 +221,7 @@ export class BulkTrainingUploadComponent implements OnInit {
     this.validationErrors = [];
     this.invalidRowsData = [];
     this.uploadProgress = 0;
-
+    this.excelData = [];
     this.showFileUpload = false;
     setTimeout(() => {
       this.showFileUpload = true;
@@ -187,7 +235,6 @@ export class BulkTrainingUploadComponent implements OnInit {
         const blob = new Blob([response], {
           type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
         });
-
         const url = window.URL.createObjectURL(blob);
         const a = document.createElement('a');
         a.href = url;
@@ -197,15 +244,14 @@ export class BulkTrainingUploadComponent implements OnInit {
         this.toastr.success('Bulk Upload Template Downloaded', 'Success');
         this.isSpinning = false;
       },
-      error: (error) => {
-        console.error('Error downloading the Excel template:', error);
+      error: () => {
         this.toastr.error('Bulk Upload Template Not Downloaded', 'Error');
         this.isSpinning = false;
       },
     });
   }
+
   uploadExcelFile(): void {
-    // const trainingId = 10;
     const trainingId = this.trainingId;
     this.isSpinning = true;
     if (this.user) {
@@ -213,7 +259,7 @@ export class BulkTrainingUploadComponent implements OnInit {
       this.trainingInstituteId = user.trainingHeadId;
     }
 
-    if (this.selectedFile != undefined) {
+    if (this.selectedFile) {
       this.trainingService
         .uploadTraineeExcel(
           this.selectedFile,
@@ -221,15 +267,13 @@ export class BulkTrainingUploadComponent implements OnInit {
           this.trainingInstituteId
         )
         .subscribe({
-          next: (response) => {
+          next: () => {
             this.isSpinning = false;
-            console.log('File uploaded successfully:', response);
             this.toastr.success('Bulk Excel File Uploaded', 'Success');
             this.router.navigate(['/admin/training-module']);
           },
-          error: (error) => {
+          error: () => {
             this.isSpinning = false;
-            console.error('File upload failed:', error);
             this.toastr.error('Bulk Excel File Not Uploaded', 'Error');
           },
         });

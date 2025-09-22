@@ -54,9 +54,10 @@
     (actionClick)="handleTableAction($event)"
   >
   </app-table>
-    
-  <div class="mt-4 p-4 bg-white rounded-3 shadow-sm d-flex justify-content-between align-items-center" >
 
+  <div
+    class="mt-4 p-4 bg-white rounded-3 shadow-sm d-flex justify-content-between align-items-center"
+  >
     <h2 class="mb-0 fw-semibold">Add More Records</h2>
     <div>
       <button class="btn btn-success me-2" (click)="onManualUpload()">
@@ -92,9 +93,9 @@
         </div>
         <div class="modal-body">
           <ng-container *ngIf="selectedItem">
-            <app-certificate-layout
+            <app-new-certificate-layout
               [data]="selectedItem"
-            ></app-certificate-layout>
+            ></app-new-certificate-layout>
           </ng-container>
         </div>
       </div>

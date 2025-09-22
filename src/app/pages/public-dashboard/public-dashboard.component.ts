@@ -3,7 +3,11 @@ import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 import { ReactiveFormsModule, FormBuilder, FormGroup } from '@angular/forms';
 import { DashboardDataService } from './services/dashboard-data.service';
-import { LocationService, State, District } from '../../services/location.service';
+import {
+  LocationService,
+  State,
+  District,
+} from '../../services/location.service';
 import { StatsCardsComponent } from './components/stats-cards/stats-cards.component';
 import { IndiaMapComponent } from './components/india-map/india-map.component';
 import { MonthlyChartComponent } from './components/monthly-chart/monthly-chart.component';
@@ -15,6 +19,7 @@ import {
 } from '../../components/modal/modal.component';
 import { CertificateLayoutComponent } from '../certificate-layout/certificate-layout.component';
 import { TrainingService } from '../training/services/training.service';
+import { NewCertificateLayoutComponent } from '../new-certificate-layout/new-certificate-layout.component';
 
 export interface DashboardStats {
   totalTrainings: number;
@@ -36,7 +41,17 @@ export interface StateData {
   selector: 'app-public-dashboard',
   templateUrl: './public-dashboard.component.html',
   styleUrls: ['./public-dashboard.component.css'],
-  imports: [CommonModule, ReactiveFormsModule, MonthlyChartComponent, IndiaMapComponent, StatsCardsComponent, AgeGroupChartComponent, ModeOfTrainingChartComponent, CertificateLayoutComponent, ModalComponent]
+  imports: [
+    CommonModule,
+    ReactiveFormsModule,
+    MonthlyChartComponent,
+    IndiaMapComponent,
+    StatsCardsComponent,
+    AgeGroupChartComponent,
+    ModeOfTrainingChartComponent,
+    ModalComponent,
+    NewCertificateLayoutComponent,
+  ],
 })
 export class PublicDashboardComponent implements OnInit {
   selectedItem: any;
@@ -152,7 +167,7 @@ export class PublicDashboardComponent implements OnInit {
   ) {
     this.filterForm = this.fb.group({
       stateId: [null],
-      districtId: [null]
+      districtId: [null],
     });
   }
 
@@ -172,7 +187,7 @@ export class PublicDashboardComponent implements OnInit {
       error: (error) => {
         console.error('Error loading states:', error);
         this.isLoadingStates = false;
-      }
+      },
     });
   }
 
@@ -190,13 +205,13 @@ export class PublicDashboardComponent implements OnInit {
       error: (error) => {
         console.error('Error loading districts:', error);
         this.isLoadingDistricts = false;
-      }
+      },
     });
   }
 
   setupFilterSubscriptions(): void {
     // Subscribe to state changes
-    this.filterForm.get('stateId')?.valueChanges.subscribe(stateId => {
+    this.filterForm.get('stateId')?.valueChanges.subscribe((stateId) => {
       this.selectedStateId = stateId;
       if (stateId) {
         this.loadDistricts(stateId);
@@ -209,7 +224,7 @@ export class PublicDashboardComponent implements OnInit {
     });
 
     // Subscribe to district changes
-    this.filterForm.get('districtId')?.valueChanges.subscribe(districtId => {
+    this.filterForm.get('districtId')?.valueChanges.subscribe((districtId) => {
       this.selectedDistrictId = districtId;
       this.loadDashboardData();
     });
@@ -217,29 +232,35 @@ export class PublicDashboardComponent implements OnInit {
 
   loadDashboardData(): void {
     this.isLoading = true;
-    
-    this.dashboardService.getTrainingSummaryCount(this.selectedStateId || undefined, this.selectedDistrictId || undefined).subscribe({
-      next: (response) => {
-        if (response.success) {
-          this.dashboardStats = {
-            totalTrainings: response.data.totalTrainingsConducted,
-            totalFarmers: response.data.totalFarmersTrained,
-            totalCertificatesApproved: response.data.totalCertificatesApproved,
-            totalCertificatesIssued: response.data.totalCertificatesIssued,
-            trainingGrowth: 8, // Keep existing growth values or calculate from API
-            farmerGrowth: 24,
-            approvedGrowth: 37,
-            issuedGrowth: 26,
-          };
-        }
-        this.isLoading = false;
-      },
-      error: (error) => {
-        console.error('Error fetching training summary:', error);
-        this.isLoading = false;
-        // Keep default values on error
-      },
-    });
+
+    this.dashboardService
+      .getTrainingSummaryCount(
+        this.selectedStateId || undefined,
+        this.selectedDistrictId || undefined
+      )
+      .subscribe({
+        next: (response) => {
+          if (response.success) {
+            this.dashboardStats = {
+              totalTrainings: response.data.totalTrainingsConducted,
+              totalFarmers: response.data.totalFarmersTrained,
+              totalCertificatesApproved:
+                response.data.totalCertificatesApproved,
+              totalCertificatesIssued: response.data.totalCertificatesIssued,
+              trainingGrowth: 8, // Keep existing growth values or calculate from API
+              farmerGrowth: 24,
+              approvedGrowth: 37,
+              issuedGrowth: 26,
+            };
+          }
+          this.isLoading = false;
+        },
+        error: (error) => {
+          console.error('Error fetching training summary:', error);
+          this.isLoading = false;
+          // Keep default values on error
+        },
+      });
   }
 
   clearFilters(): void {
