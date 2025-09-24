@@ -251,6 +251,7 @@ export class TrainingCentreAdminProfileComponent implements OnInit {
     this.profileForm.get('trainingInstituteName')?.disable();
     this.profileForm.get('trainingInstituteRegistration')?.disable();
     this.profileForm.get('trainingInstituteExpiry')?.disable();
+    this.profileForm.get('instituteType')?.disable();
     this.profileForm.get('state')?.disable();
     this.profileForm.get('address')?.disable();
     this.profileForm.get('latitude')?.disable();
@@ -295,7 +296,8 @@ export class TrainingCentreAdminProfileComponent implements OnInit {
         registrationNumber:
           this.profileForm.get('trainingInstituteRegistration')?.value || '',
         registrationValidity:
-          this.profileForm.get('trainingInstituteExpiry')?.value || '',
+          (this.profileForm.get('trainingInstituteExpiry')?.value || '') +
+          'T00:00:00',
         instituteType: this.profileForm.get('instituteType')?.value || '',
         stateId: parseInt(this.profileForm.get('state')?.value) || 0,
         districtId: parseInt(this.profileForm.get('district')?.value) || 0,
@@ -631,6 +633,6 @@ export class TrainingCentreAdminProfileComponent implements OnInit {
    * Handle cancel button click
    */
   onCancel() {
-    this.router.navigate(['/training']);
+    this.router.navigate(['/admin/training-module']);
   }
 }

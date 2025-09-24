@@ -91,20 +91,6 @@ export class LoginComponent implements OnInit {
         placeholder: 'Enter UIN',
         required: true,
       },
-      {
-        id: 'gmail',
-        label: 'Gmail',
-        type: 'email',
-        placeholder: 'Enter your Gmail',
-        required: true,
-      },
-      {
-        id: 'phone',
-        label: 'Phone',
-        type: 'tel',
-        placeholder: 'Enter phone number',
-        required: true,
-      },
     ],
   };
 

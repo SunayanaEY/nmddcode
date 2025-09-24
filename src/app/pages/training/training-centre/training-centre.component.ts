@@ -160,7 +160,7 @@ export class TrainingCentreComponent implements OnInit {
           row.status === 'DEACTIVE',
       });
     }
-    
+
     // Initialize modalConfig for all user roles
     this.modalConfig = {
       title: 'Training Institute Admin Details',
@@ -175,6 +175,7 @@ export class TrainingCentreComponent implements OnInit {
           type: 'file',
           accept: '.jpg,.jpeg,.png,.gif',
           placeholder: 'Select institute image',
+          disabled: this.userRole == 5,
         },
         {
           id: 'trainingInstituteName',
@@ -182,6 +183,7 @@ export class TrainingCentreComponent implements OnInit {
           type: 'text',
           required: true,
           placeholder: 'Enter institute name',
+          disabled: this.userRole == 5,
         },
         {
           id: 'state',
@@ -203,6 +205,7 @@ export class TrainingCentreComponent implements OnInit {
           type: 'select',
           placeholder: 'Select new state if you want to change',
           options: [],
+          disabled: this.userRole == 5,
         },
         {
           id: 'newDistrictId',
@@ -210,6 +213,7 @@ export class TrainingCentreComponent implements OnInit {
           type: 'select',
           placeholder: 'Select new district if you want to change',
           options: [],
+          disabled: this.userRole == 5,
         },
         {
           id: 'contactPersonName',
@@ -241,31 +245,35 @@ export class TrainingCentreComponent implements OnInit {
           label: 'Designation',
           type: 'text',
           placeholder: 'Enter designation',
+          disabled: this.userRole == 1,
         },
         {
           id: 'registrationId',
           label: 'Registration ID',
           type: 'text',
-          disabled: true,
           placeholder: 'Enter registration ID',
+          disabled: this.userRole == 5,
         },
         {
           id: 'address',
           label: 'Address',
           type: 'textarea',
           placeholder: 'Enter complete address',
+          disabled: this.userRole == 5,
         },
         {
           id: 'latitude',
           label: 'Latitude',
           type: 'number',
           placeholder: 'Enter latitude (e.g., 28.6139)',
+          disabled: this.userRole == 5,
         },
         {
           id: 'longitude',
           label: 'Longitude',
           type: 'number',
           placeholder: 'Enter longitude (e.g., 77.2090)',
+          disabled: this.userRole == 5,
         },
       ],
     };
