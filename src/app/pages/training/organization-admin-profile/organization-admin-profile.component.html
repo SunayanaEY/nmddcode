@@ -4,9 +4,9 @@
 
     <div class="profile-card">
       <div class="card-header">
-        <h2 class="card-title">Training Institute Head Registration</h2>
+        <h2 class="card-title">Private Organization Registration</h2>
         <p class="card-subtitle">
-          Create a new training centre head administrator profile
+          Create a new private organization administrator profile
         </p>
       </div>
 
@@ -19,7 +19,9 @@
             <div class="form-row">
               <div class="form-group">
                 <label for="trainingInstituteName"
-                  >Training Institute Name<span class="required">*</span></label
+                  >Private Organization Name<span class="required"
+                    >*</span
+                  ></label
                 >
                 <input
                   type="text"
@@ -41,11 +43,11 @@
                 >
                   <span
                     *ngIf="profileForm.get('trainingInstituteName')?.errors?.['required']"
-                    >Training institute name is required</span
+                    >Organization name is required</span
                   >
                   <span
                     *ngIf="profileForm.get('trainingInstituteName')?.errors?.['minlength']"
-                    >Training institute name must be at least 3 characters</span
+                    >Organization name must be at least 3 characters</span
                   >
                 </div>
               </div>
@@ -78,56 +80,6 @@
                   <span
                     *ngIf="profileForm.get('trainingInstituteRegistration')?.errors?.['minlength']"
                     >Registration number must be at least 3 characters</span
-                  >
-                </div>
-              </div>
-            </div>
-
-            <div class="form-row">
-              <div class="form-group">
-                <label for="trainingInstituteExpiry">
-                  Registration Validity
-                </label>
-                <input
-                  type="date"
-                  id="trainingInstituteExpiry"
-                  formControlName="trainingInstituteExpiry"
-                  placeholder="Select Registration Validity"
-                  class="form-control"
-                  [min]="today"
-                />
-              </div>
-              <div class="form-group">
-                <label for="instituteType"
-                  >Institute Type<span class="required">*</span></label
-                >
-                <select
-                  id="instituteType"
-                  formControlName="instituteType"
-                  class="form-control"
-                  [class.is-invalid]="
-                    profileForm.get('instituteType')?.invalid &&
-                    profileForm.get('instituteType')?.touched
-                  "
-                >
-                  <option value="" disabled>Select Institute Type</option>
-                  <option
-                    *ngFor="let type of instituteTypes"
-                    [value]="type.value"
-                  >
-                    {{ type.label }}
-                  </option>
-                </select>
-                <div
-                  class="invalid-feedback"
-                  *ngIf="
-                    profileForm.get('instituteType')?.invalid &&
-                    profileForm.get('instituteType')?.touched
-                  "
-                >
-                  <span
-                    *ngIf="profileForm.get('instituteType')?.errors?.['required']"
-                    >Institute type is required</span
                   >
                 </div>
               </div>
@@ -247,80 +199,10 @@
                 >
               </div>
             </div>
-
-            <div class="form-row">
-              <div class="form-group">
-                <label for="latitude"
-                  >Latitude<span class="required">*</span></label
-                >
-                <input
-                  type="number"
-                  id="latitude"
-                  formControlName="latitude"
-                  placeholder="Enter Latitude"
-                  step="any"
-                  class="form-control"
-                  [class.is-invalid]="
-                    profileForm.get('latitude')?.invalid &&
-                    profileForm.get('latitude')?.touched
-                  "
-                />
-                <div
-                  class="invalid-feedback"
-                  *ngIf="
-                    profileForm.get('latitude')?.invalid &&
-                    profileForm.get('latitude')?.touched
-                  "
-                >
-                  <span
-                    *ngIf="profileForm.get('latitude')?.errors?.['required']"
-                    >Latitude is required</span
-                  >
-                  <span
-                    *ngIf="profileForm.get('latitude')?.errors?.['min'] || profileForm.get('latitude')?.errors?.['max']"
-                    >Latitude must be between -90 and 90</span
-                  >
-                </div>
-              </div>
-
-              <div class="form-group">
-                <label for="longitude"
-                  >Longitude<span class="required">*</span></label
-                >
-                <input
-                  type="number"
-                  id="longitude"
-                  formControlName="longitude"
-                  placeholder="Enter Longitude"
-                  step="any"
-                  class="form-control"
-                  [class.is-invalid]="
-                    profileForm.get('longitude')?.invalid &&
-                    profileForm.get('longitude')?.touched
-                  "
-                />
-                <div
-                  class="invalid-feedback"
-                  *ngIf="
-                    profileForm.get('longitude')?.invalid &&
-                    profileForm.get('longitude')?.touched
-                  "
-                >
-                  <span
-                    *ngIf="profileForm.get('longitude')?.errors?.['required']"
-                    >Longitude is required</span
-                  >
-                  <span
-                    *ngIf="profileForm.get('longitude')?.errors?.['min'] || profileForm.get('longitude')?.errors?.['max']"
-                    >Longitude must be between -180 and 180</span
-                  >
-                </div>
-              </div>
-            </div>
           </div>
 
           <!-- Contact Information Section -->
-          <div class="form-section" *ngIf="userRole == 5">
+          <div class="form-section">
             <h3 class="section-title">Contact Information</h3>
 
             <div class="form-row">
@@ -455,7 +337,7 @@
           </div>
 
           <!-- Security Information Section -->
-          <div class="form-section" *ngIf="userRole == 5">
+          <div class="form-section">
             <h3 class="section-title">Security Information</h3>
 
             <div class="form-row">
@@ -554,105 +436,6 @@
                     >Passwords do not match</span
                   >
                 </div>
-              </div>
-            </div>
-          </div>
-
-          <!-- Security Document Upload Section -->
-          <div class="form-section" *ngIf="userRole == 1">
-            <h3 class="section-title">
-              Security Document<span class="required">*</span>
-            </h3>
-
-            <div class="image-upload-container">
-              <label
-                >Security Document of Training Institute<span class="required"
-                  >*</span
-                ></label
-              >
-              <div
-                class="image-upload-area"
-                (click)="triggerFileInput()"
-                (dragover)="onDragOverDoc($event)"
-                (dragleave)="onDragLeaveDoc($event)"
-                (drop)="onDropDoc($event)"
-                [class.drag-over]="isDragOver"
-              >
-                <div *ngIf="!selectedDocPreview" class="upload-placeholder">
-                  <i class="fas fa-cloud-upload-alt upload-icon"></i>
-                  <p>Drag and drop the document here or click to select</p>
-                  <span class="file-types">PDF up to 5MB</span>
-                </div>
-                <div *ngIf="selectedDocPreview">
-                  <img
-                    [src]="selectedDocPreview"
-                    alt="Preview"
-                    class="preview-image"
-                  />
-                  <button
-                    type="button"
-                    class="remove-image"
-                    (click)="removeDoc($event)"
-                  >
-                    <i class="fas fa-times"></i>
-                  </button>
-                </div>
-                <input
-                  #fileInput
-                  type="file"
-                  accept="application/pdf"
-                  (change)="onFileSelectedDoc($event)"
-                  style="display: none"
-                />
-              </div>
-            </div>
-          </div>
-          <!-- Image Upload Section -->
-          <div class="form-section" *ngIf="userRole == 1">
-            <h3 class="section-title">
-              Institute Image<span class="required">*</span>
-            </h3>
-
-            <div class="image-upload-container">
-              <label
-                >Image of Training Institute<span class="required"
-                  >*</span
-                ></label
-              >
-              <div
-                class="image-upload-area"
-                (click)="triggerFileInputImage()"
-                (dragover)="onDragOver($event)"
-                (dragleave)="onDragLeave($event)"
-                (drop)="onDrop($event)"
-                [class.drag-over]="isDragOver"
-              >
-                <div *ngIf="!selectedImagePreview" class="upload-placeholder">
-                  <i class="fas fa-cloud-upload-alt upload-icon"></i>
-                  <p>Drag and drop an image here or click to select</p>
-                  <span class="file-types">PNG, JPG, JPEG up to 5MB</span>
-                </div>
-                <div *ngIf="selectedImagePreview" class="image-preview">
-                  <img
-                    [src]="selectedImagePreview"
-                    alt="Preview"
-                    class="preview-image"
-                  />
-                  <button
-                    type="button"
-                    class="remove-image"
-                    (click)="removeImage($event)"
-                  >
-                    <i class="fas fa-times"></i>
-                  </button>
-                </div>
-                <input
-                  #fileInput
-                  type="file"
-                  accept="image/*"
-                  (change)="onFileSelected($event)"
-                  style="display: none"
-                />
               </div>
             </div>
           </div>

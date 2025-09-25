@@ -22,13 +22,12 @@ import {
 import { AuthService } from '../../../services/auth.service';
 
 @Component({
-  selector: 'app-training-centre-admin-profile',
-  standalone: true,
+  selector: 'app-organization-admin-profile',
   imports: [CommonModule, ReactiveFormsModule, BreadcrumbComponent],
-  templateUrl: './training-centre-admin-profile.component.html',
-  styleUrls: ['./training-centre-admin-profile.component.css'],
+  templateUrl: './organization-admin-profile.component.html',
+  styleUrl: './organization-admin-profile.component.css',
 })
-export class TrainingCentreAdminProfileComponent implements OnInit {
+export class OrganizationAdminProfileComponent implements OnInit {
   profileForm: FormGroup;
   selectedFile: File | null = null;
   selectedFileDoc: File | null = null;
@@ -58,8 +57,8 @@ export class TrainingCentreAdminProfileComponent implements OnInit {
   ];
 
   breadcrumbItems: BreadcrumbItem[] = [
-    { label: 'Training Module', url: '/admin/training-module' },
-    { label: 'Training Institute Registration' },
+    { label: 'Training Module', url: '/admin/create-organization' },
+    { label: 'Private Organization Registration' },
   ];
 
   // Custom validator for password matching

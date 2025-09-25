@@ -66,88 +66,90 @@
   background-color: #f0f0f0; /* Light gray on hover */
 }
 
-::ng-deep .custom-ng-select .ng-dropdown-panel{
-
-
+::ng-deep .custom-ng-select .ng-dropdown-panel {
   width: auto;
-    z-index: 1050;
-    border: 1px solid lightgrey;
-    border-radius: 2.5px;
-    background: white;
-    height: auto;
-    overflow: hidden;
-    overflow-y: scroll;
-    scroll-behavior: smooth;
-    scrollbar-width: none;
-
+  z-index: 1050;
+  border: 1px solid lightgrey;
+  border-radius: 2.5px;
+  background: white;
+  height: auto;
+  overflow: hidden;
+  overflow-y: scroll;
+  scroll-behavior: smooth;
+  scrollbar-width: none;
 }
-.custom-ng-select.ng-option{
+
+.custom-ng-select.ng-option {
   background-color: #f0f0f0;
   width: 100px;
 }
-.ng-option-label{
-   background-color: #f0f0f0;
+
+.ng-option-label {
+  background-color: #f0f0f0;
   width: 100px;
 }
 
 ::ng-deep .custom-ng-select .ng-dropdown-panel .ng-option {
-border: 1px solid whitesmoke;
+  border: 1px solid whitesmoke;
 }
-
-
-
-
 
 /* modal css */
 ::ng-deep .modal-backdrop {
   z-index: auto !important; /* Removes the z-index */
 }
+
 .close {
-    margin-top:0.7%
+  margin-top: 0.7%;
 }
-.bg-appColor{
-    background-color: #155e91;
-    color:white !important;
+
+.bg-appColor {
+  background-color: #155e91;
+  color: white !important;
 }
 
 .modal-title {
-    font-size: 16px !important;
-  }
-
-
-  .modal-header {
-    border-bottom: none;
-    padding: 1rem;
-    background-color: #f8f9fa;
-  }
-
-  .btn-product-search {
-    font-size: 16px !important;
-  }
-
-  .modal-content {
-    border-radius: 10px;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-  }
-
-  .modal-body {
-    padding: 1rem;
-  }
-/* 
-  .detailsWidth{
-    width: -webkit-fill-available
-  } */
-  .detailsWidth {
-  width: auto; 
+  font-size: 16px !important;
 }
 
-.detailsValue {
-  display: inline-block; /* shrink to content */
-  max-width: 100%; /* prevent breaking layout */
-  white-space: normal; /* allow wrapping */
-  word-wrap: break-word; /* wrap long words */
-  padding: 6px 12px; /* keep form-control-like padding */
+.modal-header {
+  border-bottom: none;
+  padding: 1rem;
+  background-color: #155e91;
+}
+
+.btn-product-search {
+  font-size: 16px !important;
+}
+
+.modal-content {
+  border-radius: 10px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.modal-body {
+  padding: 1rem;
+}
+
+.detail-row {
+  display: flex;
+  align-items: flex-start;
+  margin-bottom: 10px;
+}
+
+.detail-label {
+  min-width: 160px; /* ensures labels align */
+  font-weight: 600;
+  color: #2a2a2a;
+  margin-right: 8px;
+}
+
+.detail-value {
+  flex: 1;
+  padding: 6px 12px;
   border: 1px solid #ced4da;
-  border-radius: 4px;
+  border-radius: 6px;
   background-color: #fff;
+  font-size: 14px;
+  white-space: normal; /* allows wrapping */
+  word-wrap: break-word;
 }

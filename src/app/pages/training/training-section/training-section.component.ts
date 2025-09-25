@@ -20,7 +20,7 @@ export class TrainingSectionComponent implements OnInit {
     const user = this.authService.getUser();
     if (user) {
       this.userRole = user.role;
-      
+
       // Set certificate title based on user role
       if (this.userRole === 4) {
         this.certificateTitle = 'All Trainings';
@@ -62,6 +62,10 @@ export class TrainingSectionComponent implements OnInit {
     this.router.navigate(['/admin/all-trainings-admin']);
     // this.router.navigate(['/admin/all-trainings']);
   }
+  navigateToCreateOrganization() {
+    console.log('Navigating to Create Organization');
+    this.router.navigate(['/admin/create-organization']);
+  }
   navigateToActivityLog(): void {
     this.router.navigate(['/admin/activity-log']);
   }
@@ -101,6 +105,9 @@ export class TrainingSectionComponent implements OnInit {
 
   navigateToTrainingCentre() {
     this.router.navigate(['/admin/training-centre']);
+  }
+  navigateToOrganizationData() {
+    this.router.navigate(['/admin/organization-table']);
   }
 
   navigateToTrainingCentreAdminProfile() {

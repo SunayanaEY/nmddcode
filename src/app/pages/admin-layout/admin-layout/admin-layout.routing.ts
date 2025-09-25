@@ -19,6 +19,7 @@ import { AllTrainingsAdminComponent } from '../../training/all-trainings-admin/a
 import { UpdateProfileComponent } from '../../training/update-profile/update-profile.component';
 import { PublicDashboardComponent } from '../../public-dashboard/public-dashboard.component';
 import { DashboardComponent } from '../../../dashboard/dashboard.component';
+import { OrganizationAdminProfileComponent } from '../../training/organization-admin-profile/organization-admin-profile.component';
 
 export const AdminLayoutRoutes: Routes = [
   // Central Admin Only Routes (Role 1)
@@ -32,7 +33,7 @@ export const AdminLayoutRoutes: Routes = [
     path: 'dashboard',
     component: DashboardComponent,
     canActivate: [RoleGuard],
-    data: { allowedRoles: [1,5] },
+    data: { allowedRoles: [1, 5] },
   },
   {
     path: 'training-type-management',
@@ -160,6 +161,12 @@ export const AdminLayoutRoutes: Routes = [
     component: AllTrainingsAdminComponent,
     canActivate: [RoleGuard],
     data: { allowedRoles: [1, 3, 5] },
+  },
+  {
+    path: 'create-organization',
+    component: OrganizationAdminProfileComponent,
+    canActivate: [RoleGuard],
+    data: { allowedRoles: [1] },
   },
   {
     path: 'registered-data-entry-operators',
