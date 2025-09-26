@@ -8,6 +8,7 @@ import {
   AbstractControl,
   ValidationErrors,
 } from '@angular/forms';
+import { AdminService } from '../services/training-admin.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
 import {
@@ -42,6 +43,8 @@ export class OrganizationAdminProfileComponent implements OnInit {
   instituteData: any;
   trainingInstituteId: any;
   userId: any;
+  error: string | null = null;
+  organizationData: any;
   today: string | undefined;
 
   // Location data
@@ -77,6 +80,7 @@ export class OrganizationAdminProfileComponent implements OnInit {
 
   constructor(
     private fb: FormBuilder,
+    private adminService: AdminService,
     private router: Router,
     private toastr: ToastrService,
     private locationService: LocationService,
@@ -84,98 +88,69 @@ export class OrganizationAdminProfileComponent implements OnInit {
     private route: ActivatedRoute
   ) {
     this.getRole();
-    if (this.userRole == 5) {
-      const nav = this.router.getCurrentNavigation();
-      const passedData = nav?.extras.state?.['data'];
-      this.trainingInstituteId = passedData.id;
-      this.instituteData = passedData;
-    }
+    // if (this.userRole == 5) {
+    //   const nav = this.router.getCurrentNavigation();
+    //   const passedData = nav?.extras.state?.['data'];
+    //   this.trainingInstituteId = passedData.id;
+    //   this.instituteData = passedData;
+    // }
 
-    if (this.userRole == 1) {
-      this.profileForm = this.fb.group({
-        trainingInstituteName: [
-          '',
-          [Validators.required, Validators.minLength(3)],
-        ],
-        instituteType: ['', [Validators.required]],
+    this.profileForm = this.fb.group(
+      {
+        organizationName: ['', [Validators.required, Validators.minLength(3)]],
         trainingInstituteRegistration: [
           '',
           [Validators.required, Validators.minLength(3)],
         ],
-        trainingInstituteExpiry: ['', []],
         state: ['', [Validators.required]],
         district: ['', [Validators.required]],
-
         address: ['', [Validators.required, Validators.minLength(10)]],
-        latitude: [
+        contactPersonName: ['', [Validators.required, Validators.minLength(2)]],
+        designation: ['', [Validators.required]],
+        contactNumber: [
           '',
-          [Validators.required, Validators.min(-90), Validators.max(90)],
+          [Validators.required, Validators.pattern(/^[0-9]{10}$/)],
         ],
-        longitude: [
+        emailId: ['', [Validators.required, Validators.email]],
+        password: [
           '',
-          [Validators.required, Validators.min(-180), Validators.max(180)],
+          [
+            Validators.required,
+            Validators.minLength(8),
+            Validators.pattern(
+              /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]/
+            ),
+          ],
         ],
-      });
+        confirmPassword: ['', [Validators.required]],
+      },
+      { validators: this.passwordMatchValidator }
+    );
 
-      // Subscribe to state changes to load districts
-      this.profileForm.get('state')?.valueChanges.subscribe((stateId) => {
-        if (stateId) {
-          this.loadDistricts(stateId);
-          // Reset district selection when state changes
-          this.profileForm.get('district')?.setValue('');
-        } else {
-          this.districts = [];
-          this.profileForm.get('district')?.setValue('');
-        }
-      });
-    } else {
-      this.profileForm = this.fb.group(
-        {
-          contactPersonName: [
-            '',
-            [Validators.required, Validators.minLength(2)],
-          ],
-          designation: ['', [Validators.required]],
-          contactNumber: [
-            '',
-            [Validators.required, Validators.pattern(/^[0-9]{10}$/)],
-          ],
-          emailId: ['', [Validators.required, Validators.email]],
-          password: [
-            '',
-            [
-              Validators.required,
-              Validators.minLength(8),
-              Validators.pattern(
-                /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]/
-              ),
-            ],
-          ],
-          confirmPassword: ['', [Validators.required]],
-          trainingInstituteName: [
-            '',
-            [Validators.required, Validators.minLength(3)],
-          ],
-          trainingInstituteRegistration: [
-            '',
-            [Validators.required, Validators.minLength(3)],
-          ],
-          trainingInstituteExpiry: ['', []],
-          state: ['', [Validators.required]],
-          district: ['', [Validators.required]],
-
-          address: ['', [Validators.required, Validators.minLength(10)]],
-          latitude: [
-            '',
-            [Validators.required, Validators.min(-90), Validators.max(90)],
-          ],
-          longitude: [
-            '',
-            [Validators.required, Validators.min(-180), Validators.max(180)],
-          ],
+    // Subscribe to state changes to load districts
+    this.profileForm.get('state')?.valueChanges.subscribe((stateId) => {
+      if (stateId) {
+        this.loadDistricts(stateId);
+        // Reset district selection when state changes
+        this.profileForm.get('district')?.setValue('');
+      } else {
+        this.districts = [];
+        this.profileForm.get('district')?.setValue('');
+      }
+    });
+    if (this.userRole == 6) {
+      this.adminService.getOrganizationDataById(this.userId).subscribe({
+        next: (response) => {
+          this.organizationData = response;
+          this.initializeForm();
+          this.isLoading = false;
         },
-        { validators: this.passwordMatchValidator }
-      );
+        error: (error) => {
+          console.error('Error loading private organizations:', error);
+          this.error = 'Failed to load organization data';
+          this.isLoading = false;
+        },
+      });
     }
   }
 
@@ -183,9 +158,6 @@ export class OrganizationAdminProfileComponent implements OnInit {
     const now = new Date();
     this.today = now.toISOString().split('T')[0];
     this.loadStates();
-    if (this.userRole == 5) {
-      this.initializeForm();
-    }
   }
   getRole() {
     const userData = sessionStorage.getItem('user');
@@ -233,33 +205,21 @@ export class OrganizationAdminProfileComponent implements OnInit {
   }
   initializeForm() {
     this.profileForm.patchValue({
-      trainingInstituteName: this.instituteData.trainingInstituteName,
-      trainingInstituteRegistration: this.instituteData.registrationId,
-      trainingInstituteExpiry: this.instituteData.registrationValidity,
-      instituteType: this.instituteData.instituteType,
-      state: this.instituteData.stateId,
-      address: this.instituteData.address,
-      latitude: this.instituteData.latitude,
-      longitude: this.instituteData.longitude,
+      organizationName: this.organizationData.organizationName,
+      trainingInstituteRegistration: this.organizationData.registrationId,
+      state: this.organizationData.stateId,
+      address: this.organizationData.address,
+      contactPersonName: this.organizationData.address,
+      designation: this.organizationData.address,
+      contactNumber: this.organizationData.address,
+      emailId: this.organizationData.address,
     });
-    this.loadDistricts(this.instituteData.stateId);
+    this.loadDistricts(this.organizationData.stateId);
     this.profileForm.patchValue({
-      district: this.instituteData.districtId,
+      district: this.organizationData.districtId,
     });
-    // Disable controls
-    this.profileForm.get('trainingInstituteName')?.disable();
-    this.profileForm.get('trainingInstituteRegistration')?.disable();
-    this.profileForm.get('trainingInstituteExpiry')?.disable();
-    this.profileForm.get('instituteType')?.disable();
-    this.profileForm.get('state')?.disable();
-    this.profileForm.get('address')?.disable();
-    this.profileForm.get('latitude')?.disable();
-    this.profileForm.get('longitude')?.disable();
-    this.profileForm.get('district')?.disable();
   }
-  /**
-   * Handle form submission
-   */
+
   onSubmit() {
     if (this.profileForm.invalid) {
       this.markFormGroupTouched(this.profileForm);
@@ -272,69 +232,37 @@ export class OrganizationAdminProfileComponent implements OnInit {
     const formData = new FormData();
 
     if (this.userRole == 1) {
-      if (!this.selectedFile) {
-        this.toastr.error(
-          'Please select an institute image',
-          'Validation Error'
-        );
-        return;
-      }
-      if (!this.selectedFileDoc) {
-        this.toastr.error(
-          'Please select a security document',
-          'Validation Error'
-        );
-        return;
-      }
       this.isLoading = true;
 
-      // Create instituteDetails object matching the API structure
-      const expiryValue = this.profileForm.get(
-        'trainingInstituteExpiry'
-      )?.value;
-
-      const instituteDetails = {
-        instituteName:
-          this.profileForm.get('trainingInstituteName')?.value || '',
+      const organizationDetails = {
+        organizationName: this.profileForm.get('organizationName')?.value || '',
         registrationNumber:
           this.profileForm.get('trainingInstituteRegistration')?.value || '',
-        registrationValidity: expiryValue ? expiryValue + 'T00:00:00' : '',
-        instituteType: this.profileForm.get('instituteType')?.value || '',
         stateId: parseInt(this.profileForm.get('state')?.value) || 0,
         districtId: parseInt(this.profileForm.get('district')?.value) || 0,
         address: this.profileForm.get('address')?.value || '',
-        latitude: this.profileForm.get('latitude')?.value || null,
-        longitude: this.profileForm.get('longitude')?.value || null,
+        contactName: this.profileForm.get('contactPersonName')?.value || '',
+        designation: this.profileForm.get('designation')?.value || '',
+        contactNumber: this.profileForm.get('contactNumber')?.value || '',
+        email: this.profileForm.get('emailId')?.value || '',
+        password: this.profileForm.get('password')?.value || '',
+
+        // latitude: this.profileForm.get('latitude')?.value || null,
+        // longitude: this.profileForm.get('longitude')?.value || null,
       };
 
-      // Append instituteDetails as JSON string with explicit content type
-      const instituteDetailsBlob = new Blob(
-        [JSON.stringify(instituteDetails)],
-        {
-          type: 'application/json',
-        }
-      );
-      formData.append('data', instituteDetailsBlob);
-
-      // Append image file
-      formData.append('registrationDoc', this.selectedFileDoc);
-      formData.append('instituteImage', this.selectedFile);
-      this.authService.createInstitute(this.userId, formData).subscribe({
+      this.authService.createOrganization(organizationDetails).subscribe({
         next: (response) => {
           this.isLoading = false;
           if (response.success) {
             // Show success message with registration details
-            const registrationId = response.data?.registrationId || 'N/A';
-            const instituteName = response.data?.trainingInstituteName || 'N/A';
-            const status = response.data?.status || 'PENDING';
+            const registrationId = response.data?.registrationNumber || 'N/A';
+            const instituteName = response.data?.organizationName || 'N/A';
 
             // Reset form after successful registration
             this.profileForm.reset();
-            this.selectedFile = null;
-            this.selectedImagePreview = null;
-
             this.toastr.success(
-              `Training Centre Admin profile created successfully! Registration ID: ${registrationId}`,
+              `Organization Admin profile created successfully! Registration ID: ${registrationId}`,
               'Success'
             );
 
@@ -358,8 +286,6 @@ export class OrganizationAdminProfileComponent implements OnInit {
     } else {
       this.isLoading = true;
 
-      // Create FormData for multipart request
-      // Create instituteDetails object matching the API structure
       const instituteDetails = {
         contactPersonName:
           this.profileForm.get('contactPersonName')?.value || '',

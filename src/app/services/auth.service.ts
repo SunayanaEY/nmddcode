@@ -191,6 +191,23 @@ export class AuthService {
         })
       );
   }
+  createOrganization(organizationData: any): Observable<any> {
+    const headers = new HttpHeaders();
+    return this.http
+      .post<RegisterResponse>(
+        `${this.apiUrl}organization/save`,
+        organizationData,
+        {
+          headers: headers,
+        }
+      )
+      .pipe(
+        catchError((error) => {
+          console.error('Registration failed', error);
+          throw error;
+        })
+      );
+  }
 
   // Session timeout management methods
   private startSessionMonitoring(): void {

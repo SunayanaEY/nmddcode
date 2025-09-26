@@ -69,7 +69,7 @@ export interface MarkAsSeenResponse {
 }
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class AdminService {
   private apiUrl = environment.apiUrl;
@@ -82,18 +82,42 @@ export class AdminService {
         'Content-Type': 'application/json',
         // Add authorization header if needed
         // 'Authorization': `Bearer ${this.getToken()}`
-      })
+      }),
     };
   }
 
   // Get all training institutes
   getTrainingInstitutes(): Observable<TrainingInstitute[]> {
-    return this.http.get<{success: boolean, message: string, data: TrainingInstitute[], statusCode: number}>(
-      `${this.apiUrl}training/trainingInstitutes`,
-      this.getHttpOptions()
-    ).pipe(
-      map(response => response.data)
-    );
+    return this.http
+      .get<{
+        success: boolean;
+        message: string;
+        data: TrainingInstitute[];
+        statusCode: number;
+      }>(`${this.apiUrl}training/trainingInstitutes`, this.getHttpOptions())
+      .pipe(map((response) => response.data));
+  }
+
+  // Get all organization data
+  getOrganizationsData(): Observable<any> {
+    return this.http
+      .get<{
+        success: boolean;
+        message: string;
+        data: any[];
+        statusCode: number;
+      }>(`${this.apiUrl}organization/getAll`, this.getHttpOptions())
+      .pipe(map((response) => response.data));
+  }
+  getOrganizationDataById(id: any): Observable<any> {
+    return this.http
+      .get<{
+        success: boolean;
+        message: string;
+        data: any[];
+        statusCode: number;
+      }>(`${this.apiUrl}organization/getById/${id}`, this.getHttpOptions())
+      .pipe(map((response) => response.data));
   }
 
   // Get training institute by ID
@@ -105,7 +129,9 @@ export class AdminService {
   }
 
   // Create new training institute
-  createTrainingInstitute(institute: Partial<TrainingInstitute>): Observable<TrainingInstitute> {
+  createTrainingInstitute(
+    institute: Partial<TrainingInstitute>
+  ): Observable<TrainingInstitute> {
     return this.http.post<TrainingInstitute>(
       `${this.apiUrl}training/registerInstitute`,
       institute,
@@ -117,7 +143,7 @@ export class AdminService {
   updateTrainingInstitute(formData: FormData): Observable<TrainingInstitute> {
     const token = localStorage.getItem('token');
     const headers = new HttpHeaders({
-      'Authorization': `Bearer ${token}`
+      Authorization: `Bearer ${token}`,
       // Don't set Content-Type for FormData, let browser set it with boundary
     });
 
@@ -136,6 +162,14 @@ export class AdminService {
     );
   }
 
+  // Delete Organization
+  deleteOrganization(id: string): Observable<void> {
+    return this.http.delete<void>(
+      `${this.apiUrl}organization/delete/${id}`,
+      this.getHttpOptions()
+    );
+  }
+
   // Toggle institute status (if API supports it)
   toggleInstituteStatus(id: string): Observable<TrainingInstitute> {
     return this.http.patch<TrainingInstitute>(
@@ -146,11 +180,18 @@ export class AdminService {
   }
 
   // Toggle active/inactive status
-  toggleActiveInactive(id: string): Observable<{success: boolean, message: string, data: {message: string}, statusCode: number}> {
-    return this.http.get<{success: boolean, message: string, data: {message: string}, statusCode: number}>(
-      `${this.apiUrl}training/activeInactive/${id}`,
-      this.getHttpOptions()
-    );
+  toggleActiveInactive(id: string): Observable<{
+    success: boolean;
+    message: string;
+    data: { message: string };
+    statusCode: number;
+  }> {
+    return this.http.get<{
+      success: boolean;
+      message: string;
+      data: { message: string };
+      statusCode: number;
+    }>(`${this.apiUrl}training/activeInactive/${id}`, this.getHttpOptions());
   }
 
   // Get notifications
@@ -162,7 +203,9 @@ export class AdminService {
   }
 
   // Mark notifications as seen
-  markNotificationsAsSeen(notificationIds: number[]): Observable<MarkAsSeenResponse> {
+  markNotificationsAsSeen(
+    notificationIds: number[]
+  ): Observable<MarkAsSeenResponse> {
     return this.http.post<MarkAsSeenResponse>(
       `${this.apiUrl}notification/markAsSeen`,
       notificationIds,
@@ -175,8 +218,18 @@ export class AdminService {
     trainingInstituteId: string;
     trainingId: number;
     traineeIds: number[];
-  }): Observable<{success: boolean, message: string, data: any, statusCode: number}> {
-    return this.http.post<{success: boolean, message: string, data: any, statusCode: number}>(
+  }): Observable<{
+    success: boolean;
+    message: string;
+    data: any;
+    statusCode: number;
+  }> {
+    return this.http.post<{
+      success: boolean;
+      message: string;
+      data: any;
+      statusCode: number;
+    }>(
       `${this.apiUrl}api/trainees/approve-trainees`,
       payload,
       this.getHttpOptions()
@@ -189,73 +242,146 @@ export class AdminService {
     trainingId: number;
     traineeIds: number[];
     rejectionRemarks: string;
-  }): Observable<{success: boolean, message: string, data: any, statusCode: number}> {
-    return this.http.post<{success: boolean, message: string, data: any, statusCode: number}>(
+  }): Observable<{
+    success: boolean;
+    message: string;
+    data: any;
+    statusCode: number;
+  }> {
+    return this.http.post<{
+      success: boolean;
+      message: string;
+      data: any;
+      statusCode: number;
+    }>(
       `${this.apiUrl}api/trainees/reject-trainees`,
       payload,
       this.getHttpOptions()
     );
   }
 
-  verifyTrainees(ids:any[]): Observable<{success: boolean, message: string, data: any, statusCode: number}> {
-    return this.http.post<{success: boolean, message: string, data: any, statusCode: number}>(
+  verifyTrainees(ids: any[]): Observable<{
+    success: boolean;
+    message: string;
+    data: any;
+    statusCode: number;
+  }> {
+    return this.http.post<{
+      success: boolean;
+      message: string;
+      data: any;
+      statusCode: number;
+    }>(
       `${this.apiUrl}api/trainees/verify-trainees`,
       ids,
       this.getHttpOptions()
     );
   }
   cancelTrainees(payload: {
-
     traineeIds: number[];
     cancelRemarks: string;
-  }): Observable<{success: boolean, message: string, data: any, statusCode: number}>  {
-    return this.http.post<{success: boolean, message: string, data: any, statusCode: number}>(
+  }): Observable<{
+    success: boolean;
+    message: string;
+    data: any;
+    statusCode: number;
+  }> {
+    return this.http.post<{
+      success: boolean;
+      message: string;
+      data: any;
+      statusCode: number;
+    }>(
       `${this.apiUrl}api/trainees/cancel-trainees`,
       payload,
       this.getHttpOptions()
     );
   }
-  sendTrainingToValidate(trainingId: string): Observable<{success: boolean, message: string, data: any, statusCode: number}>  {
-    return this.http.get<{success: boolean, message: string, data: any, statusCode: number}>(
+  sendTrainingToValidate(trainingId: string): Observable<{
+    success: boolean;
+    message: string;
+    data: any;
+    statusCode: number;
+  }> {
+    return this.http.get<{
+      success: boolean;
+      message: string;
+      data: any;
+      statusCode: number;
+    }>(
       `${this.apiUrl}training/validateByInstituteHead/${trainingId}`,
       this.getHttpOptions()
     );
   }
-  rejectTrainingSchedule(trainingId: string): Observable<{success: boolean, message: string, data: any, statusCode: number}>  {
-    return this.http.get<{success: boolean, message: string, data: any, statusCode: number}>(
+  rejectTrainingSchedule(trainingId: string): Observable<{
+    success: boolean;
+    message: string;
+    data: any;
+    statusCode: number;
+  }> {
+    return this.http.get<{
+      success: boolean;
+      message: string;
+      data: any;
+      statusCode: number;
+    }>(
       `${this.apiUrl}training/rejectTrainingSchedule/${trainingId}`,
       this.getHttpOptions()
     );
   }
 
-
-  approveTrainingSchedule(trainingId: string): Observable<{success: boolean, message: string, data: any, statusCode: number}>  {
-    return this.http.get<{success: boolean, message: string, data: any, statusCode: number}>(
+  approveTrainingSchedule(trainingId: string): Observable<{
+    success: boolean;
+    message: string;
+    data: any;
+    statusCode: number;
+  }> {
+    return this.http.get<{
+      success: boolean;
+      message: string;
+      data: any;
+      statusCode: number;
+    }>(
       `${this.apiUrl}training/approveTrainingSchedule/${trainingId}`,
       this.getHttpOptions()
     );
   }
 
   addTrainer(payload: {
-    trainingHeadId: string,
-    trainerName: string,
-  mobile: string,
-  email: string,
-  expertiseIn: string
-  }): Observable<{success: boolean, message: string, data: any, statusCode: number}>  {
-    return this.http.post<{success: boolean, message: string, data: any, statusCode: number}>(
-      `${this.apiUrl}trainers/save`,
-      payload,
-      this.getHttpOptions()
-    );
+    trainingHeadId: string;
+    trainerName: string;
+    mobile: string;
+    email: string;
+    expertiseIn: string;
+  }): Observable<{
+    success: boolean;
+    message: string;
+    data: any;
+    statusCode: number;
+  }> {
+    return this.http.post<{
+      success: boolean;
+      message: string;
+      data: any;
+      statusCode: number;
+    }>(`${this.apiUrl}trainers/save`, payload, this.getHttpOptions());
   }
 
   // Get trainers by training head ID
-  getTrainersByTrainingHead(trainingHeadId: string): Observable<{success: boolean, message: string, data: any[], statusCode: number}> {
-    return this.http.get<{success: boolean, message: string, data: any[], statusCode: number}>(
+  getTrainersByTrainingHead(trainingHeadId: string): Observable<{
+    success: boolean;
+    message: string;
+    data: any[];
+    statusCode: number;
+  }> {
+    return this.http.get<{
+      success: boolean;
+      message: string;
+      data: any[];
+      statusCode: number;
+    }>(
       `${this.apiUrl}trainers/getByTrainingHead/${trainingHeadId}`,
       this.getHttpOptions()
     );
   }
-
 }

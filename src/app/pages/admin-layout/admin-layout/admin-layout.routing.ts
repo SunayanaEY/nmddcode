@@ -20,6 +20,7 @@ import { UpdateProfileComponent } from '../../training/update-profile/update-pro
 import { PublicDashboardComponent } from '../../public-dashboard/public-dashboard.component';
 import { DashboardComponent } from '../../../dashboard/dashboard.component';
 import { OrganizationAdminProfileComponent } from '../../training/organization-admin-profile/organization-admin-profile.component';
+import { OrganizationTableDataComponent } from '../../training/organization-table-data/organization-table-data.component';
 
 export const AdminLayoutRoutes: Routes = [
   // Central Admin Only Routes (Role 1)
@@ -27,19 +28,19 @@ export const AdminLayoutRoutes: Routes = [
     path: 'scheme-management',
     component: SchemeManagementComponent,
     canActivate: [RoleGuard],
-    data: { allowedRoles: [1, 5] },
+    data: { allowedRoles: [1, 5, 6] },
   },
   {
     path: 'dashboard',
     component: DashboardComponent,
     canActivate: [RoleGuard],
-    data: { allowedRoles: [1, 5] },
+    data: { allowedRoles: [1, 5, 6] },
   },
   {
     path: 'training-type-management',
     component: TrainingTypeManagementComponent,
     canActivate: [RoleGuard],
-    data: { allowedRoles: [1, 5] },
+    data: { allowedRoles: [1, 5, 6] },
   },
   {
     path: 'activity-log',
@@ -48,7 +49,7 @@ export const AdminLayoutRoutes: Routes = [
         (m) => m.ActivityLogComponent
       ),
     canActivate: [RoleGuard],
-    data: { allowedRoles: [1, 5] },
+    data: { allowedRoles: [1, 5, 6] },
   },
 
   // Training Institute Head Routes (Role 3)
@@ -56,7 +57,7 @@ export const AdminLayoutRoutes: Routes = [
     path: 'certificate-approval',
     component: CertificateApprovalComponent,
     canActivate: [RoleGuard],
-    data: { allowedRoles: [1, 5] },
+    data: { allowedRoles: [1, 5, 6] },
   },
   {
     path: 'user-profile-creation',
@@ -80,7 +81,7 @@ export const AdminLayoutRoutes: Routes = [
     path: 'training-module',
     component: TrainingSectionComponent,
     canActivate: [RoleGuard],
-    data: { allowedRoles: [1, 3, 4, 5] },
+    data: { allowedRoles: [1, 3, 4, 5, 6] },
   },
   {
     path: 'registered-data-entry-operators',
@@ -95,7 +96,7 @@ export const AdminLayoutRoutes: Routes = [
         (m) => m.TrainingCentreComponent
       ),
     canActivate: [RoleGuard],
-    data: { allowedRoles: [1, 5] },
+    data: { allowedRoles: [1, 5, 6] },
   },
   {
     path: 'training-centre-admin-profile',
@@ -104,7 +105,7 @@ export const AdminLayoutRoutes: Routes = [
         '../../training/training-centre-admin-profile/training-centre-admin-profile.component'
       ).then((m) => m.TrainingCentreAdminProfileComponent),
     canActivate: [RoleGuard],
-    data: { allowedRoles: [1, 5] },
+    data: { allowedRoles: [1, 5, 6] },
   },
   {
     path: 'update-profile',
@@ -144,7 +145,7 @@ export const AdminLayoutRoutes: Routes = [
     path: 'approved-certificate',
     component: ApprovedCertificateComponent,
     canActivate: [RoleGuard],
-    data: { allowedRoles: [1, 3, 4, 5] },
+    data: { allowedRoles: [1, 3, 4, 5, 6] },
   },
   {
     path: 'All-Trainings',
@@ -154,17 +155,29 @@ export const AdminLayoutRoutes: Routes = [
     path: 'all-trainings',
     component: AllTrainingsComponent,
     canActivate: [RoleGuard],
-    data: { allowedRoles: [1, 3, 4, 5] },
+    data: { allowedRoles: [1, 3, 4, 5, 6] },
   },
   {
     path: 'all-trainings-admin',
     component: AllTrainingsAdminComponent,
     canActivate: [RoleGuard],
-    data: { allowedRoles: [1, 3, 5] },
+    data: { allowedRoles: [1, 3, 5, 6] },
   },
   {
     path: 'create-organization',
     component: OrganizationAdminProfileComponent,
+    canActivate: [RoleGuard],
+    data: { allowedRoles: [1] },
+  },
+  {
+    path: 'update-organization',
+    component: OrganizationAdminProfileComponent,
+    canActivate: [RoleGuard],
+    data: { allowedRoles: [6] },
+  },
+  {
+    path: 'organization-table',
+    component: OrganizationTableDataComponent,
     canActivate: [RoleGuard],
     data: { allowedRoles: [1] },
   },

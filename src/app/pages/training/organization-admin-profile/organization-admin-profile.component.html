@@ -4,49 +4,60 @@
 
     <div class="profile-card">
       <div class="card-header">
-        <h2 class="card-title">Private Organization Registration</h2>
-        <p class="card-subtitle">
+        <h2 *ngIf="userRole == 1" class="card-title">
+          Private Organization Registration
+        </h2>
+        <p *ngIf="userRole == 1" class="card-subtitle">
           Create a new private organization administrator profile
+        </p>
+        <h2 *ngIf="userRole == 6" class="card-title">
+          Private Organization Profile Updation
+        </h2>
+        <p *ngIf="userRole == 6" class="card-subtitle">
+          Update the private organization administrator profile
         </p>
       </div>
 
       <div class="card-content">
         <form [formGroup]="profileForm" (ngSubmit)="onSubmit()">
           <!-- Basic Information Section -->
-          <div class="form-section" *ngIf="userRole == 1 || userRole == 5">
+          <div
+            class="form-section"
+            *ngIf="userRole == 1 || userRole == 5 || userRole == 6"
+          >
             <h3 class="section-title">Basic Information</h3>
 
             <div class="form-row">
               <div class="form-group">
-                <label for="trainingInstituteName"
+                <label for="organizationName"
                   >Private Organization Name<span class="required"
                     >*</span
                   ></label
                 >
                 <input
                   type="text"
-                  id="trainingInstituteName"
-                  formControlName="trainingInstituteName"
-                  placeholder="Enter Training Institute Name"
+                  id="organizationName"
+                  formControlName="organizationName"
+                  placeholder="Enter Organization Name"
                   class="form-control"
                   [class.is-invalid]="
-                    profileForm.get('trainingInstituteName')?.invalid &&
-                    profileForm.get('trainingInstituteName')?.touched
+                    profileForm.get('organizationName')?.invalid &&
+                    profileForm.get('organizationName')?.touched
                   "
                 />
                 <div
                   class="invalid-feedback"
                   *ngIf="
-                    profileForm.get('trainingInstituteName')?.invalid &&
-                    profileForm.get('trainingInstituteName')?.touched
+                    profileForm.get('organizationName')?.invalid &&
+                    profileForm.get('organizationName')?.touched
                   "
                 >
                   <span
-                    *ngIf="profileForm.get('trainingInstituteName')?.errors?.['required']"
+                    *ngIf="profileForm.get('organizationName')?.errors?.['required']"
                     >Organization name is required</span
                   >
                   <span
-                    *ngIf="profileForm.get('trainingInstituteName')?.errors?.['minlength']"
+                    *ngIf="profileForm.get('organizationName')?.errors?.['minlength']"
                     >Organization name must be at least 3 characters</span
                   >
                 </div>
@@ -166,7 +177,10 @@
             </div>
           </div>
           <!-- Location Information Section -->
-          <div class="form-section" *ngIf="userRole == 1 || userRole == 5">
+          <div
+            class="form-section"
+            *ngIf="userRole == 1 || userRole == 5 || userRole == 6"
+          >
             <h3 class="section-title">Location Information</h3>
 
             <div class="form-group full-width">
@@ -450,6 +464,7 @@
               Cancel
             </button>
             <button
+              *ngIf="userRole == 1 || userRole == 5"
               type="submit"
               class="btn btn-primary"
               [disabled]="isLoading || profileForm.invalid"
@@ -459,6 +474,19 @@
               </span>
               <span *ngIf="isLoading">
                 <i class="fas fa-spinner fa-spin me-2"></i>Creating...
+              </span>
+            </button>
+            <button
+              *ngIf="userRole == 6"
+              type="submit"
+              class="btn btn-primary"
+              [disabled]="isLoading || profileForm.invalid"
+            >
+              <span *ngIf="!isLoading">
+                <i class="fas fa-save me-2"></i>Update Profile
+              </span>
+              <span *ngIf="isLoading">
+                <i class="fas fa-spinner fa-spin me-2"></i>Updating...
               </span>
             </button>
           </div>

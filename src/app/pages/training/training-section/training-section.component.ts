@@ -109,6 +109,9 @@ export class TrainingSectionComponent implements OnInit {
   navigateToOrganizationData() {
     this.router.navigate(['/admin/organization-table']);
   }
+  navigateToUpdateOrganization() {
+    this.router.navigate(['/admin/update-organization']);
+  }
 
   navigateToTrainingCentreAdminProfile() {
     this.router.navigate(['/admin/training-centre-admin-profile']);

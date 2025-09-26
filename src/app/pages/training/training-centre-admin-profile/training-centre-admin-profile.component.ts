@@ -44,6 +44,7 @@ export class TrainingCentreAdminProfileComponent implements OnInit {
   trainingInstituteId: any;
   userId: any;
   today: string | undefined;
+  organizations: any;
 
   // Location data
   states: State[] = [];
@@ -99,6 +100,7 @@ export class TrainingCentreAdminProfileComponent implements OnInit {
           [Validators.required, Validators.minLength(3)],
         ],
         instituteType: ['', [Validators.required]],
+        organization: [''],
         trainingInstituteRegistration: [
           '',
           [Validators.required, Validators.minLength(3)],
@@ -128,6 +130,17 @@ export class TrainingCentreAdminProfileComponent implements OnInit {
           this.districts = [];
           this.profileForm.get('district')?.setValue('');
         }
+      });
+      this.profileForm.get('instituteType')?.valueChanges.subscribe((type) => {
+        const orgControl = this.profileForm.get('organization');
+
+        if (type === 'Private') {
+          orgControl?.setValidators([Validators.required]);
+        } else {
+          orgControl?.clearValidators();
+          orgControl?.setValue('');
+        }
+        orgControl?.updateValueAndValidity();
       });
     } else {
       this.profileForm = this.fb.group(
