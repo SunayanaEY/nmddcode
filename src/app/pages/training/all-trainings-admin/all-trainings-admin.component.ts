@@ -77,6 +77,7 @@ export class AllTrainingsAdminComponent {
   bulkCertificateDownload: any[] = [];
   trainingInstituteHeadId: any = null;
   userRole: any;
+  userId: any;
   pageTitle: string = 'All Trainings';
   fileName: String = 'All_trainings_';
   fileNameTrainees: String = 'All_trainee_List_';
@@ -191,7 +192,9 @@ export class AllTrainingsAdminComponent {
       icon: 'bi bi-download',
       class: 'btn-info',
       title: 'Download certificate',
-      condition: (row: any) => row.status === 'APPROVED_BY_STATE_ADMIN',
+      condition: (row: any) =>
+        row.status === 'APPROVED_BY_STATE_ADMIN' ||
+        row.status === 'APPROVED_BY_ORGANIZATION',
     },
   ];
 
@@ -204,8 +207,12 @@ export class AllTrainingsAdminComponent {
       title: 'Bulk Approve',
       condition: (rows: any[]) => {
         // For Institute Head (role 3), only show bulk approve if there are TRAINEE_UPLOADED status items
-        if (this.userRole === 3) {
-          return rows.some((row) => row.status === 'TRAINEE_UPLOADED');
+        if (this.userRole === 3 || this.userRole == 6) {
+          return rows.some(
+            (row) =>
+              row.status === 'TRAINEE_UPLOADED' ||
+              row.status === 'VALIDATED_BY_INSTITUTE_HEAD'
+          );
         }
         // For other roles, show bulk approve if there are eligible items
         return rows.some(
@@ -252,7 +259,7 @@ export class AllTrainingsAdminComponent {
   ngOnInit(): void {
     this.getRole();
     this.getTrainingInstituteId();
-    
+
     // Set page title and breadcrumb based on user role
     if (this.userRole === 5) {
       this.pageTitle = 'Approve and Reject Trainings';
@@ -267,7 +274,7 @@ export class AllTrainingsAdminComponent {
         { label: 'All Trainings' },
       ];
     }
-    
+
     if (this.userRole === 1) {
       this.tableActionsTrainee = [
         {
@@ -395,7 +402,38 @@ export class AllTrainingsAdminComponent {
             this.isTableLoading = false;
           },
         });
-    } else {
+    }
+    // else if (this.userRole == 6) {
+    //   this.isTableLoading = true;
+    //   this.trainingsService.getAllTrainingOrganization(this.userId).subscribe({
+    //     next: (res) => {
+    //       this.trainingsList = res.data;
+    //       this.filteredData = [...this.trainingsList];
+    //       let index = 0;
+    //       this.trainingsList.forEach((ele) => {
+    //         const datePipe = new DatePipe('en-US');
+    //         ele['location'] =
+    //           ele['venueBlock'] +
+    //           ',' +
+    //           ele['venueDistrict'] +
+    //           ',' +
+    //           ele['venueState'];
+    //         ele['trainingDate'] = datePipe.transform(
+    //           ele['trainingDate'],
+    //           'dd/MM/yyyy'
+    //         )!;
+    //         this.trainingsList[index] = ele;
+    //         index++;
+    //       });
+    //       this.isTableLoading = false;
+    //     },
+    //     error: (error) => {
+    //       console.error('Error loading trainings:', error);
+    //       this.isTableLoading = false;
+    //     },
+    //   });
+    // }
+    else {
       this.isTableLoading = true;
       this.trainingsService.getAllTraining().subscribe({
         next: (res) => {
@@ -551,6 +589,7 @@ export class AllTrainingsAdminComponent {
     if (userData) {
       const user = JSON.parse(userData);
       this.userRole = user.role;
+      this.userId = user.OrganizationId;
     }
   }
 

@@ -94,7 +94,7 @@ export class TrainingCentreAdminProfileComponent implements OnInit {
       const passedData = nav?.extras.state?.['data'];
       this.trainingInstituteId = passedData.id;
       this.instituteData = passedData;
-      alert(JSON.stringify(this.instituteData));
+      // alert(JSON.stringify(this.instituteData));
     }
 
     if (this.userRole == 1) {

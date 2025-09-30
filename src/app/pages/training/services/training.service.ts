@@ -91,6 +91,17 @@ export class TrainingService {
       })
     );
   }
+  getAllTrainingOrganization(id: any) {
+    return this.http
+      .get<any>(
+        this.url + `training/schedule/pendingOrganizationApproval/${id}`
+      )
+      .pipe(
+        map((res: any) => {
+          return res;
+        })
+      );
+  }
   getAllTrainings(trainingInstituteId: any) {
     return this.http
       .get<any>(

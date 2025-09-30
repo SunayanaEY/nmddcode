@@ -60,7 +60,7 @@ export class OrganizationAdminProfileComponent implements OnInit {
   ];
 
   breadcrumbItems: BreadcrumbItem[] = [
-    { label: 'Training Module', url: '/admin/create-organization' },
+    { label: 'Training Module', url: '/admin/training-module' },
     { label: 'Private Organization Registration' },
   ];
 

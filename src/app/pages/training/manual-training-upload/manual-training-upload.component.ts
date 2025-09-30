@@ -94,7 +94,7 @@ export class ManualTrainingUploadComponent implements OnInit {
     // Get query params from snapshot (one-time read)
     this.trainingId = this.route.snapshot.queryParams['trainingId'];
     this.getTrainingInstituteId();
-    this.getTrainingManagerId();
+    // this.getTrainingManagerId();
     // Apply delay if needed
     this.getTrainingDetails(this.trainingId);
   }
@@ -109,7 +109,7 @@ export class ManualTrainingUploadComponent implements OnInit {
     const userData = sessionStorage.getItem('user');
     if (userData) {
       const user = JSON.parse(userData);
-      this.trainingInstituteId = user.trainingManagerId;
+      this.trainingManagerId = user.trainingManagerId;
     }
   }
 
@@ -323,11 +323,11 @@ export class ManualTrainingUploadComponent implements OnInit {
   }
   submitTraineesData() {
     const trainingId = this.trainingId;
+    const trainingInstituteId = this.trainingInstituteId;
     const payload = this.participants.map((participant) => ({
       ...participant,
       trainingId: trainingId,
-      trainingInstituteId: this.trainingInstituteId,
-      trainingManagerId: this.trainingManagerId,
+      trainingInstituteId: trainingInstituteId,
     }));
 
     this.isSpinning = true;
