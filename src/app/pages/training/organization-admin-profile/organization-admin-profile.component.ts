@@ -164,7 +164,7 @@ export class OrganizationAdminProfileComponent implements OnInit {
     if (userData) {
       const user = JSON.parse(userData);
       this.userRole = user.role;
-      this.userId = user.id;
+      this.userId = user.OrganizationId;
     }
   }
 
@@ -206,13 +206,13 @@ export class OrganizationAdminProfileComponent implements OnInit {
   initializeForm() {
     this.profileForm.patchValue({
       organizationName: this.organizationData.organizationName,
-      trainingInstituteRegistration: this.organizationData.registrationId,
+      trainingInstituteRegistration: this.organizationData.registrationNumber,
       state: this.organizationData.stateId,
       address: this.organizationData.address,
-      contactPersonName: this.organizationData.address,
-      designation: this.organizationData.address,
-      contactNumber: this.organizationData.address,
-      emailId: this.organizationData.address,
+      contactPersonName: this.organizationData.contactName,
+      designation: this.organizationData.designation,
+      contactNumber: this.organizationData.contactNumber,
+      emailId: this.organizationData.email,
     });
     this.loadDistricts(this.organizationData.stateId);
     this.profileForm.patchValue({
@@ -267,7 +267,7 @@ export class OrganizationAdminProfileComponent implements OnInit {
             );
 
             // Navigate to training centre component after successful registration
-            this.router.navigate(['/admin/training-centre']);
+            this.router.navigate(['admin/training-module']);
           } else {
             this.toastr.error(
               response.message || 'Registration failed',
@@ -286,41 +286,44 @@ export class OrganizationAdminProfileComponent implements OnInit {
     } else {
       this.isLoading = true;
 
-      const instituteDetails = {
-        contactPersonName:
-          this.profileForm.get('contactPersonName')?.value || '',
+      const organizationDetails = {
+        organizationName: this.profileForm.get('organizationName')?.value || '',
+        registrationNumber:
+          this.profileForm.get('trainingInstituteRegistration')?.value || '',
+        stateId: parseInt(this.profileForm.get('state')?.value) || 0,
+        districtId: parseInt(this.profileForm.get('district')?.value) || 0,
+        address: this.profileForm.get('address')?.value || '',
+        contactName: this.profileForm.get('contactPersonName')?.value || '',
         designation: this.profileForm.get('designation')?.value || '',
         contactNumber: this.profileForm.get('contactNumber')?.value || '',
-        emailId: this.profileForm.get('emailId')?.value || '',
+        email: this.profileForm.get('emailId')?.value || '',
         password: this.profileForm.get('password')?.value || '',
+
+        // latitude: this.profileForm.get('latitude')?.value || null,
+        // longitude: this.profileForm.get('longitude')?.value || null,
       };
 
       // Append instituteDetails as JSON string with explicit content type
 
       this.authService
-        .updateInstitute(this.trainingInstituteId, instituteDetails)
+        .updateOrganization(this.userId, organizationDetails)
         .subscribe({
           next: (response) => {
             this.isLoading = false;
             if (response.success) {
               // Show success message with registration details
-              const registrationId = response.data?.registrationId || 'N/A';
-              const instituteName =
-                response.data?.trainingInstituteName || 'N/A';
-              const status = response.data?.status || 'PENDING';
+              const registrationId = response.data?.registrationNumber || 'N/A';
 
               // Reset form after successful registration
               this.profileForm.reset();
-              this.selectedFile = null;
-              this.selectedImagePreview = null;
 
               this.toastr.success(
-                `Training Centre Admin profile updated successfully! Registration ID: ${registrationId}`,
+                `Organization profile updated successfully! Registration ID: ${registrationId}`,
                 'Success'
               );
 
               // Navigate to training centre component after successful registration
-              this.router.navigate(['/admin/training-centre']);
+              this.router.navigate(['/admin/training-module']);
             } else {
               this.toastr.error(response.message || 'Updation failed', 'Error');
             }
@@ -328,9 +331,9 @@ export class OrganizationAdminProfileComponent implements OnInit {
           error: (error) => {
             this.isLoading = false;
             const errorMessage =
-              error.error?.message || 'Registration failed. Please try again.';
+              error.error?.message || 'Updation failed. Please try again.';
             this.toastr.error(errorMessage, 'Error');
-            console.error('Registration error:', error);
+            console.error('Updation error:', error);
           },
         });
     }

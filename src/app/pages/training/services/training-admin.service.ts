@@ -97,6 +97,16 @@ export class AdminService {
       }>(`${this.apiUrl}training/trainingInstitutes`, this.getHttpOptions())
       .pipe(map((response) => response.data));
   }
+  getTrainingInstitutesOrganization(id: any): Observable<TrainingInstitute[]> {
+    return this.http
+      .get<{
+        success: boolean;
+        message: string;
+        data: TrainingInstitute[];
+        statusCode: number;
+      }>(`${this.apiUrl}organization/institutes/${id}`, this.getHttpOptions())
+      .pipe(map((response) => response.data));
+  }
 
   // Get all organization data
   getOrganizationsData(): Observable<any> {
@@ -119,7 +129,16 @@ export class AdminService {
       }>(`${this.apiUrl}organization/getById/${id}`, this.getHttpOptions())
       .pipe(map((response) => response.data));
   }
-
+  getAllOrganization(): Observable<any> {
+    return this.http
+      .get<{
+        success: boolean;
+        message: string;
+        data: any[];
+        statusCode: number;
+      }>(`${this.apiUrl}organization/getAll`, this.getHttpOptions())
+      .pipe(map((response) => response.data));
+  }
   // Get training institute by ID
   getTrainingInstituteById(id: string): Observable<TrainingInstitute> {
     return this.http.get<TrainingInstitute>(

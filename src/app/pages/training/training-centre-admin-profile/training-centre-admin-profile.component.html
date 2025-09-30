@@ -13,7 +13,10 @@
       <div class="card-content">
         <form [formGroup]="profileForm" (ngSubmit)="onSubmit()">
           <!-- Basic Information Section -->
-          <div class="form-section" *ngIf="userRole == 1 || userRole == 5">
+          <div
+            class="form-section"
+            *ngIf="userRole == 1 || userRole == 5 || userRole == 6"
+          >
             <h3 class="section-title">Basic Information</h3>
 
             <div class="form-row">
@@ -134,11 +137,14 @@
             </div>
             <div
               class="form-row"
-              *ngIf="profileForm.get('instituteType')?.value === 'Private'"
+              *ngIf="
+                profileForm.get('instituteType')?.value ===
+                'Other Organizations'
+              "
             >
               <div class="form-group">
                 <label for="instituteType"
-                  >Private Organization<span class="required">*</span></label
+                  >Other Organizations<span class="required">*</span></label
                 >
                 <select
                   id="organization"
@@ -249,7 +255,10 @@
             </div>
           </div>
           <!-- Location Information Section -->
-          <div class="form-section" *ngIf="userRole == 1 || userRole == 5">
+          <div
+            class="form-section"
+            *ngIf="userRole == 1 || userRole == 5 || userRole == 6"
+          >
             <h3 class="section-title">Location Information</h3>
 
             <div class="form-group full-width">
@@ -355,7 +364,7 @@
           </div>
 
           <!-- Contact Information Section -->
-          <div class="form-section" *ngIf="userRole == 5">
+          <div class="form-section" *ngIf="userRole == 5 || userRole == 6">
             <h3 class="section-title">Contact Information</h3>
 
             <div class="form-row">
@@ -490,7 +499,7 @@
           </div>
 
           <!-- Security Information Section -->
-          <div class="form-section" *ngIf="userRole == 5">
+          <div class="form-section" *ngIf="userRole == 5 || userRole == 6">
             <h3 class="section-title">Security Information</h3>
 
             <div class="form-row">

@@ -208,6 +208,23 @@ export class AuthService {
         })
       );
   }
+  updateOrganization(id: any, organizationData: any): Observable<any> {
+    const headers = new HttpHeaders();
+    return this.http
+      .put<RegisterResponse>(
+        `${this.apiUrl}organization/update/${id}`,
+        organizationData,
+        {
+          headers: headers,
+        }
+      )
+      .pipe(
+        catchError((error) => {
+          console.error('Updation failed', error);
+          throw error;
+        })
+      );
+  }
 
   // Session timeout management methods
   private startSessionMonitoring(): void {

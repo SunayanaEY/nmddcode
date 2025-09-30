@@ -57,6 +57,7 @@ export class TrainingCentreComponent implements OnInit {
   pendingToggleItem: any = null;
   statusFilter: string = '';
   userRole: any;
+  userId: any;
   modalConfig!: ModalConfig; // declare only, initialize in ngOnInit
 
   confirmModalConfig: ModalConfig = {
@@ -139,13 +140,14 @@ export class TrainingCentreComponent implements OnInit {
 
   ngOnInit(): void {
     this.getRole();
-    if (this.userRole === 5) {
+    if (this.userRole === 5 || this.userRole === 6) {
       this.tableActions.splice(1, 0, {
         name: 'fill',
         icon: 'bi-card-text',
         class: 'btn-success',
         title: 'Complete Form',
-        condition: (row: any) => row.status === 'PENDING STATE INPUT',
+        condition: (row: any) =>
+          row.status === 'PENDING STATE/ORGANIZATION INPUT',
       });
     }
     if (this.userRole === 1) {
@@ -175,7 +177,7 @@ export class TrainingCentreComponent implements OnInit {
           type: 'file',
           accept: '.jpg,.jpeg,.png,.gif',
           placeholder: 'Select institute image',
-          disabled: this.userRole == 5,
+          disabled: this.userRole == 5 || this.userRole == 6,
         },
         {
           id: 'trainingInstituteName',
@@ -183,7 +185,7 @@ export class TrainingCentreComponent implements OnInit {
           type: 'text',
           required: true,
           placeholder: 'Enter institute name',
-          disabled: this.userRole == 5,
+          disabled: this.userRole == 5 || this.userRole == 6,
         },
         {
           id: 'state',
@@ -205,7 +207,7 @@ export class TrainingCentreComponent implements OnInit {
           type: 'select',
           placeholder: 'Select new state if you want to change',
           options: [],
-          disabled: this.userRole == 5,
+          disabled: this.userRole == 5 || this.userRole == 6,
         },
         {
           id: 'newDistrictId',
@@ -213,7 +215,7 @@ export class TrainingCentreComponent implements OnInit {
           type: 'select',
           placeholder: 'Select new district if you want to change',
           options: [],
-          disabled: this.userRole == 5,
+          disabled: this.userRole == 5 || this.userRole == 6,
         },
         {
           id: 'contactPersonName',
@@ -252,33 +254,36 @@ export class TrainingCentreComponent implements OnInit {
           label: 'Registration ID',
           type: 'text',
           placeholder: 'Enter registration ID',
-          disabled: this.userRole == 5,
+          disabled: this.userRole == 5 || this.userRole == 6,
         },
         {
           id: 'address',
           label: 'Address',
           type: 'textarea',
           placeholder: 'Enter complete address',
-          disabled: this.userRole == 5,
+          disabled: this.userRole == 5 || this.userRole == 6,
         },
         {
           id: 'latitude',
           label: 'Latitude',
           type: 'number',
           placeholder: 'Enter latitude (e.g., 28.6139)',
-          disabled: this.userRole == 5,
+          disabled: this.userRole == 5 || this.userRole == 6,
         },
         {
           id: 'longitude',
           label: 'Longitude',
           type: 'number',
           placeholder: 'Enter longitude (e.g., 77.2090)',
-          disabled: this.userRole == 5,
+          disabled: this.userRole == 5 || this.userRole == 6,
         },
       ],
     };
-
-    this.loadTrainingInstitutes();
+    if (this.userRole === 6) {
+      this.loadTrainingInstitutesOrganization();
+    } else {
+      this.loadTrainingInstitutes();
+    }
     this.loadStates();
   }
 
@@ -287,6 +292,22 @@ export class TrainingCentreComponent implements OnInit {
     this.error = null;
 
     this.adminService.getTrainingInstitutes().subscribe({
+      next: (response) => {
+        this.trainingCentres = response || [];
+        this.isLoading = false;
+      },
+      error: (error) => {
+        console.error('Error loading training institutes:', error);
+        this.error = 'Failed to load training institutes';
+        this.isLoading = false;
+      },
+    });
+  }
+  loadTrainingInstitutesOrganization(): void {
+    this.isLoading = true;
+    this.error = null;
+
+    this.adminService.getTrainingInstitutesOrganization(this.userId).subscribe({
       next: (response) => {
         this.trainingCentres = response || [];
         this.isLoading = false;
@@ -323,6 +344,7 @@ export class TrainingCentreComponent implements OnInit {
     if (userData) {
       const user = JSON.parse(userData);
       this.userRole = user.role;
+      this.userId = user.OrganizationId;
     }
   }
 

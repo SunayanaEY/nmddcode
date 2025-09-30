@@ -19,6 +19,7 @@ import {
   State,
   District,
 } from '../../../services/location.service';
+import { AdminService } from '../services/training-admin.service';
 import { AuthService } from '../../../services/auth.service';
 
 @Component({
@@ -54,8 +55,8 @@ export class TrainingCentreAdminProfileComponent implements OnInit {
 
   // Institute Type options
   instituteTypes = [
-    { value: 'Government', label: 'Government' },
-    { value: 'Private', label: 'Private' },
+    { value: 'Government Owned', label: 'Government Owned' },
+    { value: 'Other Organizations', label: 'Other Organizations' },
   ];
 
   breadcrumbItems: BreadcrumbItem[] = [
@@ -83,14 +84,17 @@ export class TrainingCentreAdminProfileComponent implements OnInit {
     private toastr: ToastrService,
     private locationService: LocationService,
     private authService: AuthService,
+    private adminService: AdminService,
+
     private route: ActivatedRoute
   ) {
     this.getRole();
-    if (this.userRole == 5) {
+    if (this.userRole == 5 || this.userRole == 6) {
       const nav = this.router.getCurrentNavigation();
       const passedData = nav?.extras.state?.['data'];
       this.trainingInstituteId = passedData.id;
       this.instituteData = passedData;
+      alert(JSON.stringify(this.instituteData));
     }
 
     if (this.userRole == 1) {
@@ -133,18 +137,26 @@ export class TrainingCentreAdminProfileComponent implements OnInit {
       });
       this.profileForm.get('instituteType')?.valueChanges.subscribe((type) => {
         const orgControl = this.profileForm.get('organization');
+        const stateControl = this.profileForm.get('state');
+        const districtControl = this.profileForm.get('district');
 
-        if (type === 'Private') {
+        if (type === 'Other Organizations') {
+          // Organization required
+          this.loadOrganizations();
           orgControl?.setValidators([Validators.required]);
         } else {
+          // Organization not required
           orgControl?.clearValidators();
           orgControl?.setValue('');
         }
+
         orgControl?.updateValueAndValidity();
       });
     } else {
       this.profileForm = this.fb.group(
         {
+          organization: [''],
+          instituteType: ['', [Validators.required]],
           contactPersonName: [
             '',
             [Validators.required, Validators.minLength(2)],
@@ -197,7 +209,7 @@ export class TrainingCentreAdminProfileComponent implements OnInit {
     const now = new Date();
     this.today = now.toISOString().split('T')[0];
     this.loadStates();
-    if (this.userRole == 5) {
+    if (this.userRole == 5 || this.userRole == 6) {
       this.initializeForm();
     }
   }
@@ -209,7 +221,20 @@ export class TrainingCentreAdminProfileComponent implements OnInit {
       this.userId = user.id;
     }
   }
-
+  loadOrganizations() {
+    this.isLoadingStates = true;
+    this.adminService.getAllOrganization().subscribe({
+      next: (organizations: any) => {
+        this.organizations = organizations;
+        this.isLoadingStates = false;
+      },
+      error: (error: any) => {
+        console.error('Error loading organizations:', error);
+        this.toastr.error('Failed to load organizations', 'Error');
+        this.isLoadingStates = false;
+      },
+    });
+  }
   /**
    * Load states from API
    */
@@ -249,7 +274,9 @@ export class TrainingCentreAdminProfileComponent implements OnInit {
     this.profileForm.patchValue({
       trainingInstituteName: this.instituteData.trainingInstituteName,
       trainingInstituteRegistration: this.instituteData.registrationId,
-      trainingInstituteExpiry: this.instituteData.registrationValidity,
+      trainingInstituteExpiry: this.instituteData.expiryDate
+        ? this.instituteData.expiryDate.split('T')[0]
+        : '',
       instituteType: this.instituteData.instituteType,
       state: this.instituteData.stateId,
       address: this.instituteData.address,
@@ -260,6 +287,12 @@ export class TrainingCentreAdminProfileComponent implements OnInit {
     this.profileForm.patchValue({
       district: this.instituteData.districtId,
     });
+    if (this.userRole == 6) {
+      this.loadOrganizations();
+      this.profileForm.patchValue({
+        organization: this.instituteData.organizationId,
+      });
+    }
     // Disable controls
     this.profileForm.get('trainingInstituteName')?.disable();
     this.profileForm.get('trainingInstituteRegistration')?.disable();
@@ -270,6 +303,7 @@ export class TrainingCentreAdminProfileComponent implements OnInit {
     this.profileForm.get('latitude')?.disable();
     this.profileForm.get('longitude')?.disable();
     this.profileForm.get('district')?.disable();
+    this.profileForm.get('organization')?.disable();
   }
   /**
    * Handle form submission
@@ -307,19 +341,39 @@ export class TrainingCentreAdminProfileComponent implements OnInit {
         'trainingInstituteExpiry'
       )?.value;
 
-      const instituteDetails = {
-        instituteName:
-          this.profileForm.get('trainingInstituteName')?.value || '',
-        registrationNumber:
-          this.profileForm.get('trainingInstituteRegistration')?.value || '',
-        registrationValidity: expiryValue ? expiryValue + 'T00:00:00' : '',
-        instituteType: this.profileForm.get('instituteType')?.value || '',
-        stateId: parseInt(this.profileForm.get('state')?.value) || 0,
-        districtId: parseInt(this.profileForm.get('district')?.value) || 0,
-        address: this.profileForm.get('address')?.value || '',
-        latitude: this.profileForm.get('latitude')?.value || null,
-        longitude: this.profileForm.get('longitude')?.value || null,
-      };
+      let instituteDetails = {};
+      if (
+        this.profileForm.get('instituteType')?.value == 'Other Organizations'
+      ) {
+        instituteDetails = {
+          instituteName:
+            this.profileForm.get('trainingInstituteName')?.value || '',
+          registrationNumber:
+            this.profileForm.get('trainingInstituteRegistration')?.value || '',
+          registrationValidity: expiryValue ? expiryValue + 'T00:00:00' : '',
+          instituteType: this.profileForm.get('instituteType')?.value || '',
+          organizationId: this.profileForm.get('organization')?.value || '',
+          stateId: parseInt(this.profileForm.get('state')?.value) || 0,
+          districtId: parseInt(this.profileForm.get('district')?.value) || 0,
+          address: this.profileForm.get('address')?.value || '',
+          latitude: this.profileForm.get('latitude')?.value || null,
+          longitude: this.profileForm.get('longitude')?.value || null,
+        };
+      } else {
+        instituteDetails = {
+          instituteName:
+            this.profileForm.get('trainingInstituteName')?.value || '',
+          registrationNumber:
+            this.profileForm.get('trainingInstituteRegistration')?.value || '',
+          registrationValidity: expiryValue ? expiryValue + 'T00:00:00' : '',
+          instituteType: this.profileForm.get('instituteType')?.value || '',
+          stateId: parseInt(this.profileForm.get('state')?.value) || 0,
+          districtId: parseInt(this.profileForm.get('district')?.value) || 0,
+          address: this.profileForm.get('address')?.value || '',
+          latitude: this.profileForm.get('latitude')?.value || null,
+          longitude: this.profileForm.get('longitude')?.value || null,
+        };
+      }
 
       // Append instituteDetails as JSON string with explicit content type
       const instituteDetailsBlob = new Blob(
