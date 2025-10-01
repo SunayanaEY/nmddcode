@@ -249,7 +249,7 @@ export class TableComponent {
       {
          this.selectedItems.add(item);
       }
-        else if (this.tableName === 'Trainee-List' && (item.status === 'TRAINEE_UPLOADED' || (this.userRole === 5 && item.status === 'VALIDATED_BY_INSTITUTE_HEAD'))) {
+        else if (this.tableName === 'Trainee-List' && (item.status === 'TRAINEE_UPLOADED' || ((this.userRole === 5 || this.userRole === 6) && item.status === 'VALIDATED_BY_INSTITUTE_HEAD'))) {
            this.selectedItems.add(item);
          }
         else if (this.tableName!=='Verify-Trainings' && this.tableName!=='Trainee-List' && item.status === 'VERIFIED') {
@@ -291,7 +291,7 @@ export class TableComponent {
     if(this.tableName==='Verify-Trainings')
       return this.data.filter(item => item.status === 'IN PROGRESS').length;
     else if(this.tableName==='Trainee-List')
-      return this.data.filter(item => item.status === 'TRAINEE_UPLOADED' || (this.userRole === 5 && item.status === 'VALIDATED_BY_INSTITUTE_HEAD')).length;
+      return this.data.filter(item => item.status === 'TRAINEE_UPLOADED' || ((this.userRole === 5 || this.userRole === 6) && item.status === 'VALIDATED_BY_INSTITUTE_HEAD')).length;
     else
     return this.data.filter(item => item.status === 'VERIFIED' ).length;
   }

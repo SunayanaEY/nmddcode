@@ -29,6 +29,27 @@ export class NewCertificateLayoutComponent implements OnInit {
   ngOnInit() {
     console.log(this.data);
     this.data.trainingDate = new Date(this.data.trainingDate);
+    
+    // Trim whitespace from image URLs
+    if (this.data.logoPath1) {
+      this.data.logoPath1 = this.data.logoPath1.trim();
+    }
+    if (this.data.logoPath2) {
+      this.data.logoPath2 = this.data.logoPath2.trim();
+    }
+    if (this.data.logoPath3) {
+      this.data.logoPath3 = this.data.logoPath3.trim();
+    }
+    
+    // Trim whitespace from signature image URLs
+    if (this.data.signatures && this.data.signatures.length > 0) {
+      this.data.signatures.forEach((signature: any) => {
+        if (signature.signatorySignaturePath) {
+          signature.signatorySignaturePath = signature.signatorySignaturePath.trim();
+        }
+      });
+    }
+    
     this.getInstituteDetails(this.data.trainingInstituteId);
   }
 

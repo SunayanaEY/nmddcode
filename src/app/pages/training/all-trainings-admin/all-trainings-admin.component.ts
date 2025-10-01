@@ -194,7 +194,7 @@ export class AllTrainingsAdminComponent {
       title: 'Download certificate',
       condition: (row: any) =>
         row.status === 'APPROVED_BY_STATE_ADMIN' ||
-        row.status === 'APPROVED_BY_ORGANIZATION',
+        row.status === 'APPROVED_BY_ORGANIZATION' || row.status === 'CERTIFICATE_ISSUED',
     },
   ];
 
