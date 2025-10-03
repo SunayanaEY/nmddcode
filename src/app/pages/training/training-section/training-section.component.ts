@@ -116,4 +116,8 @@ export class TrainingSectionComponent implements OnInit {
   navigateToTrainingCentreAdminProfile() {
     this.router.navigate(['/admin/training-centre-admin-profile']);
   }
+
+  navigateToStateAdminProfile() {
+    this.router.navigate(['/admin/state-admin-profile']);
+  }
 }

@@ -286,13 +286,14 @@
         class="btn btn-primary"
         style="width: 20%; margin-left: 30%"
         *ngIf="
-          trainingDetails.status === 'VALIDATED_BY_INSTITUTE_HEAD' &&
-          this.userRole !== 3
-        "
+           trainingDetails.status === 'VALIDATED_BY_INSTITUTE_HEAD' &&
+           this.userRole !== 3
+         "
         (click)="approveTrainingSchedule()"
       >
         Approve
       </button>
+
       <button
         class="btn btn-danger"
         style="width: 20%"
@@ -309,11 +310,11 @@
     <div
       class="card-header col-12 mb-4 mt-4 bg-appColor"
       *ngIf="
-        trainingDetails.status !== 'NEW' &&
-        trainingDetails.status !== 'VALIDATED_BY_INSTITUTE_HEAD' &&
-        trainingDetails.status !== 'APPROVED_BY_STATE_ADMIN' &&
-        trainingDetails.status !== 'VALIDATED_BY_INSTITUTE_HEAD'
-      "
+         trainingDetails.status !== 'NEW' &&
+         trainingDetails.status !== 'VALIDATED_BY_INSTITUTE_HEAD' &&
+         trainingDetails.status !== 'APPROVED_BY_STATE_ADMIN' &&
+         trainingDetails.status !== 'VALIDATED_BY_INSTITUTE_HEAD'
+       "
     >
       <h3 class="mb-0 text-white">
         {{ "Trainee List" }}

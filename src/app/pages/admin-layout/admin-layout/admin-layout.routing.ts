@@ -176,6 +176,15 @@ export const AdminLayoutRoutes: Routes = [
     data: { allowedRoles: [6] },
   },
   {
+    path: 'state-admin-profile',
+    loadComponent: () =>
+      import('../../training/state-admin-profile/state-admin-profile.component').then(
+        (m) => m.StateAdminProfileComponent
+      ),
+    canActivate: [RoleGuard],
+    data: { allowedRoles: [1] },
+  },
+  {
     path: 'organization-table',
     component: OrganizationTableDataComponent,
     canActivate: [RoleGuard],
