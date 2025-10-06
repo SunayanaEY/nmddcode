@@ -39,7 +39,7 @@
               text-shadow: none;
             "
           >
-            <i class="fas fa-download me-2"></i>Download Certificate
+            <i class="fas fa-download me-2"></i>{{'Download Certificate' | translate}}
           </button>
 
           <!-- <button
@@ -132,7 +132,7 @@
             <h1 class="form-title">Sign In</h1>
             <form [formGroup]="signInForm" (ngSubmit)="onSignIn()">
               <div class="form-group">
-                <label>Email Address</label>
+                <label>{{'Email Address'|translate}}</label>
                 <input
                   type="email"
                   formControlName="email"
@@ -150,15 +150,15 @@
                   "
                 >
                   <span *ngIf="signInForm.get('email')?.errors?.['required']"
-                    >Email is required</span
+                    >{{'Email is required'|translate}}</span
                   >
                   <span *ngIf="signInForm.get('email')?.errors?.['email']"
-                    >Please enter a valid email</span
+                    >{{'Please enter a valid email' |translate}}</span
                   >
                 </div>
               </div>
               <div class="form-group">
-                <label>Password</label>
+                <label>{{'Password'|translate}}</label>
                 <div style="position: relative">
                   <input
                     [type]="showPassword ? 'text' : 'password'"
@@ -218,11 +218,11 @@
                   "
                 >
                   <span *ngIf="signInForm.get('password')?.errors?.['required']"
-                    >Password is required</span
+                    >{{'Password is required'|translate}}</span
                   >
                   <span
                     *ngIf="signInForm.get('password')?.errors?.['minlength']"
-                    >Password must be at least 6 characters</span
+                    >{{'Password must be at least 6 characters'|translate}}</span
                   >
                 </div>
               </div>
@@ -231,13 +231,13 @@
                   <a
                     [routerLink]="['/forget-password']"
                     [queryParams]="{ type: 'forget' }"
-                    >Forgot Password?</a
+                    >{{'Forgot Password?'|translate}}</a
                   >
                 </div>
               </div>
               <!-- Error Message -->
               <div *ngIf="errorMessage" class="error-message">
-                {{ errorMessage }}
+                {{ errorMessage |translate }}
               </div>
 
               <button
@@ -247,7 +247,7 @@
               >
                 <span *ngIf="!isLoading">Sign in</span>
                 <span *ngIf="isLoading">
-                  <i class="fas fa-spinner fa-spin"></i> Signing in...
+                  <i class="fas fa-spinner fa-spin"></i> {{'Signing in...'|translate}}
                 </span>
               </button>
             </form>
@@ -258,7 +258,7 @@
             <h1 class="form-title">Create Account</h1>
             <form [formGroup]="signUpForm" (ngSubmit)="onSignUp()">
               <div class="form-group">
-                <label>Username</label>
+                <label>{{'Username'|translate}}</label>
                 <input
                   type="text"
                   formControlName="username"
@@ -276,16 +276,16 @@
                   "
                 >
                   <span *ngIf="signUpForm.get('username')?.errors?.['required']"
-                    >Username is required</span
+                    >{{'Username is required'|translate}}</span
                   >
                   <span
                     *ngIf="signUpForm.get('username')?.errors?.['minlength']"
-                    >Username must be at least 3 characters</span
+                    >{{'Username must be at least 3 characters' |translate}}</span
                   >
                 </div>
               </div>
               <div class="form-group">
-                <label>Training Institute Name</label>
+                <label>{{'Training Institute Name'|translate}}</label>
                 <input
                   type="text"
                   formControlName="trainingInstituteName"
@@ -304,11 +304,11 @@
                 >
                   <span
                     *ngIf="signUpForm.get('trainingInstituteName')?.errors?.['required']"
-                    >Training institute name is required</span
+                    >{{'Training institute name is required'|translate}}</span
                   >
                   <span
                     *ngIf="signUpForm.get('trainingInstituteName')?.errors?.['minlength']"
-                    >Training institute name must be at least 3 characters</span
+                    >{{'Training institute name must be at least 3 characters'|translate}}</span
                   >
                 </div>
               </div>
@@ -341,12 +341,12 @@
                     "
                   >
                     <span *ngIf="signUpForm.get('state')?.errors?.['required']"
-                      >State is required</span
+                      >{{'State is required' |translate}}</span
                     >
                   </div>
                 </div>
                 <div class="form-group">
-                  <label>District *</label>
+                  <label>{{'District' |translate}} *</label>
                   <select
                     formControlName="district"
                     [class.error]="
@@ -382,7 +382,7 @@
                   >
                     <span
                       *ngIf="signUpForm.get('district')?.errors?.['required']"
-                      >District is required</span
+                      >{{'District is required'|translate}}</span
                     >
                   </div>
                 </div>

@@ -1,6 +1,7 @@
 import { Component, Input, Output, EventEmitter, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { TranslateModule } from '@ngx-translate/core';
 
 export interface ModalField {
   id: string;
@@ -33,7 +34,7 @@ export interface ModalConfig {
 @Component({
   selector: 'app-modal',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule,TranslateModule],
   templateUrl: './modal.component.html',
   styleUrls: ['./modal.component.css']
 })
@@ -42,7 +43,7 @@ export class ModalComponent implements OnInit {
   @Input() config: ModalConfig = { title: 'Modal' };
   @Input() data: any = {}; // for displaying read-only data
   @Input() mode: 'view' | 'edit' | 'create' = 'view';
-  
+
   @Output() close = new EventEmitter<void>();
   @Output() primaryAction = new EventEmitter<any>();
   @Output() secondaryAction = new EventEmitter<any>();
@@ -105,13 +106,13 @@ export class ModalComponent implements OnInit {
   onFileChange(fieldId: string, event: any) {
     const files = event.target.files;
     const field = this.config.fields?.find(f => f.id === fieldId);
-    
+
     if (field?.multiple) {
       this.onFieldChange(fieldId, files);
     } else {
       const file = files[0] || null;
       this.onFieldChange(fieldId, file);
-      
+
       // Create preview for image files
       if (file && file.type.startsWith('image/')) {
         this.createFilePreview(fieldId, file);
@@ -137,7 +138,7 @@ export class ModalComponent implements OnInit {
     delete this.filePreviews[fieldId];
     this.formData[fieldId] = null;
     this.onFieldChange(fieldId, null);
-    
+
     // Clear the file input
     const fileInput = document.getElementById(fieldId) as HTMLInputElement;
     if (fileInput) {
@@ -173,7 +174,7 @@ export class ModalComponent implements OnInit {
     if (value === null || value === undefined || value === '') {
       return '-';
     }
-    
+
     switch (type) {
       case 'date':
         return new Date(value).toLocaleDateString();

@@ -2,10 +2,10 @@
   <!-- Loading Overlay -->
   <div *ngIf="isLoading" class="loading-overlay" style="position: absolute; top: 0; left: 0; right: 0; bottom: 0; background: rgba(255, 255, 255, 0.8); display: flex; justify-content: center; align-items: center; z-index: 1000;">
     <div class="spinner-border text-primary" role="status">
-      <span class="visually-hidden">Loading...</span>
+      <span class="visually-hidden">{{'Loading...'|translate}}</span>
     </div>
   </div>
-  
+
   <div class="d-flex justify-content-between align-items-center mb-3" style="margin-top: 3%">
     <div class="input-group search mb-4" style="max-width: 500px">
       <div class="input-group-prepend">
@@ -27,10 +27,10 @@
       </div>
 
       <button *ngIf="isExportPDF  && !hasSelectedItems" class="btn btn-primary" (click)="createPdf()">
-        Export PDF
+        {{'Export PDF'|translate}}
       </button>
       <button *ngIf="isExportCSV  && !hasSelectedItems" class="btn btn-warning" (click)="exportExcel()">
-        Export Excel
+        {{'Export Excel'|translate}}
       </button>
       <!-- <button *ngIf="isBulkCertDownload" class="btn btn-primary" (click)="downloadCerts('Download Certs')">
         <i class="bi bi-download"></i> Download Certificates
@@ -38,7 +38,7 @@
       <!-- Add new row -->
       <button *ngIf="tableNamesArray.includes(tableName)" class="btn btn-link add-more-btn"
         (click)="addNewRow(data.length)">
-        <i class="bi bi-plus-circle"></i> {{ addNew }}
+        <i class="bi bi-plus-circle"></i> {{ addNew |translate}}
       </button>
     </div>
   </div>
@@ -58,7 +58,7 @@
           </th>
           <th scope="col">Sr.No.</th>
           <th *ngFor="let col of columns" scope="col">{{ col.header }}</th>
-          <th *ngIf="actions.length > 0" scope="col">Actions</th>
+          <th *ngIf="actions.length > 0" scope="col">{{'Actions'|translate}}</th>
         </tr>
       </thead>
       <tbody>
@@ -152,17 +152,17 @@
         </tr>
       </tbody>
     </table>
-    
+
     <!-- No Records Available Message -->
     <div *ngIf="!isLoading && (data | tableSearch : searchTextActive).length === 0" class="text-center py-5">
       <div class="no-data-message">
         <i class="bi bi-inbox" style="font-size: 3rem; color: #6c757d; margin-bottom: 1rem;"></i>
-        <h5 class="text-muted">No Records Available</h5>
-        <p class="text-muted mb-0">{{ searchTextActive ? 'No records match your search criteria.' : 'There are no records to display.' }}</p>
+        <h5 class="text-muted">{{'No Records Available'|translate}}</h5>
+        <p class="text-muted mb-0">{{ searchTextActive ? 'No records match your search criteria.' : 'There are no records to display.'  | translate}}</p>
       </div>
     </div>
   </div>
-  
+
   <div class="card-footer py-4" *ngIf="!isLoading && (data | tableSearch : searchTextActive).length > 0">
     <nav aria-label="..." class="text-right">
       <pagination-controls id="pagination2" (pageChange)="p = $event"></pagination-controls>

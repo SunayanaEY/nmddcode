@@ -2,14 +2,14 @@
   <app-breadcrumb [items]="breadcrumbItems"></app-breadcrumb>
 
   <div class="page-header">
-    <h2>All Training Types</h2>
+    <h2>{{'All Training Types'|translate}}</h2>
   </div>
 
 
 
 
   <div class="trainings-summary">
-    <span class="badge bg-secondary">Total - {{ trainingTypeListProcessed.length }} Training Types</span>
+    <span class="badge bg-secondary">{{'Total'|translate}} - {{ trainingTypeListProcessed.length }} {{'Training Types'|translate}}</span>
   </div>
 
   <app-table [columns]="tableColumns" [data]="trainingTypeListProcessed" (actionClick)="handleTableAction($event)"
@@ -28,7 +28,7 @@
       background-color: #155e91;
       color:white !important;
   ">
-    <h3 class="my-auto text-white">{{'Confirmation'}}</h3>
+    <h3 class="my-auto text-white">{{'Confirmation'|translate}}</h3>
     <button type="button" class="close" aria-label="Close" (click)="modal.dismiss('Cross click')">
       <!-- <button type="button" class="close" aria-label="Close" data-bs-dismiss="modal"> -->
       <span aria-hidden="true">&times;</span>
@@ -39,7 +39,7 @@
       <div class="col-md-12">
         <div class="d-flex mr-4">
           <h4 class="my-auto mr-2 ">
-            {{confirmationMessage}}
+            {{confirmationMessage|translate}}
           </h4>
           <!-- <p class="my-auto mb-0"> {{complaintDetail.compcreator}}</p> -->
           <!-- <p class="my-auto mb-0 form-control"> {{'training title'}}</p> -->
@@ -53,12 +53,12 @@
   <div class="modal-footer">
     <button type="button" class="btn btn-primary" (click)="confirm()" style="background-color: #155e91;">
       <!-- <button type="button" class="btn btn-primary"  data-bs-dismiss="modal"> -->
-      {{'confirm'}}
+      {{'confirm'|translate}}
     </button>
     <button type="button" class="btn btn-primary" (click)="modal.dismiss('Close click')"
       style="background-color: #155e91;">
       <!-- <button type="button" class="btn btn-primary"  data-bs-dismiss="modal"> -->
-      {{'close'}}
+      {{'close'|translate}}
     </button>
   </div>
 </ng-template>

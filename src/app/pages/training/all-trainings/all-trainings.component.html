@@ -44,7 +44,7 @@
     </div>
   </ng-template> -->
   <!-- </ng-select> -->
-  <!-- 
+  <!--
       <ng-select
         class="custom-ng-select form-control"
         placeholder="Scheme"
@@ -197,9 +197,9 @@
   <!-- </div> -->
 
   <div class="trainings-summary">
-    <h4>All Trainings</h4>
+    <h4>{{'All Trainings'|translate}}</h4>
     <span class="badge bg-secondary"
-      >Total - {{ trainingsList.length }} Trainings</span
+      >{{'Total'|translate}} - {{ trainingsList.length }} {{'Trainings'|translate}}</span
     >
   </div>
 
@@ -218,7 +218,7 @@
 </div>
 <ng-template #trainingDetailsModal let-modal>
   <div class="modal-header bg-appColor">
-    <h3 class="my-auto text-white">Training Details</h3>
+    <h3 class="my-auto text-white">{{"Training Details"|translate}}</h3>
     <button
       type="button"
       class="close"
@@ -233,20 +233,20 @@
     <div class="row g-3">
       <div class="col-md-6">
         <div class="detail-row">
-          <label class="detail-label">Training Title:</label>
+          <label class="detail-label">{{'Training Title'|translate}}:</label>
           <div class="detail-value">{{ trainingDetails?.trainingTitle }}</div>
         </div>
       </div>
       <div class="col-md-6">
         <div class="detail-row">
-          <label class="detail-label">Scheme:</label>
+          <label class="detail-label">{{'Scheme'|translate}}:</label>
           <div class="detail-value">{{ trainingDetails?.scheme }}</div>
         </div>
       </div>
 
       <div class="col-md-6">
         <div class="detail-row">
-          <label class="detail-label">Training Institute Name:</label>
+          <label class="detail-label">{{'Training Institute Name'|translate}}:</label>
           <div class="detail-value">
             {{ trainingDetails?.trainingInstituteName }}
           </div>
@@ -254,33 +254,33 @@
       </div>
       <div class="col-md-6">
         <div class="detail-row">
-          <label class="detail-label">Trainer Name:</label>
+          <label class="detail-label">{{'Trainer Name'|translate}}:</label>
           <div class="detail-value">{{ trainingDetails?.trainerName }}</div>
         </div>
       </div>
 
       <div class="col-md-6">
         <div class="detail-row">
-          <label class="detail-label">Training Date:</label>
+          <label class="detail-label">{{'Training Date'|translate}}:</label>
           <div class="detail-value">{{ trainingDetails?.trainingDate }}</div>
         </div>
       </div>
       <div class="col-md-6">
         <div class="detail-row">
-          <label class="detail-label">Training Duration:</label>
+          <label class="detail-label">{{'Training Duration'|translate}}:</label>
           <div class="detail-value">{{ trainingDetails?.duration }}</div>
         </div>
       </div>
 
       <div class="col-md-6">
         <div class="detail-row">
-          <label class="detail-label">Mode of Training:</label>
+          <label class="detail-label">{{'Mode of Training'|translate}}:</label>
           <div class="detail-value">{{ trainingDetails?.modeOfTraining }}</div>
         </div>
       </div>
       <div class="col-md-6">
         <div class="detail-row">
-          <label class="detail-label">Training Description:</label>
+          <label class="detail-label">{{'Training Description'|translate}}:</label>
           <div class="detail-value">
             {{ trainingDetails?.trainingDescription }}
           </div>
@@ -289,13 +289,13 @@
 
       <div class="col-md-6">
         <div class="detail-row">
-          <label class="detail-label">Location:</label>
+          <label class="detail-label">{{'Location'|translate}}:</label>
           <div class="detail-value">{{ trainingDetails?.location }}</div>
         </div>
       </div>
       <div class="col-md-6">
         <div class="detail-row">
-          <label class="detail-label">Status:</label>
+          <label class="detail-label">{{'Status'|translate}}:</label>
           <div class="detail-value">{{ trainingDetails?.status }}</div>
         </div>
       </div>
@@ -309,7 +309,7 @@
       (click)="modal.dismiss('Close click')"
       style="background-color: #155e91"
     >
-      Close
+      {{'Close'|translate}}
     </button>
   </div>
 </ng-template>

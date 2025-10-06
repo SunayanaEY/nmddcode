@@ -3,7 +3,7 @@
     <!-- Header Section -->
     <div class="form-header">
       <app-breadcrumb [items]="breadcrumbItems"></app-breadcrumb>
-      <h1 class="page-title">Trainer Profile Creation</h1>
+      <h1 class="page-title">{{'Trainer Profile Creation'|translate}}</h1>
     </div>
 
     <!-- Form Content -->
@@ -11,12 +11,12 @@
       <form [formGroup]="profileForm" (ngSubmit)="onSubmit()">
         <!-- Operator Details Section -->
         <div class="form-section">
-          <h3 class="section-title">Trainer Details</h3>
+          <h3 class="section-title">{{'Trainer Details'|translate}}</h3>
 
           <div class="form-row">
             <div class="form-group half-width">
               <label for="trainerName"
-                >Trainer Name <span class="required">*</span></label
+                >{{'Trainer Name'|translate}} <span class="required">*</span></label
               >
               <input
                 type="text"
@@ -36,12 +36,12 @@
                 "
                 class="invalid-feedback"
               >
-                Trainer name is required
+                {{'Trainer name is required'|translate}}
               </div>
             </div>
             <div class="form-group half-width">
               <label for="expertiseIn"
-                >Expertise In <span class="required">*</span></label
+                >{{'Expertise In'|translate}} <span class="required">*</span></label
               >
               <input
                 type="text"
@@ -61,7 +61,7 @@
                 "
                 class="invalid-feedback"
               >
-                Expertise Field is required
+                {{'Expertise Field is required'|translate}}
               </div>
             </div>
           </div>
@@ -69,7 +69,7 @@
           <div class="form-row">
             <div class="form-group half-width">
               <label for="mobile"
-                >Contact Number <span class="required">*</span></label
+                >{{'Contact Number' | translate}} <span class="required">*</span></label
               >
               <input
                 type="tel"
@@ -92,18 +92,18 @@
                 <div
                   *ngIf="profileForm.get('mobile')?.errors?.['required']"
                 >
-                  Contact number is required
+                  {{'Contact number is required'|translate}}
                 </div>
                 <div
                   *ngIf="profileForm.get('mobile')?.errors?.['pattern']"
                 >
-                  Please enter a valid 10-digit contact number
+                  {{'Please enter a valid 10-digit contact number'|translate}}
                 </div>
               </div>
             </div>
             <div class="form-group half-width">
               <label for="email"
-                >Email ID <span class="required">*</span></label
+                >{{'Email ID'|translate}} <span class="required">*</span></label
               >
               <input
                 type="email"
@@ -124,10 +124,10 @@
                 class="invalid-feedback"
               >
                 <div *ngIf="profileForm.get('email')?.errors?.['required']">
-                  Email ID is required
+                  {{'Email ID is required'|translate}}
                 </div>
                 <div *ngIf="profileForm.get('email')?.errors?.['email']">
-                  Please enter a valid email address
+                  {{'Please enter a valid email address'|translate}}
                 </div>
               </div>
             </div>
@@ -147,7 +147,7 @@
               role="status"
               aria-hidden="true"
             ></span>
-            {{ isLoading ? "Creating Profile..." : "Create Profile" }}
+            {{ isLoading ? "Creating Profile..." : "Create Profile" |translate}}
           </button>
         </div>
       </form>
@@ -156,7 +156,7 @@
     <!-- Trainers Table Section -->
     <div class="form-content mt-4">
       <div class="form-section">
-        <h3 class="section-title">Available Trainers</h3>
+        <h3 class="section-title">{{'Available Trainers'|translate}}</h3>
         <app-table
           [data]="trainersData"
           [columns]="tableColumns"

@@ -9,6 +9,7 @@ import { NgxPaginationModule } from 'ngx-pagination';
 import { PaginationModule } from 'ngx-bootstrap/pagination';
 import { ToastrService } from 'ngx-toastr';
 import { table } from 'node:console';
+import { TranslateModule } from '@ngx-translate/core';
 applyPlugin(jsPDF);
 //require('jspdf-autotable');
 export interface TableColumn {
@@ -38,6 +39,7 @@ export interface TableAction {
     TableSearchPipe,
     PaginationModule,
     NgxPaginationModule,
+    TranslateModule
   ],
   templateUrl: './table.component.html',
   styleUrls: ['./table.component.css'],
@@ -49,7 +51,7 @@ export class TableComponent {
   @Input() userRole: number = 0;
   schemesTableString: string = 'schemes';
   tableNamesArray: Array<string> = ['schemes', 'trainingTypes'];
-  @Input() addNew: String = '';
+  @Input() addNew: string = '';
   @Input() columns: TableColumn[] = [];
   @Input() enableMultiSelect: boolean = false;
   @Input() bulkActions: TableAction[] = [];
@@ -88,7 +90,7 @@ export class TableComponent {
     private excelService: ExcelService,
     private toatsr: ToastrService
   ) {
-    
+
   }
 
   ngOnInit() {}
@@ -206,7 +208,7 @@ export class TableComponent {
   }
 
   exportExcel() {
-    
+
     this.excelHeaders = this.pdfHeaders.splice(0, 1);
 
     this.data.forEach((element) => {
@@ -218,7 +220,7 @@ export class TableComponent {
       combinedArray.forEach((arr) => {
         resultObj[arr.item1] = arr.item2;
       });
-     
+
       this.excelData.push(resultObj);
     });
     console.log('new Date(): ' + new Date());
@@ -242,7 +244,7 @@ export class TableComponent {
     this.selectAll = !this.selectAll;
     if (this.selectAll) {
       // Only select items that are not APPROVED or REJECTED
-     
+
       this.data.forEach(item => {
 
          if(this.tableName==='Verify-Trainings' && item.status === 'IN PROGRESS')

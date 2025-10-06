@@ -21,6 +21,7 @@ import { IndiaMapComponent } from '../pages/public-dashboard/components/india-ma
 import { CertificateLayoutComponent } from '../pages/certificate-layout/certificate-layout.component';
 import { CommonModule } from '@angular/common';
 import { NewCertificateLayoutComponent } from '../pages/new-certificate-layout/new-certificate-layout.component';
+import { TranslateModule } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-dashboard',
@@ -33,6 +34,7 @@ import { NewCertificateLayoutComponent } from '../pages/new-certificate-layout/n
     ReactiveFormsModule,
     CommonModule,
     NewCertificateLayoutComponent,
+    TranslateModule
   ],
   templateUrl: './dashboard.component.html',
   styleUrl: './dashboard.component.css',

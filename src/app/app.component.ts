@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
+import { TranslateService } from '@ngx-translate/core';
 
 @Component({
 
@@ -11,4 +12,13 @@ import { RouterOutlet } from '@angular/router';
 })
 export class AppComponent {
   title = 'nmddcode';
+
+  constructor(private translate: TranslateService) {
+this.translate.setFallbackLang('en') ;// Default language
+this.translate.use('en'); // Initial language
+}
+
+switchLanguage(lang: string) {
+this.translate.use(lang); // Switch language dynamically
+}
 }

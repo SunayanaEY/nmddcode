@@ -22,7 +22,7 @@
         <div class="stats-body">
           <!-- Title -->
           <h6 class="stats-title" [style.color]="card.textColor">
-            {{ card.title }}
+            {{ card.title |translate}}
           </h6>
 
           <!-- Value -->
@@ -34,7 +34,7 @@
           <div class="stats-growth">
             <span class="growth-indicator" [class]="getGrowthClass(card.growth)">
               <i [class]="getGrowthIcon(card.growth)" class="me-1"></i>
-              {{ Math.abs(card.growth) }}% {{ card.growthText }}
+              {{ Math.abs(card.growth) }}% {{ card.growthText |translate }}
             </span>
           </div>
         </div>

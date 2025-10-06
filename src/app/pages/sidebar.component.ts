@@ -5,11 +5,12 @@ import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms'
 import { Router, RouterModule } from '@angular/router';
 ///TODO - 111
 import { AuthService } from '../services/auth.service';
+import { TranslateModule } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-sidebar',
   standalone: true,
-  imports: [CommonModule,RouterModule],
+  imports: [CommonModule,RouterModule,TranslateModule],
   templateUrl: './sidebar.component.html',
   styleUrls: ['./sidebar.component.css']
 })

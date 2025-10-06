@@ -2,7 +2,7 @@
   <app-breadcrumb [items]="breadcrumbItems"></app-breadcrumb>
 
   <div class="page-header">
-    <h2>Approved Certificate</h2>
+    <h2>{{'Approved Certificate'|translate}}</h2>
   </div>
 
   <div class="filter-container">
@@ -43,9 +43,9 @@
   </div>
 
   <div class="trainings-summary">
-    <h4>Trainees List</h4>
+    <h4>{{'Trainees List'|translate}}</h4>
     <span class="badge bg-secondary"
-      >Total trainees : {{ filteredTableData.length }}</span
+      >{{'Total trainees'|translate}} : {{ filteredTableData.length }}</span
     >
   </div>
 
@@ -71,7 +71,7 @@
       <div class="modal-content p-4">
         <div class="modal-header">
           <h5 class="modal-title" id="viewCertificateModalLabel">
-            Approved Certificate
+            {{'Approved Certificate'|translate}}
           </h5>
           <button
             type="button"

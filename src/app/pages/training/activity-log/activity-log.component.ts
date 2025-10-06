@@ -5,11 +5,12 @@ import { Router } from '@angular/router';
 import { BreadcrumbComponent, BreadcrumbItem } from '../../../components/breadcrumb/breadcrumb.component';
 import { AuthService } from '../../../services/auth.service';
 import { ActivityLogService, ActivityLogItem } from '../services/activity-log.service';
+import { TranslateModule } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-activity-log',
   standalone: true,
-  imports: [CommonModule, FormsModule, BreadcrumbComponent],
+  imports: [CommonModule, FormsModule, BreadcrumbComponent,TranslateModule],
   templateUrl: './activity-log.component.html',
   styleUrls: ['./activity-log.component.css']
 })
@@ -18,27 +19,27 @@ export class ActivityLogComponent implements OnInit {
   filteredLogs: ActivityLogItem[] = [];
   selectedFilter: string = 'all';
   userRole: number = 0;
-  
+
   // Expose Math to template
   Math = Math;
-  
+
   // Breadcrumb configuration
   breadcrumbItems: BreadcrumbItem[] = [
     { label: 'Training Module', url: '/admin' },
     { label: 'Activity Log Feed' }
   ];
-  
+
   // Pagination configuration
   currentPage: number = 1;
   itemsPerPage: number = 10;
   totalPages: number = 0;
   paginatedLogs: ActivityLogItem[] = [];
-  
+
   // Date filter configuration
   startDate: string = '';
   endDate: string = '';
   originalLogs: ActivityLogItem[] = [];
-  
+
   // Loading and error states
   isLoading: boolean = false;
   errorMessage: string = '';
@@ -62,10 +63,10 @@ export class ActivityLogComponent implements OnInit {
     // Get date range for API call (default to last 30 days if no dates selected)
     const fromDate = this.startDate || this.getDefaultFromDate();
     const toDate = this.endDate || this.getDefaultToDate();
-    
+
     this.isLoading = true;
     this.errorMessage = '';
-    
+
     this.activityLogService.getActivityLogs(fromDate, toDate).subscribe({
       next: (logs) => {
         this.activityLogs = logs;
@@ -208,10 +209,10 @@ export class ActivityLogComponent implements OnInit {
         }
       });
     }
-    
+
     this.activityLogs = logs;
     this.originalLogs = [...logs];
-    
+
     this.filteredLogs = [...this.activityLogs];
   }
 
@@ -247,7 +248,7 @@ export class ActivityLogComponent implements OnInit {
         return '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="2"/></svg>';
     }
   }
-  
+
   getTypeIcon(type: string): string {
     switch (type) {
       case 'upload': return '📤';
@@ -288,7 +289,7 @@ export class ActivityLogComponent implements OnInit {
   trackByLogId(index: number, item: ActivityLogItem): string {
     return item.id;
   }
-  
+
   // Pagination methods
   updatePagination() {
     this.totalPages = Math.ceil(this.filteredLogs.length / this.itemsPerPage);
@@ -296,45 +297,45 @@ export class ActivityLogComponent implements OnInit {
     const endIndex = startIndex + this.itemsPerPage;
     this.paginatedLogs = this.filteredLogs.slice(startIndex, endIndex);
   }
-  
+
   goToPage(page: number) {
     if (page >= 1 && page <= this.totalPages) {
       this.currentPage = page;
       this.updatePagination();
     }
   }
-  
+
   previousPage() {
     this.goToPage(this.currentPage - 1);
   }
-  
+
   nextPage() {
     this.goToPage(this.currentPage + 1);
   }
-  
+
   getPageNumbers(): number[] {
     const pages: number[] = [];
     const maxVisiblePages = 5;
     let startPage = Math.max(1, this.currentPage - Math.floor(maxVisiblePages / 2));
     let endPage = Math.min(this.totalPages, startPage + maxVisiblePages - 1);
-    
+
     if (endPage - startPage + 1 < maxVisiblePages) {
       startPage = Math.max(1, endPage - maxVisiblePages + 1);
     }
-    
+
     for (let i = startPage; i <= endPage; i++) {
       pages.push(i);
     }
-    
+
     return pages;
   }
-  
+
   // Date filter methods
   filterByDateRange(): void {
     if (this.startDate && this.endDate) {
       this.isLoading = true;
       this.errorMessage = '';
-      
+
       // Use API service to fetch logs with date range
       this.activityLogService.getActivityLogs(this.startDate, this.endDate).subscribe({
         next: (logs) => {
@@ -356,7 +357,7 @@ export class ActivityLogComponent implements OnInit {
       this.loadActivityLogs();
     }
   }
-  
+
   clearDateFilter(): void {
     this.startDate = '';
     this.endDate = '';

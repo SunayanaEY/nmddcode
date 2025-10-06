@@ -12,10 +12,11 @@ import {
   TableComponent,
 } from '../../../components/table/table.component';
 import { TrainingTypeService } from '../../training/services/training-type.service';
+import { TranslateModule } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-training-type-management',
-  imports: [TableComponent, BreadcrumbComponent],
+  imports: [TableComponent, BreadcrumbComponent,TranslateModule],
   templateUrl: './training-type-management.component.html',
   styleUrl: './training-type-management.component.css',
 })
@@ -27,7 +28,7 @@ export class TrainingTypeManagementComponent {
   isExportCSV: Boolean = false;
   isExportPdf: Boolean = false;
   table: string = 'trainingTypes';
-  addNew: String = 'Add new training type';
+  addNew: string = 'Add new training type';
 
   fileName: String = 'All_trainings_';
 
@@ -126,6 +127,11 @@ export class TrainingTypeManagementComponent {
       if (event.item.title == null || event.item.title == '') {
         this.trainingTypeListProcessed.splice(this.event.index, 1);
       } else {
+        if(localStorage.getItem('language')=='hi')
+        this.confirmationMessage =
+          'योजना को हटाने की पुष्टि करें - ' + event.item.title;
+
+          else
         this.confirmationMessage =
           'Confirm to delete training type - ' + event.item.title;
         this.confirmChangeModal();

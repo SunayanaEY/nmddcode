@@ -4,6 +4,7 @@ import { NgxEchartsDirective } from 'ngx-echarts';
 import { EChartsOption } from 'echarts';
 import { Subscription } from 'rxjs';
 import { DashboardDataService, TrainingInstituteTypeDistributionResponse } from '../../services/dashboard-data.service';
+import { TranslateModule } from '@ngx-translate/core';
 
 export interface InstituteTypeData {
   type: string;
@@ -19,7 +20,7 @@ export interface StateData {
 @Component({
   selector: 'app-institute-type-chart',
   standalone: true,
-  imports: [CommonModule, NgxEchartsDirective],
+  imports: [CommonModule, NgxEchartsDirective,TranslateModule],
   templateUrl: './institute-type-chart.component.html',
   styleUrls: ['./institute-type-chart.component.css']
 })

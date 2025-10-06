@@ -25,6 +25,8 @@ import {
   ToolboxComponent,
 } from 'echarts/components';
 import { CanvasRenderer } from 'echarts/renderers';
+import { provideTranslateHttpLoader } from '@ngx-translate/http-loader';
+import { provideTranslateService } from '@ngx-translate/core';
 
 // Register ECharts modules
 echarts.use([
@@ -41,8 +43,10 @@ echarts.use([
 
 export const appConfig: ApplicationConfig = {
   providers: [
-    provideZoneChangeDetection({ eventCoalescing: true }), 
-    provideRouter(routes), 
+    provideTranslateService(),
+    provideTranslateHttpLoader({prefix:'./assets/i18n/',suffix:'.json'}),
+    provideZoneChangeDetection({ eventCoalescing: true }),
+    provideRouter(routes),
     provideClientHydration(withEventReplay()),
     provideAnimations(),
     provideToastr({

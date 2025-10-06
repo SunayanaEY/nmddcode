@@ -3,12 +3,12 @@
   <div class="file-info" *ngIf="filePath">
     <div class="file-details">
       <p>
-        <strong>Uploaded file:</strong>
+        <strong>{{'Uploaded file:'| translate}}</strong>
         <span class="file-name ms-2">{{ getFileName(filePath) }}</span>
       </p>
     </div>
     <button type="button" class="btn-remove ms-4" (click)="removeFile()">
-      <i class="bi bi-trash"></i> Remove
+      <i class="bi bi-trash"></i> {{'Remove'|translate}}
     </button>
   </div>
 
@@ -24,11 +24,11 @@
     <div class="upload-icon">
       <i class="bi bi-cloud-upload"></i>
     </div>
-    <p class="upload-text">{{ uploadText }}</p>
-    <p class="upload-subtext">{{ subText }}</p>
+    <p class="upload-text">{{ uploadText |translate }}</p>
+    <p class="upload-subtext">{{ subText |translate}}</p>
 
     <button type="button" class="btn-upload" (click)="fileInput.click()">
-      {{ buttonText }}
+      {{ buttonText|translate }}
     </button>
 
     <input
@@ -43,16 +43,16 @@
   <!-- 3️⃣ User-selected file -->
   <div class="file-info" *ngIf="selectedFile && showFileInfo">
     <div class="file-details">
-      <p><strong>Accepted formats:</strong> {{ acceptedFileTypes }}</p>
-      <p><strong>Max size per file:</strong> {{ maxFileSizeMB }}MB</p>
+      <p><strong>{{'Accepted formats:'|translate}}</strong> {{ acceptedFileTypes }}</p>
+      <p><strong>{{'Max size per file:'|translate}}</strong> {{ maxFileSizeMB }}MB</p>
       <p>
         <strong>Selected file:</strong>
         <span class="file-name ms-2">{{ selectedFile.name }}</span>
       </p>
-      <p><strong>File size:</strong> {{ getFileSize(selectedFile.size) }}</p>
+      <p><strong>{{'File size:'|translate}}</strong> {{ getFileSize(selectedFile.size) }}</p>
     </div>
     <button type="button" class="btn-remove ms-4" (click)="removeFile()">
-      <i class="bi bi-trash"></i> Remove
+      <i class="bi bi-trash"></i> {{'Remove'|translate}}
     </button>
   </div>
 </div>

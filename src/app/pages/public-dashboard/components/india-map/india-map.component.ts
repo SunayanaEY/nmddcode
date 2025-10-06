@@ -4,6 +4,7 @@ import * as d3 from 'd3';
 import * as topojson from 'topojson';
 import { StateData } from '../../public-dashboard.component';
 import { DashboardDataService, InstituteLocationData } from '../../services/dashboard-data.service';
+import { TranslateModule } from '@ngx-translate/core';
 
 interface InstituteMarker {
   id: string;
@@ -16,7 +17,7 @@ interface InstituteMarker {
 @Component({
   selector: 'app-india-map',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule,TranslateModule],
   templateUrl: './india-map.component.html',
   styleUrls: ['./india-map.component.css']
 })
@@ -335,18 +336,18 @@ export class IndiaMapComponent implements OnInit, AfterViewInit, OnDestroy {
       });
 
     console.log('✅ State paths rendered with interactions');
-    
+
     // Apply role-based zooming after map is created
     setTimeout(() => {
       this.applyRoleBasedZoom(geoData);
     }, 100);
-    
+
     console.log('=== createMapFromGeoJSON COMPLETED ===');
   }
 
   private applyRoleBasedZoom(geoData: any): void {
     console.log('Applying role-based zoom for role:', this.userRole, 'state:', this.userStateName);
-    
+
     if (this.userRole === 5 && this.userStateName) {
       // State admin - zoom to specific state
       this.zoomToState(geoData, this.userStateName);
@@ -358,39 +359,39 @@ export class IndiaMapComponent implements OnInit, AfterViewInit, OnDestroy {
 
   private zoomToState(geoData: any, stateName: string): void {
     console.log('Zooming to state:', stateName);
-    
+
     // Find the state feature in GeoJSON data
     const stateFeature = geoData.features.find((feature: any) => {
       const featureName = feature.properties.NAME || feature.properties.name || '';
-      return featureName.toLowerCase().includes(stateName.toLowerCase()) || 
+      return featureName.toLowerCase().includes(stateName.toLowerCase()) ||
              stateName.toLowerCase().includes(featureName.toLowerCase());
     });
-    
+
     if (stateFeature && this.svg && this.g) {
       console.log('Found state feature for:', stateName);
-      
+
       // Calculate bounds of the state
       const bounds = this.path.bounds(stateFeature);
       const dx = bounds[1][0] - bounds[0][0];
       const dy = bounds[1][1] - bounds[0][1];
       const x = (bounds[0][0] + bounds[1][0]) / 2;
       const y = (bounds[0][1] + bounds[1][1]) / 2;
-      
+
       // Calculate scale and translate for zooming
       const scale = Math.min(8, 0.9 / Math.max(dx / this.width, dy / this.height));
       const translate = [this.width / 2 - scale * x, this.height / 2 - scale * y];
-      
+
       console.log('Zoom parameters:', { scale, translate, bounds });
-      
+
       // Apply zoom transformation
       const transform = d3.zoomIdentity
         .translate(translate[0], translate[1])
         .scale(scale);
-      
+
       this.svg.transition()
         .duration(1000)
         .call(this.zoom.transform, transform);
-        
+
       console.log('✅ Zoom applied to state:', stateName);
     } else {
       console.warn('State feature not found for:', stateName);

@@ -2,21 +2,22 @@ import { Component, OnInit, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { AuthService } from '../../services/auth.service';
 import { interval, Subscription } from 'rxjs';
+import { TranslateModule } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-session-timeout-warning',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule,TranslateModule],
   template: `
     <div *ngIf="showWarning" class="session-warning-container">
       <div class="session-warning-content">
         <div class="warning-icon">⚠️</div>
         <div class="warning-text">
-          <h4>Session Expiring Soon</h4>
-          <p>Your session will expire in {{ formatTime(remainingTime) }}</p>
-          <p>Click anywhere to extend your session.</p>
+          <h4>{{'Session Expiring Soon'|translate}}</h4>
+          <p>{{'Your session will expire in'|translate}} {{ formatTime(remainingTime) }}</p>
+          <p>{{'Click anywhere to extend your session.'|translate}}</p>
         </div>
-        <button class="extend-btn" (click)="extendSession()">Extend Session</button>
+        <button class="extend-btn" (click)="extendSession()">{{'Extend Session'|translate}}</button>
       </div>
     </div>
   `,

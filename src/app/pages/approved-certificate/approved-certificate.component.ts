@@ -13,11 +13,13 @@ import {
 } from '../../components/table/table.component';
 import { CertificateLayoutComponent } from '../certificate-layout/certificate-layout.component';
 import { NewCertificateLayoutComponent } from '../new-certificate-layout/new-certificate-layout.component';
+import { TranslateModule } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-approved-certificate',
   standalone: true,
   imports: [
+    TranslateModule,
     CommonModule,
     FormsModule,
     BreadcrumbComponent,

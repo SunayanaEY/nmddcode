@@ -1,11 +1,12 @@
 import { Component, Input } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { DashboardStats } from '../../public-dashboard.component';
+import { TranslateModule } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-stats-cards',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule,TranslateModule],
   templateUrl: './stats-cards.component.html',
   styleUrls: ['./stats-cards.component.css']
 })

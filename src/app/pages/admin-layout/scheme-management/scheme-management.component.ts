@@ -14,10 +14,11 @@ import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { ToastrService } from 'ngx-toastr';
 import { SchemeService } from '../../training/services/scheme.service';
 import { error } from 'console';
+import { TranslateModule } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-scheme-management',
-  imports: [TableComponent, BreadcrumbComponent],
+  imports: [TableComponent, BreadcrumbComponent,TranslateModule],
   templateUrl: './scheme-management.component.html',
   styleUrl: './scheme-management.component.css',
 })
@@ -29,7 +30,7 @@ export class SchemeManagementComponent {
   isExportCSV: Boolean = false;
   isExportPdf: Boolean = false;
   table: string = 'schemes';
-  addNew: String = 'Add new Scheme';
+  addNew: string = 'Add new Scheme';
   fileName: String = 'All_trainings_';
 
   pdfHeaders: Array<string> = [
@@ -127,8 +128,14 @@ export class SchemeManagementComponent {
       if (event.item.title == null || event.item.title == '') {
         this.schemeListProcessed.splice(this.event.index, 1);
       } else {
+        if(localStorage.getItem('language')=='hi')
         this.confirmationMessage =
+          'योजना को हटाने की पुष्टि करें - ' + event.item.title;
+  else{
+    this.confirmationMessage =
           'Confirm to delete the scheme - ' + event.item.title;
+  }
+
         this.confirmChangeModal();
       }
     } else if (this.event.action == 'add') {

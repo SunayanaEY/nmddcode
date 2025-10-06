@@ -4,6 +4,7 @@ import { NgxEchartsDirective } from 'ngx-echarts';
 import { EChartsOption } from 'echarts';
 import { Subscription } from 'rxjs';
 import { DashboardDataService, ModeOfTrainingDistributionResponse } from '../../services/dashboard-data.service';
+import { TranslateModule } from '@ngx-translate/core';
 
 export interface InstituteRegistrationData {
   type: string;
@@ -21,7 +22,7 @@ export interface StateData {
 @Component({
   selector: 'app-mode-of-training-chart',
   standalone: true,
-  imports: [CommonModule, NgxEchartsDirective],
+  imports: [CommonModule, NgxEchartsDirective,TranslateModule],
   templateUrl: './mode-of-training-chart.component.html',
   styleUrls: ['./mode-of-training-chart.component.css']
 })
@@ -88,7 +89,7 @@ export class ModeOfTrainingChartComponent implements OnInit, OnChanges, OnDestro
     if (this.apiData && this.apiData.length > 0) {
       return this.apiData;
     }
-    
+
     // Fallback to mock data
     if (this.selectedState && this.stateSpecificData[this.selectedState.stateId]) {
       return this.stateSpecificData[this.selectedState.stateId];
@@ -104,12 +105,12 @@ export class ModeOfTrainingChartComponent implements OnInit, OnChanges, OnDestro
 
     this.isLoadingData = true;
     this.chartLoading = true;
-    
+
     // Cancel any existing subscription
     if (this.dataSubscription) {
       this.dataSubscription.unsubscribe();
     }
-    
+
     this.dataSubscription = this.dashboardService.getModeOfTrainingDistribution(this.stateId || undefined, this.districtId || undefined).subscribe({
       next: (response: ModeOfTrainingDistributionResponse) => {
         if (response.success) {
@@ -135,7 +136,7 @@ export class ModeOfTrainingChartComponent implements OnInit, OnChanges, OnDestro
       'Government': '#059669',
       'Private': '#DC2626'
     };
-    
+
     const iconMap: { [key: string]: string } = {
       'Government': 'university',
       'Private': 'building'
@@ -313,7 +314,7 @@ export class ModeOfTrainingChartComponent implements OnInit, OnChanges, OnDestro
 
   getMostPopularType(): string {
     const data = this.getChartData();
-    const maxItem = data.reduce((prev, current) => 
+    const maxItem = data.reduce((prev, current) =>
       (prev.count > current.count) ? prev : current
     );
     return maxItem.type;

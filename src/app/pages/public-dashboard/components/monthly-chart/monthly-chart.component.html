@@ -2,15 +2,15 @@
   <!-- Loading State -->
   <div *ngIf="isLoading || chartLoading" class="chart-loading">
     <div class="spinner-border text-primary" role="status">
-      <span class="visually-hidden">Loading chart...</span>
+      <span class="visually-hidden">{{'Loading chart...'|translate}}</span>
     </div>
-    <p class="mt-2 text-muted mb-0">Loading monthly data...</p>
+    <p class="mt-2 text-muted mb-0">{{'Loading monthly data...'|translate}}</p>
   </div>
 
   <!-- Chart Container -->
   <div *ngIf="!isLoading && !chartLoading" class="chart-container">
-    <echarts 
-      [options]="chartOption" 
+    <echarts
+      [options]="chartOption"
       [loading]="chartLoading"
       [loadingOpts]="{
         text: 'Loading...',
@@ -32,7 +32,7 @@
 
   <!-- Chart Actions -->
   <div *ngIf="!isLoading" class="chart-actions">
-    <button 
+    <button
       class="btn btn-sm btn-outline-secondary"
       (click)="refreshChart()"
       [disabled]="chartLoading"
@@ -45,7 +45,7 @@
   <div *ngIf="selectedState && !isLoading" class="selected-state-indicator">
     <small class="text-muted">
       <i class="fas fa-map-marker-alt me-1"></i>
-      Showing data for: <strong>{{ selectedState.stateName }}</strong>
+      {{'Showing data for:'|translate}} <strong>{{ selectedState.stateName }}</strong>
     </small>
   </div>
 </div>

@@ -1,5 +1,6 @@
 import { Component, Input, Output, EventEmitter, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { TranslateModule } from '@ngx-translate/core';
 
 export interface Notification {
   id: number;
@@ -13,7 +14,7 @@ export interface Notification {
 @Component({
   selector: 'app-notification-dropdown',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule,TranslateModule],
   templateUrl: './notification-dropdown.component.html',
   styleUrls: ['./notification-dropdown.component.css']
 })
@@ -62,11 +63,27 @@ export class NotificationDropdownComponent implements OnInit {
     const diffInDays = Math.floor(diffInHours / 24);
 
     if (diffInHours < 1) {
-      return 'Just now';
+
+      if(localStorage.getItem('language')=='hi')
+      {
+         return 'Just now';
+      }
+      else{
+        return 'बस अभी';
+      }
+
     } else if (diffInHours < 24) {
+      if(localStorage.getItem('language')=='hi')
+      return `${diffInHours} घंटे${diffInHours > 1 ? 's' : ''} पहले`;
+
+      else
       return `${diffInHours} hour${diffInHours > 1 ? 's' : ''} ago`;
     } else {
-      return `${diffInDays} day${diffInDays > 1 ? 's' : ''} ago`;
+      if(localStorage.getItem('language')=='hi')
+      return `${diffInDays} दिन${diffInDays > 1 ? 's' : ''} पहले`;
+
+      else
+         return `${diffInDays} day${diffInDays > 1 ? 's' : ''} ago`;
     }
   }
 

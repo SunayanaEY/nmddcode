@@ -5,11 +5,12 @@ import { EChartsOption } from 'echarts';
 import { Subscription } from 'rxjs';
 import { StateData } from '../../public-dashboard.component';
 import { DashboardDataService, MonthlyTrainingData } from '../../services/dashboard-data.service';
+import { TranslateModule } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-monthly-chart',
   standalone: true,
-  imports: [CommonModule, NgxEchartsDirective],
+  imports: [CommonModule, NgxEchartsDirective,TranslateModule],
   templateUrl: './monthly-chart.component.html',
   styleUrls: ['./monthly-chart.component.css']
 })
@@ -110,7 +111,7 @@ export class MonthlyChartComponent implements OnInit, OnChanges, OnDestroy {
 
     this.chartLoading = false;
     const data = this.getChartData();
-    
+
     this.chartOption = {
       tooltip: {
         trigger: 'axis',
@@ -193,7 +194,7 @@ export class MonthlyChartComponent implements OnInit, OnChanges, OnDestroy {
       series: data.series.map((seriesData: { name: string; data: number[]; color?: string }) => {
         const defaultColor = '#2196f3'; // Default blue color
         const color = seriesData.color ?? defaultColor;
-        
+
         return {
           name: seriesData.name,
           type: 'line',
@@ -249,12 +250,12 @@ export class MonthlyChartComponent implements OnInit, OnChanges, OnDestroy {
 
     this.isLoadingData = true;
     this.chartLoading = true;
-    
+
     // Cancel any existing subscription
     if (this.dataSubscription) {
       this.dataSubscription.unsubscribe();
     }
-    
+
     this.dataSubscription = this.dashboardService.getMonthlyTrainingCount(this.stateId || undefined, this.districtId || undefined).subscribe({
       next: (response) => {
         if (response.success) {
@@ -298,7 +299,7 @@ export class MonthlyChartComponent implements OnInit, OnChanges, OnDestroy {
         ]
       };
     }
-    
+
     // Fallback to mock data
     if (this.selectedState && this.stateSpecificData[this.selectedState.stateId]) {
       return this.stateSpecificData[this.selectedState.stateId];
@@ -316,7 +317,7 @@ export class MonthlyChartComponent implements OnInit, OnChanges, OnDestroy {
   onChartInit(ec: any): void {
     // Chart initialization callback
     console.log('Monthly chart initialized');
-    
+
     // Ensure proper sizing after initialization
     setTimeout(() => {
       if (ec && typeof ec.resize === 'function') {

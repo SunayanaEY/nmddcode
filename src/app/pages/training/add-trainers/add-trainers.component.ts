@@ -7,10 +7,13 @@ import { UserProfileService } from '../../user-profile-creation/services/user-pr
 import { CommonModule } from '@angular/common';
 import { AdminService } from '../services/training-admin.service';
 import { TableComponent, TableColumn } from '../../../components/table/table.component';
+import { TranslateModule } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-add-trainers',
-  imports: [ReactiveFormsModule,CommonModule,BreadcrumbComponent,TableComponent],
+  imports: [ReactiveFormsModule,CommonModule,BreadcrumbComponent,TableComponent,
+    TranslateModule
+  ],
   templateUrl: './add-trainers.component.html',
   styleUrl: './add-trainers.component.css'
 })

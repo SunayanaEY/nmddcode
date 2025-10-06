@@ -3,11 +3,11 @@
 <div class="notification-dropdown" *ngIf="show" (click)="stopPropagation($event)">
   <!-- Dropdown Arrow -->
   <div class="dropdown-arrow"></div>
-  
+
   <!-- Header -->
   <div class="dropdown-header">
     <div class="header-tabs">
-      <button class="tab-btn active">View all</button>
+      <button class="tab-btn active">{{'View all'|translate}}</button>
       <!-- <button class="tab-btn">Mentions</button> -->
     </div>
     <div class="header-actions">
@@ -27,15 +27,15 @@
       <div class="loading-spinner">
         <i class="bi bi-arrow-clockwise spin"></i>
       </div>
-      <p>Loading notifications...</p>
+      <p>{{'Loading notifications..'|translate}}.</p>
     </div>
-    
+
     <div class="notifications-list" *ngIf="!isLoading && notifications.length > 0; else noNotifications">
-      <div 
-        class="notification-item" 
-        *ngFor="let notification of notifications" 
+      <div
+        class="notification-item"
+        *ngFor="let notification of notifications"
         [class.unread]="!notification.read">
-        
+
         <!-- User Avatar/Icon -->
         <div class="notification-avatar">
           <div class="avatar-circle" [ngClass]="'avatar-' + notification.type">
@@ -48,31 +48,31 @@
             }"></i>
           </div>
         </div>
-        
+
         <!-- Notification Content -->
         <div class="notification-content">
-          <div class="notification-title">{{ notification.title }}</div>
-          <div class="notification-message">{{ notification.message }}</div>
+          <div class="notification-title">{{ notification.title | translate}}</div>
+          <div class="notification-message">{{ notification.message | translate }}</div>
           <div class="notification-meta">
             <span class="notification-time">{{ getTimeAgo(notification.timestamp) }}</span>
             <span class="notification-date">{{ notification.timestamp | date:'MMM dd, yyyy' }}</span>
           </div>
         </div>
-        
+
         <!-- Unread Indicator -->
         <div class="unread-indicator" *ngIf="!notification.read"></div>
-        
+
         <!-- Actions -->
         <div class="notification-actions">
-          <button 
-            class="action-btn mark-read" 
-            *ngIf="!notification.read" 
+          <button
+            class="action-btn mark-read"
+            *ngIf="!notification.read"
             (click)="onMarkAsRead(notification.id)"
             title="Mark as read">
             <i class="bi bi-check"></i>
           </button>
-          <button 
-            class="action-btn delete" 
+          <button
+            class="action-btn delete"
             (click)="onDeleteNotification(notification.id)"
             title="Delete notification">
             <i class="bi bi-x"></i>
@@ -88,8 +88,8 @@
           <i class="bi bi-bell-slash"></i>
         </div>
         <div class="no-notifications-text">
-          <h6>No notifications</h6>
-          <p>You're all caught up! Check back later for updates.</p>
+          <h6>{{'No notifications'|translate}}</h6>
+          <p>{{"You're all caught up! Check back later for updates." | translate}}</p>
         </div>
       </div>
     </ng-template>
@@ -100,10 +100,10 @@
     <div class="footer-actions">
       <button class="footer-btn" (click)="onMarkAllAsRead()" *ngIf="getUnreadCount() > 0">
         <i class="bi bi-check-all"></i>
-        Mark all as read
+        {{'Mark all as read' | translate}}
       </button>
       <button class="footer-btn view-all">
-        View all notifications
+        {{'View all notifications'|translate}}
       </button>
     </div>
   </div>

@@ -9,11 +9,12 @@ import {
   ElementRef,
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { TranslateModule } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-file-upload',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule,TranslateModule],
   templateUrl: './file-upload.component.html',
   styleUrls: ['./file-upload.component.css'],
 })
@@ -99,12 +100,21 @@ export class FileUploadComponent implements OnChanges {
       '.' + (file.name.split('.').pop() || '').toLowerCase();
 
     if (!allowedTypes.includes(fileExtension)) {
+      if(localStorage.getItem("language")=="en")
       this.errorMessage = `Invalid file type. Allowed: ${this.acceptedFileTypes}`;
+
+       if(localStorage.getItem("language")=="hi")
+      this.errorMessage = `अमान्य फ़ाइल प्रकार. अनुमत: ${this.acceptedFileTypes}`;
+
       return;
     }
 
     if (file.size > this.maxFileSizeMB * 1024 * 1024) {
+      if(localStorage.getItem("language")=="en")
       this.errorMessage = `File size exceeds ${this.maxFileSizeMB}MB.`;
+
+      if(localStorage.getItem("language")=="en")
+      this.errorMessage = `फ़ाइल का आकार अधिक है ${this.maxFileSizeMB}MB.`;
       return;
     }
 

@@ -2,6 +2,7 @@ import { Component, Input, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { NotificationDropdownComponent, Notification } from '../components/notification-dropdown/notification-dropdown.component';
 import { AdminService, NotificationItem } from './training/services/training-admin.service';
+import { TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-header',
@@ -14,15 +15,15 @@ export class HeaderComponent implements OnInit {
   @Input() user: { username: string; email: string; role: number } | null =
     null;
   currentLanguage: 'en' | 'hi' = 'en';
-  
+
   // Notification Dropdown Properties
   showNotificationDropdown = false;
-  
+
   // Notification Data
   notifications: Notification[] = [];
   isLoadingNotifications = false;
 
-  constructor(private adminService: AdminService) {}
+  constructor(private adminService: AdminService,private translate: TranslateService) {}
 
   ngOnInit(): void {
     const userData = sessionStorage.getItem('user');
@@ -79,6 +80,12 @@ export class HeaderComponent implements OnInit {
     this.currentLanguage = isChecked ? 'hi' : 'en';
     console.log('Language switched to:', this.currentLanguage);
 
+    this.translate.use(this.currentLanguage);
+    localStorage.setItem('language', this.currentLanguage);
+   // this.currentLang=LANGULAGES.find(lang => lang.code == localStorage.getItem('language')).name
+   // this.languageService.changeLang(language);
+
+
     // Optional: if using ngx-translate
     // this.translateService.use(this.currentLanguage);
   }
@@ -97,7 +104,7 @@ export class HeaderComponent implements OnInit {
     const notification = this.notifications.find(n => n.id === notificationId);
     if (notification) {
       notification.read = true;
-      
+
       // Call API to mark notification as seen
       this.adminService.markNotificationsAsSeen([notificationId]).subscribe({
         next: (response) => {
@@ -121,16 +128,16 @@ export class HeaderComponent implements OnInit {
     const unreadNotificationIds = this.notifications
       .filter(n => !n.read)
       .map(n => n.id);
-    
+
     if (unreadNotificationIds.length === 0) {
       return; // No unread notifications
     }
-    
+
     // Mark all notifications as read locally
     this.notifications.forEach(notification => {
       notification.read = true;
     });
-    
+
     // Call API to mark all notifications as seen
     this.adminService.markNotificationsAsSeen(unreadNotificationIds).subscribe({
       next: (response) => {

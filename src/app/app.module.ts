@@ -8,9 +8,13 @@ import { HighchartsChartModule } from 'highcharts-angular';
 //import { PaginationModule } from 'ngx-bootstrap/pagination';
 import { ExcelService } from './_services/Excel/excel.service';
 import { NgSelectModule } from '@ng-select/ng-select';
+import { HttpClient } from '@angular/common/http';
+import {TranslateHttpLoader} from '@ngx-translate/http-loader';
 //import * as highcharts from highcharts;
 
-
+// export function HttpLoaderFactory(http:HttpClient){
+//   return new TranslateHttpLoader(http, './assets/i18n/', '.json');
+// }
 
 @NgModule({
   imports: [

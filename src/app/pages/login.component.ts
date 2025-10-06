@@ -24,6 +24,7 @@ import {
 import { TrainingService } from './training/services/training.service';
 import { CertificateLayoutComponent } from './certificate-layout/certificate-layout.component';
 import { NewCertificateLayoutComponent } from './new-certificate-layout/new-certificate-layout.component';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-login',
@@ -35,6 +36,7 @@ import { NewCertificateLayoutComponent } from './new-certificate-layout/new-cert
     IndiaMapComponent,
     ModalComponent,
     NewCertificateLayoutComponent,
+    TranslateModule
   ],
   templateUrl: './login.component.html',
   styleUrls: ['./login.component.css'],
@@ -160,7 +162,8 @@ export class LoginComponent implements OnInit {
     private toastr: ToastrService,
     private locationService: LocationService,
     private geocodingService: GeocodingService,
-    private trainingsService: TrainingService
+    private trainingsService: TrainingService,
+    private translateService: TranslateService
   ) {
     this.signInForm = this.fb.group({
       email: ['', [Validators.required, Validators.email]],

@@ -21,6 +21,7 @@ import {
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { TrainingService } from '../services/training.service';
 import { TraineeDetails, TrainingsList } from '../models/training.model';
+import { TranslateModule } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-all-trainings',
@@ -31,6 +32,7 @@ import { TraineeDetails, TrainingsList } from '../models/training.model';
     NgSelectModule,
     ReactiveFormsModule,
     FormsModule,
+    TranslateModule
   ],
   templateUrl: './all-trainings.component.html',
   styleUrl: './all-trainings.component.css',

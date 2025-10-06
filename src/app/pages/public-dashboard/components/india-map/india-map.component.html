@@ -4,9 +4,9 @@
   <!-- Loading State -->
   <div *ngIf="isLoading" class="map-loading">
     <div class="spinner-border text-primary" role="status">
-      <span class="visually-hidden">Loading map...</span>
+      <span class="visually-hidden">{{'Loading map...'|translate}}</span>
     </div>
-    <p class="mt-2 text-muted">Loading India map...</p>
+    <p class="mt-2 text-muted">{{'Loading India map...'|translate}}</p>
   </div>
 
   <!-- Map Container - Always present for ViewChild -->
@@ -45,11 +45,11 @@
   <div *ngIf="!isLoading" class="map-legend">
     <div class="legend-item">
       <div class="legend-color" style="background-color: #ffd54f;"></div>
-      <span class="legend-text">States</span>
+      <span class="legend-text">{{'States'|translate}}</span>
     </div>
     <div class="legend-item">
       <div class="legend-marker"></div>
-      <span class="legend-text">Training Institutes</span>
+      <span class="legend-text">{{'Training Institutes'|translate}}</span>
     </div>
   </div>
 </div>

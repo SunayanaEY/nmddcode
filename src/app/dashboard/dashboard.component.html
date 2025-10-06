@@ -45,12 +45,12 @@
               </div>
               <div class="title-content">
                 <h2 class="dashboard-title mb-1">
-                  Training Dashboard
+                  {{'Training Dashboard' | translate}}
                   <!-- <span class="title-accent"></span> -->
                 </h2>
                 <p class="dashboard-welcome mb-0">
                   <i class="fas fa-user-circle welcome-icon"></i>
-                  <span>Welcome!</span>
+                  <span>{{"Welcome" |translate}}</span>
                 </p>
               </div>
             </div>
@@ -84,7 +84,7 @@
       <div class="d-flex justify-content-between align-items-center mb-3">
         <div>
           <!-- <h4 class="section-title mb-1">Public View</h4> -->
-          <p class="text-muted mb-0">Training Summary</p>
+          <p class="text-muted mb-0">{{"Training Summary" | translate}}</p>
         </div>
       </div>
 
@@ -93,7 +93,7 @@
         <div class="row g-3">
           <div class="col-md-4">
             <label for="stateSelect" class="form-label fw-semibold"
-              >State</label
+              >{{"State"|translate}}</label
             >
             <select
               id="stateSelect"
@@ -114,7 +114,7 @@
 
           <div class="col-md-4">
             <label for="districtSelect" class="form-label fw-semibold"
-              >District</label
+              >{{"District"|translate}}</label
             >
             <select
               id="districtSelect"
@@ -147,7 +147,7 @@
               (click)="clearFilters()"
               [disabled]="!selectedStateId && !selectedDistrictId"
             >
-              <i class="fas fa-times me-1"></i>Clear Filters
+              <i class="fas fa-times me-1"></i>{{"Clear Filters"|translate}}
             </button>
           </div>
         </div>
@@ -166,7 +166,7 @@
           <div class="card-header">
             <h5 class="card-title mb-0">
               <i class="fas fa-chart-line text-success me-2"></i>
-              Monthly Trainings Conducted
+              {{"Monthly Trainings Conducted"|translate}}
             </h5>
           </div>
           <div class="card-body">
@@ -187,7 +187,7 @@
           <div class="card-header">
             <h5 class="card-title mb-0">
               <i class="fas fa-users text-warning me-2"></i>
-              Age Group
+              {{'Age Group'|translate}}
             </h5>
           </div>
           <div class="card-body">
@@ -213,7 +213,7 @@
           >
             <h5 class="card-title mb-0">
               <i class="fas fa-map-marked-alt text-primary me-2"></i>
-              Training Institutes in India
+              {{'Training Institutes in India' | translate}}
             </h5>
           </div>
           <div class="card-body">
@@ -232,7 +232,7 @@
           <div class="card-header">
             <h5 class="card-title mb-0">
               <i class="fas fa-building text-info me-2"></i>
-              Govt Registered VS Private Institutes
+              {{'Govt Registered VS Private Institutes'| translate}}
             </h5>
           </div>
           <div class="card-body">
@@ -260,7 +260,7 @@
       <div class="modal-content p-4">
         <div class="modal-header">
           <h2 class="modal-title" id="viewCertificateModalLabel">
-            Approved Certificate
+            {{'Approved Certificate'|translate}}
           </h2>
           <button
             type="button"

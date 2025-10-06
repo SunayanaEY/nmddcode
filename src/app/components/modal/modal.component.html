@@ -5,14 +5,14 @@
 <div class="modal" *ngIf="show" [class.show]="show" (click)="onBackdropClick($event)">
   <div class="modal-dialog" [ngClass]="getSizeClass()">
     <div class="modal-content">
-      
+
       <!-- Modal Header -->
       <div class="modal-header">
-        <h5 class="modal-title">{{ config.title }}</h5>
-        <button 
-          *ngIf="config.showCloseButton !== false" 
-          type="button" 
-          class="btn-close" 
+        <h5 class="modal-title">{{ config.title |translate }}</h5>
+        <button
+          *ngIf="config.showCloseButton !== false"
+          type="button"
+          class="btn-close"
           (click)="onClose()"
           aria-label="Close">
           <i class="bi bi-x-lg"></i>
@@ -21,20 +21,20 @@
 
       <!-- Modal Body -->
       <div class="modal-body">
-        
+
         <!-- Custom Content -->
         <div *ngIf="config.content" [innerHTML]="config.content"></div>
-        
+
         <!-- View Mode - Display Data -->
         <div *ngIf="mode === 'view' && data && !config.fields" class="view-mode">
           <div class="row">
             <div class="col-12 col-md-6 mb-3" *ngFor="let item of data | keyvalue">
               <div class="row">
                 <div class="col-5 text-muted">
-                  <strong>{{ (item.key?.toString() || '') | titlecase }}:</strong>
+                  <strong>{{ (item.key?.toString() || '') | titlecase  | translate}}:</strong>
                 </div>
                 <div class="col-7">
-                  <span class="form-control-plaintext">{{ formatDisplayValue(item.value) }}</span>
+                  <span class="form-control-plaintext">{{ formatDisplayValue(item.value) | translate }}</span>
                 </div>
               </div>
             </div>
@@ -48,7 +48,7 @@
             <div class="col-12 col-md-6 mb-3" *ngFor="let field of config.fields">
               <div class="row">
                 <div class="col-5">
-                  <strong>{{ field.label }}:</strong>
+                  <strong>{{ field.label | translate}}:</strong>
                 </div>
                 <div class="col-7">
                   <!-- Image Display for File Type -->
@@ -58,7 +58,7 @@
                   <!-- Regular Text Display -->
                   <span *ngIf="field.type !== 'file'" class="form-control-plaintext">{{ formatDisplayValue(getDisplayValue(field.id), field.type) }}</span>
                   <!-- File Field with No Image -->
-                  <span *ngIf="field.type === 'file' && !getDisplayValue(field.id)" class="form-control-plaintext text-muted">No image available</span>
+                  <span *ngIf="field.type === 'file' && !getDisplayValue(field.id)" class="form-control-plaintext text-muted">{{'No image available'|translate}}</span>
                 </div>
               </div>
             </div>
@@ -73,7 +73,7 @@
               </label>
 
               <!-- Text Input -->
-              <input 
+              <input
                 *ngIf="field.type === 'text' || field.type === 'email' || field.type === 'password' || field.type === 'tel'"
                 [type]="field.type"
                 [id]="field.id"
@@ -86,7 +86,7 @@
                 (ngModelChange)="onFieldChange(field.id, $event)">
 
               <!-- Number Input -->
-              <input 
+              <input
                 *ngIf="field.type === 'number'"
                 type="number"
                 [id]="field.id"
@@ -100,7 +100,7 @@
                 (ngModelChange)="onFieldChange(field.id, $event)">
 
               <!-- Date Input -->
-              <input 
+              <input
                 *ngIf="field.type === 'date'"
                 type="date"
                 [id]="field.id"
@@ -111,7 +111,7 @@
                 (ngModelChange)="onFieldChange(field.id, $event)">
 
               <!-- Textarea -->
-              <textarea 
+              <textarea
                 *ngIf="field.type === 'textarea'"
                 [id]="field.id"
                 class="form-control"
@@ -130,9 +130,9 @@
                     <img [src]="data.instituteImageUrl" alt="Current Institute Image" class="current-image">
                   </div>
                 </div>
-                
+
                 <!-- File Input -->
-                <input 
+                <input
                   type="file"
                   [id]="field.id"
                   class="form-control"
@@ -141,21 +141,21 @@
                   [required]="field.required || false"
                   [disabled]="field.disabled || false"
                   (change)="onFileChange(field.id, $event)">
-                
+
                 <!-- New Image Preview -->
                 <div *ngIf="getFilePreview(field.id)" class="new-image-container mt-3">
-                  <label class="form-label">New Image Preview:</label>
+                  <label class="form-label">{{'New Image Preview:'| translate}}</label>
                   <div class="new-image-wrapper">
                     <img [src]="getFilePreview(field.id)" alt="New Image Preview" class="new-image">
                     <button type="button" class="btn btn-sm btn-danger remove-image-btn" (click)="removeFilePreview(field.id)">
-                      <i class="bi bi-x"></i> Remove
+                      <i class="bi bi-x"></i> {{'Remove' | translate}}
                     </button>
                   </div>
                 </div>
               </div>
 
               <!-- Select Dropdown -->
-              <select 
+              <select
                 *ngIf="field.type === 'select'"
                 [id]="field.id"
                 class="form-control"
@@ -166,13 +166,13 @@
                 (ngModelChange)="onFieldChange(field.id, $event)">
                 <option [value]="null" disabled selected>{{ field.placeholder || 'Select an option' }}</option>
                 <option *ngFor="let option of field.options" [value]="option.value">
-                  {{ option.label }}
+                  {{ option.label | translate}}
                 </option>
               </select>
 
               <!-- Checkbox -->
               <div *ngIf="field.type === 'checkbox'" class="form-check">
-                <input 
+                <input
                   type="checkbox"
                   [id]="field.id"
                   class="form-check-input"
@@ -181,14 +181,14 @@
                   [(ngModel)]="formData[field.id]"
                   (ngModelChange)="onFieldChange(field.id, $event)">
                 <label class="form-check-label" [for]="field.id">
-                  {{ field.placeholder || field.label }}
+                  {{ field.placeholder || field.label  | translate}}
                 </label>
               </div>
 
               <!-- Radio Buttons -->
               <div *ngIf="field.type === 'radio'" class="radio-group">
                 <div class="form-check" *ngFor="let option of field.options">
-                  <input 
+                  <input
                     type="radio"
                     [id]="field.id + '_' + option.value"
                     [name]="field.id"
@@ -199,7 +199,7 @@
                     [(ngModel)]="formData[field.id]"
                     (ngModelChange)="onFieldChange(field.id, $event)">
                   <label class="form-check-label" [for]="field.id + '_' + option.value">
-                    {{ option.label }}
+                    {{ option.label | translate}}
                   </label>
                 </div>
               </div>
@@ -214,36 +214,36 @@
       <div class="modal-footer" *ngIf="config.showFooter !== false">
         <!-- View Mode Footer - Only Close Button -->
         <ng-container *ngIf="mode === 'view'">
-          <button 
-            type="button" 
+          <button
+            type="button"
             class="btn btn-secondary"
             (click)="onClose()">
-            Close
+            {{'Close'|translate}}
           </button>
         </ng-container>
-        
+
         <!-- Edit/Create Mode Footer - Action Buttons -->
         <ng-container *ngIf="mode !== 'view'">
-          <button 
-            *ngIf="config.secondaryButtonText" 
-            type="button" 
+          <button
+            *ngIf="config.secondaryButtonText"
+            type="button"
             class="btn btn-outline-secondary"
             (click)="onSecondaryAction()">
-            {{ config.secondaryButtonText }}
+            {{ config.secondaryButtonText | translate}}
           </button>
-          <button 
-            *ngIf="config.primaryButtonText" 
-            type="button" 
+          <button
+            *ngIf="config.primaryButtonText"
+            type="button"
             class="btn btn-primary"
             (click)="onPrimaryAction()">
-            {{ config.primaryButtonText }}
+            {{ config.primaryButtonText | translate}}
           </button>
-          <button 
-            *ngIf="!config.primaryButtonText && !config.secondaryButtonText" 
-            type="button" 
+          <button
+            *ngIf="!config.primaryButtonText && !config.secondaryButtonText"
+            type="button"
             class="btn btn-primary"
             (click)="onClose()">
-            Close
+            {{'Close'|translate}}
           </button>
         </ng-container>
       </div>

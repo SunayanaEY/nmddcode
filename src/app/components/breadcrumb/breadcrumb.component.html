@@ -1,8 +1,8 @@
 <div class="breadcrumb">
   <ng-container *ngFor="let item of items; let last = last">
     <span class="breadcrumb-item" [class.active]="last" (click)="onItemClick(item, last)">
-      {{ item.label }}
+      {{ item.label |translate }}
     </span>
     <i *ngIf="!last" class="bi bi-chevron-right"></i>
   </ng-container>
-</div> 
+</div>

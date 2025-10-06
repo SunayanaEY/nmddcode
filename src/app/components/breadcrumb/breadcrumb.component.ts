@@ -1,6 +1,7 @@
 import { Component, Input } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
+import { TranslateModule } from '@ngx-translate/core';
 
 export interface BreadcrumbItem {
   label: string;
@@ -10,7 +11,7 @@ export interface BreadcrumbItem {
 @Component({
   selector: 'app-breadcrumb',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule,TranslateModule],
   templateUrl: './breadcrumb.component.html',
   styleUrls: ['./breadcrumb.component.css'],
 })
@@ -24,4 +25,4 @@ export class BreadcrumbComponent {
       this.router.navigate([item.url]);
     }
   }
-} 
+}

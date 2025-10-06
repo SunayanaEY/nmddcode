@@ -4,6 +4,7 @@ import { NgxEchartsDirective } from 'ngx-echarts';
 import { EChartsOption } from 'echarts';
 import { Subscription } from 'rxjs';
 import { DashboardDataService, AgeWiseDistributionResponse } from '../../services/dashboard-data.service';
+import { TranslateModule } from '@ngx-translate/core';
 
 export interface AgeGroupData {
   ageGroup: string;
@@ -20,7 +21,7 @@ export interface StateData {
 @Component({
   selector: 'app-age-group-chart',
   standalone: true,
-  imports: [CommonModule, NgxEchartsDirective],
+  imports: [CommonModule, NgxEchartsDirective,TranslateModule],
   templateUrl: './age-group-chart.component.html',
   styleUrls: ['./age-group-chart.component.css']
 })
@@ -234,7 +235,7 @@ export class AgeGroupChartComponent implements OnInit, OnChanges, OnDestroy {
 
   onChartInit(chartInstance: any): void {
     this.chartInstance = chartInstance;
-    
+
     // Ensure proper sizing after initialization
     setTimeout(() => {
       if (chartInstance && typeof chartInstance.resize === 'function') {
@@ -293,7 +294,7 @@ export class AgeGroupChartComponent implements OnInit, OnChanges, OnDestroy {
     Object.entries(data).forEach(([ageGroup, percentage]) => {
       // Calculate approximate count based on percentage (assuming total of 10000 for demo)
       const count = Math.round((percentage as number) * 100);
-      
+
       result.push({
         ageGroup,
         count,
