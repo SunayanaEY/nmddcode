@@ -78,7 +78,7 @@ export class StateAdminProfileComponent implements OnInit {
     { key: 'createdAt', header: 'Created Date', transform: (value: any) => value ? new Date(value).toLocaleDateString() : 'N/A' }
   ];
   tableActions: TableAction[] = [
-    { name: 'edit', icon: 'bi-pencil', class: 'btn-warning', title: 'Edit' },
+    { name: 'viewPrevious', icon: 'bi-clock-history', class: 'btn-info', title: 'See Existing State Heads' },
   ];
 
   // Modal properties
@@ -97,6 +97,26 @@ export class StateAdminProfileComponent implements OnInit {
     ]
   };
   selectedStateAdmin: any = {};
+
+  // Previous State Heads Modal properties
+  showPreviousStateHeadsModal = false;
+  previousStateHeadsModalConfig: ModalConfig = {
+    title: 'Previous State Heads',
+    size: 'xl',
+    primaryButtonText: 'Close'
+  };
+  previousStateHeadsData: any[] = [];
+  previousStateHeadsTableColumns: TableColumn[] = [
+    { key: 'contactPersonName', header: 'Contact Person Name' },
+    { key: 'designation', header: 'Designation' },
+    { key: 'contactNumber', header: 'Contact Number' },
+    { key: 'emailId', header: 'Email' },
+    { key: 'validFrom', header: 'Valid From', transform: (value: any) => value ? new Date(value).toLocaleDateString() : 'N/A' },
+    { key: 'validTo', header: 'Valid To', transform: (value: any) => value ? new Date(value).toLocaleDateString() : 'Active' },
+    { key: 'stateName', header: 'State' }
+  ];
+  isPreviousStateHeadsLoading = false;
+  previousStateHeadsError: string | null = null;
 
   // Custom validator for password confirmation
   passwordMatchValidator(control: AbstractControl): ValidationErrors | null {
@@ -197,44 +217,40 @@ export class StateAdminProfileComponent implements OnInit {
     this.today = today.toISOString().split('T')[0];
   }
 
-  onSubmit() {
+  onSubmit(): void {
     if (this.profileForm.valid) {
+      const formData = this.profileForm.value;
+      
+      // Prepare payload according to API specification
+       const payload = {
+         contactPersonName: formData.adminName,
+         designation: formData.designation,
+         contactNumber: formData.phone,
+         emailId: formData.email,
+         password: formData.password,
+         stateId: parseInt(formData.state)
+       };
+       
+      
       this.isLoading = true;
-      const formData = new FormData();
-
-      // Append form data
-      Object.keys(this.profileForm.value).forEach((key) => {
-        if (key !== 'profileImage' && key !== 'documents') {
-          formData.append(key, this.profileForm.value[key]);
+      
+      this.adminService.saveOrUpdateStateAdmin(payload).subscribe({
+        next: (response) => {
+          this.toastr.success(response.message || 'State admin profile saved successfully!');
+          this.profileForm.reset();
+          this.isLoading = false;
+          // Reload table data to show the new entry
+          this.loadStateAdminData();
+        },
+        error: (error) => {
+          console.error('API Error:', error);
+          this.toastr.error(error.error?.message || 'Failed to save state admin profile');
+          this.isLoading = false;
         }
       });
-
-      // Append files
-      if (this.selectedFile) {
-        formData.append('profileImage', this.selectedFile);
-      }
-      if (this.selectedFileDoc) {
-        formData.append('documents', this.selectedFileDoc);
-      }
-
-      // Call service to create state admin profile
-      this.adminService.createTrainingInstitute(formData as any).subscribe({
-        next: (response: any) => {
-          this.isLoading = false;
-          this.toastr.success('State Admin Profile created successfully!');
-          this.router.navigate(['/admin/training-module']);
-        },
-        error: (error: any) => {
-          this.isLoading = false;
-          console.error('Error creating state admin profile:', error);
-          this.toastr.error(
-            error.error?.message || 'Failed to create state admin profile'
-          );
-        },
-      });
     } else {
-      this.markFormGroupTouched(this.profileForm);
       this.toastr.error('Please fill all required fields correctly');
+      this.markFormGroupTouched(this.profileForm);
     }
   }
 
@@ -391,52 +407,36 @@ export class StateAdminProfileComponent implements OnInit {
   // Table methods
   loadStateAdminData() {
     this.isTableLoading = true;
-    // Mock data for demonstration - replace with actual API call
-    setTimeout(() => {
-      this.stateAdminTableData = [
-        {
-          id: 1,
-          state: 'Uttar Pradesh',
-          adminName: 'John Doe',
-          designation: 'State Coordinator',
-          phone: '+91-9876543210',
-          email: 'john.doe@example.com',
-          createdAt: new Date('2024-01-15')
-        },
-        {
-          id: 2,
-          state: 'Maharashtra',
-          adminName: 'Jane Smith',
-          designation: 'Regional Manager',
-          phone: '+91-9876543211',
-          email: 'jane.smith@example.com',
-          createdAt: new Date('2024-01-20')
-        },
-        {
-          id: 3,
-          state: 'Gujarat',
-          adminName: 'Mike Johnson',
-          designation: 'State Admin',
-          phone: '+91-9876543212',
-          email: 'mike.johnson@example.com',
-          createdAt: new Date('2024-02-01')
-        }
-      ];
-      this.isTableLoading = false;
-    }, 1000);
     
-    // TODO: Replace with actual API call
-    // this.adminService.getStateAdminList().subscribe({
-    //   next: (data) => {
-    //     this.stateAdminTableData = data;
-    //     this.isTableLoading = false;
-    //   },
-    //   error: (error) => {
-    //     console.error('Error loading state admin data:', error);
-    //     this.toastr.error('Failed to load state admin data');
-    //     this.isTableLoading = false;
-    //   }
-    // });
+    this.adminService.getAllActiveStateHeads().subscribe({
+      next: (response) => {
+        if (response.success && response.data) {
+          // Map API response to table data structure
+          this.stateAdminTableData = response.data.map(item => ({
+            id: item.id,
+            state: item.stateName || 'N/A', // Use stateName from API or fallback
+            adminName: item.contactPersonName,
+            designation: item.designation,
+            phone: item.contactNumber,
+            email: item.emailId,
+            createdAt: item.validFrom ? new Date(item.validFrom) : null,
+            // Store original data for edit operations
+            originalData: item
+          }));
+          this.toastr.success('State admin data loaded successfully');
+        } else {
+          this.toastr.error(response.message || 'Failed to load state admin data');
+          this.stateAdminTableData = [];
+        }
+        this.isTableLoading = false;
+      },
+      error: (error) => {
+        console.error('Error loading state admin data:', error);
+        this.toastr.error('Failed to load state admin data');
+        this.stateAdminTableData = [];
+        this.isTableLoading = false;
+      }
+    });
   }
 
   onTableActionClick(event: { action: string; item: any; index: number }) {
@@ -452,6 +452,9 @@ export class StateAdminProfileComponent implements OnInit {
       case 'delete':
         this.deleteStateAdmin(item);
         break;
+      case 'viewPrevious':
+        this.viewPreviousStateHeads(item);
+        break;
       default:
         console.log('Unknown action:', action);
     }
@@ -460,12 +463,25 @@ export class StateAdminProfileComponent implements OnInit {
   viewStateAdmin(item: any) {
     // TODO: Implement view functionality
     this.toastr.info(`Viewing details for ${item.adminName}`);
-    console.log('View state admin:', item);
   }
 
   editStateAdmin(item: any) {
-    console.log('Edit state admin:', item);
-    this.selectedStateAdmin = { ...item };
+    
+    // Map table data to modal fields using originalData from API
+    const originalData = item.originalData || item;
+    this.selectedStateAdmin = {
+      id: originalData.id,
+      state: originalData.stateName || item.state,
+      contactPersonName: originalData.contactPersonName || item.adminName,
+      designation: originalData.designation || item.designation,
+      contactNumber: originalData.contactNumber || item.phone,
+      email: originalData.emailId || item.email,
+      stateId: originalData.stateId,
+      userId: originalData.userId,
+      // Store original API data for reference
+      originalData: originalData
+    };
+    
     this.showEditModal = true;
   }
 
@@ -473,7 +489,6 @@ export class StateAdminProfileComponent implements OnInit {
     if (confirm(`Are you sure you want to delete ${item.adminName}?`)) {
       // TODO: Implement delete functionality
       this.toastr.success(`${item.adminName} deleted successfully`);
-      console.log('Delete state admin:', item);
       // Remove from table data
       this.stateAdminTableData = this.stateAdminTableData.filter(admin => admin.id !== item.id);
     }
@@ -486,31 +501,93 @@ export class StateAdminProfileComponent implements OnInit {
   }
 
   onEditModalUpdate(formData: any): void {
-    console.log('Update state admin:', formData);
     
-    // TODO: Implement API call to update state admin
-    // this.adminService.updateStateAdmin(this.selectedStateAdmin.id, formData).subscribe({
-    //   next: (response) => {
-    //     this.toastr.success('State admin updated successfully');
-    //     this.loadStateAdminData();
-    //     this.onEditModalClose();
-    //   },
-    //   error: (error) => {
-    //     this.toastr.error('Failed to update state admin');
-    //   }
-    // });
+    // Prepare payload according to API specification
+    const payload = {
+      contactPersonName: formData.contactPersonName,
+      designation: formData.designation,
+      contactNumber: formData.contactNumber,
+      emailId: formData.email,
+      password: formData.password || 'DefaultPassword@123', // Use existing password or default
+      stateId: this.selectedStateAdmin.stateId // Use stateId from original API data
+    };
     
-    // For now, update the local data
-    const index = this.stateAdminTableData.findIndex(item => item.id === this.selectedStateAdmin.id);
-    if (index !== -1) {
-      this.stateAdminTableData[index] = { ...this.stateAdminTableData[index], ...formData };
-      this.toastr.success('State admin updated successfully');
-    }
     
-    this.onEditModalClose();
+    this.adminService.saveOrUpdateStateAdmin(payload).subscribe({
+      next: (response) => {
+        this.toastr.success(response.message || 'State admin updated successfully');
+        this.loadStateAdminData(); // Reload table data from API
+        this.onEditModalClose();
+      },
+      error: (error) => {
+        console.error('Update API Error:', error);
+        this.toastr.error(error.error?.message || 'Failed to update state admin');
+      }
+    });
   }
 
   onEditModalCancel(): void {
     this.onEditModalClose();
+  }
+
+
+
+  // Previous State Heads methods
+  viewPreviousStateHeads(item: any): void {
+    // Extract stateId from the item (assuming it's available in the item object)
+    const stateId = item.originalData.stateId; // Default to 5 as per your API example
+    
+    // Load data and show modal
+    this.loadPreviousStateHeads(stateId);
+  }
+
+  loadPreviousStateHeads(stateId: number): void {
+    this.isPreviousStateHeadsLoading = true;
+    this.previousStateHeadsError = null; // Clear any previous errors
+    
+    this.adminService.getPreviousStateHeads(stateId).subscribe({
+      next: (response) => {
+        
+        if (response.success && response.data) {
+          this.previousStateHeadsData = response.data;
+          this.previousStateHeadsError = null; // Clear error on success
+          
+          this.toastr.success('Previous state heads data loaded successfully');
+          
+          // Show modal only after successful data load
+          this.showPreviousStateHeadsModal = true;
+          
+          // Add a small delay to ensure DOM updates
+          setTimeout(() => {
+          }, 100);
+        } else {
+          const errorMessage = response.message || 'Failed to load previous state heads data';
+          this.previousStateHeadsError = errorMessage;
+          this.toastr.error(errorMessage);
+          this.previousStateHeadsData = [];
+          this.showPreviousStateHeadsModal = true; // Still show modal to display error
+        }
+        
+        this.isPreviousStateHeadsLoading = false;
+      },
+      error: (error) => {
+        
+        const errorMessage = 'Failed to load previous state heads data. Please try again.';
+        this.previousStateHeadsError = errorMessage;
+        this.toastr.error(errorMessage);
+        this.previousStateHeadsData = [];
+        this.isPreviousStateHeadsLoading = false;
+        this.showPreviousStateHeadsModal = true; // Still show modal to display error
+      }
+    });
+  }
+
+  onPreviousStateHeadsModalClose(): void {
+    this.showPreviousStateHeadsModal = false;
+    this.previousStateHeadsData = [];
+  }
+
+  onPreviousStateHeadsModalPrimaryAction(): void {
+    this.onPreviousStateHeadsModalClose();
   }
 }

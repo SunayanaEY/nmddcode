@@ -966,7 +966,16 @@ import { AuthService } from '../../services/auth.service';
   }
 
   logout(): void {
-    this.authService.logout();
-    this.router.navigate(['/login']);
+    this.authService.logout().subscribe({
+      next: () => {
+        console.log('Manual logout completed from unauthorized page');
+        this.router.navigate(['/login']);
+      },
+      error: (error) => {
+        console.error('Logout error:', error);
+        // Navigate to login even if logout API fails
+        this.router.navigate(['/login']);
+      }
+    });
   }
 }

@@ -7,6 +7,31 @@ export const JwtInterceptor: HttpInterceptorFn = (req, next) => {
   
   console.log('JWT Interceptor: Processing request to:', req.url);
   
+  // Special handling for logout requests - check session storage directly to avoid circular dependency
+  if (req.url.includes('/logout')) {
+    console.log('JWT Interceptor: Logout request detected, checking session storage directly');
+    const userFromStorage = sessionStorage.getItem('user');
+    if (userFromStorage) {
+      try {
+        const user = JSON.parse(userFromStorage);
+        if (user && user.authData) {
+          console.log('JWT Interceptor: Adding Authorization header for logout request');
+          const authReq = req.clone({
+            setHeaders: {
+              Authorization: `Bearer ${user.authData}`
+            }
+          });
+          return next(authReq);
+        }
+      } catch (error) {
+        console.error('JWT Interceptor: Error parsing user from session storage:', error);
+      }
+    }
+    console.log('JWT Interceptor: No valid token found in session storage for logout');
+    return next(req);
+  }
+  
+  // For non-logout requests, use the normal flow
   // Check if user is logged in (this will also check for session expiry)
   if (!authService.isLoggedIn()) {
     console.log('JWT Interceptor: User not logged in, proceeding without token for:', req.url);

@@ -403,4 +403,76 @@ export class AdminService {
       this.getHttpOptions()
     );
   }
+
+  // Save or update state admin profile
+  saveOrUpdateStateAdmin(payload: {
+    contactPersonName: string;
+    designation: string;
+    contactNumber: string;
+    emailId: string;
+    password: string;
+    stateId: number;
+  }): Observable<{
+    success: boolean;
+    message: string;
+    data: {
+      id: string;
+      contactNumber: string;
+      emailId: string;
+      userId: number;
+      stateId: number;
+      contactPersonName: string;
+      designation: string;
+      // ... other fields
+    };
+    statusCode: number;
+  }> {
+    return this.http.post<any>(`${this.apiUrl}states/saveOrUpdate`, payload, this.getHttpOptions());
+  }
+
+  getAllActiveStateHeads(): Observable<{
+    success: boolean;
+    message: string;
+    data: {
+      id: string;
+      contactNumber: string;
+      emailId: string;
+      userId: number;
+      stateId: number;
+      panNumber: string | null;
+      contactPersonName: string;
+      designation: string;
+      isActive: boolean;
+      validFrom: string;
+      validTo: string | null;
+      stateName: string | null;
+      password: string | null;
+    }[];
+    statusCode: number;
+  }> {
+    return this.http.get<any>(`${this.apiUrl}states/AllActiveStateHeads`, this.getHttpOptions());
+  }
+
+  getPreviousStateHeads(stateId: number): Observable<{
+    success: boolean;
+    message: string;
+    data: {
+      id: string;
+      contactNumber: string;
+      emailId: string;
+      userId: number;
+      stateId: number;
+      panNumber: string | null;
+      contactPersonName: string;
+      designation: string;
+      isActive: boolean;
+      validFrom: string;
+      validTo: string;
+      stateName: string;
+      password: string | null;
+    }[];
+    statusCode: number;
+  }> {
+    return this.http.get<any>(`${this.apiUrl}states/previousStateHead/${stateId}`, this.getHttpOptions());
+  }
 }

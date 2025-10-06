@@ -50,6 +50,7 @@ export class AuthService {
   private sessionTimeout = 10 * 60 * 1000; // 10 minutes in milliseconds
   private sessionCheckInterval: Subscription | null = null;
   private lastActivityTime: number = Date.now();
+  private isLoggingOut: boolean = false;
 
   constructor(private http: HttpClient, private router: Router) {
     this.startSessionMonitoring();
@@ -77,7 +78,59 @@ export class AuthService {
       );
   }
 
-  logout() {
+  logout(): Observable<any> {
+    // Call logout API to invalidate session on server
+    return this.http.post(`${this.apiUrl}api/auth/logout`, {}).pipe(
+      tap(() => {
+        console.log('Logout API called successfully');
+      }),
+      catchError((error) => {
+        console.error('Logout API failed', error);
+        // Continue with local logout even if API fails
+        return of(null);
+      }),
+      tap(() => {
+        // Clear local session data
+        this.user = null;
+        sessionStorage.removeItem('user');
+        sessionStorage.removeItem('loginTime');
+        this.stopSessionMonitoring();
+      })
+    );
+  }
+
+  // Synchronous logout for cases where we don't need to wait for API response
+  logoutSync(): void {
+    // Prevent multiple logout attempts
+    if (this.isLoggingOut) {
+      console.log('Logout already in progress, skipping...');
+      return;
+    }
+
+    this.isLoggingOut = true;
+    console.log('Starting logout process...');
+
+    // Call logout API and clear session data only after successful response
+    this.http.post(`${this.apiUrl}api/auth/logout`, {}).pipe(
+      catchError((error) => {
+        console.error('Logout API failed', error);
+        // Clear session data even if API fails
+        this.clearSessionData();
+        this.isLoggingOut = false;
+        return of(null);
+      })
+    ).subscribe({
+      next: (response) => {
+        console.log('Logout API completed successfully', response);
+        // Only clear session data after successful API response
+        this.clearSessionData();
+        this.isLoggingOut = false;
+      }
+    });
+  }
+
+  private clearSessionData(): void {
+    // Clear local session data
     this.user = null;
     sessionStorage.removeItem('user');
     sessionStorage.removeItem('loginTime');
@@ -290,8 +343,14 @@ export class AuthService {
   }
 
   private handleSessionExpiry(): void {
+    // Prevent multiple logout attempts
+    if (this.isLoggingOut) {
+      console.log('Logout already in progress, skipping session expiry handling...');
+      return;
+    }
+
     console.log('Session expired due to inactivity');
-    this.logout();
+    this.logoutSync(); // Use synchronous logout for automatic logout
     this.router.navigate(['/login'], {
       queryParams: {
         message:

@@ -43,8 +43,17 @@ export class SidebarComponent {
   }
 
   logout() {
-    this.authService.logout();
-    this.router.navigate(['/login']);
+    this.authService.logout().subscribe({
+      next: () => {
+        console.log('Manual logout completed');
+        this.router.navigate(['/login']);
+      },
+      error: (error) => {
+        console.error('Logout error:', error);
+        // Navigate to login even if logout API fails
+        this.router.navigate(['/login']);
+      }
+    });
   }
   onSubmit() {
     this.submitted = true;

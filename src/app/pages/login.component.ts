@@ -298,11 +298,18 @@ export class LoginComponent implements OnInit {
       },
       error: (error) => {
         this.isLoading = false;
-        this.errorMessage = 'Login failed. Please try again.';
-        this.toastr.error(
-          'Login failed. Please check your credentials.',
-          'Error'
-        );
+        
+        // Extract specific error message from server response
+        let errorMessage = 'Login failed. Please try again.';
+        
+        if (error.error && error.error.message) {
+          errorMessage = error.error.message;
+        } else if (error.message) {
+          errorMessage = error.message;
+        }
+        
+        this.errorMessage = errorMessage;
+        this.toastr.error(errorMessage, 'Login Failed');
         console.error('Login error:', error);
       },
     });
