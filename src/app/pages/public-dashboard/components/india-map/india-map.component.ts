@@ -12,6 +12,8 @@ interface InstituteMarker {
   latitude: number;
   longitude: number;
   address: string;
+  trainingConducted: number;
+  traineesCount: number;
 }
 
 @Component({
@@ -88,7 +90,9 @@ export class IndiaMapComponent implements OnInit, AfterViewInit, OnDestroy {
           name: institute.name,
           latitude: institute.latitude,
           longitude: institute.longitude,
-          address: institute.address
+          address: institute.address,
+          trainingConducted: institute.trainingConducted || 0,
+          traineesCount: institute.traineesCount || 0
         }));
         console.log('✅ Loaded institute data:', this.institutes.length, 'institutes');
         // Re-render markers if map is already initialized
@@ -294,9 +298,17 @@ export class IndiaMapComponent implements OnInit, AfterViewInit, OnDestroy {
     this.path = d3.geoPath().projection(this.projection);
     console.log('✅ Path generator created');
 
-    // Draw states/features from GeoJSON
+    // Create separate groups for proper layering
+    console.log('🏗️ Creating layered groups...');
+    let statesGroup = this.g.select('.states-group');
+    if (statesGroup.empty()) {
+      statesGroup = this.g.append('g').attr('class', 'states-group');
+      console.log('✅ Created states group for layering');
+    }
+
+    // Draw states/features from GeoJSON in the states group
     console.log('🎨 Drawing states from GeoJSON features...');
-    const stateSelection = this.g.selectAll('.state')
+    const stateSelection = statesGroup.selectAll('.state')
       .data(geoData.features);
     console.log('Data bound to selection, features count:', geoData.features.length);
 
@@ -431,9 +443,12 @@ export class IndiaMapComponent implements OnInit, AfterViewInit, OnDestroy {
     ];
     console.log('📋 Simplified states data prepared:', states.length, 'states');
 
-    // Add states
+    // Create states group for proper layering
+    const statesGroup = this.g.append('g').attr('class', 'states-group');
+    
+    // Add states to the states group
     console.log('🎨 Rendering simplified state paths...');
-    const stateSelection = this.g.selectAll('.state')
+    const stateSelection = statesGroup.selectAll('.state')
       .data(states)
       .enter()
       .append('path')
@@ -465,12 +480,12 @@ export class IndiaMapComponent implements OnInit, AfterViewInit, OnDestroy {
     console.log('📍 Institute data:', this.institutes.length, 'institutes');
     console.log('🗺️ Projection available:', !!this.projection);
 
-    // Create a separate group for markers to ensure they appear on top
-    let markersGroup = this.g.select('.markers-group');
-    if (markersGroup.empty()) {
-      markersGroup = this.g.append('g').attr('class', 'markers-group');
-      console.log('✅ Created markers group for layering');
-    }
+    // Remove existing markers group to recreate it (ensures it's on top)
+    this.g.select('.markers-group').remove();
+    
+    // Create a separate group for markers to ensure they appear on top of states
+    const markersGroup = this.g.append('g').attr('class', 'markers-group');
+    console.log('✅ Created markers group for layering (on top)');
 
     // Add institute markers to the markers group
     const markerSelection = markersGroup.selectAll('.institute-marker')
@@ -573,7 +588,10 @@ export class IndiaMapComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   private onInstituteHover(event: any, institute: InstituteMarker): void {
-    this.showTooltip(event, `${institute.name}\n${institute.address}`);
+    const trainingConducted = institute.trainingConducted ?? 0;
+    const traineesCount = institute.traineesCount ?? 0;
+    const tooltipContent = `${institute.name}\n${institute.address}\nTrainings Conducted: ${trainingConducted}\nTrainees Count: ${traineesCount}`;
+    this.showTooltip(event, tooltipContent);
   }
 
   private showTooltip(event: any, text: string): void {
@@ -593,7 +611,7 @@ export class IndiaMapComponent implements OnInit, AfterViewInit, OnDestroy {
       .style('opacity', 0);
 
     tooltip.merge(tooltipEnter as any)
-      .html(text.replace('\n', '<br>'))
+      .html(text.replace(/\n/g, '<br>'))
       .style('left', (event.pageX + 10) + 'px')
       .style('top', (event.pageY - 10) + 'px')
       .transition()

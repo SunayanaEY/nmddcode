@@ -185,13 +185,31 @@
   stroke-width: 3px !important;
 }
 
+/* SVG Group Layering - Ensure markers appear on top */
+:host ::ng-deep .states-group {
+  /* States should be rendered first (behind markers) */
+}
+
+:host ::ng-deep .markers-group {
+  /* Markers should be rendered last (on top of states) */
+  pointer-events: all;
+}
+
 :host ::ng-deep .institute-marker {
   transition: all 0.3s ease;
+  fill: rgb(255, 87, 34);
+  stroke: #fff;
+  stroke-width: 2;
+  r: 5;
+  cursor: pointer;
+  /* Ensure markers are always visible on top */
+  z-index: 10;
 }
 
 :host ::ng-deep .institute-marker:hover {
   r: 8;
   filter: drop-shadow(0 0 6px rgba(33, 150, 243, 0.6));
+  stroke-width: 3;
 }
 
 /* Tooltip Styles (Global) */

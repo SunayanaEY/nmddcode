@@ -127,6 +127,8 @@ export interface InstituteLocationData {
   latitude: number;
   longitude: number;
   address: string;
+  trainingConducted: number;
+  traineesCount: number;
 }
 
 export interface InstituteLocationResponse {

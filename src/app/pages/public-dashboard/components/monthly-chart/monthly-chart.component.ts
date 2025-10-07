@@ -38,7 +38,7 @@ export class MonthlyChartComponent implements OnInit, OnChanges, OnDestroy {
         color: '#2196f3'
       },
       {
-        name: 'Farmers Trained',
+        name: 'Trainees Trained',
         data: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
         color: '#4caf50'
       },
@@ -60,7 +60,7 @@ export class MonthlyChartComponent implements OnInit, OnChanges, OnDestroy {
           color: '#2196f3'
         },
         {
-          name: 'Farmers Trained',
+          name: 'Trainees Trained',
           data: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
           color: '#4caf50'
         },
@@ -80,7 +80,7 @@ export class MonthlyChartComponent implements OnInit, OnChanges, OnDestroy {
           color: '#2196f3'
         },
         {
-          name: 'Farmers Trained',
+          name: 'Trainees Trained',
           data: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
           color: '#4caf50'
         },
@@ -287,7 +287,7 @@ export class MonthlyChartComponent implements OnInit, OnChanges, OnDestroy {
             color: '#2196f3'
           },
           {
-            name: 'Farmers Trained',
+            name: 'Trainees Trained',
             data: this.monthlyData.map(item => item.farmersTrained),
             color: '#4caf50'
           },

@@ -53,8 +53,11 @@ export class AuthService {
   private isLoggingOut: boolean = false;
 
   constructor(private http: HttpClient, private router: Router) {
-    this.startSessionMonitoring();
     this.setupActivityListeners();
+    // Only start session monitoring if user is already logged in (e.g., page refresh)
+    if (this.isLoggedIn()) {
+      this.startSessionMonitoring();
+    }
   }
 
   login(email: string, password: string): Observable<LoginResponse> {
@@ -285,7 +288,8 @@ export class AuthService {
 
     // Check session every minute
     this.sessionCheckInterval = interval(60000).subscribe(() => {
-      if (this.isSessionExpired()) {
+      // Only check for session expiry if user is logged in
+      if (this.isLoggedIn() && this.isSessionExpired()) {
         this.handleSessionExpiry();
       }
     });
@@ -349,6 +353,13 @@ export class AuthService {
       return;
     }
 
+    // Additional safety check: only handle session expiry if user data exists in session storage
+    // Use direct session storage check to avoid circular dependency with isLoggedIn()
+    if (!sessionStorage.getItem('user')) {
+      console.log('User not logged in, skipping session expiry handling...');
+      return;
+    }
+
     console.log('Session expired due to inactivity');
     this.logoutSync(); // Use synchronous logout for automatic logout
     this.router.navigate(['/login'], {
@@ -361,7 +372,8 @@ export class AuthService {
 
   // Method to get remaining session time (useful for displaying countdown)
   getRemainingSessionTime(): number {
-    if (!this.isLoggedIn()) {
+    // Use direct session storage check to avoid potential circular dependency
+    if (!sessionStorage.getItem('user')) {
       return 0;
     }
 
