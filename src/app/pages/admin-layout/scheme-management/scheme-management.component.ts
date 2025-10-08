@@ -29,6 +29,7 @@ export class SchemeManagementComponent {
   schemeConfirmationModal!: ElementRef;
   isExportCSV: Boolean = false;
   isExportPdf: Boolean = false;
+  isLoading: boolean = false; // Loading state for the table
   table: string = 'schemes';
   addNew: string = 'Add new Scheme';
   fileName: String = 'All_trainings_';
@@ -78,23 +79,29 @@ export class SchemeManagementComponent {
 
   ngOnInit() {
     this.schemeListProcessed = [];
+    this.isLoading = true; // Start loading
     this.schemeService.getAllSchemes().subscribe({
       next: (res) => {
-        this.schemeList = res;
-        let index = 0;
-        this.schemeList.forEach((ele) => {
-          let data = {
-            id: ele['id'],
-            title: ele['schemeName'],
-            editable: false,
-            actions: [...this.tableActions],
-          };
+        // Add a small delay to make loading state visible for testing
+        setTimeout(() => {
+          this.schemeList = res;
+          let index = 0;
+          this.schemeList.forEach((ele) => {
+            let data = {
+              id: ele['id'],
+              title: ele['schemeName'],
+              editable: false,
+              actions: [...this.tableActions],
+            };
 
-          this.schemeListProcessed.push(data);
-        });
+            this.schemeListProcessed.push(data);
+          });
+          this.isLoading = false; // Stop loading on success
+        }, 1000); // 1 second delay for testing
       },
       error: (error) => {
         this.toastr.error('Error while fetching schemes!');
+        this.isLoading = false; // Stop loading on error
       },
     });
   }
@@ -171,6 +178,9 @@ export class SchemeManagementComponent {
   }
 
   confirm() {
+    this.isLoading = true; // Start loading for save/delete operations
+    this.modalService.dismissAll(); // Close modal immediately
+    
     if (this.event.action == 'save') {
       this.schemeListProcessed[this.event.index].editable = false;
       let data = {
@@ -180,23 +190,24 @@ export class SchemeManagementComponent {
       this.schemeService.saveScheme(data).subscribe({
         next: (res: any) => {
           this.toastr.success('Saved Scheme successfully!');
-          this.ngOnInit();
+          this.ngOnInit(); // This will set isLoading to false when complete
         },
         error: (error) => {
           this.toastr.error('Error while saving scheme!');
+          this.isLoading = false; // Stop loading on error
         },
       });
     } else if (this.event.action == 'delete') {
       this.schemeService.deleteScheme(this.event.item.id).subscribe({
         next: (res) => {
           this.toastr.success('Scheme deleted successfully!');
-          this.ngOnInit();
+          this.ngOnInit(); // This will set isLoading to false when complete
         },
         error: (error) => {
           this.toastr.error('Error while deleting scheme!');
+          this.isLoading = false; // Stop loading on error
         },
       });
     }
-    this.modalService.dismissAll();
   }
 }

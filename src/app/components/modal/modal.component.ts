@@ -29,6 +29,7 @@ export interface ModalConfig {
   secondaryButtonText?: string;
   fields?: ModalField[];
   content?: string; // for custom HTML content
+  isLoading?: boolean; // for showing spinner on primary button
 }
 
 @Component({

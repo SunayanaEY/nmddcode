@@ -14,7 +14,7 @@
 
   <app-table [columns]="tableColumns" [data]="trainingTypeListProcessed" (actionClick)="handleTableAction($event)"
     [isExportCSV]="isExportCSV" [isExportPDF]="isExportPdf" [pdfHeaders]="pdfHeaders" [columnKeys]="columnKeys"
-    [fileName]="fileName" [tableName]="table" [addNew]="addNew">
+    [fileName]="fileName" [tableName]="table" [addNew]="addNew" [isLoading]="isLoading">
   </app-table>
 </div>
 

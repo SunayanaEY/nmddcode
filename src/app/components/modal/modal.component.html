@@ -235,7 +235,9 @@
             *ngIf="config.primaryButtonText"
             type="button"
             class="btn btn-primary"
+            [disabled]="config.isLoading"
             (click)="onPrimaryAction()">
+            <span *ngIf="config.isLoading" class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
             {{ config.primaryButtonText | translate}}
           </button>
           <button

@@ -11,7 +11,8 @@
 
   <app-table [columns]="tableColumns" [data]="schemeListProcessed" [actions]="tableActions"
     (actionClick)="handleTableAction($event)" [isExportCSV]="isExportCSV" [isExportPDF]="isExportPdf"
-    [pdfHeaders]="pdfHeaders" [columnKeys]="columnKeys" [fileName]="fileName" [tableName]="table" [addNew]="addNew">
+    [pdfHeaders]="pdfHeaders" [columnKeys]="columnKeys" [fileName]="fileName" [tableName]="table" [addNew]="addNew"
+    [isLoading]="isLoading">
   </app-table>
 </div>
 

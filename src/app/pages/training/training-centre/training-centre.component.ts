@@ -68,6 +68,7 @@ export class TrainingCentreComponent implements OnInit {
     primaryButtonText: 'Confirm',
     secondaryButtonText: 'Cancel',
     content: '', // Will be dynamically set
+    isLoading: false, // Initialize loading state
     fields: [
       {
         id: 'confirmationText',
@@ -597,6 +598,9 @@ export class TrainingCentreComponent implements OnInit {
   performToggle() {
     if (!this.pendingToggleItem) return;
 
+    // Set loading state to show spinner
+    this.confirmModalConfig.isLoading = true;
+
     this.adminService
       .toggleActiveInactive(this.pendingToggleItem.id)
       .subscribe({
@@ -610,7 +614,8 @@ export class TrainingCentreComponent implements OnInit {
               !this.trainingCentres[index].active;
           }
 
-          // Close the confirmation modal
+          // Reset loading state and close the confirmation modal
+          this.confirmModalConfig.isLoading = false;
           this.showConfirmModal = false;
           this.pendingToggleItem = null;
           this.confirmationText = '';
@@ -624,6 +629,9 @@ export class TrainingCentreComponent implements OnInit {
         error: (error) => {
           console.error('Error toggling centre status:', error);
           alert('Failed to update centre status. Please try again.');
+          
+          // Reset loading state and close the confirmation modal
+          this.confirmModalConfig.isLoading = false;
           this.showConfirmModal = false;
           this.pendingToggleItem = null;
           this.confirmationText = '';

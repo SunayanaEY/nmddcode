@@ -29,6 +29,7 @@ export class TrainingTypeManagementComponent {
   isExportPdf: Boolean = false;
   table: string = 'trainingTypes';
   addNew: string = 'Add new training type';
+  isLoading: boolean = false;
 
   fileName: String = 'All_trainings_';
 
@@ -77,6 +78,7 @@ export class TrainingTypeManagementComponent {
 
   ngOnInit() {
     this.trainingTypeListProcessed = [];
+    this.isLoading = true;
     this.trainingTypeService.getAllTrainingTypes().subscribe({
       next: (res) => {
         this.trainingTypeList = res;
@@ -90,9 +92,14 @@ export class TrainingTypeManagementComponent {
           };
           this.trainingTypeListProcessed.push(data);
         });
+        // Temporary delay for testing loader visibility
+        setTimeout(() => {
+          this.isLoading = false;
+        }, 1000);
       },
       error: (error) => {
         this.toastr.error('Error while fetching training types!');
+        this.isLoading = false;
       },
     });
   }
@@ -169,6 +176,7 @@ export class TrainingTypeManagementComponent {
   }
 
   confirm() {
+    this.isLoading = true;
     if (this.event.action == 'save') {
       this.trainingTypeListProcessed[this.event.index].editable = false;
       let data = {
@@ -182,6 +190,7 @@ export class TrainingTypeManagementComponent {
         },
         error: (error) => {
           this.toastr.error('Error while saving Training Type!');
+          this.isLoading = false;
         },
       });
     } else if (this.event.action == 'delete') {
@@ -194,6 +203,7 @@ export class TrainingTypeManagementComponent {
           },
           error: (error) => {
             this.toastr.error('Error while deleting Training Type!');
+            this.isLoading = false;
           },
         });
     }
