@@ -94,6 +94,9 @@ export class MonthlyChartComponent implements OnInit, OnChanges, OnDestroy {
   };
 
   ngOnInit(): void {
+    // Initialize chart with fallback data first
+    this.updateChart();
+    // Then load actual data
     this.loadMonthlyData();
   }
 
@@ -104,12 +107,9 @@ export class MonthlyChartComponent implements OnInit, OnChanges, OnDestroy {
   }
 
   private updateChart(): void {
-    if (this.isLoading) {
-      this.chartLoading = true;
-      return;
-    }
-
-    this.chartLoading = false;
+    // Don't prevent chart rendering when parent is loading
+    // Only show chart loading when this component is loading its own data
+    this.chartLoading = this.isLoadingData;
     const data = this.getChartData();
 
     this.chartOption = {
@@ -249,7 +249,8 @@ export class MonthlyChartComponent implements OnInit, OnChanges, OnDestroy {
     }
 
     this.isLoadingData = true;
-    this.chartLoading = true;
+    // Update chart loading state
+    this.updateChart();
 
     // Cancel any existing subscription
     if (this.dataSubscription) {
@@ -260,14 +261,12 @@ export class MonthlyChartComponent implements OnInit, OnChanges, OnDestroy {
       next: (response) => {
         if (response.success) {
           this.monthlyData = response.data;
-          this.updateChart();
         }
-        this.chartLoading = false;
         this.isLoadingData = false;
+        this.updateChart();
       },
       error: (error) => {
         console.error('Error fetching monthly training data:', error);
-        this.chartLoading = false;
         this.isLoadingData = false;
         // Use mock data as fallback
         this.updateChart();
