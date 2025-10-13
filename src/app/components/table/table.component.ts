@@ -19,6 +19,7 @@ export interface TableColumn {
 
   isLink?: boolean;
   linkHandler?: (row: any) => void;
+  linkCondition?: (row: any) => boolean;
 }
 
 export interface TableAction {
@@ -296,6 +297,12 @@ export class TableComponent {
       return this.data.filter(item => item.status === 'TRAINEE_UPLOADED' || ((this.userRole === 5 || this.userRole === 6) && item.status === 'VALIDATED_BY_INSTITUTE_HEAD')).length;
     else
     return this.data.filter(item => item.status === 'VERIFIED' ).length;
+  }
+
+  // Method to clear selected items - can be called from parent component
+  clearSelectedItems(): void {
+    this.selectedItems.clear();
+    this.selectAll = false;
   }
 
 

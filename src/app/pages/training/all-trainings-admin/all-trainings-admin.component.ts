@@ -61,6 +61,8 @@ export class AllTrainingsAdminComponent {
   rejectModal!: ElementRef;
   @ViewChild('certificateModal')
   certificateModal!: ElementRef;
+  @ViewChild('traineeTable')
+  traineeTable!: TableComponent;
   submitted: Boolean = false;
   certificateZip = new JSZip();
   certificateData: any = null;
@@ -1091,7 +1093,23 @@ export class AllTrainingsAdminComponent {
     if (action === 'bulkApprove') {
       this.bulkApproveTrainees(items);
     } else if (action === 'bulkReject') {
-      this.selectedTraineesForBulkReject = items;
+      // Filter out already approved or rejected trainees to prevent re-rejection
+      const eligibleTraineesForReject = items.filter(
+        (trainee) =>
+          trainee.status !== 'APPROVED' && 
+          trainee.status !== 'REJECTED' &&
+          trainee.status !== 'APPROVED_BY_STATE_ADMIN' &&
+          trainee.status !== 'APPROVED_BY_ORGANIZATION' &&
+          trainee.status !== 'REJECTED_BY_INSTITUTE_HEAD' &&
+          trainee.status !== 'CERTIFICATE_ISSUED'
+      );
+      
+      if (eligibleTraineesForReject.length === 0) {
+        this.toastr.warning('No eligible trainees to reject. Please select trainees that are not already approved or rejected.', 'Warning');
+        return;
+      }
+      
+      this.selectedTraineesForBulkReject = eligibleTraineesForReject;
       this.rejectForm.reset();
       this.modalService.open(this.rejectModal, { centered: true });
     }
@@ -1131,6 +1149,11 @@ export class AllTrainingsAdminComponent {
             `${eligibleTrainees.length} trainees approved successfully!`
           );
 
+          // Clear selected items in the table
+          if (this.traineeTable) {
+            this.traineeTable.clearSelectedItems();
+          }
+
           // Refresh the trainee list
           this.refreshTraineeList();
         } else {
@@ -1160,6 +1183,7 @@ export class AllTrainingsAdminComponent {
 
   bulkRejectTraineesWithRemarks(trainees: any[], remarks: string): void {
     this.isTableLoading = true;
+    
     // Filter trainees that can be rejected (not already approved or rejected)
     const eligibleTrainees = trainees.filter(
       (trainee) =>
@@ -1186,6 +1210,8 @@ export class AllTrainingsAdminComponent {
 
     this.adminService.rejectTrainees(payload).subscribe({
       next: (response) => {
+        this.isTableLoading = false;
+        
         if (response.success) {
           // Update status for all rejected trainees based on user role
           eligibleTrainees.forEach((trainee) => {
@@ -1196,10 +1222,18 @@ export class AllTrainingsAdminComponent {
             }
             trainee.remarks = remarks;
           });
+          
+          // Show success message
           this.toastr.success(
             `${eligibleTrainees.length} trainee(s) rejected successfully`,
             'Success'
           );
+          
+          // Clear selected items in the table
+          if (this.traineeTable) {
+            this.traineeTable.clearSelectedItems();
+          }
+          
           // Refresh the trainee list
           this.refreshTraineeList();
         } else {
@@ -1208,12 +1242,14 @@ export class AllTrainingsAdminComponent {
             'Error'
           );
         }
-        this.isTableLoading = false;
+        
+        // Always close modal and cleanup after API response (success or failure)
         if (this.rejectModalRef) {
           this.rejectModalRef.close();
           this.rejectModalRef = null;
         }
         this.selectedTraineesForBulkReject = [];
+        this.rejectForm.reset();
       },
       error: (error) => {
         const errorMessage =
@@ -1221,11 +1257,14 @@ export class AllTrainingsAdminComponent {
         this.isTableLoading = false;
         this.toastr.error(errorMessage, 'Error');
         console.error('Error rejecting trainees:', error);
+        
+        // Close modal and cleanup even on error
         if (this.rejectModalRef) {
           this.rejectModalRef.close();
           this.rejectModalRef = null;
         }
         this.selectedTraineesForBulkReject = [];
+        this.rejectForm.reset();
       },
     });
   }

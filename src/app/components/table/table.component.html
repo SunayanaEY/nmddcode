@@ -91,7 +91,7 @@
           </ng-container>
           <ng-container *ngIf="!tableNamesArray.includes(tableName)">
             <td *ngFor="let col of columns">
-              <ng-container *ngIf="col.isLink; else normalCell">
+              <ng-container *ngIf="col.isLink && (!col.linkCondition || col.linkCondition(item)); else normalCell">
                 <a href="javascript:void(0)" class="text-primary" (click)="onLinkClick(col, item)">
                   {{
                   col.transform

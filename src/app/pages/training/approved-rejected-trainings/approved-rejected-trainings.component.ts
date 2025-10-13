@@ -86,6 +86,7 @@ export class ApprovedRejectedTrainingsComponent {
       header: 'Training Title',
       isLink: true,
       linkHandler: (row) => this.openTrainingDetails(row),
+      linkCondition: (row) => row.status !== 'TRAINEE_STATE_DECISIONS_COMPLETED',
     },
     { key: 'scheme', header: 'Scheme' },
     { key: 'trainingInstituteName', header: 'Training Institute' },
@@ -120,6 +121,7 @@ export class ApprovedRejectedTrainingsComponent {
       icon: 'bi bi-pencil-fill',
       class: 'btn-info',
       title: 'Add Data',
+      condition: (row: any) => row.status !== 'TRAINEE_STATE_DECISIONS_COMPLETED',
     },
   ];
   tableActions2: TableAction[] = [

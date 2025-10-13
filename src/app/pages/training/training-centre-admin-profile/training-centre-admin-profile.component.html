@@ -134,45 +134,7 @@
                 </div>
               </div>
             </div>
-            <div
-              class="form-row"
-              *ngIf="
-                profileForm.get('instituteType')?.value ===
-                'Other Organizations'
-              "
-            >
-              <div class="form-group">
-                <label for="instituteType"
-                  >Other Organizations<span class="required">*</span></label
-                >
-                <select
-                  id="organization"
-                  formControlName="organization"
-                  class="form-control"
-                  [class.is-invalid]="
-                    profileForm.get('organization')?.invalid &&
-                    profileForm.get('organization')?.touched
-                  "
-                >
-                  <option value="" disabled>Select Organization</option>
-                  <option *ngFor="let org of organizations" [value]="org.id">
-                    {{ org.organizationName }}
-                  </option>
-                </select>
-                <div
-                  class="invalid-feedback"
-                  *ngIf="
-                    profileForm.get('organization')?.invalid &&
-                    profileForm.get('organization')?.touched
-                  "
-                >
-                  <span
-                    *ngIf="profileForm.get('organization')?.errors?.['required']"
-                    >Organization Name is required</span
-                  >
-                </div>
-              </div>
-            </div>
+
             <div class="form-row">
               <div class="form-group">
                 <label for="state">State<span class="required">*</span></label>
