@@ -122,7 +122,6 @@ export class TrainingTypeManagementComponent {
           title: 'Delete',
         },
       ];
-      console.log('trainingTypeListProcessed changed');
     } else if (this.event.action == 'save') {
       if (event.item.title == null || event.item.title == '') {
         this.toastr.warning('Please enter training type!');

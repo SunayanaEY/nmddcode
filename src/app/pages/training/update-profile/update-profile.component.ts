@@ -42,9 +42,6 @@ export class UpdateProfileComponent implements OnInit {
 
   ngOnInit(): void {
     // Debug authentication status
-    console.log('Update Profile Component - Checking authentication:');
-    console.log('Is logged in:', this.authService.isLoggedIn());
-    console.log('Current user:', this.authService.getUser());
     
     this.loadProfileData();
     this.loadStates();
@@ -93,7 +90,6 @@ export class UpdateProfileComponent implements OnInit {
     this.http.get(`${environment.apiUrl}training/trainingInstitutes`).subscribe({
       next: (response: any) => {
         this.isLoading = false;
-        console.log('Profile data loaded:', response);
         if (response.success && response.data && response.data.length > 0) {
           this.profileData = response.data[0]; // Store the complete profile data
           this.populateForm(this.profileData);

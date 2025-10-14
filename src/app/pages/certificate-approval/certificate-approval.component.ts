@@ -113,7 +113,6 @@ export class CertificateApprovalComponent {
   ];
 
   handleTableAction(event: { action: string, item: any, index: number }): void {
-    console.log('Action:', event.action, 'Item:', event.item);
     // Handle certificate approval actions here
   }
 }

@@ -271,7 +271,6 @@ export class ApprovedRejectedTrainingsComponent {
     });
   }
   handleTableAction(event: { action: string; item: any; index: number }): void {
-    console.log('Action:', event.action, 'Item:', event.item);
 
     if (event.action === 'download') {
       // Handle certificate download for trainee
@@ -390,7 +389,6 @@ export class ApprovedRejectedTrainingsComponent {
   }
 
   downloadCertificate(trainee: any): void {
-    console.log('Downloading certificate for trainee:', trainee);
     this.selectedTraineeForCertificate = trainee;
 
     // Call the getCertificateDetails API

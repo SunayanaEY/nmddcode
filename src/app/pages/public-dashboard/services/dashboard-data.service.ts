@@ -391,7 +391,6 @@ export class DashboardDataService {
   // Export data functionality
   exportData(format: 'csv' | 'excel' | 'pdf'): Observable<Blob> {
     // TODO: Implement actual export functionality
-    console.log(`Exporting data in ${format} format`);
 
     // Mock implementation
     const mockData = 'Mock exported data';
@@ -402,7 +401,6 @@ export class DashboardDataService {
   // Download certificate functionality
   downloadCertificate(certificateId: string): Observable<Blob> {
     // TODO: Implement actual certificate download
-    console.log(`Downloading certificate: ${certificateId}`);
 
     // Mock implementation
     const mockPdf = 'Mock PDF certificate data';
@@ -413,7 +411,6 @@ export class DashboardDataService {
   // Search functionality
   searchData(query: string, filters?: any): Observable<any[]> {
     // TODO: Implement actual search functionality
-    console.log(`Searching for: ${query}`, filters);
 
     // Mock implementation
     const mockResults = [
@@ -424,7 +421,7 @@ export class DashboardDataService {
     return of(mockResults).pipe(delay(500));
   }
 
-  getTrainingSummaryCount(stateId?: number, districtId?: number): Observable<TrainingSummaryResponse> {
+  getTrainingSummaryCount(stateId?: number, districtId?: number, trainingInstituteId?: string): Observable<TrainingSummaryResponse> {
     let url = `${this.API_BASE_URL}public/dashboard/trainingSummaryCount`;
     const params = new URLSearchParams();
 
@@ -434,6 +431,9 @@ export class DashboardDataService {
     if (districtId) {
       params.append('districtId', districtId.toString());
     }
+    if (trainingInstituteId) {
+      params.append('trainingInstituteId', trainingInstituteId);
+    }
 
     if (params.toString()) {
       url += `?${params.toString()}`;
@@ -442,7 +442,7 @@ export class DashboardDataService {
     return this.http.get<TrainingSummaryResponse>(url);
   }
 
-  getMonthlyTrainingCount(stateId?: number, districtId?: number): Observable<MonthlyTrainingResponse> {
+  getMonthlyTrainingCount(stateId?: number, districtId?: number, trainingInstituteId?: string): Observable<MonthlyTrainingResponse> {
     let url = `${this.API_BASE_URL}public/dashboard/monthlyTrainingCount`;
     const params = new URLSearchParams();
 
@@ -451,6 +451,9 @@ export class DashboardDataService {
     }
     if (districtId) {
       params.append('districtId', districtId.toString());
+    }
+    if (trainingInstituteId) {
+      params.append('trainingInstituteId', trainingInstituteId);
     }
 
     if (params.toString()) {
@@ -478,7 +481,7 @@ export class DashboardDataService {
     return this.http.get<ModeOfTrainingDistributionResponse>(url);
   }
 
-  getAgeWiseDistribution(stateId?: number, districtId?: number): Observable<AgeWiseDistributionResponse> {
+  getAgeWiseDistribution(stateId?: number, districtId?: number, trainingInstituteId?: string): Observable<AgeWiseDistributionResponse> {
     let url = `${this.API_BASE_URL}public/dashboard/ageWiseDistribution`;
     const params = new URLSearchParams();
 
@@ -487,6 +490,9 @@ export class DashboardDataService {
     }
     if (districtId) {
       params.append('districtId', districtId.toString());
+    }
+    if (trainingInstituteId) {
+      params.append('trainingInstituteId', trainingInstituteId);
     }
 
     if (params.toString()) {

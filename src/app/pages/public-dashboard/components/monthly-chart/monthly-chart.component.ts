@@ -19,6 +19,7 @@ export class MonthlyChartComponent implements OnInit, OnChanges, OnDestroy {
   @Input() isLoading = false;
   @Input() stateId: number | null = null;
   @Input() districtId: number | null = null;
+  @Input() trainingInstituteId: string | null = null;
 
   chartOption: EChartsOption = {};
   chartLoading = false;
@@ -101,7 +102,7 @@ export class MonthlyChartComponent implements OnInit, OnChanges, OnDestroy {
   }
 
   ngOnChanges(changes: SimpleChanges): void {
-    if (changes['selectedState'] || changes['stateId'] || changes['districtId']) {
+    if (changes['selectedState'] || changes['isLoading'] || changes['stateId'] || changes['districtId'] || changes['trainingInstituteId']) {
       this.loadMonthlyData();
     }
   }
@@ -257,7 +258,7 @@ export class MonthlyChartComponent implements OnInit, OnChanges, OnDestroy {
       this.dataSubscription.unsubscribe();
     }
 
-    this.dataSubscription = this.dashboardService.getMonthlyTrainingCount(this.stateId || undefined, this.districtId || undefined).subscribe({
+    this.dataSubscription = this.dashboardService.getMonthlyTrainingCount(this.stateId || undefined, this.districtId || undefined, this.trainingInstituteId || undefined).subscribe({
       next: (response) => {
         if (response.success) {
           this.monthlyData = response.data;
@@ -315,7 +316,6 @@ export class MonthlyChartComponent implements OnInit, OnChanges, OnDestroy {
 
   onChartInit(ec: any): void {
     // Chart initialization callback
-    console.log('Monthly chart initialized');
 
     // Ensure proper sizing after initialization
     setTimeout(() => {

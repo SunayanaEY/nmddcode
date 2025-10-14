@@ -524,3 +524,292 @@
     padding: 24px;
   }
 }
+
+/* New KPI Cards Styles */
+.kpi-cards-container {
+  margin-bottom: 2rem;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 20px;
+}
+
+.kpi-card {
+  background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%);
+  border-radius: 16px;
+  padding: 24px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.12);
+  border: none;
+  height: 100%;
+  transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  position: relative;
+  overflow: hidden;
+}
+
+.kpi-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background: linear-gradient(90deg, var(--card-color-start), var(--card-color-end));
+}
+
+.kpi-card:hover {
+  transform: translateY(-8px) scale(1.02);
+  box-shadow: 0 16px 48px rgba(0, 0, 0, 0.2);
+}
+
+/* Card Color Variants */
+.kpi-card-green {
+  --card-color-start: #00c851;
+  --card-color-end: #007e33;
+  background: linear-gradient(135deg, #e8f5e8 0%, #f0fff0 100%);
+}
+
+.kpi-card-green:hover {
+  background: linear-gradient(135deg, #d4edda 0%, #e8f5e8 100%);
+}
+
+.kpi-card-blue {
+  --card-color-start: #007bff;
+  --card-color-end: #0056b3;
+  background: linear-gradient(135deg, #e3f2fd 0%, #f0f8ff 100%);
+}
+
+.kpi-card-blue:hover {
+  background: linear-gradient(135deg, #bbdefb 0%, #e3f2fd 100%);
+}
+
+.kpi-card-purple {
+  --card-color-start: #8e44ad;
+  --card-color-end: #6f42c1;
+  background: linear-gradient(135deg, #f3e5f5 0%, #faf0ff 100%);
+}
+
+.kpi-card-purple:hover {
+  background: linear-gradient(135deg, #e1bee7 0%, #f3e5f5 100%);
+}
+
+.kpi-card-orange {
+  --card-color-start: #ff6b35;
+  --card-color-end: #fd7e14;
+  background: linear-gradient(135deg, #fff3e0 0%, #fffaf0 100%);
+}
+
+.kpi-card-orange:hover {
+  background: linear-gradient(135deg, #ffe0b2 0%, #fff3e0 100%);
+}
+
+/* KPI Header */
+.kpi-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.kpi-icon {
+  width: 48px;
+  height: 48px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.5rem;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.kpi-card-green .kpi-icon {
+  background: linear-gradient(135deg, #00c851, #007e33);
+  color: white;
+}
+
+.kpi-card-blue .kpi-icon {
+  background: linear-gradient(135deg, #007bff, #0056b3);
+  color: white;
+}
+
+.kpi-card-purple .kpi-icon {
+  background: linear-gradient(135deg, #8e44ad, #6f42c1);
+  color: white;
+}
+
+.kpi-card-orange .kpi-icon {
+  background: linear-gradient(135deg, #ff6b35, #fd7e14);
+  color: white;
+}
+
+.kpi-card:hover .kpi-icon {
+  transform: scale(1.1) rotate(5deg);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.25);
+}
+
+/* Download Button */
+.btn-download-new {
+  width: 36px;
+  height: 36px;
+  border: none;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-size: 0.875rem;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+}
+
+.kpi-card-green .btn-download-new {
+  background: linear-gradient(135deg, #00c851, #007e33);
+  color: white;
+}
+
+.kpi-card-blue .btn-download-new {
+  background: linear-gradient(135deg, #007bff, #0056b3);
+  color: white;
+}
+
+.kpi-card-purple .btn-download-new {
+  background: linear-gradient(135deg, #8e44ad, #6f42c1);
+  color: white;
+}
+
+.kpi-card-orange .btn-download-new {
+  background: linear-gradient(135deg, #ff6b35, #fd7e14);
+  color: white;
+}
+
+.btn-download-new:hover {
+  transform: translateY(-2px) scale(1.05);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.25);
+  filter: brightness(1.1);
+}
+
+.btn-download-new:active {
+  transform: scale(0.95);
+}
+
+/* KPI Content */
+.kpi-content {
+  text-align: left;
+}
+
+.kpi-title {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: #495057;
+  margin-bottom: 0.75rem;
+  line-height: 1.4;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.kpi-value {
+  font-size: 2.25rem;
+  font-weight: 800;
+  margin-bottom: 0.75rem;
+  line-height: 1;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.kpi-card-green .kpi-value {
+  background: linear-gradient(135deg, #00c851, #007e33);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.kpi-card-blue .kpi-value {
+  background: linear-gradient(135deg, #007bff, #0056b3);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.kpi-card-purple .kpi-value {
+  background: linear-gradient(135deg, #8e44ad, #6f42c1);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.kpi-card-orange .kpi-value {
+  background: linear-gradient(135deg, #ff6b35, #fd7e14);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.kpi-growth {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.8rem;
+  font-weight: 600;
+  padding: 4px 8px;
+  border-radius: 12px;
+  border: 1px solid;
+}
+
+.kpi-growth.positive {
+  color: #28a745;
+  background: rgba(40, 167, 69, 0.1);
+  border-color: rgba(40, 167, 69, 0.2);
+}
+
+.kpi-growth.negative {
+  color: #dc3545;
+  background: rgba(220, 53, 69, 0.1);
+  border-color: rgba(220, 53, 69, 0.2);
+}
+
+.kpi-growth i {
+  font-size: 0.75rem;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .kpi-card {
+    padding: 1.25rem;
+  }
+  
+  .kpi-value {
+    font-size: 1.875rem;
+  }
+  
+  .kpi-title {
+    font-size: 0.8rem;
+  }
+  
+  .btn-download-new {
+    width: 32px;
+    height: 32px;
+    font-size: 0.8rem;
+  }
+}
+
+@media (max-width: 576px) {
+  .kpi-cards-container {
+    margin-bottom: 1.5rem;
+  }
+  
+  .kpi-card {
+    padding: 1rem;
+  }
+  
+  .kpi-header {
+    margin-bottom: 0.75rem;
+  }
+  
+  .kpi-icon {
+    width: 40px;
+    height: 40px;
+    font-size: 1.25rem;
+  }
+  
+  .kpi-value {
+    font-size: 1.75rem;
+  }
+}

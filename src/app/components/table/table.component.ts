@@ -224,8 +224,6 @@ export class TableComponent {
 
       this.excelData.push(resultObj);
     });
-    console.log('new Date(): ' + new Date());
-    console.log('new Date().getMonth(): ' + new Date().getMonth());
     this.excelService.exportAsExcelFile(
       this.excelData,
       this.fileName +

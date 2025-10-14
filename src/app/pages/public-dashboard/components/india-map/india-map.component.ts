@@ -58,14 +58,9 @@ export class IndiaMapComponent implements OnInit, AfterViewInit, OnDestroy {
   constructor(private dashboardService: DashboardDataService) {}
 
   ngOnInit(): void {
-    console.log('=== IndiaMapComponent ngOnInit START ===');
-    console.log('Component inputs:', {
-      selectedState: this.selectedState,
-      isLoading: this.isLoading
-    });
+
     this.checkUserRole();
     this.loadInstituteData();
-    console.log('=== IndiaMapComponent ngOnInit END ===');
   }
 
   private checkUserRole(): void {
@@ -75,7 +70,6 @@ export class IndiaMapComponent implements OnInit, AfterViewInit, OnDestroy {
         const user = JSON.parse(userData);
         this.userRole = user.role || 0;
         this.userStateName = user.stateName || '';
-        console.log('User role:', this.userRole, 'State:', this.userStateName);
       }
     } catch (error) {
       console.error('Error parsing user data:', error);
@@ -94,7 +88,6 @@ export class IndiaMapComponent implements OnInit, AfterViewInit, OnDestroy {
           trainingConducted: institute.trainingConducted || 0,
           traineesCount: institute.traineesCount || 0
         }));
-        console.log('✅ Loaded institute data:', this.institutes.length, 'institutes');
         // Re-render markers if map is already initialized
         if (this.g) {
           this.addInstituteMarkers();
@@ -107,11 +100,6 @@ export class IndiaMapComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   ngAfterViewInit(): void {
-    console.log('=== ngAfterViewInit START ===');
-    console.log('MapContainer exists:', !!this.mapContainer);
-    console.log('MapContainer nativeElement exists:', !!(this.mapContainer && this.mapContainer.nativeElement));
-    console.log('isLoading state:', this.isLoading);
-
     // Check if we can initialize immediately or need to wait for loading to complete
     if (!this.isLoading) {
       this.initializeMapWhenReady();
@@ -120,17 +108,13 @@ export class IndiaMapComponent implements OnInit, AfterViewInit, OnDestroy {
       this.waitForLoadingComplete();
     }
 
-    console.log('=== ngAfterViewInit END ===');
   }
 
   private waitForLoadingComplete(): void {
-    console.log('=== Waiting for loading to complete ===');
     const checkLoading = () => {
       if (!this.isLoading) {
-        console.log('✅ Loading completed, initializing map');
         this.initializeMapWhenReady();
       } else {
-        console.log('⏳ Still loading, checking again in 100ms');
         setTimeout(checkLoading, 100);
       }
     };
@@ -138,17 +122,12 @@ export class IndiaMapComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   private initializeMapWhenReady(): void {
-    console.log('=== initializeMapWhenReady START ===');
     // Add a small delay to ensure the DOM is fully rendered
     setTimeout(() => {
-      console.log('=== setTimeout callback executing ===');
       if (this.mapContainer && this.mapContainer.nativeElement) {
-        console.log('MapContainer is ready, proceeding with initialization');
         this.initializeMap();
       } else {
-        console.log('MapContainer not ready after timeout!');
-        console.log('MapContainer:', this.mapContainer);
-        console.log('NativeElement:', this.mapContainer?.nativeElement);
+
       }
     }, 100);
   }
@@ -160,28 +139,20 @@ export class IndiaMapComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   private initializeMap(): void {
-    console.log('=== initializeMap START ===');
 
     if (!this.mapContainer || !this.mapContainer.nativeElement) {
-      console.error('❌ Map container not found during initialization');
-      console.log('MapContainer:', this.mapContainer);
-      console.log('NativeElement:', this.mapContainer?.nativeElement);
       return;
     }
 
     const container = this.mapContainer.nativeElement;
-    console.log('✅ Container element found:', container);
 
     const rect = container.getBoundingClientRect();
-    console.log('Container getBoundingClientRect():', rect);
 
     this.width = rect.width || 500;
     this.height = rect.height || 400;
 
-    console.log('✅ Map dimensions calculated:', { width: this.width, height: this.height });
 
     // Create SVG
-    console.log('Creating SVG element...');
     this.svg = d3.select(container)
       .append('svg')
       .attr('width', '100%')
@@ -190,137 +161,85 @@ export class IndiaMapComponent implements OnInit, AfterViewInit, OnDestroy {
       //.style('background', '#f8f9fa');
       .style('background','rgba(255, 255, 255, 0.08)')
       .style('backdrop-filter','blur(25px)');
-    console.log('✅ SVG created:', this.svg.node());
 
     // Create main group
-    console.log('Creating main group...');
     this.g = this.svg.append('g');
-    console.log('✅ Main group created:', this.g.node());
 
     // Setup projection
-    console.log('Setting up projection...');
     this.projection = d3.geoMercator()
       .center([70.9629, 15.5937]) // Center of India
       .scale(500)
       .translate([this.width / 2, this.height / 2]);
 
     this.path = d3.geoPath().projection(this.projection);
-    console.log('✅ Projection and path configured');
 
     // Setup zoom
-    console.log('Setting up zoom behavior...');
     this.zoom = d3.zoom()
       .scaleExtent([0.5, 8])
       .on('zoom', (event) => {
-        console.log('Zoom event:', event.transform);
         this.g.attr('transform', event.transform);
       });
 
     this.svg.call(this.zoom);
-    console.log('✅ Zoom behavior applied');
-    console.log('=== initializeMap COMPLETED SUCCESSFULLY ===');
 
     // Load the India map data
     this.loadIndiaMap();
   }
 
   private async loadIndiaMap(): Promise<void> {
-    console.log('=== loadIndiaMap START ===');
 
     try {
-      console.log('🌐 Attempting to fetch GeoJSON data from: assets/geoJsonData/India.geojson');
 
       const response = await fetch('assets/geoJsonData/India.geojson');
-      console.log('📡 Fetch response received:', {
-        status: response.status,
-        statusText: response.statusText,
-        ok: response.ok,
-        url: response.url
-      });
+      
 
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status} - ${response.statusText}`);
       }
 
-      console.log('📄 Parsing JSON response...');
       const geoData = await response.json();
-      console.log('✅ GeoJSON data loaded successfully!');
-      console.log('GeoJSON structure:', {
-        type: geoData.type,
-        featuresCount: geoData.features?.length || 0,
-        firstFeature: geoData.features?.[0] ? {
-          type: geoData.features[0].type,
-          properties: Object.keys(geoData.features[0].properties || {}),
-          geometryType: geoData.features[0].geometry?.type
-        } : 'No features'
-      });
+      
 
-      console.log('🗺️ Creating map from GeoJSON...');
       this.createMapFromGeoJSON(geoData);
-      console.log('📍 Adding institute markers...');
       this.addInstituteMarkers();
-      console.log('=== loadIndiaMap COMPLETED SUCCESSFULLY ===');
 
     } catch (error) {
-      console.error('❌ Error loading India map:', error);
       const errorObj = error as Error;
-      console.log('Error details:', {
-        name: errorObj.name || 'Unknown',
-        message: errorObj.message || 'Unknown error',
-        stack: errorObj.stack || 'No stack trace'
-      });
-      console.log('🔄 Falling back to simplified map...');
+     
       this.createSimplifiedIndiaMap();
       this.addInstituteMarkers();
-      console.log('=== loadIndiaMap COMPLETED WITH FALLBACK ===');
     }
   }
 
   private createMapFromGeoJSON(geoData: any): void {
-    console.log('=== createMapFromGeoJSON START ===');
-    console.log('Input geoData:', {
-      type: geoData.type,
-      featuresCount: geoData.features?.length
-    });
+
 
     // Set up projection for India
-    console.log('🌍 Setting up projection...');
     this.projection = d3.geoMercator()
       .center([82.9629, 20.5937]) // Center of India
       .scale(650)
       .translate([this.width / 2, this.height / 2]);
-    console.log('✅ Projection configured:', {
-      center: [78.9629, 20.5937],
-      scale: 1000,
-      translate: [this.width / 2, this.height / 2]
-    });
+    
 
     this.path = d3.geoPath().projection(this.projection);
-    console.log('✅ Path generator created');
 
     // Create separate groups for proper layering
-    console.log('🏗️ Creating layered groups...');
     let statesGroup = this.g.select('.states-group');
     if (statesGroup.empty()) {
       statesGroup = this.g.append('g').attr('class', 'states-group');
-      console.log('✅ Created states group for layering');
     }
 
     // Draw states/features from GeoJSON in the states group
-    console.log('🎨 Drawing states from GeoJSON features...');
     const stateSelection = statesGroup.selectAll('.state')
       .data(geoData.features);
-    console.log('Data bound to selection, features count:', geoData.features.length);
 
     const stateEnter = stateSelection.enter()
       .append('path')
       .attr('class', 'state');
-    console.log('✅ Path elements created for', geoData.features.length, 'features');
 
     stateEnter
       .attr('d', (d: any) => {
         const pathData = this.path(d);
-        console.log('Path data for feature:', d.properties?.NAME || d.properties?.name, pathData ? 'Generated' : 'NULL');
         return pathData;
       })
       .attr('fill', '#ffd54f')
@@ -330,7 +249,6 @@ export class IndiaMapComponent implements OnInit, AfterViewInit, OnDestroy {
       .on('mouseover', (event: any, d: any) => {
         d3.select(event.currentTarget).attr('fill', '#ffcc02');
         const stateName = d.properties.NAME || d.properties.name || 'Unknown State';
-        console.log('State hovered:', stateName);
         this.showTooltip(event, stateName);
       })
       .on('mouseout', (event: any) => {
@@ -339,7 +257,6 @@ export class IndiaMapComponent implements OnInit, AfterViewInit, OnDestroy {
       })
       .on('click', (event: any, d: any) => {
         const stateName = d.properties.NAME || d.properties.name;
-        console.log('State clicked:', stateName);
         // Find matching state data
         const stateCode = this.getStateCodeFromName(stateName);
         if (stateCode && this.statesData[stateCode]) {
@@ -347,30 +264,25 @@ export class IndiaMapComponent implements OnInit, AfterViewInit, OnDestroy {
         }
       });
 
-    console.log('✅ State paths rendered with interactions');
 
     // Apply role-based zooming after map is created
     setTimeout(() => {
       this.applyRoleBasedZoom(geoData);
     }, 100);
 
-    console.log('=== createMapFromGeoJSON COMPLETED ===');
   }
 
   private applyRoleBasedZoom(geoData: any): void {
-    console.log('Applying role-based zoom for role:', this.userRole, 'state:', this.userStateName);
 
     if (this.userRole === 5 && this.userStateName) {
       // State admin - zoom to specific state
       this.zoomToState(geoData, this.userStateName);
     } else if (this.userRole === 1) {
       // Center admin - show full India map (already default view)
-      console.log('Center admin - showing full India map');
     }
   }
 
   private zoomToState(geoData: any, stateName: string): void {
-    console.log('Zooming to state:', stateName);
 
     // Find the state feature in GeoJSON data
     const stateFeature = geoData.features.find((feature: any) => {
@@ -380,7 +292,6 @@ export class IndiaMapComponent implements OnInit, AfterViewInit, OnDestroy {
     });
 
     if (stateFeature && this.svg && this.g) {
-      console.log('Found state feature for:', stateName);
 
       // Calculate bounds of the state
       const bounds = this.path.bounds(stateFeature);
@@ -393,7 +304,6 @@ export class IndiaMapComponent implements OnInit, AfterViewInit, OnDestroy {
       const scale = Math.min(8, 0.9 / Math.max(dx / this.width, dy / this.height));
       const translate = [this.width / 2 - scale * x, this.height / 2 - scale * y];
 
-      console.log('Zoom parameters:', { scale, translate, bounds });
 
       // Apply zoom transformation
       const transform = d3.zoomIdentity
@@ -404,7 +314,6 @@ export class IndiaMapComponent implements OnInit, AfterViewInit, OnDestroy {
         .duration(1000)
         .call(this.zoom.transform, transform);
 
-      console.log('✅ Zoom applied to state:', stateName);
     } else {
       console.warn('State feature not found for:', stateName);
     }
@@ -426,8 +335,6 @@ export class IndiaMapComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   private createSimplifiedIndiaMap(): void {
-    console.log('=== createSimplifiedIndiaMap START ===');
-    console.log('🔄 Using fallback simplified map');
 
     // Simplified state boundaries (you would replace this with actual TopoJSON data)
     const states = [
@@ -441,20 +348,17 @@ export class IndiaMapComponent implements OnInit, AfterViewInit, OnDestroy {
       { name: 'Telangana', code: 'TS', path: 'M250,280 L320,280 L320,340 L250,340 Z' },
       { name: 'Delhi', code: 'DL', path: 'M180,120 L200,120 L200,140 L180,140 Z' }
     ];
-    console.log('📋 Simplified states data prepared:', states.length, 'states');
 
     // Create states group for proper layering
     const statesGroup = this.g.append('g').attr('class', 'states-group');
     
     // Add states to the states group
-    console.log('🎨 Rendering simplified state paths...');
     const stateSelection = statesGroup.selectAll('.state')
       .data(states)
       .enter()
       .append('path')
       .attr('class', 'state')
       .attr('d', (d: any) => {
-        console.log('Rendering state:', d.name, 'with path:', d.path);
         return d.path;
       })
       .attr('fill', '#ffd54f')
@@ -462,40 +366,30 @@ export class IndiaMapComponent implements OnInit, AfterViewInit, OnDestroy {
       .attr('stroke-width', 1)
       .style('cursor', 'pointer')
       .on('mouseover', (event: any, d: any) => {
-        console.log('Simplified state hovered:', d.name);
         this.onStateHover(event, d);
       })
       .on('mouseout', () => this.onStateHoverOut())
       .on('click', (event: any, d: any) => {
-        console.log('Simplified state clicked:', d.name);
         this.onStateClick(d);
       });
 
-    console.log('✅ Simplified map rendered successfully');
-    console.log('=== createSimplifiedIndiaMap COMPLETED ===');
   }
 
   private addInstituteMarkers(): void {
-    console.log('=== addInstituteMarkers START ===');
-    console.log('📍 Institute data:', this.institutes.length, 'institutes');
-    console.log('🗺️ Projection available:', !!this.projection);
 
     // Remove existing markers group to recreate it (ensures it's on top)
     this.g.select('.markers-group').remove();
     
     // Create a separate group for markers to ensure they appear on top of states
     const markersGroup = this.g.append('g').attr('class', 'markers-group');
-    console.log('✅ Created markers group for layering (on top)');
 
     // Add institute markers to the markers group
     const markerSelection = markersGroup.selectAll('.institute-marker')
       .data(this.institutes);
-    console.log('Data bound to marker selection');
 
     const markerEnter = markerSelection.enter()
       .append('circle')
       .attr('class', 'institute-marker');
-    console.log('✅ Circle elements created for', this.institutes.length, 'institutes');
 
     markerEnter
       .attr('cx', (d: InstituteMarker) => {
@@ -503,12 +397,10 @@ export class IndiaMapComponent implements OnInit, AfterViewInit, OnDestroy {
         if (this.projection) {
           const coords = this.projection([d.longitude, d.latitude]);
           const x = coords ? coords[0] : this.width / 2;
-          console.log(`📍 ${d.name} projected to x:${x} (lat:${d.latitude}, lng:${d.longitude})`);
           return x;
         } else {
           // Fallback to center positioning when projection is not available
           const x = this.width / 2;
-          console.log(`📍 ${d.name} positioned at fallback x:${x}`);
           return x;
         }
       })
@@ -517,12 +409,10 @@ export class IndiaMapComponent implements OnInit, AfterViewInit, OnDestroy {
         if (this.projection) {
           const coords = this.projection([d.longitude, d.latitude]);
           const y = coords ? coords[1] : this.height / 2;
-          console.log(`📍 ${d.name} projected to y:${y}`);
           return y;
         } else {
           // Fallback to center positioning when projection is not available
           const y = this.height / 2;
-          console.log(`📍 ${d.name} positioned at fallback y:${y}`);
           return y;
         }
       })
@@ -532,13 +422,10 @@ export class IndiaMapComponent implements OnInit, AfterViewInit, OnDestroy {
       .attr('stroke-width', 1)
       .style('cursor', 'pointer')
       .on('mouseover', (event: any, d: InstituteMarker) => {
-        console.log('Institute marker hovered:', d.name);
         this.onInstituteHover(event, d);
       })
       .on('mouseout', () => this.hideTooltip());
 
-    console.log('✅ Institute markers rendered successfully');
-    console.log('=== addInstituteMarkers COMPLETED ===');
   }
 
   private createFallbackMap(): void {

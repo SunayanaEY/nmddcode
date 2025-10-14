@@ -596,7 +596,6 @@ export class AllTrainingsAdminComponent {
   }
 
   handleTableAction(event: { action: string; item: any; index: number }): void {
-    console.log('Action:', event.action, 'Item:', event.item);
 
     if (event.action === 'view') {
       this.traineeList = [];
@@ -782,7 +781,6 @@ export class AllTrainingsAdminComponent {
         this.certificateZip
           .generateAsync({ type: 'blob' })
           .then(function (content) {
-            console.log('after zip generate');
             saveAs(content, 'Certificates.zip');
           });
         const targetDiv = document.getElementById('certificate')!;
@@ -1019,7 +1017,6 @@ export class AllTrainingsAdminComponent {
   }
 
   downloadCertificate(trainee: any): void {
-    console.log('Downloading certificate for trainee:', trainee);
     this.selectedTraineeForCertificate = trainee;
 
     // Call the getCertificateDetails API

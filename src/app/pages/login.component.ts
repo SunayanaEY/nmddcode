@@ -70,7 +70,6 @@ export class LoginComponent implements OnInit {
   onStateSelected(stateData: StateData): void {
     this.selectedState = stateData;
     // Update charts and stats based on selected state
-    console.log('Selected state:', stateData);
   }
 
   //Certificate Dwonload

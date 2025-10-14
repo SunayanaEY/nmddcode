@@ -20,6 +20,7 @@ export class StatsCardsComponent {
     return [
       {
         title: 'Total Trainings Conducted',
+        category: 'trainings',
         value: this.stats?.totalTrainings || 0,
         growth: this.stats?.trainingGrowth || 0,
         growthText: 'from last Quarter',
@@ -30,6 +31,7 @@ export class StatsCardsComponent {
       },
       {
         title: 'Total Personnel Trained',
+        category: 'personnel',
         value: this.stats?.totalFarmers || 0,
         growth: this.stats?.farmerGrowth || 0,
         growthText: 'from last Quarter',
@@ -40,6 +42,7 @@ export class StatsCardsComponent {
       },
       {
         title: 'Total Certificates Approved',
+        category: 'certificates-approved',
         value: this.stats?.totalCertificatesApproved || 0,
         growth: this.stats?.approvedGrowth || 0,
         growthText: 'from last Quarter',
@@ -50,6 +53,7 @@ export class StatsCardsComponent {
       },
       {
         title: 'Total Certificates Issued',
+        category: 'certificates-issued',
         value: this.stats?.totalCertificatesIssued || 0,
         growth: this.stats?.issuedGrowth || 0,
         growthText: 'from last Quarter',
@@ -74,5 +78,32 @@ export class StatsCardsComponent {
 
   getGrowthClass(growth: number): string {
     return growth >= 0 ? 'text-success' : 'text-danger';
+  }
+
+  downloadData(category: string, title: string, event?: MouseEvent): void {
+    alert('Download button clicked!');
+    try {
+      // Prevent event bubbling and ensure clean execution
+      event?.stopPropagation();
+      
+      // Show alert for testing purposes
+      const message = `Download Request Initiated!\n\n` +
+                     `📊 Data Type: ${title}\n` +
+                     `🏷️ Category: ${category}\n` +
+                     `📅 Date: ${new Date().toLocaleDateString()}\n\n` +
+                     `This will download ${title.toLowerCase()} data in Excel format.`;
+      
+      alert(message);
+      
+      // Log for debugging
+      console.log(`Download initiated for category: ${category}, title: ${title}`);
+      
+      // TODO: Implement actual download functionality
+      // Example: this.downloadService.downloadData(category, title);
+      
+    } catch (error) {
+      console.error('Error in downloadData:', error);
+      alert('An error occurred while initiating the download. Please try again.');
+    }
   }
 }

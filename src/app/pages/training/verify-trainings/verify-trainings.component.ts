@@ -253,7 +253,6 @@ export class VerifyTrainingsComponent {
   }
 
   handleTableAction(event: { action: string; item: any; index: number }): void {
-    console.log('Action:', event.action, 'Item:', event.item);
     // const modal = new this.bootstrap.Modal(this.trainingDetailsModal.nativeElement);
     //modal.show();
     if (event.action === 'view') {
@@ -327,7 +326,7 @@ export class VerifyTrainingsComponent {
     });
 
     this.filteredData.forEach((ele) => {
-      console.log(ele.trainingTitle);
+      // console.log(ele.trainingTitle);
     });
   }
   uniqueValuesTrainingTitle(): any[] {
@@ -575,7 +574,6 @@ export class VerifyTrainingsComponent {
   }
 
   downloadCertificate(trainee: any): void {
-    console.log('Downloading certificate for trainee:', trainee);
     this.selectedTraineeForCertificate = trainee;
 
     // Call the getCertificateDetails API

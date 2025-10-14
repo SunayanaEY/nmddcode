@@ -85,7 +85,7 @@ export class AuthService {
     // Call logout API to invalidate session on server
     return this.http.post(`${this.apiUrl}api/auth/logout`, {}).pipe(
       tap(() => {
-        console.log('Logout API called successfully');
+        // console.log('Logout API called successfully');
       }),
       catchError((error) => {
         console.error('Logout API failed', error);
@@ -111,7 +111,6 @@ export class AuthService {
     }
 
     this.isLoggingOut = true;
-    console.log('Starting logout process...');
 
     // Call logout API and clear session data only after successful response
     this.http.post(`${this.apiUrl}api/auth/logout`, {}).pipe(
@@ -124,7 +123,6 @@ export class AuthService {
       })
     ).subscribe({
       next: (response) => {
-        console.log('Logout API completed successfully', response);
         // Only clear session data after successful API response
         this.clearSessionData();
         this.isLoggingOut = false;
@@ -349,18 +347,15 @@ export class AuthService {
   private handleSessionExpiry(): void {
     // Prevent multiple logout attempts
     if (this.isLoggingOut) {
-      console.log('Logout already in progress, skipping session expiry handling...');
       return;
     }
 
     // Additional safety check: only handle session expiry if user data exists in session storage
     // Use direct session storage check to avoid circular dependency with isLoggedIn()
     if (!sessionStorage.getItem('user')) {
-      console.log('User not logged in, skipping session expiry handling...');
       return;
     }
 
-    console.log('Session expired due to inactivity');
     this.logoutSync(); // Use synchronous logout for automatic logout
     this.router.navigate(['/login'], {
       queryParams: {

@@ -165,7 +165,6 @@ export class AllTrainingsComponent {
         this.filteredData = [...this.trainingsList];
         let index = 0;
         this.trainingsList.forEach((ele) => {
-          console.log('data : ' + JSON.stringify(ele));
           const datePipe = new DatePipe('en-US');
           ele['location'] =
             ele['venueBlock'] +
@@ -184,7 +183,6 @@ export class AllTrainingsComponent {
     this.filteredData = [...this.trainingsList];
     let index = 0;
     this.trainingsList.forEach((ele) => {
-      console.log('data : ' + JSON.stringify(ele));
       const datePipe = new DatePipe('en-US');
       ele['location'] =
         ele['venueBlock'] +
@@ -216,7 +214,6 @@ export class AllTrainingsComponent {
         queryParams: { trainingId: event.item.id, populate: true },
       });
     } else {
-      console.log('Action:', event.action, 'Item:', event.item);
 
       this.traineeList = [];
       this.trainingDetails = event.item;

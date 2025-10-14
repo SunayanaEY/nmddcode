@@ -30,6 +30,7 @@ export class AgeGroupChartComponent implements OnInit, OnChanges, OnDestroy {
   @Input() isLoading: boolean = false;
   @Input() stateId: number | null = null;
   @Input() districtId: number | null = null;
+  @Input() trainingInstituteId: string | null = null;
 
   chartOption: EChartsOption = {};
   chartLoading: boolean = false;
@@ -73,7 +74,7 @@ export class AgeGroupChartComponent implements OnInit, OnChanges, OnDestroy {
   }
 
   ngOnChanges(changes: SimpleChanges): void {
-    if (changes['selectedState'] || changes['isLoading'] || changes['stateId'] || changes['districtId']) {
+    if (changes['selectedState'] || changes['isLoading'] || changes['stateId'] || changes['districtId'] || changes['trainingInstituteId']) {
       this.loadAgeGroupData();
     }
   }
@@ -265,7 +266,7 @@ export class AgeGroupChartComponent implements OnInit, OnChanges, OnDestroy {
       this.dataSubscription.unsubscribe();
     }
 
-    this.dataSubscription = this.dashboardService.getAgeWiseDistribution(this.stateId || undefined, this.districtId || undefined).subscribe({
+    this.dataSubscription = this.dashboardService.getAgeWiseDistribution(this.stateId || undefined, this.districtId || undefined, this.trainingInstituteId || undefined).subscribe({
       next: (response: AgeWiseDistributionResponse) => {
         if (response.success && response.data) {
           this.apiData = this.transformApiData(response.data);

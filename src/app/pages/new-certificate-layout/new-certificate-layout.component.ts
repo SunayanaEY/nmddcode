@@ -27,7 +27,6 @@ export class NewCertificateLayoutComponent implements OnInit {
   ) {}
 
   ngOnInit() {
-    console.log(this.data);
     this.data.trainingDate = new Date(this.data.trainingDate);
     
     // Trim whitespace from image URLs

@@ -31,39 +31,32 @@ export class TrainingSectionComponent implements OnInit {
   }
 
   navigateToTrainingCertificate() {
-    console.log('Navigating to Schedule Training');
     this.router.navigate(['/admin/training-certificate-generation']);
     this.router.navigate(['/admin/training-certificate-generation']);
   }
 
   navigateToResumeCertificate() {
-    console.log('Navigating to Resume Certificate Generation');
     // Implement navigation to resume certificate generation page
     // this.router.navigate(['/resume-certificate-generation']);
   }
 
   navigateToApprovedCertificates() {
-    console.log('Navigating to Approved Certificates');
     this.router.navigate(['/admin/approvedrejectedTrainings']);
     // this.router.navigate(['/admin/approved-certificate']);
   }
   navigateToVerifyTrainings() {
-    console.log('Navigating to Approved Certificates');
     this.router.navigate(['/admin/verifyTrainings']);
   }
 
   navigateToAllTrainings() {
-    console.log('Navigating to Approved Certificates');
     // this.router.navigate(['/admin/all-trainings-admin']);
     this.router.navigate(['/admin/all-trainings']);
   }
   navigateToAllTrainingsAdmin() {
-    console.log('Navigating to Approved Certificates');
     this.router.navigate(['/admin/all-trainings-admin']);
     // this.router.navigate(['/admin/all-trainings']);
   }
   navigateToCreateOrganization() {
-    console.log('Navigating to Create Organization');
     this.router.navigate(['/admin/create-organization']);
   }
   navigateToActivityLog(): void {
@@ -71,7 +64,6 @@ export class TrainingSectionComponent implements OnInit {
   }
 
   navigateToPendingApproval() {
-    console.log('Navigating to Pending Approval');
     // Implement navigation to pending approval page
     // this.router.navigate(['/pending-approval']);
   }

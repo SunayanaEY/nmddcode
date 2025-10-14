@@ -55,26 +55,6 @@
               </div>
             </div>
           </div>
-          <!-- <div class="col-md-6 text-end">
-            <div class="dashboard-actions">
-              <button
-                class="btn btn-primary me-2"
-                (click)="downloadCertificate()"
-              >
-                <i class="fas fa-download me-2"></i>Download Certificate
-              </button>
-              <app-modal
-                [show]="showModal"
-                [config]="modalConfig"
-                mode="create"
-                (close)="onClose()"
-                (primaryAction)="onSubmit($event)"
-                (secondaryAction)="onSecondaryAction()"
-              >
-              </app-modal>
-
-            </div>
-          </div> -->
         </div>
       </div>
     </div>
@@ -131,21 +111,36 @@
             <div *ngIf="isLoadingDistricts" class="text-muted small mt-1">
               <i class="fas fa-spinner fa-spin me-1"></i>Loading districts...
             </div>
-            <!-- <div
-
-              class="text-muted small mt-1"
-            >
-             <span *ngIf="!selectedStateId && !isLoadingStates">Select a state first</span>
-
-            </div> -->
           </div>
 
+          <div class="col-md-4">
+            <label for="trainingInstituteSelect" class="form-label fw-semibold"
+              >{{"Training Institute"|translate}}</label
+            >
+            <select
+              id="trainingInstituteSelect"
+              class="form-select"
+              formControlName="trainingInstituteId"
+              [disabled]="isLoadingTrainingInstitutes"
+            >
+              <option value="" selected>All Training Institutes</option>
+              <option *ngFor="let institute of trainingInstitutes" [value]="institute.id">
+                {{ institute.trainingInstituteName }}
+              </option>
+            </select>
+            <div *ngIf="isLoadingTrainingInstitutes" class="text-muted small mt-1">
+              <i class="fas fa-spinner fa-spin me-1"></i>Loading training institutes...
+            </div>
+          </div>
+        </div>
+
+        <div class="row mt-3">
           <div class="col-md-4" style="align-content: end">
             <button
               type="button"
               class="btn btn-outline-secondary"
               (click)="clearFilters()"
-              [disabled]="!selectedStateId && !selectedDistrictId"
+              [disabled]="!selectedStateId && !selectedDistrictId && !selectedTrainingInstituteId"
             >
               <i class="fas fa-times me-1"></i>{{"Clear Filters"|translate}}
             </button>
@@ -153,9 +148,115 @@
         </div>
       </div>
 
-      <!-- Stats Cards -->
-      <app-stats-cards [stats]="dashboardStats" [isLoading]="isLoading">
-      </app-stats-cards>
+      <!-- New KPI Cards Implementation -->
+      <div class="kpi-cards-container">
+        <!-- Loading State -->
+        <div *ngIf="isLoading" class="text-center py-5">
+          <div class="spinner-border text-primary" role="status">
+            <span class="visually-hidden">Loading dashboard data...</span>
+          </div>
+          <p class="mt-2 text-muted">Loading dashboard statistics...</p>
+        </div>
+
+        <!-- KPI Cards -->
+        <div *ngIf="!isLoading" class="row">
+          <!-- Total Trainings Conducted -->
+          <div class="col-lg-3 col-md-6 mb-4">
+            <div class="kpi-card kpi-card-green">
+              <div class="kpi-header">
+                <div class="kpi-icon">
+                  <i class="fas fa-chalkboard-teacher"></i>
+                </div>
+                <button class="btn-download-new" 
+                        (click)="downloadKpiData('totalTrainingsConducted', $event)"
+                        title="Download Data">
+                  <i class="fas fa-download"></i>
+                </button>
+              </div>
+              <div class="kpi-content">
+                <div class="kpi-title">Total Trainings Conducted</div>
+                <div class="kpi-value">{{ getKpiCards()[0]?.value || '0' }}</div>
+                <div class="kpi-growth" [ngClass]="getKpiCards()[0]?.growth?.isPositive ? 'positive' : 'negative'">
+                  <i class="fas" [ngClass]="getKpiCards()[0]?.growth?.isPositive ? 'fa-arrow-up' : 'fa-arrow-down'"></i>
+                  {{ getKpiCards()[0]?.growth?.value || '0% from last Quarter' }}
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Total Personnel Trained -->
+          <div class="col-lg-3 col-md-6 mb-4">
+            <div class="kpi-card kpi-card-blue">
+              <div class="kpi-header">
+                <div class="kpi-icon">
+                  <i class="fas fa-users"></i>
+                </div>
+                <button class="btn-download-new" 
+                        (click)="downloadKpiData('totalFarmersTrained', $event)"
+                        title="Download Data">
+                  <i class="fas fa-download"></i>
+                </button>
+              </div>
+              <div class="kpi-content">
+                <div class="kpi-title">Total Personnel Trained</div>
+                <div class="kpi-value">{{ getKpiCards()[1]?.value || '0' }}</div>
+                <div class="kpi-growth" [ngClass]="getKpiCards()[1]?.growth?.isPositive ? 'positive' : 'negative'">
+                  <i class="fas" [ngClass]="getKpiCards()[1]?.growth?.isPositive ? 'fa-arrow-up' : 'fa-arrow-down'"></i>
+                  {{ getKpiCards()[1]?.growth?.value || '0% from last Quarter' }}
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Total Certificates Approved -->
+          <div class="col-lg-3 col-md-6 mb-4">
+            <div class="kpi-card kpi-card-purple">
+              <div class="kpi-header">
+                <div class="kpi-icon">
+                  <i class="fas fa-certificate"></i>
+                </div>
+                <button class="btn-download-new" 
+                        (click)="downloadKpiData('totalCertificatesApproved', $event)"
+                        title="Download Data">
+                  <i class="fas fa-download"></i>
+                </button>
+              </div>
+              <div class="kpi-content">
+                <div class="kpi-title">Total Certificates Approved</div>
+                <div class="kpi-value">{{ getKpiCards()[2]?.value || '0' }}</div>
+                <div class="kpi-growth" [ngClass]="getKpiCards()[2]?.growth?.isPositive ? 'positive' : 'negative'">
+                  <i class="fas" [ngClass]="getKpiCards()[2]?.growth?.isPositive ? 'fa-arrow-up' : 'fa-arrow-down'"></i>
+                  {{ getKpiCards()[2]?.growth?.value || '0% from last Quarter' }}
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Total Certificates Issued -->
+          <div class="col-lg-3 col-md-6 mb-4">
+            <div class="kpi-card kpi-card-orange">
+              <div class="kpi-header">
+                <div class="kpi-icon">
+                  <i class="fas fa-award"></i>
+                </div>
+                <button class="btn-download-new" 
+                        (click)="downloadKpiData('totalCertificatesIssued', $event)"
+                        title="Download Data">
+                  <i class="fas fa-download"></i>
+                </button>
+              </div>
+              <div class="kpi-content">
+                <div class="kpi-title">Total Certificates Issued</div>
+                <div class="kpi-value">{{ getKpiCards()[3]?.value || '0' }}</div>
+                <div class="kpi-growth" [ngClass]="getKpiCards()[3]?.growth?.isPositive ? 'positive' : 'negative'">
+                  <i class="fas" [ngClass]="getKpiCards()[3]?.growth?.isPositive ? 'fa-arrow-up' : 'fa-arrow-down'"></i>
+                  {{ getKpiCards()[3]?.growth?.value || '0% from last Quarter' }}
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
 
     <!-- First Row: Monthly Trainings and Age Group -->
@@ -175,6 +276,7 @@
               [isLoading]="isLoading"
               [stateId]="selectedStateId"
               [districtId]="selectedDistrictId"
+              [trainingInstituteId]="selectedTrainingInstituteId"
             >
             </app-monthly-chart>
           </div>
@@ -196,6 +298,7 @@
               [isLoading]="isLoading"
               [stateId]="selectedStateId"
               [districtId]="selectedDistrictId"
+              [trainingInstituteId]="selectedTrainingInstituteId"
             >
             </app-age-group-chart>
           </div>

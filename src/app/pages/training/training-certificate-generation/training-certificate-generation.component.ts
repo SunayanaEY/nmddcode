@@ -191,7 +191,6 @@ export class TrainingCertificateGenerationComponent implements OnInit {
     this.trainingService.getTrainingDetails(trainingId).subscribe({
       next: (response) => {
         this.isSpinner = false;
-        console.log(response);
         this.trainingDetails = response;
         const formattedDate = this.trainingDetails.trainingDate.split('T')[0];
         // Handle trainer selection based on trainerId
@@ -256,14 +255,12 @@ export class TrainingCertificateGenerationComponent implements OnInit {
             (s: any) => s.signatorySignaturePath
           );
 
-          console.log(this.mySelectedFile);
         }
         this.mySelectedLogo = [
           this.trainingDetails.logoPath1,
           this.trainingDetails.logoPath2,
           this.trainingDetails.logoPath3,
         ].filter((logo: string | null) => logo !== null);
-        console.log(this.mySelectedLogo);
         this.logos = this.mySelectedLogo.map((logo: string, index: number) => ({
           id: index + 1, // optional: keep track of logo index
           path: logo,
@@ -302,7 +299,6 @@ export class TrainingCertificateGenerationComponent implements OnInit {
     this.schemeService.getAllSchemes().subscribe({
       next: (res) => {
         this.schemes = res;
-        console.log('Schemes fetched:', this.schemes);
       },
       error: (err) => {
         console.error('Error fetching schemes:', err);
@@ -313,7 +309,6 @@ export class TrainingCertificateGenerationComponent implements OnInit {
     this.trainingService.getAllInstitutes().subscribe({
       next: (res) => {
         this.instituteNames = res.data;
-        console.log('Institutes fetched:', this.instituteNames);
         // Set training institute if training details are already loaded
         if (this.trainingDetails) {
           this.setTrainingInstitute();
@@ -334,22 +329,11 @@ export class TrainingCertificateGenerationComponent implements OnInit {
   }
 
   onFileSelect(file: File, type: 'signature' | 'logo', index: number) {
-    console.log(
-      'File selected:',
-      file.name,
-      'Type:',
-      type,
-      'Index:',
-      index,
-      'Populate mode:',
-      this.populate
-    );
 
     // Check if we're in update mode (populate is 'true') or create mode (populate is 'false', undefined, or null)
     if (this.populate === 'true') {
       if (type === 'signature') {
         this.signaturesNew[index].file = file;
-        console.log('SignatureNew file set:', this.signaturesNew[index]);
         // Clear validation error when file is uploaded
         this.signatureValidationError = '';
       } else {
@@ -359,7 +343,6 @@ export class TrainingCertificateGenerationComponent implements OnInit {
       // Create mode (populate is 'false', undefined, or null)
       if (type === 'signature') {
         this.signatures[index].file = file;
-        console.log('Signature file set:', this.signatures[index]);
         // Clear validation error when file is uploaded
         this.signatureValidationError = '';
       } else {
@@ -435,7 +418,6 @@ export class TrainingCertificateGenerationComponent implements OnInit {
     this.trainingService.getTrainingTypes().subscribe({
       next: (res) => {
         this.allTrainingType = res;
-        console.log('Training Types fetched:', this.instituteNames);
       },
       error: (err) => {
         console.error('Error fetching institutes:', err);
@@ -456,7 +438,6 @@ export class TrainingCertificateGenerationComponent implements OnInit {
       next: (response) => {
         this.trainers = response.data || [];
         this.isLoadingTrainers = false;
-        console.log('Trainers loaded:', this.trainers);
       },
       error: (error) => {
         console.error('Error loading trainers:', error);
@@ -574,8 +555,6 @@ export class TrainingCertificateGenerationComponent implements OnInit {
           signatorySignaturePath: sig.signatorySignaturePath,
           fileName: sig.file ? `signatures${index + 1}` : null,
         }));
-      console.log('Coming here !!');
-      console.log(JSON.stringify(signatories[0]));
 
       if (signatories.length > 0) {
         data['signatories'] = signatories;
@@ -738,11 +717,9 @@ export class TrainingCertificateGenerationComponent implements OnInit {
 
     if (this.populate === 'true') {
       // For update mode, check signaturesNew array
-      console.log('Validating signatures in update mode:', this.signaturesNew);
       const hasValidSignature = this.signaturesNew.some(
         (sig) => sig.file || sig.signatorySignaturePath
       );
-      console.log('Has valid signature (update mode):', hasValidSignature);
 
       if (!hasValidSignature) {
         this.signatureValidationError = 'At least 1 signature is required';
@@ -750,9 +727,7 @@ export class TrainingCertificateGenerationComponent implements OnInit {
       }
     } else {
       // Create mode (populate is 'false', undefined, or null)
-      console.log('Validating signatures in create mode:', this.signatures);
       const hasValidSignature = this.signatures.some((sig) => sig.file);
-      console.log('Has valid signature (create mode):', hasValidSignature);
 
       if (!hasValidSignature) {
         this.signatureValidationError = 'At least 1 signature is required';
