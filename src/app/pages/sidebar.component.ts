@@ -17,6 +17,7 @@ import { TranslateModule } from '@ngx-translate/core';
 export class SidebarComponent {
   @Output() collapsedChange = new EventEmitter<boolean>();
   collapsed = false;
+  trainingModulesExpanded = false;
 
   userLoginArray: any = new Array()
   loginUserData: any = new Array()
@@ -41,6 +42,10 @@ export class SidebarComponent {
   toggleSidebar() {
     this.collapsed = !this.collapsed;
     this.collapsedChange.emit(this.collapsed);
+  }
+
+  toggleTrainingModules() {
+    this.trainingModulesExpanded = !this.trainingModulesExpanded;
   }
 
   logout() {

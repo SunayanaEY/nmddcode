@@ -344,7 +344,7 @@ export class TrainingCentreAdminProfileComponent implements OnInit {
             );
 
             // Navigate to training centre component after successful registration
-            this.router.navigate(['/admin/training-centre']);
+            // this.router.navigate(['/admin/training-centre']);
           } else {
             this.toastr.error(
               response.message || 'Registration failed',

@@ -1,0 +1,28 @@
+<div class="training-institute-management-container">
+  <!-- Breadcrumb -->
+  <app-breadcrumb [items]="breadcrumbItems"></app-breadcrumb>
+
+  <!-- Action Button Section -->
+  <div class="action-section">
+    <button 
+      class="btn btn-primary add-institute-btn" 
+      (click)="toggleForm()"
+      [class.active]="showForm">
+      <i class="fas fa-plus"></i>
+      {{ showForm ? 'Hide Form' : 'Add New Training Institute' }}
+    </button>
+  </div>
+
+  <!-- Form Section (Conditional) -->
+  <div class="form-section" *ngIf="showForm">
+    <app-training-centre-admin-profile></app-training-centre-admin-profile>
+  </div>
+
+  <!-- Section Divider (Only show when form is visible) -->
+  <div class="section-divider" *ngIf="showForm"></div>
+
+  <!-- Table Section -->
+  <div class="table-section">
+    <app-training-centre></app-training-centre>
+  </div>
+</div>

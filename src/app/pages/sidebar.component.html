@@ -47,16 +47,45 @@
         <i class="bi bi-speedometer2 me-2"></i>
         <span class="sidebar-label" *ngIf="!collapsed">{{'Dashboard'|translate}}</span>
       </a>
-      <!--Training Modules-->
-      <a
-        class="sidebar-link d-flex align-items-center mb-2 fw-bold"
-        [routerLink]="['training-module']"
-        routerLinkActive="active"
-        [attr.title]="collapsed ? 'Training Modules' : null"
-      >
-        <i class="bi bi-speedometer2 me-2"></i>
-        <span class="sidebar-label" *ngIf="!collapsed">{{'Training Modules'|translate}}</span>
-      </a>
+      <!--Training Modules with Dropdown-->
+      <div class="sidebar-dropdown">
+        <a
+          class="sidebar-link d-flex align-items-center mb-2 fw-bold"
+          (click)="toggleTrainingModules()"
+          [class.active]="trainingModulesExpanded"
+          [attr.title]="collapsed ? 'Training Modules' : null"
+          style="cursor: pointer;"
+        >
+          <i class="bi bi-collection me-2"></i>
+          <span class="sidebar-label" *ngIf="!collapsed">{{'Training Modules'|translate}}</span>
+          <i class="bi bi-chevron-down ms-auto dropdown-arrow" 
+             *ngIf="!collapsed" 
+             [class.rotated]="trainingModulesExpanded"></i>
+        </a>
+        
+        <!-- Submenu -->
+        <div class="submenu" [class.expanded]="trainingModulesExpanded && !collapsed">
+          <a
+            class="sidebar-link submenu-link d-flex align-items-center mb-1"
+            [routerLink]="['training-module']"
+            routerLinkActive="active"
+            [attr.title]="collapsed ? 'Training Dashboard' : null"
+          >
+            <i class="bi bi-speedometer2 me-2"></i>
+            <span class="sidebar-label" *ngIf="!collapsed">{{'Training Dashboard'|translate}}</span>
+          </a>
+          
+          <a
+            class="sidebar-link submenu-link d-flex align-items-center mb-1"
+            [routerLink]="['training-institute-management']"
+            routerLinkActive="active"
+            [attr.title]="collapsed ? 'Training Institute Management' : null"
+          >
+            <i class="bi bi-building me-2"></i>
+            <span class="sidebar-label" *ngIf="!collapsed">{{'Training Institute Management'|translate}}</span>
+          </a>
+        </div>
+      </div>
       <!-- Change Password -->
       <a
         class="sidebar-link d-flex align-items-center mb-2 fw-bold"
