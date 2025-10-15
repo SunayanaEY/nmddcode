@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { TrainingCentreAdminProfileComponent } from '../training-centre-admin-profile/training-centre-admin-profile.component';
 import { TrainingCentreComponent } from '../training-centre/training-centre.component';
@@ -18,10 +18,12 @@ import { BreadcrumbComponent } from '../../../components/breadcrumb/breadcrumb.c
 })
 export class TrainingInstituteManagementComponent implements OnInit {
 
+  // ViewChild reference to the table component
+  @ViewChild(TrainingCentreComponent) trainingCentreComponent!: TrainingCentreComponent;
+
   // Breadcrumb configuration
   breadcrumbItems = [
     { label: 'Dashboard', link: '/admin/dashboard' },
-    { label: 'Training Management', link: '/admin/training' },
     { label: 'Training Institute Management', link: '', active: true }
   ];
 
@@ -39,6 +41,36 @@ export class TrainingInstituteManagementComponent implements OnInit {
    */
   toggleForm(): void {
     this.showForm = !this.showForm;
+  }
+
+  /**
+   * Handle form submission event from the training centre admin profile component
+   * This method will refresh the table data and hide the form
+   */
+  onFormSubmitted(): void {
+    // Refresh the table data
+    if (this.trainingCentreComponent) {
+      this.trainingCentreComponent.loadTrainingInstitutes();
+    }
+    
+    // Hide the form after successful submission
+    this.showForm = false;
+  }
+
+  /**
+   * Check if user has role 1 (from session storage)
+   */
+  isRole1User(): boolean {
+    const roleId = sessionStorage.getItem('user');
+    if (roleId) {
+      try {
+        const userData = JSON.parse(roleId);
+        return userData.role === 1; 
+      } catch (e) {
+        return false;
+      }
+    }
+    return false;
   }
 
 }

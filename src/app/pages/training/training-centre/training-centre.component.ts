@@ -148,7 +148,7 @@ export class TrainingCentreComponent implements OnInit {
         class: 'btn-success',
         title: 'Complete Form',
         condition: (row: any) =>
-          row.status === 'PENDING STATE/ORGANIZATION INPUT',
+          row.status === 'PENDING STATE INPUT',
       });
     }
     if (this.userRole === 1) {

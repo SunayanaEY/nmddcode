@@ -3,7 +3,7 @@
   <app-breadcrumb [items]="breadcrumbItems"></app-breadcrumb>
 
   <!-- Action Button Section -->
-  <div class="action-section">
+  <div class="action-section" *ngIf="isRole1User()">
     <button 
       class="btn btn-primary add-institute-btn" 
       (click)="toggleForm()"
@@ -15,7 +15,7 @@
 
   <!-- Form Section (Conditional) -->
   <div class="form-section" *ngIf="showForm">
-    <app-training-centre-admin-profile></app-training-centre-admin-profile>
+    <app-training-centre-admin-profile (formSubmitted)="onFormSubmitted()"></app-training-centre-admin-profile>
   </div>
 
   <!-- Section Divider (Only show when form is visible) -->
@@ -23,6 +23,6 @@
 
   <!-- Table Section -->
   <div class="table-section">
-    <app-training-centre></app-training-centre>
+    <app-training-centre #trainingCentreComponent></app-training-centre>
   </div>
 </div>

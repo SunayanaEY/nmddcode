@@ -80,12 +80,95 @@
             [routerLink]="['training-institute-management']"
             routerLinkActive="active"
             [attr.title]="collapsed ? 'Training Institute Management' : null"
+            *ngIf="isRole1User() ||isRole5User()"
+
           >
             <i class="bi bi-building me-2"></i>
             <span class="sidebar-label" *ngIf="!collapsed">{{'Training Institute Management'|translate}}</span>
           </a>
+          
+          <a
+            class="sidebar-link submenu-link d-flex align-items-center mb-1"
+            [routerLink]="['all-trainings-admin']"
+            routerLinkActive="active"
+            [attr.title]="collapsed ? 'All Training' : null"
+            *ngIf="isRole1User() ||isRole5User()"
+          >
+            <i class="bi bi-list-ul me-2"></i>
+            <span class="sidebar-label" *ngIf="!collapsed">{{'All Training'|translate}}</span>
+          </a>
+          <a
+            class="sidebar-link submenu-link d-flex align-items-center mb-1"
+            [routerLink]="['training-master-management']"
+            routerLinkActive="active"
+            [attr.title]="collapsed ? 'Training Master Management' : null"
+            *ngIf="isRole1User()"
+          >
+            <i class="bi bi-gear-wide-connected me-2"></i>
+            <span class="sidebar-label" *ngIf="!collapsed">{{'Training Master Management'|translate}}</span>
+          </a>
+          
+          <a
+            class="sidebar-link submenu-link d-flex align-items-center mb-1"
+            [routerLink]="['state-admin-profile']"
+            routerLinkActive="active"
+            [attr.title]="collapsed ? 'State Admin Data' : null"
+            *ngIf="isRole1User()"
+
+          >
+            <i class="bi bi-person-badge me-2"></i>
+            <span class="sidebar-label" *ngIf="!collapsed">{{'State Admin Data'|translate}}</span>
+          </a>
+
+          <!-- Role 4 specific submenus -->
+          <a
+            class="sidebar-link submenu-link d-flex align-items-center mb-1"
+            [routerLink]="['/admin/training-certificate-generation']"
+            routerLinkActive="active"
+            [attr.title]="collapsed ? 'Training Calendar' : null"
+            *ngIf="isRole4User()"
+          >
+            <i class="bi bi-calendar-event me-2"></i>
+            <span class="sidebar-label" *ngIf="!collapsed">{{'Training Calendar'|translate}}</span>
+          </a>
+
+          <a
+            class="sidebar-link submenu-link d-flex align-items-center mb-1"
+            [routerLink]="['/admin/approvedrejectedTrainings']"
+            routerLinkActive="active"
+            [attr.title]="collapsed ? 'Approved Rejected Trainings' : null"
+            *ngIf="isRole4User()"
+          >
+            <i class="bi bi-check-circle me-2"></i>
+            <span class="sidebar-label" *ngIf="!collapsed">{{'Approved Rejected Trainings'|translate}}</span>
+          </a>
+
+          <a
+            class="sidebar-link submenu-link d-flex align-items-center mb-1"
+            [routerLink]="['/admin/all-trainings']"
+            routerLinkActive="active"
+            [attr.title]="collapsed ? 'All Trainings' : null"
+            *ngIf="isRole4User()"
+          >
+            <i class="bi bi-list-check me-2"></i>
+            <span class="sidebar-label" *ngIf="!collapsed">{{'All Trainings'|translate}}</span>
+          </a>
+
+          
         </div>
       </div>
+
+      <!-- Activity Log -->
+      <a
+        class="sidebar-link d-flex align-items-center mb-2 fw-bold"
+        [routerLink]="['activity-log']"
+        routerLinkActive="active"
+        [attr.title]="collapsed ? 'Activity Log' : null"
+      >
+        <i class="bi bi-clock-history me-2"></i>
+        <span class="sidebar-label" *ngIf="!collapsed">{{'Activity Log'|translate}}</span>
+      </a>
+
       <!-- Change Password -->
       <a
         class="sidebar-link d-flex align-items-center mb-2 fw-bold"
@@ -97,6 +180,7 @@
         <span class="sidebar-label" *ngIf="!collapsed">{{'Change Password'|translate}}</span>
       </a>
 
+      
       <!-- Update Profile - Only for Role 3 (Training Institute Admin) -->
       <a
         class="sidebar-link d-flex align-items-center mb-2 fw-bold"

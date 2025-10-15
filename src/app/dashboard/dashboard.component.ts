@@ -16,6 +16,7 @@ import { MonthlyChartComponent } from '../pages/public-dashboard/components/mont
 import { AgeGroupChartComponent } from '../pages/public-dashboard/components/age-group-chart/age-group-chart.component';
 import { InstituteTypeChartComponent } from '../pages/public-dashboard/components/institute-type-chart/institute-type-chart.component';
 import { IndiaMapComponent } from '../pages/public-dashboard/components/india-map/india-map.component';
+import { TopTrainingTypesChartComponent } from '../pages/public-dashboard/components/top-training-types-chart/top-training-types-chart.component';
 import { CommonModule } from '@angular/common';
 import { NewCertificateLayoutComponent } from '../pages/new-certificate-layout/new-certificate-layout.component';
 import { TranslateModule } from '@ngx-translate/core';
@@ -29,6 +30,7 @@ import { ExcelService } from '../_services/Excel/excel.service';
     AgeGroupChartComponent,
     InstituteTypeChartComponent,
     IndiaMapComponent,
+    TopTrainingTypesChartComponent,
     ReactiveFormsModule,
     CommonModule,
     NewCertificateLayoutComponent,

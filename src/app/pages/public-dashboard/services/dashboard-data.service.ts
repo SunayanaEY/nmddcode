@@ -148,6 +148,19 @@ export interface TrainingInstituteTypeDistributionResponse {
   statusCode: number;
 }
 
+export interface TopTrainingTypeData {
+  trainingTypeName: string;
+  trainingTypeId: number;
+  totalTrainings: number;
+}
+
+export interface TopTrainingTypesResponse {
+  success: boolean;
+  message: string;
+  data: TopTrainingTypeData[];
+  statusCode: number;
+}
+
 @Injectable({
   providedIn: 'root'
 })
@@ -526,5 +539,10 @@ export class DashboardDataService {
     }
 
     return this.http.get<TrainingInstituteTypeDistributionResponse>(url);
+  }
+
+  getTopTrainingTypes(): Observable<TopTrainingTypesResponse> {
+    const url = `${this.API_BASE_URL}public/dashboard/toptrainingtypes`;
+    return this.http.get<TopTrainingTypesResponse>(url);
   }
 }

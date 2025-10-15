@@ -119,4 +119,43 @@ export class SidebarComponent {
   canAccessDataEntry(): boolean {
     return this.authService.hasRole([3, 4]);
   }
+
+  // Check if user has role 1 (from session storage)
+  isRole1User(): boolean {
+    const roleId = sessionStorage.getItem('user');
+    if (roleId) {
+      try {
+        const userData = JSON.parse(roleId);
+        return userData.role === 1; 
+      } catch (e) {
+        return false;
+      }
+    }
+    return false;
+  }
+  isRole5User(): boolean {
+    const roleId = sessionStorage.getItem('user');
+    if (roleId) {
+      try {
+        const userData = JSON.parse(roleId);
+        return userData.role === 5; 
+      } catch (e) {
+        return false;
+      }
+    }
+    return false;
+  }
+
+  isRole4User(): boolean {
+    const roleId = sessionStorage.getItem('user');
+    if (roleId) {
+      try {
+        const userData = JSON.parse(roleId);
+        return userData.role === 4; 
+      } catch (e) {
+        return false;
+      }
+    }
+    return false;
+  }
 }

@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Output, EventEmitter } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import {
   FormBuilder,
@@ -29,6 +29,8 @@ import { AuthService } from '../../../services/auth.service';
   styleUrls: ['./training-centre-admin-profile.component.css'],
 })
 export class TrainingCentreAdminProfileComponent implements OnInit {
+  @Output() formSubmitted = new EventEmitter<void>();
+  
   profileForm: FormGroup;
   selectedFile: File | null = null;
   selectedFileDoc: File | null = null;
@@ -343,6 +345,9 @@ export class TrainingCentreAdminProfileComponent implements OnInit {
               'Success'
             );
 
+            // Emit event to notify parent component
+            this.formSubmitted.emit();
+
             // Navigate to training centre component after successful registration
             // this.router.navigate(['/admin/training-centre']);
           } else {
@@ -397,6 +402,9 @@ export class TrainingCentreAdminProfileComponent implements OnInit {
                 `Training Centre Admin profile updated successfully! Registration ID: ${registrationId}`,
                 'Success'
               );
+
+              // Emit event to notify parent component
+              this.formSubmitted.emit();
 
               // Navigate to training centre component after successful registration
               this.router.navigate(['/admin/training-centre']);

@@ -1,0 +1,55 @@
+.container-fluid {
+  padding: 20px;
+}
+
+.page-header {
+  margin-bottom: 30px;
+}
+
+.page-title {
+  font-size: 2rem;
+  font-weight: 600;
+  color: #333;
+  margin-bottom: 8px;
+}
+
+.page-description {
+  color: #666;
+  font-size: 1rem;
+  margin-bottom: 0;
+}
+
+.main-content {
+  margin-top: 20px;
+}
+
+.management-section {
+  margin-bottom: 40px;
+  padding: 20px;
+  background: #fff;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  border: 1px solid #e0e0e0;
+}
+
+.management-section:last-child {
+  margin-bottom: 0;
+}
+
+.card {
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.card-body {
+  padding: 40px;
+}
+
+.text-primary {
+  color: #007bff !important;
+}
+
+.text-muted {
+  color: #6c757d !important;
+}
