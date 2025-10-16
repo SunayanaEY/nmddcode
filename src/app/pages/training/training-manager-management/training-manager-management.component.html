@@ -1,0 +1,10 @@
+<div class="container-fluid">
+  <!-- Breadcrumb -->
+  <app-breadcrumb [items]="breadcrumbItems"></app-breadcrumb>
+  
+  <!-- User Profile Creation Component (Top) -->
+  <app-user-profile-creation (formSubmissionSuccess)="onFormSubmissionSuccess()"></app-user-profile-creation>
+  
+  <!-- Registered Data Entry Operators Component (Bottom) -->
+  <app-registered-data-entry-operators></app-registered-data-entry-operators>
+</div>

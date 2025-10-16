@@ -98,10 +98,10 @@ export class TrainingCentreComponent implements OnInit {
   ) {}
 
   tableColumns: TableColumn[] = [
-    { key: 'trainingInstituteName', header: 'Institute Name' },
+    { key: 'trainingInstituteName', header: 'Training Institute Name' },
     { key: 'state', header: 'State' },
     { key: 'district', header: 'District' },
-    { key: 'contactPersonName', header: 'Contact Person' },
+    { key: 'contactPersonName', header: 'Institute Head' },
     { key: 'contactNumber', header: 'Contact Number' },
     {
       key: 'status',
@@ -220,10 +220,10 @@ export class TrainingCentreComponent implements OnInit {
         },
         {
           id: 'contactPersonName',
-          label: 'Contact Person',
+          label: 'Institute Head Name',
           type: 'text',
           required: true,
-          placeholder: 'Enter contact person name',
+          placeholder: 'Enter institute head name',
           disabled: this.userRole == 1,
         },
         {

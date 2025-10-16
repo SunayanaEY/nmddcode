@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, Output, EventEmitter } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import {
   FormBuilder,
@@ -27,6 +27,8 @@ import {
   styleUrls: ['./user-profile-creation.component.css'],
 })
 export class UserProfileCreationComponent {
+  @Output() formSubmissionSuccess = new EventEmitter<void>();
+  
   profileForm: FormGroup;
   isLoading = false;
   breadcrumbItems: BreadcrumbItem[] = [
@@ -103,8 +105,8 @@ export class UserProfileCreationComponent {
                 'Data Entry Operator registered successfully!',
               'Success'
             );
-            this.router.navigate(['/admin/training-module']);
-            // this.profileForm.reset();
+            this.profileForm.reset();
+            this.formSubmissionSuccess.emit();
           } else {
             this.toastr.error(
               response.message || 'Registration failed. Please try again.',

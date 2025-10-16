@@ -1,0 +1,31 @@
+.container-fluid {
+  padding: 20px;
+}
+
+.card {
+  border: none;
+  border-radius: 10px;
+}
+
+.card-header {
+  border-radius: 10px 10px 0 0;
+  border: none;
+}
+
+.card-body {
+  padding: 2rem;
+}
+
+.display-4 {
+  font-weight: 300;
+  margin-bottom: 1rem;
+}
+
+.lead {
+  font-size: 1.25rem;
+  margin-bottom: 1rem;
+}
+
+.text-secondary {
+  font-size: 1rem;
+}

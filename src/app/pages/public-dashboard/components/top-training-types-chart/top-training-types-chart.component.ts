@@ -94,9 +94,9 @@ export class TopTrainingTypesChartComponent implements OnInit, OnChanges, OnDest
         }
       },
       grid: {
-        left: '3%',
+        left: '12%',
         right: '4%',
-        bottom: '15%',
+        bottom: '25%',
         top: '15%',
         containLabel: true
       },
@@ -125,9 +125,13 @@ export class TopTrainingTypesChartComponent implements OnInit, OnChanges, OnDest
       yAxis: {
         type: 'value',
         name: 'Number of Trainings',
+        nameLocation: 'middle',
+        nameGap: 50,
+        nameRotate: 90,
         nameTextStyle: {
           color: '#666',
-          fontSize: 12
+          fontSize: 12,
+          fontWeight: 'bold'
         },
         axisLabel: {
           color: '#666',

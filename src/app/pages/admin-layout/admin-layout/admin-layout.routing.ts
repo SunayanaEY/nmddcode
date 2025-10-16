@@ -23,6 +23,7 @@ import { OrganizationAdminProfileComponent } from '../../training/organization-a
 import { OrganizationTableDataComponent } from '../../training/organization-table-data/organization-table-data.component';
 import { TrainingInstituteManagementComponent } from '../../training/training-institute-management/training-institute-management.component';
 import { TrainingMasterManagementComponent } from '../../training/training-master-management/training-master-management.component';
+import { TrainingManagerManagementComponent } from '../../training/training-manager-management/training-manager-management.component';
 
 export const AdminLayoutRoutes: Routes = [
   // Central Admin Only Routes (Role 1)
@@ -76,6 +77,12 @@ export const AdminLayoutRoutes: Routes = [
       import('../../training/add-trainers/add-trainers.component').then(
         (m) => m.AddTrainersComponent
       ),
+    canActivate: [RoleGuard],
+    data: { allowedRoles: [3] },
+  },
+  {
+    path: 'training-manager-management',
+    component: TrainingManagerManagementComponent,
     canActivate: [RoleGuard],
     data: { allowedRoles: [3] },
   },

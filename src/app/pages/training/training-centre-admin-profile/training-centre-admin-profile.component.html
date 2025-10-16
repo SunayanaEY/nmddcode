@@ -326,18 +326,18 @@
 
           <!-- Contact Information Section -->
           <div class="form-section" *ngIf="userRole == 5 || userRole == 6">
-            <h3 class="section-title">Contact Information</h3>
+            <h3 class="section-title">Contact Information Of Institute Head</h3>
 
             <div class="form-row">
               <div class="form-group">
                 <label for="contactPersonName"
-                  >Contact Person Name<span class="required">*</span></label
+                  >Institute Head Name<span class="required">*</span></label
                 >
                 <input
                   type="text"
                   id="contactPersonName"
                   formControlName="contactPersonName"
-                  placeholder="Enter Contact Person Name"
+                  placeholder="Enter Institute Head Name"
                   class="form-control"
                   [class.is-invalid]="
                     profileForm.get('contactPersonName')?.invalid &&
