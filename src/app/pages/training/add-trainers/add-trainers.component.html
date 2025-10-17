@@ -3,11 +3,27 @@
     <!-- Header Section -->
     <div class="form-header">
       <app-breadcrumb [items]="breadcrumbItems"></app-breadcrumb>
-      <h1 class="page-title">{{'Trainer Profile Creation'|translate}}</h1>
+      <div class="page-header-content">
+        <div class="header-left">
+          <h1 class="page-title">{{'Trainer Management'|translate}}</h1>
+          <p class="page-description">{{'Manage trainer registrations and view existing trainers'|translate}}</p>
+        </div>
+        <div class="header-right">
+          <button 
+            type="button" 
+            class="btn btn-primary register-btn"
+            [class.btn-danger]="showRegistrationForm"
+            (click)="toggleRegistrationForm()">
+            <i class="bi" [class.bi-plus-circle]="!showRegistrationForm" [class.bi-x-circle]="showRegistrationForm"></i>
+            {{ showRegistrationForm ? ('Hide Form'|translate) : ('Register New Trainers'|translate) }}
+          </button>
+        </div>
+      </div>
     </div>
 
-    <!-- Form Content -->
-    <div class="form-content">
+    <!-- Registration Form Section -->
+    <div class="registration-form-section" *ngIf="showRegistrationForm">
+      <div class="form-content">
       <form [formGroup]="profileForm" (ngSubmit)="onSubmit()">
         <!-- Operator Details Section -->
         <div class="form-section">
@@ -151,12 +167,13 @@
           </button>
         </div>
       </form>
+       </div>
     </div>
 
     <!-- Trainers Table Section -->
     <div class="form-content mt-4">
       <div class="form-section">
-        <h3 class="section-title">{{'Available Trainers'|translate}}</h3>
+        <h3 class="section-title">{{'Registered Trainers'|translate}}</h3>
         <app-table
           [data]="trainersData"
           [columns]="tableColumns"

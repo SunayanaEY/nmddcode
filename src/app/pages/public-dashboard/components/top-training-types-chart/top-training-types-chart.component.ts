@@ -197,7 +197,7 @@ export class TopTrainingTypesChartComponent implements OnInit, OnChanges, OnDest
       this.dataSubscription.unsubscribe();
     }
 
-    this.dataSubscription = this.dashboardService.getTopTrainingTypes().subscribe({
+    this.dataSubscription = this.dashboardService.getTopTrainingTypes(this.stateId, this.districtId, this.trainingInstituteId).subscribe({
       next: (response) => {
         this.isLoadingData = false;
         if (response.success && response.data) {

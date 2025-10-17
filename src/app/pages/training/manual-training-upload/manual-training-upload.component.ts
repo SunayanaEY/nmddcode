@@ -57,7 +57,7 @@ export class ManualTrainingUploadComponent implements OnInit {
   trainingInstituteId: any;
 
   breadcrumbItems: BreadcrumbItem[] = [
-    { label: 'Training Module', url: '/admin/training-module' },
+    { label: 'Dashboard', url: '/admin/role-dashboard' },
     {
       label: 'Schedule Training',
       url: '/admin/training-certificate-generation',

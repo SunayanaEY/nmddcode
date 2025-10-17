@@ -45,7 +45,7 @@ export class TrainingCentreComponent implements OnInit {
 
   breadcrumbItems: BreadcrumbItem[] = [
     { label: 'Training Module', url: '/admin/training-module' },
-    { label: 'Training Institute Data' },
+    { label: 'Training Institute Master' },
   ];
 
   showModal = false;

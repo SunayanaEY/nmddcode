@@ -21,9 +21,12 @@ export class TrainingManagerManagementComponent implements OnInit {
   // ViewChild to access the table component
   @ViewChild(RegisteredDataEntryOperatorsComponent) tableComponent!: RegisteredDataEntryOperatorsComponent;
 
+  // Form visibility control
+  showRegistrationForm = false;
+
   // Breadcrumb configuration
   breadcrumbItems = [
-    { label: 'Training Module', url: '/admin/training-module' },
+    { label: 'Dashboard', url: '/admin/role-dashboard' },
     { label: 'Training Manager Management', url: '' }
   ];
 
@@ -31,6 +34,27 @@ export class TrainingManagerManagementComponent implements OnInit {
 
   ngOnInit(): void {
     console.log('Training Manager Management component initialized');
+  }
+
+  /**
+   * Toggle the visibility of the registration form
+   */
+  toggleRegistrationForm(): void {
+    this.showRegistrationForm = !this.showRegistrationForm;
+  }
+
+  /**
+   * Show the registration form
+   */
+  showForm(): void {
+    this.showRegistrationForm = true;
+  }
+
+  /**
+   * Hide the registration form
+   */
+  hideForm(): void {
+    this.showRegistrationForm = false;
   }
 
   /**
@@ -42,5 +66,7 @@ export class TrainingManagerManagementComponent implements OnInit {
     if (this.tableComponent) {
       this.tableComponent.loadDataEntryOperators();
     }
+    // Hide the form after successful submission
+    this.hideForm();
   }
 }

@@ -20,8 +20,9 @@ import { TranslateModule } from '@ngx-translate/core';
 export class AddTrainersComponent implements OnInit {
   profileForm: FormGroup;
   isLoading = false;
+  showRegistrationForm = false;
   breadcrumbItems: BreadcrumbItem[] = [
-    { label: 'Training Module', url: '/admin/training-module' },
+    { label: 'Dashboard', url: '/admin/role-dashboard' },
     { label: 'Add Trainers', url: '' },
   ];
 
@@ -124,6 +125,7 @@ export class AddTrainersComponent implements OnInit {
             this.toastr.success(response.message || 'Trainer registered successfully!', 'Success');
             this.profileForm.reset();
             this.loadTrainers(); // Reload the trainers table
+            this.hideForm(); // Hide the form after successful submission
           } else {
             this.toastr.error(response.message || 'Registration failed. Please try again.', 'Error');
           }
@@ -161,5 +163,18 @@ export class AddTrainersComponent implements OnInit {
   get passwordMismatch() {
     return this.profileForm.hasError('passwordMismatch') &&
            this.profileForm.get('confirmPassword')?.touched;
+  }
+
+  // Form visibility control methods
+  toggleRegistrationForm() {
+    this.showRegistrationForm = !this.showRegistrationForm;
+  }
+
+  showForm() {
+    this.showRegistrationForm = true;
+  }
+
+  hideForm() {
+    this.showRegistrationForm = false;
   }
 }

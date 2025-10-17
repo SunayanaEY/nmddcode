@@ -76,7 +76,7 @@ export class ApprovedRejectedTrainingsComponent {
     'status',
   ];
   breadcrumbItems: BreadcrumbItem[] = [
-    { label: 'Training Module', url: '/admin/training-module' },
+    { label: 'Dashboard', url: '/admin/role-dashboard' },
     { label: 'Approved/Rejected Trainings' },
   ];
 

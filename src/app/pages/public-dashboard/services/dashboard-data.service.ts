@@ -541,8 +541,24 @@ export class DashboardDataService {
     return this.http.get<TrainingInstituteTypeDistributionResponse>(url);
   }
 
-  getTopTrainingTypes(): Observable<TopTrainingTypesResponse> {
-    const url = `${this.API_BASE_URL}public/dashboard/toptrainingtypes`;
+  getTopTrainingTypes(stateId?: number | null, districtId?: number | null, trainingInstituteId?: string | null): Observable<TopTrainingTypesResponse> {
+    let url = `${this.API_BASE_URL}public/dashboard/toptrainingtypes`;
+    const params = new URLSearchParams();
+
+    if (stateId) {
+      params.append('stateId', stateId.toString());
+    }
+    if (districtId) {
+      params.append('districtId', districtId.toString());
+    }
+    if (trainingInstituteId) {
+      params.append('trainingInstituteId', trainingInstituteId);
+    }
+
+    if (params.toString()) {
+      url += `?${params.toString()}`;
+    }
+
     return this.http.get<TopTrainingTypesResponse>(url);
   }
 }

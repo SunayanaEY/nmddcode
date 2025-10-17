@@ -47,17 +47,29 @@
         <i class="bi bi-speedometer2 me-2"></i>
         <span class="sidebar-label" *ngIf="!collapsed">{{'Dashboard'|translate}}</span>
       </a>
+
+      <!-- Role Dashboard for Training Head and Data Entry Operator -->
+      <a
+        class="sidebar-link d-flex align-items-center mb-2 fw-bold"
+        [routerLink]="['role-dashboard']"
+        routerLinkActive="active"
+        [attr.title]="collapsed ? 'Dashboard' : null"
+        *ngIf="isRole3User() || isRole4User()"
+      >
+        <i class="bi bi-house-door me-2"></i>
+        <span class="sidebar-label" *ngIf="!collapsed">{{'Dashboard'|translate}}</span>
+      </a>
       <!--Training Modules with Dropdown-->
       <div class="sidebar-dropdown">
         <a
-          class="sidebar-link d-flex align-items-center mb-2 fw-bold"
+          class="sidebar-link training-management-link d-flex align-items-center mb-2 fw-bold"
           (click)="toggleTrainingModules()"
           [class.active]="trainingModulesExpanded"
-          [attr.title]="collapsed ? 'Training Modules' : null"
+          [attr.title]="collapsed ? 'Training and Institute Management' : null"
           style="cursor: pointer;"
         >
           <i class="bi bi-collection me-2"></i>
-          <span class="sidebar-label" *ngIf="!collapsed">{{'Training Modules'|translate}}</span>
+          <span class="sidebar-label training-management-label" *ngIf="!collapsed">{{'Training and Institute Management'|translate}}</span>
           <i class="bi bi-chevron-down ms-auto dropdown-arrow" 
              *ngIf="!collapsed" 
              [class.rotated]="trainingModulesExpanded"></i>
@@ -105,19 +117,19 @@
             *ngIf="isRole1User()"
           >
             <i class="bi bi-gear-wide-connected me-2"></i>
-            <span class="sidebar-label" *ngIf="!collapsed">{{'Training Master Management'|translate}}</span>
+            <span class="sidebar-label" *ngIf="!collapsed">{{'Scheme & Training Master'|translate}}</span>
           </a>
           
           <a
             class="sidebar-link submenu-link d-flex align-items-center mb-1"
             [routerLink]="['state-admin-profile']"
             routerLinkActive="active"
-            [attr.title]="collapsed ? 'State Admin Data' : null"
+            [attr.title]="collapsed ? 'State Admin Master' : null"
             *ngIf="isRole1User()"
 
           >
             <i class="bi bi-person-badge me-2"></i>
-            <span class="sidebar-label" *ngIf="!collapsed">{{'State Admin Data'|translate}}</span>
+            <span class="sidebar-label" *ngIf="!collapsed">{{'State Admin Master'|translate}}</span>
           </a>
 
           <!-- Role 4 specific submenus -->
@@ -198,6 +210,7 @@
         [routerLink]="['activity-log']"
         routerLinkActive="active"
         [attr.title]="collapsed ? 'Activity Log' : null"
+        *ngIf="authService.getUserRole() === 5 || authService.getUserRole() === 1"
       >
         <i class="bi bi-clock-history me-2"></i>
         <span class="sidebar-label" *ngIf="!collapsed">{{'Activity Log'|translate}}</span>

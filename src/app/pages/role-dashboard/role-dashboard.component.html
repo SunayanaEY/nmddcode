@@ -1,0 +1,207 @@
+<div class="container-fluid">
+  <!-- Breadcrumb -->
+  <app-breadcrumb [items]="breadcrumbItems"></app-breadcrumb>
+  
+  <!-- Page Header -->
+  <div class="row mb-4">
+    <div class="col-12">
+      <div class="d-flex justify-content-between align-items-center">
+        <div>
+          <h2 class="page-title mb-0">
+            <i class="fas fa-tachometer-alt me-2 text-primary"></i>
+            Training Dashboard
+          </h2>
+          <p class="text-muted mb-0">
+            Welcome!
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Training Summary Section -->
+  <div class="row mb-4">
+    <div class="col-12">
+      <div class="card border-0 shadow-sm">
+        <div class="card-header bg-light border-0">
+          <h5 class="card-title mb-0 text-primary">
+            <i class="fas fa-chart-bar me-2"></i>
+            Training Summary
+          </h5>
+        </div>
+        <div class="card-body">
+
+          <!-- Loading Indicator -->
+          <div *ngIf="isLoading" class="text-center py-4">
+            <div class="spinner-border text-primary" role="status">
+              <span class="visually-hidden">Loading...</span>
+            </div>
+            <p class="mt-2 text-muted">Loading dashboard statistics...</p>
+          </div>
+
+          <!-- New KPI Cards Implementation -->
+          <div class="kpi-cards-container">
+            <!-- Loading State -->
+            <div *ngIf="isLoading" class="text-center py-5">
+              <div class="spinner-border text-primary" role="status">
+                <span class="visually-hidden">Loading dashboard data...</span>
+              </div>
+              <p class="mt-2 text-muted">Loading dashboard statistics...</p>
+            </div>
+
+            <!-- KPI Cards -->
+            <div *ngIf="!isLoading" class="row">
+              <!-- Training Schedule Approved -->
+              <div class="col-lg-3 col-md-6 mb-4">
+                <div class="kpi-card kpi-card-green">
+                  <div class="kpi-header">
+                    <div class="kpi-icon">
+                      <i class="fas fa-check-circle"></i>
+                    </div>
+                    <button class="btn-download-new" 
+                            (click)="downloadKpiData('totalTrainingsApproved', $event)"
+                            title="Download Data">
+                      <i class="fas fa-download"></i>
+                    </button>
+                  </div>
+                  <div class="kpi-content">
+                    <div class="kpi-title">Training Schedule Approved</div>
+                    <div class="kpi-value">{{ getKpiCards()[0]?.value || '0' }}</div>
+                    
+                  </div>
+                </div>
+              </div>
+
+              <!-- Training Schedule Rejected -->
+              <div class="col-lg-3 col-md-6 mb-4">
+                <div class="kpi-card kpi-card-orange">
+                  <div class="kpi-header">
+                    <div class="kpi-icon">
+                      <i class="fas fa-times-circle"></i>
+                    </div>
+                    <button class="btn-download-new" 
+                            (click)="downloadKpiData('totalTrainingsRejected', $event)"
+                            title="Download Data">
+                      <i class="fas fa-download"></i>
+                    </button>
+                  </div>
+                  <div class="kpi-content">
+                    <div class="kpi-title">Training Schedule Rejected</div>
+                    <div class="kpi-value">{{ getKpiCards()[1]?.value || '0' }}</div>
+                   
+                  </div>
+                </div>
+              </div>
+
+              <!-- Trainee Approved -->
+              <div class="col-lg-3 col-md-6 mb-4">
+                <div class="kpi-card kpi-card-blue">
+                  <div class="kpi-header">
+                    <div class="kpi-icon">
+                      <i class="fas fa-user-check"></i>
+                    </div>
+                    <button class="btn-download-new" 
+                            (click)="downloadKpiData('totalTraineesApproved', $event)"
+                            title="Download Data">
+                      <i class="fas fa-download"></i>
+                    </button>
+                  </div>
+                  <div class="kpi-content">
+                    <div class="kpi-title">Trainee Approved</div>
+                    <div class="kpi-value">{{ getKpiCards()[2]?.value || '0' }}</div>
+                   
+                  </div>
+                </div>
+              </div>
+
+              <!-- Trainee Rejected -->
+              <div class="col-lg-3 col-md-6 mb-4">
+                <div class="kpi-card kpi-card-purple">
+                  <div class="kpi-header">
+                    <div class="kpi-icon">
+                      <i class="fas fa-user-times"></i>
+                    </div>
+                    <button class="btn-download-new" 
+                            (click)="downloadKpiData('totalTraineesRejected', $event)"
+                            title="Download Data">
+                      <i class="fas fa-download"></i>
+                    </button>
+                  </div>
+                  <div class="kpi-content">
+                    <div class="kpi-title">Trainee Rejected</div>
+                    <div class="kpi-value">{{ getKpiCards()[3]?.value || '0' }}</div>
+                    
+                  </div>
+                </div>
+              </div>
+
+              <!-- Count of Registered Trainers (Only for Role 3) -->
+              <div *ngIf="userRole === 3" class="col-lg-3 col-md-6 mb-4">
+                <div class="kpi-card kpi-card-green">
+                  <div class="kpi-header">
+                    <div class="kpi-icon">
+                      <i class="fas fa-chalkboard-teacher"></i>
+                    </div>
+                    <button class="btn-download-new" 
+                            (click)="downloadKpiData('registeredTrainers', $event)"
+                            title="Download Data">
+                      <i class="fas fa-download"></i>
+                    </button>
+                  </div>
+                  <div class="kpi-content">
+                     <div class="kpi-title">Count of Registered Trainers</div>
+                     <div class="kpi-value">{{ getKpiCards()[4]?.value || '0' }}</div>
+                   </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Training Types Pie Chart Section (Only for Role 3) -->
+  <div *ngIf="userRole === 3" class="row mb-4">
+    <div class="col-12">
+      <div class="card border-0 shadow-sm">
+        <div class="card-header bg-light border-0">
+          <h5 class="card-title mb-0 text-primary">
+            <i class="fas fa-chart-pie me-2"></i>
+            No of Training Type
+          </h5>
+        </div>
+        <div class="card-body">
+          <!-- Loading Indicator -->
+          <div *ngIf="isTrainingTypesChartLoading" class="text-center py-4">
+            <div class="spinner-border text-primary" role="status">
+              <span class="visually-hidden">Loading...</span>
+            </div>
+            <p class="mt-2 text-muted">Loading training types data...</p>
+          </div>
+
+          <!-- Pie Chart Container -->
+          <div *ngIf="!isTrainingTypesChartLoading" class="training-types-chart-container">
+            <!-- Show chart when data is available -->
+            <div 
+              *ngIf="hasTrainingTypesData"
+              echarts 
+              [options]="trainingTypesChartOption" 
+              [loading]="isTrainingTypesChartLoading"
+              class="training-types-pie-chart">
+            </div>
+            
+            <!-- Show empty state when no data -->
+            <div *ngIf="!hasTrainingTypesData" class="text-center py-5">
+              <i class="fas fa-chart-pie text-muted mb-3" style="font-size: 3rem; opacity: 0.3;"></i>
+              <h5 class="text-muted mb-2">No Training Type Data Available</h5>
+              <p class="text-muted mb-0">Training type statistics will appear here when data is available.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+</div>

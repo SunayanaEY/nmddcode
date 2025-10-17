@@ -40,7 +40,7 @@ import { AdminService } from '../services/training-admin.service';
 })
 export class TrainingCertificateGenerationComponent implements OnInit {
   breadcrumbItems: BreadcrumbItem[] = [
-    { label: 'Training Module', url: '/admin/training-module' },
+    { label: 'Dashboard', url: '/admin/role-dashboard' },
     { label: 'Schedule Training' },
   ];
   trainingForm: FormGroup;
@@ -584,7 +584,7 @@ export class TrainingCertificateGenerationComponent implements OnInit {
             'Success'
           );
           const trainingId = response.data.id;
-          this.router.navigate(['/admin/training-module'], {
+          this.router.navigate(['/admin/approvedrejectedTrainings'], {
             queryParams: { trainingId: trainingId },
           });
           this.isSpinner = false;
@@ -634,7 +634,7 @@ export class TrainingCertificateGenerationComponent implements OnInit {
             'Success'
           );
           const trainingId = response.data.id;
-          this.router.navigate(['/admin/training-module'], {
+          this.router.navigate(['/admin/approvedrejectedTrainings'], {
             queryParams: { trainingId: trainingId },
           });
           this.isSpinner = false;

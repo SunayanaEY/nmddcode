@@ -217,6 +217,28 @@
   white-space: nowrap;
 }
 
+/* Special styling for Training and Institute Management label */
+.training-management-label {
+  white-space: normal !important;
+  line-height: 1.2;
+  word-wrap: break-word;
+  overflow: visible;
+  text-overflow: unset;
+  max-width: 100%;
+}
+
+/* Adjust the parent link container for training management */
+.training-management-link {
+  min-height: 4rem !important;
+  align-items: flex-start !important;
+  padding-top: 1.2rem !important;
+  padding-bottom: 1.2rem !important;
+}
+
+.training-management-link .bi {
+  margin-top: 0.2rem;
+}
+
 .sidebar-nav.collapsed .sidebar-link {
   justify-content: center;
   padding: 1rem 0.8rem;

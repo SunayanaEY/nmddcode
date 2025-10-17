@@ -594,10 +594,10 @@ export class LoginComponent implements OnInit {
         this.router.navigate(['/admin/dashboard']);
         break;
       case 3: // Training Institute Head
-        this.router.navigate(['/admin/training-module']);
+        this.router.navigate(['/admin/role-dashboard']);
         break;
       case 4: // Training Data Entry Operator
-        this.router.navigate(['/admin/training-module']);
+        this.router.navigate(['/admin/role-dashboard']);
         break;
       default:
         this.router.navigate(['/admin']);

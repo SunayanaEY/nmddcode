@@ -63,7 +63,7 @@ export class StateAdminProfileComponent implements OnInit {
 
   breadcrumbItems: BreadcrumbItem[] = [
     { label: 'Training Module', url: '/admin/training-module' },
-    { label: 'State Admin Profile Data' },
+    { label: 'State Admin Profile' },
   ];
 
   // Table properties

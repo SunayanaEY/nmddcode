@@ -131,7 +131,7 @@ export class AllCertificateComponent {
   trainingId: any;
   selectedSignatureFile: File | null = null;
   breadcrumbItems: BreadcrumbItem[] = [
-    { label: 'Training Module', url: '/admin/training-module' },
+    { label: 'Dashboard', url: '/admin/role-dashboard' },
     { label: 'Approved/Rejected Trainings', url: '/admin/approvedrejectedTrainings' },
     { label: 'Approved Certificate' },
   ];

@@ -19,7 +19,7 @@ import { TrainingService } from '../../../pages/training/services/training.servi
 })
 export class BulkTrainingUploadComponent implements OnInit {
   breadcrumbItems: BreadcrumbItem[] = [
-    { label: 'Training Module', url: '/admin/training-module' },
+    { label: 'Dashboard', url: '/admin/role-dashboard' },
     {
       label: 'Schedule Training',
       url: '/admin/training-certificate-generation',
@@ -270,7 +270,7 @@ export class BulkTrainingUploadComponent implements OnInit {
           next: () => {
             this.isSpinning = false;
             this.toastr.success('Bulk Excel File Uploaded', 'Success');
-            this.router.navigate(['/admin/training-module']);
+            this.router.navigate(['/admin/approvedrejectedTrainings']);
           },
           error: () => {
             this.isSpinning = false;
