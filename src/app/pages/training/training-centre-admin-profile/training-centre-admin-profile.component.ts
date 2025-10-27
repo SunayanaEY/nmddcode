@@ -20,6 +20,7 @@ import {
   District,
 } from '../../../services/location.service';
 import { AuthService } from '../../../services/auth.service';
+import * as pdfjsLib from 'pdfjs-dist';
 
 @Component({
   selector: 'app-training-centre-admin-profile',
@@ -36,6 +37,7 @@ export class TrainingCentreAdminProfileComponent implements OnInit {
   selectedFileDoc: File | null = null;
   selectedImagePreview: string | null = null;
   selectedDocPreview: string | null = null;
+  pdfPreviewUrl: string | null = null;
   isDragOver = false;
   isDragOverDoc = false;
   showPassword = false;
@@ -86,6 +88,9 @@ export class TrainingCentreAdminProfileComponent implements OnInit {
     private authService: AuthService,
     private route: ActivatedRoute
   ) {
+    // Configure PDF.js worker to use bundled version
+    pdfjsLib.GlobalWorkerOptions.workerSrc = '/assets/pdf.worker.min.js';
+    
     this.getRole();
     if (this.userRole == 5 || this.userRole == 6) {
       const nav = this.router.getCurrentNavigation();
@@ -471,13 +476,41 @@ export class TrainingCentreAdminProfileComponent implements OnInit {
       }
 
       this.selectedFileDoc = file;
+      this.selectedDocPreview = file.name;
 
-      // Create preview (if needed)
-      const reader = new FileReader();
-      reader.onload = (e) => {
-        this.selectedDocPreview = file.name as string;
+      // Generate PDF preview
+      this.generatePdfPreview(file);
+    }
+  }
+
+  /**
+   * Generate PDF preview using PDF.js
+   */
+  async generatePdfPreview(file: File) {
+    try {
+      const arrayBuffer = await file.arrayBuffer();
+      const pdf = await pdfjsLib.getDocument({ data: arrayBuffer }).promise;
+      const page = await pdf.getPage(1); // Get first page
+      
+      const scale = 1.5;
+      const viewport = page.getViewport({ scale });
+      
+      const canvas = document.createElement('canvas');
+      const context = canvas.getContext('2d');
+      canvas.height = viewport.height;
+      canvas.width = viewport.width;
+      
+      const renderContext = {
+        canvasContext: context!,
+        viewport: viewport,
+        canvas: canvas
       };
-      reader.readAsDataURL(file);
+      
+      await page.render(renderContext).promise;
+      this.pdfPreviewUrl = canvas.toDataURL();
+    } catch (error) {
+      console.error('Error generating PDF preview:', error);
+      this.toastr.error('Error generating PDF preview', 'Preview Error');
     }
   }
 
@@ -556,7 +589,7 @@ export class TrainingCentreAdminProfileComponent implements OnInit {
   }
   onDropDoc(event: DragEvent) {
     event.preventDefault();
-    this.isDragOver = false;
+    this.isDragOverDoc = false;
 
     const files = event.dataTransfer?.files;
     if (files && files[0]) {
@@ -575,13 +608,10 @@ export class TrainingCentreAdminProfileComponent implements OnInit {
       }
 
       this.selectedFileDoc = file;
+      this.selectedDocPreview = file.name;
 
-      // Create preview
-      const reader = new FileReader();
-      reader.onload = (e) => {
-        this.selectedDocPreview = file.name as string;
-      };
-      reader.readAsDataURL(file);
+      // Generate PDF preview
+      this.generatePdfPreview(file);
     }
   }
 
@@ -605,6 +635,7 @@ export class TrainingCentreAdminProfileComponent implements OnInit {
     event.stopPropagation();
     this.selectedFileDoc = null;
     this.selectedDocPreview = null;
+    this.pdfPreviewUrl = null;
 
     // Reset file input
     const fileInput = document.querySelector(

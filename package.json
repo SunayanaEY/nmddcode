@@ -38,6 +38,7 @@
     "ngx-pagination": "^6.0.3",
     "ngx-spinner": "^19.0.0",
     "ngx-toastr": "^19.0.0",
+    "pdfjs-dist": "^5.4.296",
     "rxjs": "~7.8.0",
     "topojson": "^3.0.2",
     "tslib": "^2.3.0",
