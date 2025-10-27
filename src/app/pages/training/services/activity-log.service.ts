@@ -10,6 +10,7 @@ export interface ActivityLogApiItem {
   action: string;
   description: string;
   createdAt: string;
+  userName: string;
 }
 
 export interface ActivityLogApiResponse {
@@ -31,7 +32,7 @@ export interface ActivityLogItem {
 }
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class ActivityLogService {
   private readonly baseUrl = environment.apiUrl;
@@ -44,20 +45,26 @@ export class ActivityLogService {
    * @param toDate - End date in YYYY-MM-DD format
    * @returns Observable<ActivityLogItem[]>
    */
-  getActivityLogs(fromDate?: string, toDate?: string): Observable<ActivityLogItem[]> {
+  getActivityLogs(
+    fromDate?: string,
+    toDate?: string
+  ): Observable<ActivityLogItem[]> {
     let params = new HttpParams();
-    
+
     if (fromDate) {
       params = params.set('fromDate', fromDate);
     }
-    
+
     if (toDate) {
       params = params.set('toDate', toDate);
     }
 
-    return this.http.get<ActivityLogApiResponse>(`${this.baseUrl}activity/logsList`, { params })
+    return this.http
+      .get<ActivityLogApiResponse>(`${this.baseUrl}activity/logsList`, {
+        params,
+      })
       .pipe(
-        map(response => this.transformApiDataToActivityLogs(response.data))
+        map((response) => this.transformApiDataToActivityLogs(response.data))
       );
   }
 
@@ -66,8 +73,10 @@ export class ActivityLogService {
    * @param apiData - Raw API response data
    * @returns ActivityLogItem[]
    */
-  private transformApiDataToActivityLogs(apiData: ActivityLogApiItem[]): ActivityLogItem[] {
-    return apiData.map(item => ({
+  private transformApiDataToActivityLogs(
+    apiData: ActivityLogApiItem[]
+  ): ActivityLogItem[] {
+    return apiData.map((item) => ({
       id: item.id.toString(),
       type: this.getTypeFromAction(item.action),
       title: this.getTitleFromAction(item.action),
@@ -77,8 +86,8 @@ export class ActivityLogService {
       status: this.getStatusFromAction(item.action),
       details: {
         action: item.action,
-        userId: item.userId.toString()
-      }
+        userName: item.userName.toString(),
+      },
     }));
   }
 
