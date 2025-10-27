@@ -6,11 +6,12 @@ import { BreadcrumbComponent, BreadcrumbItem } from '../../../components/breadcr
 import { AuthService } from '../../../services/auth.service';
 import { LocationService, State, District } from '../../../services/location.service';
 import { environment } from '../../../../environments/environment';
+import { TranslateModule } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-update-profile',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, BreadcrumbComponent],
+  imports: [CommonModule, ReactiveFormsModule, BreadcrumbComponent,TranslateModule],
   templateUrl: './update-profile.component.html',
   styleUrls: ['./update-profile.component.css']
 })
@@ -25,7 +26,7 @@ export class UpdateProfileComponent implements OnInit {
   states: State[] = [];
   districts: District[] = [];
   selectedStateId: number | null = null;
-  
+
   breadcrumbItems: BreadcrumbItem[] = [
     { label: 'Training Dashboard', url: '/admin/training-module' },
     { label: 'Update Profile' }
@@ -45,7 +46,7 @@ export class UpdateProfileComponent implements OnInit {
     console.log('Update Profile Component - Checking authentication:');
     console.log('Is logged in:', this.authService.isLoggedIn());
     console.log('Current user:', this.authService.getUser());
-    
+
     this.loadProfileData();
     this.loadStates();
   }
@@ -97,7 +98,7 @@ export class UpdateProfileComponent implements OnInit {
         if (response.success && response.data && response.data.length > 0) {
           this.profileData = response.data[0]; // Store the complete profile data
           this.populateForm(this.profileData);
-          
+
           // Set current image URL if available
           if (this.profileData.instituteImageUrl) {
             this.currentImageUrl = this.profileData.instituteImageUrl;

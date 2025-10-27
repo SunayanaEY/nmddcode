@@ -19,6 +19,7 @@ import {
   TableAction,
 } from '../../../components/table/table.component';
 import { TrainingService } from '../../../pages/training/services/training.service';
+import { TranslateModule } from '@ngx-translate/core';
 
 interface Participant {
   name: string;
@@ -37,7 +38,7 @@ interface Participant {
     CommonModule,
     ReactiveFormsModule,
     BreadcrumbComponent,
-    TableComponent,
+    TableComponent,TranslateModule
   ],
   templateUrl: './manual-training-upload.component.html',
   styleUrl: './manual-training-upload.component.css',

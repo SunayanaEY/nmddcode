@@ -21,10 +21,11 @@ import {
   District,
 } from '../../../services/location.service';
 import { AuthService } from '../../../services/auth.service';
+import { TranslateModule } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-organization-admin-profile',
-  imports: [CommonModule, ReactiveFormsModule, BreadcrumbComponent],
+  imports: [CommonModule, ReactiveFormsModule, BreadcrumbComponent,TranslateModule],
   templateUrl: './organization-admin-profile.component.html',
   styleUrl: './organization-admin-profile.component.css',
 })

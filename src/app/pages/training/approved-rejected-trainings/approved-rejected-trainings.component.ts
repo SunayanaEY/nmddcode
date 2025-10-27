@@ -25,6 +25,7 @@ import { ToastrService } from 'ngx-toastr';
 import { Router } from '@angular/router';
 import { CertificateLayoutComponent } from '../../certificate-layout/certificate-layout.component';
 import { NewCertificateLayoutComponent } from '../../new-certificate-layout/new-certificate-layout.component';
+import { TranslateModule } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-approved-rejected-trainings',
@@ -36,6 +37,7 @@ import { NewCertificateLayoutComponent } from '../../new-certificate-layout/new-
     ReactiveFormsModule,
     FormsModule,
     NewCertificateLayoutComponent,
+    TranslateModule
   ],
   templateUrl: './approved-rejected-trainings.component.html',
   styleUrl: './approved-rejected-trainings.component.css',

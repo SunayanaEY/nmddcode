@@ -4,9 +4,9 @@
 
   <!-- Page Header -->
   <div class="page-header">
-    <h2>Private Organization Data</h2>
+    <h2>{{'Private Organization Data'|translate}}</h2>
     <p class="page-description">
-      Manage and view all private organizations across different locations
+      {{'Manage and view all private organizations across different locations'|translate}}
     </p>
   </div>
 
@@ -25,14 +25,14 @@
           fill="currentColor"
         />
       </svg>
-      Export Data
+      {{'Export Data'|translate}}
     </button>
   </div>
 
   <!-- Loading State -->
   <div *ngIf="isLoading" class="loading-container">
     <div class="loading-spinner"></div>
-    <p>Loading training institutes...</p>
+    <p>{{'Loading training institutes...'|translate}}</p>
   </div>
 
   <!-- Error State -->
@@ -50,9 +50,9 @@
           fill="currentColor"
         />
       </svg>
-      <p>{{ error }}</p>
+      <p>{{ error |translate }}</p>
       <button class="btn btn-primary" (click)="loadInstituteData()">
-        Retry
+        {{'Retry'|translate}}
       </button>
     </div>
   </div>

@@ -23,10 +23,13 @@ import {
 import { AuthService } from '../../../services/auth.service';
 import { TableComponent, TableColumn, TableAction } from '../../../components/table/table.component';
 import { ModalComponent, ModalConfig, ModalField } from '../../../components/modal/modal.component';
+import { TranslateModule } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-state-admin-profile',
-  imports: [CommonModule, ReactiveFormsModule, BreadcrumbComponent, TableComponent, ModalComponent],
+  imports: [CommonModule, ReactiveFormsModule, BreadcrumbComponent, TableComponent, ModalComponent,
+    TranslateModule
+  ],
   templateUrl: './state-admin-profile.component.html',
   styleUrl: './state-admin-profile.component.css',
 })
@@ -220,7 +223,7 @@ export class StateAdminProfileComponent implements OnInit {
   onSubmit(): void {
     if (this.profileForm.valid) {
       const formData = this.profileForm.value;
-      
+
       // Prepare payload according to API specification
        const payload = {
          contactPersonName: formData.adminName,
@@ -230,10 +233,10 @@ export class StateAdminProfileComponent implements OnInit {
          password: formData.password,
          stateId: parseInt(formData.state)
        };
-       
-      
+
+
       this.isLoading = true;
-      
+
       this.adminService.saveOrUpdateStateAdmin(payload).subscribe({
         next: (response) => {
           this.toastr.success(response.message || 'State admin profile saved successfully!');
@@ -407,7 +410,7 @@ export class StateAdminProfileComponent implements OnInit {
   // Table methods
   loadStateAdminData() {
     this.isTableLoading = true;
-    
+
     this.adminService.getAllActiveStateHeads().subscribe({
       next: (response) => {
         if (response.success && response.data) {
@@ -441,7 +444,7 @@ export class StateAdminProfileComponent implements OnInit {
 
   onTableActionClick(event: { action: string; item: any; index: number }) {
     const { action, item } = event;
-    
+
     switch (action) {
       case 'view':
         this.viewStateAdmin(item);
@@ -466,7 +469,7 @@ export class StateAdminProfileComponent implements OnInit {
   }
 
   editStateAdmin(item: any) {
-    
+
     // Map table data to modal fields using originalData from API
     const originalData = item.originalData || item;
     this.selectedStateAdmin = {
@@ -481,7 +484,7 @@ export class StateAdminProfileComponent implements OnInit {
       // Store original API data for reference
       originalData: originalData
     };
-    
+
     this.showEditModal = true;
   }
 
@@ -501,7 +504,7 @@ export class StateAdminProfileComponent implements OnInit {
   }
 
   onEditModalUpdate(formData: any): void {
-    
+
     // Prepare payload according to API specification
     const payload = {
       contactPersonName: formData.contactPersonName,
@@ -511,8 +514,8 @@ export class StateAdminProfileComponent implements OnInit {
       password: formData.password || 'DefaultPassword@123', // Use existing password or default
       stateId: this.selectedStateAdmin.stateId // Use stateId from original API data
     };
-    
-    
+
+
     this.adminService.saveOrUpdateStateAdmin(payload).subscribe({
       next: (response) => {
         this.toastr.success(response.message || 'State admin updated successfully');
@@ -536,7 +539,7 @@ export class StateAdminProfileComponent implements OnInit {
   viewPreviousStateHeads(item: any): void {
     // Extract stateId from the item (assuming it's available in the item object)
     const stateId = item.originalData.stateId; // Default to 5 as per your API example
-    
+
     // Load data and show modal
     this.loadPreviousStateHeads(stateId);
   }
@@ -544,19 +547,19 @@ export class StateAdminProfileComponent implements OnInit {
   loadPreviousStateHeads(stateId: number): void {
     this.isPreviousStateHeadsLoading = true;
     this.previousStateHeadsError = null; // Clear any previous errors
-    
+
     this.adminService.getPreviousStateHeads(stateId).subscribe({
       next: (response) => {
-        
+
         if (response.success && response.data) {
           this.previousStateHeadsData = response.data;
           this.previousStateHeadsError = null; // Clear error on success
-          
+
           this.toastr.success('Previous state heads data loaded successfully');
-          
+
           // Show modal only after successful data load
           this.showPreviousStateHeadsModal = true;
-          
+
           // Add a small delay to ensure DOM updates
           setTimeout(() => {
           }, 100);
@@ -567,11 +570,11 @@ export class StateAdminProfileComponent implements OnInit {
           this.previousStateHeadsData = [];
           this.showPreviousStateHeadsModal = true; // Still show modal to display error
         }
-        
+
         this.isPreviousStateHeadsLoading = false;
       },
       error: (error) => {
-        
+
         const errorMessage = 'Failed to load previous state heads data. Please try again.';
         this.previousStateHeadsError = errorMessage;
         this.toastr.error(errorMessage);

@@ -4,9 +4,9 @@
 
   <!-- Page Header -->
   <div class="page-header">
-    <h2>Training Institute Data</h2>
+    <h2>{{'Training Institute Data'|translate}}</h2>
     <p class="page-description">
-      Manage and view all training heads across different locations
+      {{'Manage and view all training heads across different locations'|translate}}
     </p>
   </div>
 
@@ -29,7 +29,7 @@
       </div>
       <div class="stat-content">
         <h3>{{ trainingCentres.length }}</h3>
-        <p>Total Centres</p>
+        <p>{{"Total Centres"|translate}}</p>
       </div>
     </div>
 
@@ -50,7 +50,7 @@
       </div>
       <div class="stat-content">
         <h3>{{ activeCentresCount }}</h3>
-        <p>Active Centres</p>
+        <p>{{'Active Centres'|translate}}</p>
       </div>
     </div>
 
@@ -71,7 +71,7 @@
       </div>
       <div class="stat-content">
         <h3>{{ statesCovered }}</h3>
-        <p>Districts Covered</p>
+        <p>{{'Districts Covered'|translate}}</p>
       </div>
     </div>
 
@@ -92,7 +92,7 @@
       </div>
       <div class="stat-content">
         <h3>{{ statesCovered }}</h3>
-        <p>States Covered</p>
+        <p>{{'States Covered'|translate}}</p>
       </div>
     </div>
   </div>
@@ -112,14 +112,14 @@
           fill="currentColor"
         />
       </svg>
-      Export Data
+      {{'Export Data'|translate}}
     </button>
   </div>
 
   <!-- Loading State -->
   <div *ngIf="isLoading" class="loading-container">
     <div class="loading-spinner"></div>
-    <p>Loading training institutes...</p>
+    <p>{{'Loading training institutes...'|translate}}</p>
   </div>
 
   <!-- Error State -->
@@ -139,7 +139,7 @@
       </svg>
       <p>{{ error }}</p>
       <button class="btn btn-primary" (click)="loadTrainingInstitutes()">
-        Retry
+        {{'Retry'|translate}}
       </button>
     </div>
   </div>

@@ -2,89 +2,89 @@
   <app-breadcrumb [items]="breadcrumbItems"></app-breadcrumb>
 
   <div class="training-card">
-    <h3 class="card-title">Training Details</h3>
+    <h3 class="card-title">{{'Training Details'|translate}}</h3>
 
     <div class="details-grid">
       <div class="detail-item">
-        <span class="label">Training Title:</span>
+        <span class="label">{{'Training Title'|translate}}:</span>
         <span class="value">{{ trainingDetails?.trainingTitle || "-" }}</span>
       </div>
       <div class="detail-item">
-        <span class="label">Scheme:</span>
+        <span class="label">{{'Scheme'|translate}}:</span>
         <span class="value">{{ trainingDetails?.scheme || "-" }}</span>
       </div>
 
       <div class="detail-item">
-        <span class="label">Trainer Name:</span>
+        <span class="label">{{'Trainer Name'|translate}}:</span>
         <span class="value">{{ trainingDetails?.trainerName || "-" }}</span>
       </div>
       <div class="detail-item">
-        <span class="label">trainingDetails Institute:</span>
+        <span class="label">{{'Training Institute Name'|translate}}:</span>
         <span class="value">{{
           trainingDetails?.trainingInstituteName || "-"
         }}</span>
       </div>
 
       <div class="detail-item">
-        <span class="label">Venue State:</span>
+        <span class="label">{{'Venue State'|translate}}:</span>
         <span class="value">{{ trainingDetails?.venueState || "-" }}</span>
       </div>
       <div class="detail-item">
-        <span class="label">Venue District:</span>
+        <span class="label">{{'Venue District'|translate}}:</span>
         <span class="value">{{ trainingDetails?.venueDistrict || "-" }}</span>
       </div>
 
       <div class="detail-item">
-        <span class="label">Venue Block:</span>
+        <span class="label">{{'Venue Block'|translate}}:</span>
         <span class="value">{{ trainingDetails?.venueBlock || "-" }}</span>
       </div>
       <div class="detail-item">
-        <span class="label">Training Date:</span>
+        <span class="label">{{'Training Date'|translate}}:</span>
         <span class="value">{{ trainingDetails?.trainingDate }}</span>
       </div>
 
       <div class="detail-item">
-        <span class="label">Duration:</span>
+        <span class="label">{{'Duration'|translate}}:</span>
         <span class="value">{{ trainingDetails?.duration || "-" }}</span>
       </div>
       <div class="detail-item">
-        <span class="label">Duration Type:</span>
+        <span class="label">{{'Duration Type'|translate}}:</span>
         <span class="value">{{ trainingDetails?.durationType || "-" }}</span>
       </div>
 
       <div class="detail-item">
-        <span class="label">Mode of Training:</span>
+        <span class="label">{{'Mode of Training'|translate}}:</span>
         <span class="value">{{ trainingDetails?.modeOfTraining || "-" }}</span>
       </div>
       <div class="detail-item">
-        <span class="label">Type of Training:</span>
+        <span class="label">{{'Type of Training'|translate}}:</span>
         <span class="value">{{ trainingDetails?.trainingType || "-" }}</span>
       </div>
     </div>
 
     <div class="detail-item full-width">
-      <span class="label">About Training:</span>
+      <span class="label">{{'About Training'|translate}}:</span>
       <p class="value about">
         {{ trainingDetails?.trainingDescription || "-" }}
       </p>
     </div>
   </div>
 
-  <h1 class="page-title">Bulk Upload</h1>
+  <h1 class="page-title">{{'Bulk Upload'|translate}}</h1>
 
   <div class="template-section">
-    <h2>Template</h2>
+    <h2>{{'Template'|translate}}</h2>
     <div class="template-card">
       <i class="bi bi-file-earmark-spreadsheet"></i>
       <div class="template-info">
-        <h3>Download Excel Template</h3>
-        <p>Includes Mandatory fields and Validation Rules</p>
+        <h3>{{"Download Excel Template"|translate}}</h3>
+        <p>{{"Includes Mandatory fields and Validation Rules"|translate}}</p>
         <button
           type="button"
           class="btn btn-success mt-2"
           (click)="downloadExcelTemplate()"
         >
-          Download
+          {{'Download'|translate}}
         </button>
       </div>
     </div>
@@ -95,7 +95,7 @@
     <div class="d-flex justify-content-between align-items-center mb-2">
       <h2 class="mb-0">Data Preview</h2>
       <button class="btn btn-reupload" (click)="reUploadFile()">
-        Re-Upload File
+        {{'Re-Upload File'|translate}}
       </button>
     </div>
 
@@ -125,15 +125,15 @@
         (click)="goToPage(currentPage - 1)"
         [disabled]="currentPage === 1"
       >
-        Previous
+        {{'Previous'|translate}}
       </button>
-      <span>Page {{ currentPage }} of {{ totalPages }}</span>
+      <span>{{'Page'|translate}} {{ currentPage }} of {{ totalPages }}</span>
       <button
         class="btn btn-sm btn-secondary"
         (click)="goToPage(currentPage + 1)"
         [disabled]="currentPage === totalPages"
       >
-        Next
+        {{'Next'|translate}}
       </button>
     </nav>
   </div>
@@ -142,10 +142,10 @@
     (click)="submitData()"
     *ngIf="excelData.length != 0 && errorCount == 0"
   >
-    Submit Data
+    {{'Submit Data'|translate}}
   </button>
   <div class="upload-section">
-    <h2>Upload Your File</h2>
+    <h2>{{'Upload Your File'|translate}}</h2>
     <app-file-upload
       *ngIf="showFileUpload"
       [acceptedFileTypes]="'.xlsx, .xls, .csv'"
@@ -165,9 +165,9 @@
       <div class="progress-bar" [style.width.%]="uploadProgress"></div>
     </div>
     <div class="progress-info">
-      <span>Uploading...... {{ uploadProgress }}%</span>
+      <span>{{'Uploading......'|translate}} {{ uploadProgress }}%</span>
       <span class="error-info">
-        {{ errorCount }} errors found in {{ errorRowCount }} rows
+        {{ errorCount }} {{'errors found in'|translate}} {{ errorRowCount }} rows
       </span>
     </div>
   </div>
@@ -177,9 +177,9 @@
     <div
       class="report-header d-flex justify-content-between align-items-center"
     >
-      <h2 class="mb-0">Validation Report with Error</h2>
+      <h2 class="mb-0">{{'Validation Report with Error'|translate}}</h2>
       <button class="btn btn-reupload" (click)="reUploadFile()">
-        Re-Upload File
+        {{'Re-Upload File'|translate}}
       </button>
     </div>
 
@@ -190,7 +190,7 @@
             <th style="width: 70px">#</th>
             <th style="width: 100px">Row</th>
             <th style="width: 200px">Column</th>
-            <th>Error Message</th>
+            <th>{{'Error Message'|translate}}</th>
           </tr>
         </thead>
         <tbody>

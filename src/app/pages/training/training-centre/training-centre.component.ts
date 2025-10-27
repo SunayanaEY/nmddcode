@@ -26,6 +26,7 @@ import {
   State,
   District,
 } from '../../../services/location.service';
+import { TranslateModule } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-training-centre',
@@ -36,6 +37,7 @@ import {
     TableComponent,
     ModalComponent,
     HttpClientModule,
+    TranslateModule
   ],
   templateUrl: './training-centre.component.html',
   styleUrls: ['./training-centre.component.css'],
@@ -535,13 +537,13 @@ export class TrainingCentreComponent implements OnInit {
         <i class="fas fa-exclamation-triangle me-2"></i>
         <strong>Do you want to ${actionText} this training institute?</strong>
       </div>
-      
+
       <div class="card border-0 bg-light mb-3">
         <div class="card-body p-3">
           <h6 class="card-title text-primary mb-3">
             <i class="fas fa-building me-2"></i>Institute Details
           </h6>
-          
+
           <div class="row g-2">
             <div class="col-md-6">
               <small class="text-muted d-block">Institute Name</small>
@@ -575,7 +577,7 @@ export class TrainingCentreComponent implements OnInit {
           </div>
         </div>
       </div>
-      
+
       <div class="alert alert-info mb-0">
         <i class="fas fa-info-circle me-2"></i>
         This action will change the institute status to <strong>${

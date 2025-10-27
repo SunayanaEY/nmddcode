@@ -34,6 +34,7 @@ import { ToastrService } from 'ngx-toastr';
 import { NgxSpinnerModule, NgxSpinnerService } from 'ngx-spinner';
 import { CertificateLayoutComponent } from '../../certificate-layout/certificate-layout.component';
 import { NewCertificateLayoutComponent } from '../../new-certificate-layout/new-certificate-layout.component';
+import { TranslateModule } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-all-trainings-admin',
@@ -46,6 +47,7 @@ import { NewCertificateLayoutComponent } from '../../new-certificate-layout/new-
     FormsModule,
     NgxSpinnerModule,
     NewCertificateLayoutComponent,
+    TranslateModule
   ],
   templateUrl: './all-trainings-admin.component.html',
   styleUrl: './all-trainings-admin.component.css',

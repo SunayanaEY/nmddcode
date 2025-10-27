@@ -7,15 +7,15 @@
     <div class="col-12">
       <div class="d-flex justify-content-between align-items-center">
         <div>
-          <h2 class="page-title mb-0">Registered Training Managers</h2>
+          <h2 class="page-title mb-0">{{'Registered Training Managers'|translate}}</h2>
           <p class="text-muted mb-0">
-            View all registered training managers.
+            {{'View all registered training managers.'|translate}}
           </p>
         </div>
         <div>
           <button class="btn btn-primary" (click)="loadDataEntryOperators()">
             <i class="fas fa-sync-alt me-2"></i>
-            Refresh
+            {{'Refresh'|translate}}
           </button>
         </div>
       </div>
@@ -35,7 +35,7 @@
             </div>
             <div>
               <h2 class="fw-bold mb-0 text-dark">{{ tableData.length }}</h2>
-              <p class="text-muted mb-0 small">Total Managers</p>
+              <p class="text-muted mb-0 small">{{'Total Managers'|translate}}</p>
             </div>
           </div>
         </div>
@@ -54,7 +54,7 @@
               <h2 class="fw-bold mb-0 text-dark">
                 {{ getActiveOperatorsCount() }}
               </h2>
-              <p class="text-muted mb-0 small">Active Managers</p>
+              <p class="text-muted mb-0 small">{{'Active Managers'|translate}}</p>
             </div>
           </div>
         </div>
@@ -73,7 +73,7 @@
               <h2 class="fw-bold mb-0 text-dark">
                 {{ getInactiveOperatorsCount() }}
               </h2>
-              <p class="text-muted mb-0 small">Inactive Managers</p>
+              <p class="text-muted mb-0 small">{{'Inactive Managers'|translate}}</p>
             </div>
           </div>
         </div>
@@ -88,7 +88,7 @@
             </div>
             <div>
               <h2 class="fw-bold mb-0 text-dark">{{ getRecentAdditions() }}</h2>
-              <p class="text-muted mb-0 small">Recent Additions</p>
+              <p class="text-muted mb-0 small">{{'Recent Additions'|translate}}</p>
             </div>
           </div>
         </div>
@@ -103,15 +103,15 @@
         <div class="card-header">
           <h5 class="card-title mb-0">
             <i class="fas fa-table me-2"></i>
-            Training Managers List
+            {{'Training Managers List'|translate}}
           </h5>
         </div>
         <div class="card-body">
           <div *ngIf="isLoading" class="text-center py-4">
             <div class="spinner-border text-primary" role="status">
-              <span class="visually-hidden">Loading...</span>
+              <span class="visually-hidden">{{"Loading..."|translate}}</span>
             </div>
-            <p class="mt-2 text-muted">Loading training managers...</p>
+            <p class="mt-2 text-muted">{{'Loading training managers...'|translate}}</p>
           </div>
 
           <div
@@ -119,9 +119,9 @@
             class="text-center py-4"
           >
             <i class="fas fa-users fa-3x text-muted mb-3"></i>
-            <h5 class="text-muted">No Training Managers Found</h5>
+            <h5 class="text-muted">{{'No Training Managers Found'|translate}}</h5>
             <p class="text-muted">
-              No registered training manager available at the moment.
+              {{'No registered training manager available at the moment.'|translate}}
             </p>
           </div>
 

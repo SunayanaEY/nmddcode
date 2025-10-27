@@ -24,6 +24,7 @@ import {
   BreadcrumbItem,
 } from '../../../components/breadcrumb/breadcrumb.component';
 import { AdminService } from '../services/training-admin.service';
+import { TranslateModule } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-training-certificate-generation',
@@ -34,6 +35,7 @@ import { AdminService } from '../services/training-admin.service';
     ReactiveFormsModule,
     FileUploadComponent,
     BreadcrumbComponent,
+    TranslateModule
   ],
   templateUrl: './training-certificate-generation.component.html',
   styleUrl: './training-certificate-generation.component.css',
@@ -113,15 +115,15 @@ export class TrainingCertificateGenerationComponent implements OnInit {
     if (!control.value) {
       return null; // Let required validator handle empty values
     }
-    
+
     const selectedDate = new Date(control.value);
     const today = new Date();
     today.setHours(0, 0, 0, 0); // Reset time to start of day
-    
+
     if (selectedDate < today) {
       return { pastDate: true };
     }
-    
+
     return null;
   }
 
@@ -129,13 +131,13 @@ export class TrainingCertificateGenerationComponent implements OnInit {
     if (!control.value) {
       return null; // Let required validator handle empty values
     }
-    
+
     const duration = Number(control.value);
-    
+
     if (duration <= 0) {
       return { invalidDuration: true };
     }
-    
+
     return null;
   }
 
@@ -280,7 +282,7 @@ export class TrainingCertificateGenerationComponent implements OnInit {
       const selectedInstitute = this.instituteNames.find(
         (institute: any) => institute.id === this.trainingDetails.trainingInstituteId
       );
-      
+
       if (selectedInstitute) {
         this.trainingForm.patchValue({
           trainingInstituteName: selectedInstitute
@@ -469,7 +471,7 @@ export class TrainingCertificateGenerationComponent implements OnInit {
    onTrainerChange(): void {
      const selectedTrainer = this.trainingForm.get('trainerName')?.value;
      this.showGuestTrainerField = selectedTrainer === 'Other';
-     
+
      const guestTrainerControl = this.trainingForm.get('guestTrainerName');
      if (this.showGuestTrainerField) {
        guestTrainerControl?.setValidators([Validators.required]);

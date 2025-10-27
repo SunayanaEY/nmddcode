@@ -2,68 +2,68 @@
   <app-breadcrumb [items]="breadcrumbItems"></app-breadcrumb>
 
   <div class="training-card">
-    <h3 class="card-title">Training Details</h3>
+    <h3 class="card-title">{{'Training Details'|translate}}</h3>
 
     <div class="details-grid">
       <div class="detail-item">
-        <span class="label">Training Title:</span>
+        <span class="label">{{'Training Title'|translate}}:</span>
         <span class="value">{{ trainingDetails?.trainingTitle || "-" }}</span>
       </div>
       <div class="detail-item">
-        <span class="label">Scheme:</span>
+        <span class="label">{{'Scheme'|translate}}:</span>
         <span class="value">{{ trainingDetails?.scheme || "-" }}</span>
       </div>
 
       <div class="detail-item">
-        <span class="label">Trainer Name:</span>
+        <span class="label">{{'Trainer Name'|translate}}:</span>
         <span class="value">{{ trainingDetails?.trainerName || "-" }}</span>
       </div>
       <div class="detail-item">
-        <span class="label">trainingDetails Institute:</span>
+        <span class="label">{{'Training Institute Name'|translate}}:</span>
         <span class="value">{{
           trainingDetails?.trainingInstituteName || "-"
         }}</span>
       </div>
 
       <div class="detail-item">
-        <span class="label">Venue State:</span>
+        <span class="label">{{'Venue State'|translate}}:</span>
         <span class="value">{{ trainingDetails?.venueState || "-" }}</span>
       </div>
       <div class="detail-item">
-        <span class="label">Venue District:</span>
+        <span class="label">{{'Venue District'|translate}}:</span>
         <span class="value">{{ trainingDetails?.venueDistrict || "-" }}</span>
       </div>
 
       <div class="detail-item">
-        <span class="label">Venue Block:</span>
+        <span class="label">{{'Venue Block'|translate}}:</span>
         <span class="value">{{ trainingDetails?.venueBlock || "-" }}</span>
       </div>
       <div class="detail-item">
-        <span class="label">Training Date:</span>
+        <span class="label">{{'Training Date'|translate}}:</span>
         <span class="value">{{ trainingDetails?.trainingDate }}</span>
       </div>
 
       <div class="detail-item">
-        <span class="label">Duration:</span>
+        <span class="label">{{'Duration'|translate}}:</span>
         <span class="value">{{ trainingDetails?.duration || "-" }}</span>
       </div>
       <div class="detail-item">
-        <span class="label">Duration Type:</span>
+        <span class="label">{{'Duration Type'|translate}}:</span>
         <span class="value">{{ trainingDetails?.durationType || "-" }}</span>
       </div>
 
       <div class="detail-item">
-        <span class="label">Mode of Training:</span>
+        <span class="label">{{'Mode of Training'|translate}}:</span>
         <span class="value">{{ trainingDetails?.modeOfTraining || "-" }}</span>
       </div>
       <div class="detail-item">
-        <span class="label">Type of Training:</span>
+        <span class="label">{{'Type of Training'|translate}}:</span>
         <span class="value">{{ trainingDetails?.trainingType || "-" }}</span>
       </div>
     </div>
 
     <div class="detail-item full-width">
-      <span class="label">About Training:</span>
+      <span class="label">{{'About Training'|translate}}:</span>
       <p class="value about">
         {{ trainingDetails?.trainingDescription || "-" }}
       </p>
@@ -73,7 +73,7 @@
   <!-- Header Section -->
   <div class="header-section">
     <div class="header-left">
-      <h1 class="page-title">Manual Training Upload</h1>
+      <h1 class="page-title">{{'Manual Training Upload'|translate}}</h1>
     </div>
     <div class="header-right">
       <button
@@ -82,7 +82,7 @@
         (click)="openAddModal(false)"
       >
         <i class="bi bi-plus"></i>
-        New Row
+        {{'New Row'|translate}}
       </button>
     </div>
   </div>
@@ -105,7 +105,7 @@
       class="btn btn-primary btn-lg"
       (click)="submitTraineesData()"
     >
-      Submit for Verification
+      {{'Submit for Verification'|translate}}
     </button>
   </div>
 </div>
@@ -122,7 +122,7 @@
     <div class="modal-content">
       <div class="modal-header">
         <h5 class="modal-title" id="addParticipantModalLabel">
-          {{ editingIndex === -1 ? "Add Participant" : "Update Participant" }}
+          {{ editingIndex === -1 ? "Add Participant" : "Update Participant" |translate}}
         </h5>
         <button
           type="button"
@@ -136,7 +136,7 @@
           <div class="row">
             <div class="col-md-4">
               <div class="mb-3">
-                <label for="name" class="form-label">Name <span class="text-danger">*</span></label>
+                <label for="name" class="form-label">{{'Name'|translate}} <span class="text-danger">*</span></label>
                 <input
                   type="text"
                   class="form-control"
@@ -146,34 +146,34 @@
                   placeholder="Enter Name"
                 />
                 <div class="invalid-feedback" *ngIf="participantForm.get('name')?.invalid && participantForm.get('name')?.touched">
-                  <div *ngIf="participantForm.get('name')?.errors?.['required']">Name is required.</div>
-                  <div *ngIf="participantForm.get('name')?.errors?.['minlength']">Name must be at least 2 characters long.</div>
-                  <div *ngIf="participantForm.get('name')?.errors?.['maxlength']">Name cannot exceed 50 characters.</div>
-                  <div *ngIf="participantForm.get('name')?.errors?.['pattern']">Name can only contain letters and spaces.</div>
+                  <div *ngIf="participantForm.get('name')?.errors?.['required']">{{'Name is required.'|translate}}</div>
+                  <div *ngIf="participantForm.get('name')?.errors?.['minlength']">{{'Name must be at least 2 characters long.'|translate}}</div>
+                  <div *ngIf="participantForm.get('name')?.errors?.['maxlength']">{{'Name cannot exceed 50 characters.'|translate}}</div>
+                  <div *ngIf="participantForm.get('name')?.errors?.['pattern']">{{'Name can only contain letters and spaces.'|translate}}</div>
                 </div>
               </div>
             </div>
             <div class="col-md-4">
               <div class="mb-3">
-                <label for="gender" class="form-label">Gender <span class="text-danger">*</span></label>
-                <select 
-                  class="form-select" 
+                <label for="gender" class="form-label">{{'Gender'|translate}} <span class="text-danger">*</span></label>
+                <select
+                  class="form-select"
                   [class.is-invalid]="participantForm.get('gender')?.invalid && participantForm.get('gender')?.touched"
-                  id="gender" 
+                  id="gender"
                   formControlName="gender">
-                  <option value="" disabled>Select Gender</option>
-                  <option value="Male">Male</option>
-                  <option value="Female">Female</option>
-                  <option value="Other">Other</option>
+                  <option value="" disabled>{{'Select Gender'|translate}}</option>
+                  <option value="Male">{{'Male'|translate}}</option>
+                  <option value="Female">{{'Female'|translate}}</option>
+                  <option value="Other">{{'Other'|translate}}</option>
                 </select>
                 <div class="invalid-feedback" *ngIf="participantForm.get('gender')?.invalid && participantForm.get('gender')?.touched">
-                  <div *ngIf="participantForm.get('gender')?.errors?.['required']">Gender is required.</div>
+                  <div *ngIf="participantForm.get('gender')?.errors?.['required']">{{'Gender is required.'|translate}}</div>
                 </div>
               </div>
             </div>
             <div class="col-md-4">
               <div class="mb-3">
-                <label for="age" class="form-label">Age <span class="text-danger">*</span></label>
+                <label for="age" class="form-label">{{'Age'|translate}} <span class="text-danger">*</span></label>
                 <input
                   type="number"
                   class="form-control"
@@ -183,10 +183,10 @@
                   placeholder="Enter Age"
                 />
                 <div class="invalid-feedback" *ngIf="participantForm.get('age')?.invalid && participantForm.get('age')?.touched">
-                  <div *ngIf="participantForm.get('age')?.errors?.['required']">Age is required.</div>
-                  <div *ngIf="participantForm.get('age')?.errors?.['min']">Age must be at least 1 year.</div>
-                  <div *ngIf="participantForm.get('age')?.errors?.['max']">Age cannot exceed 120 years.</div>
-                  <div *ngIf="participantForm.get('age')?.errors?.['pattern']">Age must be a valid number.</div>
+                  <div *ngIf="participantForm.get('age')?.errors?.['required']">{{'Age is required.'|translate}}</div>
+                  <div *ngIf="participantForm.get('age')?.errors?.['min']">{{'Age must be at least 1 year.'|translate}}</div>
+                  <div *ngIf="participantForm.get('age')?.errors?.['max']">{{'Age cannot exceed 120 years.'|translate}}</div>
+                  <div *ngIf="participantForm.get('age')?.errors?.['pattern']">{{'Age must be a valid number.'|translate}}</div>
                 </div>
               </div>
             </div>
@@ -194,7 +194,7 @@
           <div class="row">
             <div class="col-md-6">
               <div class="mb-3">
-                <label for="contactNumber" class="form-label">Contact Number <span class="text-danger">*</span></label>
+                <label for="contactNumber" class="form-label">{{'Contact Number'|translate}} <span class="text-danger">*</span></label>
                 <input
                   type="text"
                   class="form-control"
@@ -206,15 +206,15 @@
                   (keypress)="allowOnlyNumbers($event)"
                 />
                 <div class="invalid-feedback" *ngIf="participantForm.get('contactNumber')?.invalid && participantForm.get('contactNumber')?.touched">
-                  <div *ngIf="participantForm.get('contactNumber')?.errors?.['required']">Contact number is required.</div>
-                  <div *ngIf="participantForm.get('contactNumber')?.errors?.['pattern']">Contact number must be exactly 10 digits.</div>
-                  <div *ngIf="participantForm.get('contactNumber')?.errors?.['minlength'] || participantForm.get('contactNumber')?.errors?.['maxlength']">Contact number must be exactly 10 digits.</div>
+                  <div *ngIf="participantForm.get('contactNumber')?.errors?.['required']">{{'Contact number is required.'|translate}}</div>
+                  <div *ngIf="participantForm.get('contactNumber')?.errors?.['pattern']">{{'Contact number must be in digits.'|translate}}</div>
+                  <div *ngIf="participantForm.get('contactNumber')?.errors?.['minlength'] || participantForm.get('contactNumber')?.errors?.['maxlength']">{{'Contact number must be exactly 10 digits.'|translate}}</div>
                 </div>
               </div>
             </div>
             <div class="col-md-6">
               <div class="mb-3">
-                <label for="fatherName" class="form-label">Father's Name <span class="text-danger">*</span></label>
+                <label for="fatherName" class="form-label">{{"Father's Name"|translate}} <span class="text-danger">*</span></label>
                 <input
                   type="text"
                   class="form-control"
@@ -224,10 +224,10 @@
                   placeholder="Enter Father's Name"
                 />
                 <div class="invalid-feedback" *ngIf="participantForm.get('fatherName')?.invalid && participantForm.get('fatherName')?.touched">
-                  <div *ngIf="participantForm.get('fatherName')?.errors?.['required']">Father's name is required.</div>
-                  <div *ngIf="participantForm.get('fatherName')?.errors?.['minlength']">Father's name must be at least 2 characters long.</div>
-                  <div *ngIf="participantForm.get('fatherName')?.errors?.['maxlength']">Father's name cannot exceed 50 characters.</div>
-                  <div *ngIf="participantForm.get('fatherName')?.errors?.['pattern']">Father's name can only contain letters and spaces.</div>
+                  <div *ngIf="participantForm.get('fatherName')?.errors?.['required']">{{"Father's name is required."|translate}}</div>
+                  <div *ngIf="participantForm.get('fatherName')?.errors?.['minlength']">{{"Father's name must be at least 2 characters long."|translate}}</div>
+                  <div *ngIf="participantForm.get('fatherName')?.errors?.['maxlength']">{{"Father's name cannot exceed 50 characters."|translate}}</div>
+                  <div *ngIf="participantForm.get('fatherName')?.errors?.['pattern']">{{"Father's name can only contain letters and spaces."|translate}}</div>
                 </div>
               </div>
             </div>
@@ -235,7 +235,7 @@
           <div class="row">
             <div class="col-6">
               <div class="mb-3">
-                <label for="email" class="form-label">Email</label>
+                <label for="email" class="form-label">{{'Email'|translate}}</label>
                 <input
                   type="email"
                   class="form-control"
@@ -245,13 +245,13 @@
                   placeholder="Enter Email"
                 />
                 <div class="invalid-feedback" *ngIf="participantForm.get('email')?.invalid && participantForm.get('email')?.touched">
-                  <div *ngIf="participantForm.get('email')?.errors?.['email']">Please enter a valid email address.</div>
+                  <div *ngIf="participantForm.get('email')?.errors?.['email']">{{'Please enter a valid email address.'|translate}}</div>
                 </div>
               </div>
             </div>
             <div class="col-6">
               <div class="mb-3">
-                <label for="dob" class="form-label">Date of Birth <span class="text-danger">*</span></label>
+                <label for="dob" class="form-label">{{'Date of Birth'|translate}} <span class="text-danger">*</span></label>
                 <input
                   type="date"
                   class="form-control"
@@ -260,9 +260,9 @@
                   formControlName="dob"
                 />
                 <div class="invalid-feedback" *ngIf="participantForm.get('dob')?.invalid && participantForm.get('dob')?.touched">
-                  <div *ngIf="participantForm.get('dob')?.errors?.['required']">Date of birth is required.</div>
-                  <div *ngIf="participantForm.get('dob')?.errors?.['futureDate']">Date of birth cannot be in the future.</div>
-                  <div *ngIf="participantForm.get('dob')?.errors?.['tooOld']">Date of birth cannot be more than 120 years ago.</div>
+                  <div *ngIf="participantForm.get('dob')?.errors?.['required']">{{'Date of birth is required.'|translate}}</div>
+                  <div *ngIf="participantForm.get('dob')?.errors?.['futureDate']">{{"Date of birth cannot be the future date."|translate}}</div>
+                  <div *ngIf="participantForm.get('dob')?.errors?.['tooOld']">{{'Date of birth cannot be more than 120 years ago.'|translate}}</div>
                 </div>
               </div>
             </div>
@@ -271,7 +271,7 @@
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
-          Cancel
+          {{'Cancel'|translate}}
         </button>
 
         <button
@@ -280,7 +280,7 @@
           class="btn btn-primary"
           (click)="addParticipant()"
         >
-          Submit
+          {{'Submit'|translate}}
         </button>
 
         <button
@@ -289,7 +289,7 @@
           class="btn btn-warning"
           (click)="updateParticipant()"
         >
-          Update
+          {{'Update'|translate}}
         </button>
       </div>
     </div>
@@ -308,7 +308,7 @@
     <div class="modal-content rounded-4 shadow">
       <div class="modal-header bg-primary text-white rounded-top-4">
         <h5 class="modal-title text-white" id="viewParticipantLabel">
-          Participant Details
+          {{'Participant Details'|translate}}
         </h5>
         <button
           type="button"
@@ -318,17 +318,17 @@
         ></button>
       </div>
       <div class="modal-body p-4">
-        <p><strong>Name:</strong> {{ selectedParticipant?.name }}</p>
-        <p><strong>Age:</strong> {{ selectedParticipant?.age }}</p>
-        <p><strong>Date of Birth :</strong> {{ selectedParticipant?.dob }}</p>
-        <p><strong>Gender:</strong> {{ selectedParticipant?.gender }}</p>
+        <p><strong>{{'Name'|translate}}:</strong> {{ selectedParticipant?.name }}</p>
+        <p><strong>{{'Age'|translate}}:</strong> {{ selectedParticipant?.age }}</p>
+        <p><strong>{{'Date of Birth'|translate}} :</strong> {{ selectedParticipant?.dob }}</p>
+        <p><strong>{{'Gender'|translate}}:</strong> {{ selectedParticipant?.gender }}</p>
         <p>
-          <strong>Contact:</strong> {{ selectedParticipant?.contactNumber }}
+          <strong>{{'Contact'|translate}}:</strong> {{ selectedParticipant?.contactNumber }}
         </p>
         <p>
-          <strong>Father's Name:</strong> {{ selectedParticipant?.fatherName }}
+          <strong>{{"Father's Name"|translate}}:</strong> {{ selectedParticipant?.fatherName }}
         </p>
-        <p><strong>Email:</strong> {{ selectedParticipant?.email }}</p>
+        <p><strong>{{'Email'|translate}}:</strong> {{ selectedParticipant?.email }}</p>
       </div>
       <div class="modal-footer">
         <button
@@ -336,7 +336,7 @@
           class="btn btn-outline-secondary"
           data-bs-dismiss="modal"
         >
-          Close
+          {{'Close'|translate}}
         </button>
       </div>
     </div>
@@ -348,6 +348,6 @@
     role="status"
     style="width: 3rem; height: 3rem"
   >
-    <span class="visually-hidden">Loading...</span>
+    <span class="visually-hidden">{{'Loading...'|translate}}</span>
   </div>
 </div>

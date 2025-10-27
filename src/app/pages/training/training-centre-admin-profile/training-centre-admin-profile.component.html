@@ -4,7 +4,7 @@
 
     <div class="profile-card">
       <div class="card-header">
-        <h2 class="card-title">Training Institute Head Registration</h2>
+        <h2 class="card-title">{{'Training Institute Head Registration'|translate}}</h2>
         <p class="card-subtitle">
         </p>
       </div>
@@ -16,12 +16,12 @@
             class="form-section"
             *ngIf="userRole == 1 || userRole == 5 || userRole == 6"
           >
-            <h3 class="section-title">Basic Information</h3>
+            <h3 class="section-title">{{'Basic Information'|translate}}</h3>
 
             <div class="form-row">
               <div class="form-group">
                 <label for="trainingInstituteName"
-                  >Training Institute Name<span class="required">*</span></label
+                  >{{'Training Institute Name'|translate}}<span class="required">*</span></label
                 >
                 <input
                   type="text"
@@ -43,17 +43,17 @@
                 >
                   <span
                     *ngIf="profileForm.get('trainingInstituteName')?.errors?.['required']"
-                    >Training institute name is required</span
+                    >{{'Training institute name is required'|translate}}</span
                   >
                   <span
                     *ngIf="profileForm.get('trainingInstituteName')?.errors?.['minlength']"
-                    >Training institute name must be at least 3 characters</span
+                    >{{'Training institute name must be at least 3 characters'|translate}}</span
                   >
                 </div>
               </div>
               <div class="form-group">
                 <label for="trainingInstituteRegistration"
-                  >Registration Number<span class="required">*</span></label
+                  >{{'Registration Number'|translate}}<span class="required">*</span></label
                 >
                 <input
                   type="text"
@@ -75,11 +75,11 @@
                 >
                   <span
                     *ngIf="profileForm.get('trainingInstituteRegistration')?.errors?.['required']"
-                    >Registration number is required</span
+                    >{{'Registration number is required'|translate}}</span
                   >
                   <span
                     *ngIf="profileForm.get('trainingInstituteRegistration')?.errors?.['minlength']"
-                    >Registration number must be at least 3 characters</span
+                    >{{'Registration number must be at least 3 characters'|translate}}</span
                   >
                 </div>
               </div>
@@ -88,7 +88,7 @@
             <div class="form-row">
               <div class="form-group">
                 <label for="trainingInstituteExpiry">
-                  Registration Validity
+                  {{'Registration Validity'|translate}}
                 </label>
                 <input
                   type="date"
@@ -101,7 +101,7 @@
               </div>
               <div class="form-group">
                 <label for="instituteType"
-                  >Institute Type<span class="required">*</span></label
+                  >{{'Institute Type'|translate}}<span class="required">*</span></label
                 >
                 <select
                   id="instituteType"
@@ -112,7 +112,7 @@
                     profileForm.get('instituteType')?.touched
                   "
                 >
-                  <option value="" disabled>Select Institute Type</option>
+                  <option value="" disabled>{{'Select Institute Type'|translate}}</option>
                   <option
                     *ngFor="let type of instituteTypes"
                     [value]="type.value"
@@ -129,7 +129,7 @@
                 >
                   <span
                     *ngIf="profileForm.get('instituteType')?.errors?.['required']"
-                    >Institute type is required</span
+                    >{{'Institute type is required'|translate}}</span
                   >
                 </div>
               </div>
@@ -143,7 +143,7 @@
             >
               <div class="form-group">
                 <label for="instituteType"
-                  >Other Organizations<span class="required">*</span></label
+                  >{{'Other Organizations'|translate}}<span class="required">*</span></label
                 >
                 <select
                   id="organization"
@@ -168,7 +168,7 @@
                 >
                   <span
                     *ngIf="profileForm.get('organization')?.errors?.['required']"
-                    >Organization Name is required</span
+                    >{{'Organization Name is required'|translate}}</span
                   >
                 </div>
               </div>
@@ -201,14 +201,14 @@
                   "
                 >
                   <span *ngIf="profileForm.get('state')?.errors?.['required']"
-                    >State is required</span
+                    >{{'State is required'|translate}}</span
                   >
                 </div>
               </div>
 
               <div class="form-group">
                 <label for="district"
-                  >District<span class="required">*</span></label
+                  >{{'District'|translate}}<span class="required">*</span></label
                 >
                 <select
                   id="district"
@@ -228,7 +228,7 @@
                         ? "Loading districts..."
                         : profileForm.get("state")?.value
                         ? "Select District"
-                        : "Select State First"
+                        : "Select State First" |translate
                     }}
                   </option>
                   <option
@@ -247,7 +247,7 @@
                 >
                   <span
                     *ngIf="profileForm.get('district')?.errors?.['required']"
-                    >District is required</span
+                    >{{'District is required'|translate}}</span
                   >
                 </div>
               </div>
@@ -258,11 +258,11 @@
             class="form-section"
             *ngIf="userRole == 1 || userRole == 5 || userRole == 6"
           >
-            <h3 class="section-title">Location Information</h3>
+            <h3 class="section-title">{{'Location Information'|translate}}</h3>
 
             <div class="form-group full-width">
               <label for="address"
-                >Address<span class="required">*</span></label
+                >{{'Address'|translate}}<span class="required">*</span></label
               >
               <textarea
                 id="address"
@@ -283,10 +283,10 @@
                 "
               >
                 <span *ngIf="profileForm.get('address')?.errors?.['required']"
-                  >Address is required</span
+                  >{{'Address is required'|translate}}</span
                 >
                 <span *ngIf="profileForm.get('address')?.errors?.['minlength']"
-                  >Address must be at least 10 characters</span
+                  >{{'Address must be at least 10 characters'|translate}}</span
                 >
               </div>
             </div>
@@ -294,7 +294,7 @@
             <div class="form-row">
               <div class="form-group">
                 <label for="latitude"
-                  >Latitude<span class="required">*</span></label
+                  >{{'Latitude'|translate}}<span class="required">*</span></label
                 >
                 <input
                   type="number"
@@ -317,18 +317,18 @@
                 >
                   <span
                     *ngIf="profileForm.get('latitude')?.errors?.['required']"
-                    >Latitude is required</span
+                    >{{'Latitude is required'|translate}}</span
                   >
                   <span
                     *ngIf="profileForm.get('latitude')?.errors?.['min'] || profileForm.get('latitude')?.errors?.['max']"
-                    >Latitude must be between -90 and 90</span
+                    >{{'Latitude must be between -90 and 90'|translate}}</span
                   >
                 </div>
               </div>
 
               <div class="form-group">
                 <label for="longitude"
-                  >Longitude<span class="required">*</span></label
+                  >{{'Longitude'|translate}}<span class="required">*</span></label
                 >
                 <input
                   type="number"
@@ -351,11 +351,11 @@
                 >
                   <span
                     *ngIf="profileForm.get('longitude')?.errors?.['required']"
-                    >Longitude is required</span
+                    >{{'Longitude is required'|translate}}</span
                   >
                   <span
                     *ngIf="profileForm.get('longitude')?.errors?.['min'] || profileForm.get('longitude')?.errors?.['max']"
-                    >Longitude must be between -180 and 180</span
+                    >{{'Longitude must be between -180 and 180'|translate}}</span
                   >
                 </div>
               </div>
@@ -364,12 +364,12 @@
 
           <!-- Contact Information Section -->
           <div class="form-section" *ngIf="userRole == 5 || userRole == 6">
-            <h3 class="section-title">Contact Information</h3>
+            <h3 class="section-title">{{'Contact Information'|translate}}</h3>
 
             <div class="form-row">
               <div class="form-group">
                 <label for="contactPersonName"
-                  >Contact Person Name<span class="required">*</span></label
+                  >{{'Contact Person Name'|translate}}<span class="required">*</span></label
                 >
                 <input
                   type="text"
@@ -391,18 +391,18 @@
                 >
                   <span
                     *ngIf="profileForm.get('contactPersonName')?.errors?.['required']"
-                    >Contact person name is required</span
+                    >{{'Contact person name is required'|translate}}</span
                   >
                   <span
                     *ngIf="profileForm.get('contactPersonName')?.errors?.['minlength']"
-                    >Name must be at least 2 characters</span
+                    >{{'Name must be at least 2 characters'|translate}}</span
                   >
                 </div>
               </div>
 
               <div class="form-group">
                 <label for="designation"
-                  >Designation<span class="required">*</span></label
+                  >{{'Designation'|translate}}<span class="required">*</span></label
                 >
                 <input
                   type="text"
@@ -424,7 +424,7 @@
                 >
                   <span
                     *ngIf="profileForm.get('designation')?.errors?.['required']"
-                    >Designation is required</span
+                    >{{'Designation is required'|translate}}</span
                   >
                 </div>
               </div>
@@ -433,7 +433,7 @@
             <div class="form-row">
               <div class="form-group">
                 <label for="contactNumber"
-                  >Contact Number<span class="required">*</span></label
+                  >{{'Contact Number'|translate}}<span class="required">*</span></label
                 >
                 <input
                   type="tel"
@@ -455,18 +455,18 @@
                 >
                   <span
                     *ngIf="profileForm.get('contactNumber')?.errors?.['required']"
-                    >Contact number is required</span
+                    >{{'Contact number is required'|translate}}</span
                   >
                   <span
                     *ngIf="profileForm.get('contactNumber')?.errors?.['pattern']"
-                    >Please enter a valid 10-digit phone number</span
+                    >{{'Please enter a valid 10-digit phone number'|translate}}</span
                   >
                 </div>
               </div>
 
               <div class="form-group">
                 <label for="emailId"
-                  >Email ID<span class="required">*</span></label
+                  >{{'Email ID'|translate}}<span class="required">*</span></label
                 >
                 <input
                   type="email"
@@ -487,10 +487,10 @@
                   "
                 >
                   <span *ngIf="profileForm.get('emailId')?.errors?.['required']"
-                    >Email is required</span
+                    >{{'Email is required'|translate}}</span
                   >
                   <span *ngIf="profileForm.get('emailId')?.errors?.['email']"
-                    >Please enter a valid email</span
+                    >{{'Please enter a valid email'|translate}}</span
                   >
                 </div>
               </div>
@@ -499,12 +499,12 @@
 
           <!-- Security Information Section -->
           <div class="form-section" *ngIf="userRole == 5 || userRole == 6">
-            <h3 class="section-title">Security Information</h3>
+            <h3 class="section-title">{{'Security Information'|translate}}</h3>
 
             <div class="form-row">
               <div class="form-group">
                 <label for="password"
-                  >Password<span class="required">*</span></label
+                  >{{'Password'|translate}}<span class="required">*</span></label
                 >
                 <div class="password-input-container">
                   <input
@@ -537,22 +537,21 @@
                 >
                   <span
                     *ngIf="profileForm.get('password')?.errors?.['required']"
-                    >Password is required</span
+                    >{{'Password is required'|translate}}</span
                   >
                   <span
                     *ngIf="profileForm.get('password')?.errors?.['minlength']"
-                    >Password must be at least 8 characters</span
+                    >{{'Password must be at least 8 characters'|translate}}</span
                   >
                   <span *ngIf="profileForm.get('password')?.errors?.['pattern']"
-                    >Password must contain uppercase, lowercase, number and
-                    special character</span
+                    >{{'Password must contain uppercase, lowercase, number and special character'|translate}}</span
                   >
                 </div>
               </div>
 
               <div class="form-group">
                 <label for="confirmPassword"
-                  >Confirm Password<span class="required">*</span></label
+                  >{{'Confirm Password'|translate}}<span class="required">*</span></label
                 >
                 <div class="password-input-container">
                   <input
@@ -591,10 +590,10 @@
                 >
                   <span
                     *ngIf="profileForm.get('confirmPassword')?.errors?.['required']"
-                    >Confirm password is required</span
+                    >{{'Confirm password is required'|translate}}</span
                   >
                   <span *ngIf="profileForm.errors?.['passwordMismatch']"
-                    >Passwords do not match</span
+                    >{{'Passwords do not match'|translate}}</span
                   >
                 </div>
               </div>
@@ -604,12 +603,12 @@
           <!-- Security Document Upload Section -->
           <div class="form-section" *ngIf="userRole == 1">
             <h3 class="section-title">
-              Registration Document<span class="required">*</span>
+              {{'Registration Document'|translate}}<span class="required">*</span>
             </h3>
 
             <div class="image-upload-container">
               <label
-                > Registration Document of Training Institute<span class="required"
+                > {{'Registration Document of Training Institute'|translate}}<span class="required"
                   >*</span
                 ></label
               >
@@ -623,8 +622,8 @@
               >
                 <div *ngIf="!selectedDocPreview" class="upload-placeholder">
                   <i class="fas fa-cloud-upload-alt upload-icon"></i>
-                  <p>Drag and drop the document here or click to select</p>
-                  <span class="file-types">PDF up to 5MB</span>
+                  <p>{{'Drag and drop the document here or click to select'|translate}}</p>
+                  <span class="file-types">{{'PDF up to  5MB'|translate}}</span>
                 </div>
                 <div *ngIf="selectedDocPreview">
                   <img
@@ -653,12 +652,12 @@
           <!-- Image Upload Section -->
           <div class="form-section" *ngIf="userRole == 1">
             <h3 class="section-title">
-              Institute Image<span class="required">*</span>
+              {{'Institute Image'|translate}}<span class="required">*</span>
             </h3>
 
             <div class="image-upload-container">
               <label
-                >Image of Training Institute<span class="required"
+                >{{'Image of Training Institute'|translate}}<span class="required"
                   >*</span
                 ></label
               >
@@ -672,8 +671,8 @@
               >
                 <div *ngIf="!selectedImagePreview" class="upload-placeholder">
                   <i class="fas fa-cloud-upload-alt upload-icon"></i>
-                  <p>Drag and drop an image here or click to select</p>
-                  <span class="file-types">PNG, JPG, JPEG up to 5MB</span>
+                  <p>{{'Drag and drop an image here or click to select'|translate}}</p>
+                  <span class="file-types">{{"PNG, JPG, JPEG up to 5MB"|translate}}</span>
                 </div>
                 <div *ngIf="selectedImagePreview" class="image-preview">
                   <img
@@ -707,7 +706,7 @@
               class="btn btn-secondary"
               (click)="onCancel()"
             >
-              Cancel
+              {{'Cancel'|translate}}
             </button>
             <button
               type="submit"
@@ -715,10 +714,10 @@
               [disabled]="isLoading || profileForm.invalid"
             >
               <span *ngIf="!isLoading">
-                <i class="fas fa-save me-2"></i>Create Profile
+                <i class="fas fa-save me-2"></i>{{'Create Profile'|translate}}
               </span>
               <span *ngIf="isLoading">
-                <i class="fas fa-spinner fa-spin me-2"></i>Creating...
+                <i class="fas fa-spinner fa-spin me-2"></i>{{'Creating...'|translate}}
               </span>
             </button>
           </div>

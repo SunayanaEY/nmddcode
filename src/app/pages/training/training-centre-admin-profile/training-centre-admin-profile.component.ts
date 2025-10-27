@@ -21,11 +21,14 @@ import {
 } from '../../../services/location.service';
 import { AdminService } from '../services/training-admin.service';
 import { AuthService } from '../../../services/auth.service';
+import { TranslateModule } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-training-centre-admin-profile',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, BreadcrumbComponent],
+  imports: [CommonModule, ReactiveFormsModule, BreadcrumbComponent,
+    TranslateModule
+  ],
   templateUrl: './training-centre-admin-profile.component.html',
   styleUrls: ['./training-centre-admin-profile.component.css'],
 })

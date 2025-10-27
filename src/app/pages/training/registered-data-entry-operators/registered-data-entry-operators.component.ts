@@ -4,11 +4,12 @@ import { BreadcrumbComponent, BreadcrumbItem } from '../../../components/breadcr
 import { TableComponent, TableColumn, TableAction } from '../../../components/table/table.component';
 import { DataEntryOperatorService } from '../services/data-entry-operator.service';
 import { DataEntryOperator } from '../models/data-entry-operator.model';
+import { TranslateModule } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-registered-data-entry-operators',
   standalone: true,
-  imports: [CommonModule, BreadcrumbComponent, TableComponent],
+  imports: [CommonModule, BreadcrumbComponent, TableComponent,TranslateModule],
   templateUrl: './registered-data-entry-operators.component.html',
   styleUrl: './registered-data-entry-operators.component.css'
 })
@@ -83,7 +84,7 @@ export class RegisteredDataEntryOperatorsComponent implements OnInit {
 
   onActionClick(event: { action: string; item: any; index: number }): void {
     const { action, item } = event;
-    
+
     switch (action) {
       case 'view':
         this.viewOperatorDetails(item);
@@ -125,7 +126,7 @@ export class RegisteredDataEntryOperatorsComponent implements OnInit {
   getRecentAdditions(): number {
     const oneWeekAgo = new Date();
     oneWeekAgo.setDate(oneWeekAgo.getDate() - 7);
-    
+
     return this.tableData.filter(operator => {
       const createdDate = new Date(operator.createdAt);
       return createdDate >= oneWeekAgo;
