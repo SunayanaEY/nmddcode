@@ -42,6 +42,13 @@ export class TrainingCentreAdminProfileComponent implements OnInit {
   isDragOverDoc = false;
   showPassword = false;
   showConfirmPassword = false;
+
+  // Password validation properties
+  hasMinLength = false;
+  hasUppercase = false;
+  hasLowercase = false;
+  hasNumber = false;
+  hasSpecialChar = false;
   isLoading = false;
   userRole: any;
   instituteData: any;
@@ -195,6 +202,10 @@ export class TrainingCentreAdminProfileComponent implements OnInit {
     this.loadStates();
     if (this.userRole == 5 || this.userRole == 6) {
       this.initializeForm();
+      // Subscribe to password field changes for real-time validation
+      this.profileForm.get('password')?.valueChanges.subscribe(password => {
+        this.validatePassword(password || '');
+      });
     }
   }
   getRole() {
@@ -679,5 +690,16 @@ export class TrainingCentreAdminProfileComponent implements OnInit {
    */
   onCancel() {
     this.router.navigate(['/admin/training-module']);
+  }
+
+  /**
+   * Validate password and update validation flags
+   */
+  validatePassword(password: string) {
+    this.hasMinLength = password.length >= 8;
+    this.hasUppercase = /[A-Z]/.test(password);
+    this.hasLowercase = /[a-z]/.test(password);
+    this.hasNumber = /\d/.test(password);
+    this.hasSpecialChar = /[@$!%*?&]/.test(password);
   }
 }

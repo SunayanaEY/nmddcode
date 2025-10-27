@@ -28,6 +28,13 @@ export class ChangePasswordComponent {
   errorMessage = '';
   isLoading = false;
 
+  // Password validation properties
+  hasMinLength = false;
+  hasUppercase = false;
+  hasLowercase = false;
+  hasNumber = false;
+  hasSpecialChar = false;
+
   constructor(
     private fb: FormBuilder,
     private toastr: ToastrService,
@@ -48,6 +55,13 @@ export class ChangePasswordComponent {
   ngOnInit(): void {
     this.route.queryParams.subscribe((params) => {
       this.type = params['type'];
+    });
+
+    // Subscribe to password changes for validation
+    setTimeout(() => {
+      this.resetPasswordForm.get('newPassword')?.valueChanges.subscribe((password) => {
+        this.validatePassword(password || '');
+      });
     });
   }
   togglePassword() {
@@ -96,5 +110,16 @@ export class ChangePasswordComponent {
       const control = formGroup.get(key);
       control?.markAsTouched();
     });
+  }
+
+  /**
+   * Validate password and update validation flags
+   */
+  validatePassword(password: string) {
+    this.hasMinLength = !!password && password.length >= 8;
+    this.hasUppercase = !!password && /[A-Z]/.test(password);
+    this.hasLowercase = !!password && /[a-z]/.test(password);
+    this.hasNumber = !!password && /\d/.test(password);
+    this.hasSpecialChar = !!password && /[@$!%*?&]/.test(password);
   }
 }

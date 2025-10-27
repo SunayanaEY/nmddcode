@@ -1,4 +1,4 @@
-import { Component, Output, EventEmitter } from '@angular/core';
+import { Component, Output, EventEmitter, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import {
   FormBuilder,
@@ -26,7 +26,7 @@ import {
   templateUrl: './user-profile-creation.component.html',
   styleUrls: ['./user-profile-creation.component.css'],
 })
-export class UserProfileCreationComponent {
+export class UserProfileCreationComponent implements OnInit {
   @Output() formSubmissionSuccess = new EventEmitter<void>();
   
   profileForm: FormGroup;
@@ -35,6 +35,13 @@ export class UserProfileCreationComponent {
     { label: 'Training Module', url: '/admin/training-module' },
     { label: 'Training Manager Profile Creation', url: '' },
   ];
+
+  // Password validation properties
+  hasMinLength = false;
+  hasUppercase = false;
+  hasLowercase = false;
+  hasNumber = false;
+  hasSpecialChar = false;
 
   constructor(
     private router: Router,
@@ -56,6 +63,15 @@ export class UserProfileCreationComponent {
       },
       { validators: this.passwordMatchValidator }
     );
+  }
+
+  ngOnInit(): void {
+    // Subscribe to password field changes for real-time validation
+    setTimeout(() => {
+      this.profileForm.get('password')?.valueChanges.subscribe((password) => {
+        this.validatePassword(password || '');
+      });
+    }, 0);
   }
 
   onSubmit() {
@@ -154,5 +170,16 @@ export class UserProfileCreationComponent {
       this.profileForm.hasError('passwordMismatch') &&
       this.profileForm.get('confirmPassword')?.touched
     );
+  }
+
+  /**
+   * Validate password against policy requirements
+   */
+  private validatePassword(password: string): void {
+    this.hasMinLength = password.length >= 8;
+    this.hasUppercase = /[A-Z]/.test(password);
+    this.hasLowercase = /[a-z]/.test(password);
+    this.hasNumber = /[0-9]/.test(password);
+    this.hasSpecialChar = /[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]/.test(password);
   }
 }

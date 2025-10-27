@@ -350,6 +350,80 @@
   flex: 1;
 }
 
+/* Password Policy Styles */
+.password-policy {
+  margin-top: 12px;
+  padding: 0;
+  background: transparent;
+  border: none;
+  font-size: 14px;
+}
+
+.password-policy-title {
+  font-weight: 500;
+  color: #6c757d;
+  margin-bottom: 8px;
+  font-size: 13px;
+}
+
+.password-requirements {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.password-requirements li {
+  display: flex;
+  align-items: center;
+  font-size: 13px;
+  color: #6c757d;
+}
+
+.password-requirements .icon {
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  margin-right: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 4px;
+  font-weight: bold;
+  transition: all 0.2s ease;
+  background-color: #e9ecef;
+  color: #6c757d;
+}
+
+.password-requirements .icon.valid {
+  background-color: #28a745;
+  color: white;
+}
+
+.password-requirements .icon.invalid {
+  background-color: #dc3545;
+  color: white;
+}
+.fa-check,.fa-times
+{
+  font-size: 0.8rem !important;
+}
+.password-requirements .text {
+  color: #6c757d;
+  transition: color 0.2s ease;
+  font-size: 12px;
+}
+
+.password-requirements li.valid .text {
+  color: #28a745;
+}
+
+.password-requirements li.invalid .text {
+  color: #dc3545;
+}
+
 /* Responsive Design */
 @media (max-width: 768px) {
   .profile-creation-container {
