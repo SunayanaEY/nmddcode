@@ -82,7 +82,7 @@
               [disabled]="isLoadingStates || isStateAdmin"
             >
               <!-- <option value="null" selected disabled>Select State</option> -->
-              <option value="" selected>All States</option>
+              <option value="" selected>{{ "All States" | translate }}</option>
               <option *ngFor="let state of states" [value]="state.id">
                 {{ state.stateName }}
               </option>
@@ -103,7 +103,7 @@
               [disabled]="isLoadingDistricts || !selectedStateId"
             >
               <!-- <option value="null" selected disabled>Select District</option> -->
-              <option value="" selected>All Districts</option>
+              <option value="" selected>{{ "All Districts" | translate }}</option>
               <option *ngFor="let district of districts" [value]="district.id">
                 {{ district.districtName }}
               </option>
@@ -125,7 +125,7 @@
               formControlName="trainingInstituteId"
               [disabled]="isLoadingTrainingInstitutes"
             >
-              <option value="" selected>All Training Institutes</option>
+              <option value="" selected>{{ "All Training Institutes" | translate }}</option>
               <option
                 *ngFor="let institute of trainingInstitutes"
                 [value]="institute.id"
@@ -168,7 +168,7 @@
           <div class="spinner-border text-primary" role="status">
             <span class="visually-hidden">Loading dashboard data...</span>
           </div>
-          <p class="mt-2 text-muted">Loading dashboard statistics...</p>
+          <p class="mt-2 text-muted loading-text">{{ "Loading dashboard statistics..." | translate }}</p>
         </div>
 
         <!-- KPI Cards -->
@@ -183,13 +183,13 @@
                 <button
                   class="btn-download-new"
                   (click)="downloadKpiData('totalTrainingsConducted', $event)"
-                  title="Download Data"
+                  [title]="'Download Data' | translate"
                 >
                   <i class="fas fa-download"></i>
                 </button>
               </div>
               <div class="kpi-content">
-                <div class="kpi-title">Total Trainings Conducted</div>
+                <div class="kpi-title">{{ "TOTAL TRAININGS CONDUCTED" | translate }}</div>
                 <div class="kpi-value">
                   {{ getKpiCards()[0]?.value || "0" }}
                 </div>
@@ -210,7 +210,7 @@
                     "
                   ></i>
                   {{
-                    getKpiCards()[0]?.growth?.value || "0% from last Quarter"
+                    getKpiCards()[0]?.growth?.value || ("0% from last Quarter" | translate)
                   }}
                 </div>
               </div>
@@ -233,7 +233,7 @@
                 </button>
               </div>
               <div class="kpi-content">
-                <div class="kpi-title">Total Personnel Trained</div>
+                <div class="kpi-title">{{ "TOTAL PERSONNEL TRAINED" | translate }}</div>
                 <div class="kpi-value">
                   {{ getKpiCards()[1]?.value || "0" }}
                 </div>
@@ -254,7 +254,7 @@
                     "
                   ></i>
                   {{
-                    getKpiCards()[1]?.growth?.value || "0% from last Quarter"
+                    getKpiCards()[1]?.growth?.value || ("0% from last Quarter" | translate)
                   }}
                 </div>
               </div>
@@ -277,7 +277,7 @@
                 </button>
               </div>
               <div class="kpi-content">
-                <div class="kpi-title">Total Certificates Approved</div>
+                <div class="kpi-title">{{ "TOTAL CERTIFICATES APPROVED" | translate }}</div>
                 <div class="kpi-value">
                   {{ getKpiCards()[2]?.value || "0" }}
                 </div>
@@ -298,7 +298,7 @@
                     "
                   ></i>
                   {{
-                    getKpiCards()[2]?.growth?.value || "0% from last Quarter"
+                    getKpiCards()[2]?.growth?.value || ("0% from last Quarter" | translate)
                   }}
                 </div>
               </div>
@@ -321,7 +321,7 @@
                 </button>
               </div>
               <div class="kpi-content">
-                <div class="kpi-title">Total Certificates Downloaded</div>
+                <div class="kpi-title">{{ "Total Certificates Downloaded" | translate }}</div>
                 <div class="kpi-value">
                   {{ getKpiCards()[3]?.value || "0" }}
                 </div>
@@ -342,7 +342,7 @@
                     "
                   ></i>
                   {{
-                    getKpiCards()[3]?.growth?.value || "0% from last Quarter"
+                    getKpiCards()[3]?.growth?.value || ("0% from last Quarter" | translate)
                   }}
                 </div>
               </div>

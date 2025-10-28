@@ -2,12 +2,12 @@
   <!-- <app-breadcrumb [items]="breadcrumbItems"></app-breadcrumb> -->
 
   <div class="page-header">
-    <h2>{{ pageTitle }}</h2>
+    <h2>{{ 'Approve and Reject Trainings' | translate }}</h2>
   </div>
 
   <div style="height: 34px">
     <span>
-      <h3>Filter By</h3>
+      <h3>{{ 'ALL_TRAININGS.FILTER_BY' | translate }}</h3>
     </span>
     <br />
   </div>
@@ -104,9 +104,9 @@
   </div>
 
   <div class="trainings-summary">
-    <h4>All Trainings</h4>
+    <h4>{{ 'ALL_TRAININGS.ALL_TRAININGS' | translate }}</h4>
     <span class="badge bg-secondary"
-      >Total - {{ trainingsList.length }} Trainings</span
+      >{{ 'ALL_TRAININGS.TOTAL_TRAININGS' | translate:{ count: trainingsList.length } }}</span
     >
   </div>
 

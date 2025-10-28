@@ -30,6 +30,13 @@ export class HeaderComponent implements OnInit {
     if (userData) {
       this.user = JSON.parse(userData);
     }
+    
+    // Initialize language from localStorage
+    const savedLanguage = localStorage.getItem('language');
+    if (savedLanguage && (savedLanguage === 'en' || savedLanguage === 'hi')) {
+      this.currentLanguage = savedLanguage as 'en' | 'hi';
+    }
+    
     this.loadNotifications();
   }
 

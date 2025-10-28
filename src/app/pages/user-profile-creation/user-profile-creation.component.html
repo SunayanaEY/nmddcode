@@ -3,7 +3,7 @@
     <!-- Header Section -->
     <div class="form-header">
       <!-- <app-breadcrumb [items]="breadcrumbItems"></app-breadcrumb> -->
-      <h1 class="page-title">Training Manager Profile Creation</h1>
+      <h1 class="page-title">{{ 'USER_PROFILE_CREATION.PAGE_TITLE' | translate }}</h1>
     </div>
 
     <!-- Form Content -->
@@ -11,18 +11,18 @@
       <form [formGroup]="profileForm" (ngSubmit)="onSubmit()">
         <!-- Operator Details Section -->
         <div class="form-section">
-          <h3 class="section-title">Training Manager Details</h3>
+          <h3 class="section-title">{{ 'USER_PROFILE_CREATION.SECTION_TITLE' | translate }}</h3>
 
           <div class="form-row">
             <div class="form-group half-width">
               <label for="operatorName"
-                >Manager Name <span class="required">*</span></label
+                >{{ 'USER_PROFILE_CREATION.MANAGER_NAME' | translate }} <span class="required">*</span></label
               >
               <input
                 type="text"
                 id="operatorName"
                 formControlName="operatorName"
-                placeholder="Enter the Manager Name here"
+                [placeholder]="'USER_PROFILE_CREATION.MANAGER_NAME_PLACEHOLDER' | translate"
                 class="form-control"
                 [class.is-invalid]="
                   profileForm.get('operatorName')?.invalid &&
@@ -36,18 +36,18 @@
                 "
                 class="invalid-feedback"
               >
-                Training Manager name is required
+                {{ 'USER_PROFILE_CREATION.MANAGER_NAME_REQUIRED' | translate }}
               </div>
             </div>
             <div class="form-group half-width">
               <label for="designation"
-                >Designation <span class="required">*</span></label
+                >{{ 'USER_PROFILE_CREATION.DESIGNATION' | translate }} <span class="required">*</span></label
               >
               <input
                 type="text"
                 id="designation"
                 formControlName="designation"
-                placeholder="Enter the Designation here"
+                [placeholder]="'USER_PROFILE_CREATION.DESIGNATION_PLACEHOLDER' | translate"
                 class="form-control"
                 [class.is-invalid]="
                   profileForm.get('designation')?.invalid &&
@@ -61,7 +61,7 @@
                 "
                 class="invalid-feedback"
               >
-                Designation is required
+                {{ 'USER_PROFILE_CREATION.DESIGNATION_REQUIRED' | translate }}
               </div>
             </div>
           </div>
@@ -69,13 +69,13 @@
           <div class="form-row">
             <div class="form-group half-width">
               <label for="contactNumber"
-                >Contact Number <span class="required">*</span></label
+                >{{ 'USER_PROFILE_CREATION.CONTACT_NUMBER' | translate }} <span class="required">*</span></label
               >
               <input
                 type="tel"
                 id="contactNumber"
                 formControlName="contactNumber"
-                placeholder="Enter 10-digit Contact Number"
+                [placeholder]="'USER_PROFILE_CREATION.CONTACT_NUMBER_PLACEHOLDER' | translate"
                 class="form-control"
                 [class.is-invalid]="
                   profileForm.get('contactNumber')?.invalid &&
@@ -92,24 +92,24 @@
                 <div
                   *ngIf="profileForm.get('contactNumber')?.errors?.['required']"
                 >
-                  Contact number is required
+                  {{ 'USER_PROFILE_CREATION.CONTACT_NUMBER_REQUIRED' | translate }}
                 </div>
                 <div
                   *ngIf="profileForm.get('contactNumber')?.errors?.['pattern']"
                 >
-                  Please enter a valid 10-digit contact number
+                  {{ 'USER_PROFILE_CREATION.CONTACT_NUMBER_PATTERN' | translate }}
                 </div>
               </div>
             </div>
             <div class="form-group half-width">
               <label for="emailId"
-                >Email ID <span class="required">*</span></label
+                >{{ 'USER_PROFILE_CREATION.EMAIL_ID' | translate }} <span class="required">*</span></label
               >
               <input
                 type="email"
                 id="emailId"
                 formControlName="emailId"
-                placeholder="Enter the Email ID here"
+                [placeholder]="'USER_PROFILE_CREATION.EMAIL_ID_PLACEHOLDER' | translate"
                 class="form-control"
                 [class.is-invalid]="
                   profileForm.get('emailId')?.invalid &&
@@ -124,10 +124,10 @@
                 class="invalid-feedback"
               >
                 <div *ngIf="profileForm.get('emailId')?.errors?.['required']">
-                  Email ID is required
+                  {{ 'USER_PROFILE_CREATION.EMAIL_ID_REQUIRED' | translate }}
                 </div>
                 <div *ngIf="profileForm.get('emailId')?.errors?.['email']">
-                  Please enter a valid email address
+                  {{ 'USER_PROFILE_CREATION.EMAIL_ID_INVALID' | translate }}
                 </div>
               </div>
             </div>
@@ -136,13 +136,13 @@
           <div class="form-row">
             <div class="form-group half-width">
               <label for="password"
-                >Password <span class="required">*</span></label
+                >{{ 'USER_PROFILE_CREATION.PASSWORD' | translate }} <span class="required">*</span></label
               >
               <input
                 type="password"
                 id="password"
                 formControlName="password"
-                placeholder="Enter Password (minimum 8 characters)"
+                [placeholder]="'USER_PROFILE_CREATION.PASSWORD_PLACEHOLDER' | translate"
                 class="form-control"
                 [class.is-invalid]="
                   profileForm.get('password')?.invalid &&
@@ -152,35 +152,35 @@
               
               <!-- Password Policy Requirements -->
               <div class="password-requirements">
-                <p class="requirements-title">Password must contain:</p>
+                <p class="requirements-title">{{ 'USER_PROFILE_CREATION.PASSWORD_REQUIREMENTS_TITLE' | translate }}</p>
                 <ul class="requirements-list">
                   <li [class.valid]="hasMinLength" [class.invalid]="!hasMinLength">
                     <span class="icon" [class.valid]="hasMinLength" [class.invalid]="!hasMinLength">
                       <i class="fas fa-check" *ngIf="hasMinLength"></i>
                       <i class="fas fa-times" *ngIf="!hasMinLength"></i>
                     </span>
-                    <span class="text">At least 8 characters</span>
+                    <span class="text">{{ 'USER_PROFILE_CREATION.PASSWORD_MIN_LENGTH_REQ' | translate }}</span>
                   </li>
                   <li [class.valid]="hasUppercase" [class.invalid]="!hasUppercase">
                     <span class="icon" [class.valid]="hasUppercase" [class.invalid]="!hasUppercase">
                       <i class="fas fa-check" *ngIf="hasUppercase"></i>
                       <i class="fas fa-times" *ngIf="!hasUppercase"></i>
                     </span>
-                    <span class="text">Contains an uppercase letter</span>
+                    <span class="text">{{ 'USER_PROFILE_CREATION.PASSWORD_UPPERCASE_REQ' | translate }}</span>
                   </li>
                   <li [class.valid]="hasLowercase" [class.invalid]="!hasLowercase">
                     <span class="icon" [class.valid]="hasLowercase" [class.invalid]="!hasLowercase">
                       <i class="fas fa-check" *ngIf="hasLowercase"></i>
                       <i class="fas fa-times" *ngIf="!hasLowercase"></i>
                     </span>
-                    <span class="text">Contains a lowercase letter</span>
+                    <span class="text">{{ 'USER_PROFILE_CREATION.PASSWORD_LOWERCASE_REQ' | translate }}</span>
                   </li>
                   <li [class.valid]="hasNumber && hasSpecialChar" [class.invalid]="!hasNumber || !hasSpecialChar">
                     <span class="icon" [class.valid]="hasNumber && hasSpecialChar" [class.invalid]="!hasNumber || !hasSpecialChar">
                       <i class="fas fa-check" *ngIf="hasNumber && hasSpecialChar"></i>
                       <i class="fas fa-times" *ngIf="!hasNumber || !hasSpecialChar"></i>
                     </span>
-                    <span class="text">Contains a number and symbol</span>
+                    <span class="text">{{ 'USER_PROFILE_CREATION.PASSWORD_NUMBER_SYMBOL_REQ' | translate }}</span>
                   </li>
                 </ul>
               </div>
@@ -193,22 +193,22 @@
                 class="invalid-feedback"
               >
                 <div *ngIf="profileForm.get('password')?.errors?.['required']">
-                  Password is required
+                  {{ 'USER_PROFILE_CREATION.PASSWORD_REQUIRED' | translate }}
                 </div>
                 <div *ngIf="profileForm.get('password')?.errors?.['minlength']">
-                  Password must be at least 8 characters long
+                  {{ 'USER_PROFILE_CREATION.PASSWORD_MIN_LENGTH' | translate }}
                 </div>
               </div>
             </div>
             <div class="form-group half-width">
               <label for="confirmPassword"
-                >Confirm Password <span class="required">*</span></label
+                >{{ 'USER_PROFILE_CREATION.CONFIRM_PASSWORD' | translate }} <span class="required">*</span></label
               >
               <input
                 type="password"
                 id="confirmPassword"
                 formControlName="confirmPassword"
-                placeholder="Confirm your Password"
+                [placeholder]="'USER_PROFILE_CREATION.CONFIRM_PASSWORD_PLACEHOLDER' | translate"
                 class="form-control"
                 [class.is-invalid]="
                   (profileForm.get('confirmPassword')?.invalid &&
@@ -223,10 +223,10 @@
                 "
                 class="invalid-feedback"
               >
-                Confirm password is required
+                {{ 'USER_PROFILE_CREATION.CONFIRM_PASSWORD_REQUIRED' | translate }}
               </div>
               <div *ngIf="passwordMismatch" class="invalid-feedback">
-                Passwords do not match
+                {{ 'USER_PROFILE_CREATION.PASSWORD_MISMATCH' | translate }}
               </div>
             </div>
           </div>
@@ -244,7 +244,7 @@
               role="status"
               aria-hidden="true"
             ></span>
-            {{ isLoading ? "Creating Profile..." : "Create Profile" }}
+            {{ isLoading ? ('USER_PROFILE_CREATION.CREATING_PROFILE' | translate) : ('USER_PROFILE_CREATION.CREATE_PROFILE' | translate) }}
           </button>
         </div>
       </form>

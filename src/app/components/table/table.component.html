@@ -106,9 +106,11 @@
             />
           </th>
           <th scope="col">Sr.No.</th>
-          <th *ngFor="let col of columns" scope="col">{{ col.header }}</th>
+          <th *ngFor="let col of columns" scope="col">
+            {{ col.header | translate }}
+          </th>
           <th *ngIf="actions.length > 0" scope="col">
-            {{ "Actions" | translate }}
+            {{ "COMMON.ACTIONS" | translate }}
           </th>
         </tr>
       </thead>

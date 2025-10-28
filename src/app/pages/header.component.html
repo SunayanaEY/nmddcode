@@ -41,6 +41,7 @@
           class="form-check-input"
           type="checkbox"
           id="languageSwitch"
+          [checked]="currentLanguage === 'hi'"
           (change)="toggleLanguage($event)"
         />
         <label class="form-check-label text-white" for="languageSwitch">{{

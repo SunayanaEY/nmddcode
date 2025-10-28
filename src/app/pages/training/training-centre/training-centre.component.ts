@@ -26,6 +26,7 @@ import {
   State,
   District,
 } from '../../../services/location.service';
+import { TranslateModule } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-training-centre',
@@ -36,6 +37,7 @@ import {
     TableComponent,
     ModalComponent,
     HttpClientModule,
+    TranslateModule,
   ],
   templateUrl: './training-centre.component.html',
   styleUrls: ['./training-centre.component.css'],
@@ -98,14 +100,14 @@ export class TrainingCentreComponent implements OnInit {
   ) {}
 
   tableColumns: TableColumn[] = [
-    { key: 'trainingInstituteName', header: 'Training Institute Name' },
-    { key: 'state', header: 'State' },
-    { key: 'district', header: 'District' },
-    { key: 'contactPersonName', header: 'Institute Head' },
-    { key: 'contactNumber', header: 'Contact Number' },
+    { key: 'trainingInstituteName', header: 'TRAINING.INSTITUTE_NAME' },
+    { key: 'state', header: 'COMMON.STATE' },
+    { key: 'district', header: 'COMMON.DISTRICT' },
+    { key: 'contactPersonName', header: 'TRAINING.INSTITUTE_HEAD' },
+    { key: 'contactNumber', header: 'COMMON.CONTACT_NUMBER' },
     {
       key: 'status',
-      header: 'Status',
+      header: 'COMMON.STATUS',
       transform: (value: any, item: any) =>
         item.active ? 'Active' : 'Inactive',
     },

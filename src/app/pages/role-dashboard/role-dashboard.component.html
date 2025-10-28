@@ -9,10 +9,10 @@
         <div>
           <h2 class="page-title mb-0">
             <i class="fas fa-tachometer-alt me-2 text-primary"></i>
-            Training Dashboard
+            {{ 'ROLE_DASHBOARD.TRAINING_DASHBOARD' | translate }}
           </h2>
           <p class="text-muted mb-0">
-            Welcome!
+            {{ 'ROLE_DASHBOARD.WELCOME' | translate }}
           </p>
         </div>
       </div>
@@ -26,7 +26,7 @@
         <div class="card-header bg-light border-0">
           <h5 class="card-title mb-0 text-primary">
             <i class="fas fa-chart-bar me-2"></i>
-            Training Summary
+            {{ 'ROLE_DASHBOARD.TRAINING_SUMMARY' | translate }}
           </h5>
         </div>
         <div class="card-body">
@@ -34,9 +34,9 @@
           <!-- Loading Indicator -->
           <div *ngIf="isLoading" class="text-center py-4">
             <div class="spinner-border text-primary" role="status">
-              <span class="visually-hidden">Loading...</span>
+              <span class="visually-hidden">{{ 'ROLE_DASHBOARD.LOADING' | translate }}</span>
             </div>
-            <p class="mt-2 text-muted">Loading dashboard statistics...</p>
+            <p class="mt-2 text-muted">{{ 'ROLE_DASHBOARD.LOADING_DASHBOARD_STATISTICS' | translate }}</p>
           </div>
 
           <!-- New KPI Cards Implementation -->
@@ -44,9 +44,9 @@
             <!-- Loading State -->
             <div *ngIf="isLoading" class="text-center py-5">
               <div class="spinner-border text-primary" role="status">
-                <span class="visually-hidden">Loading dashboard data...</span>
+                <span class="visually-hidden">{{ 'ROLE_DASHBOARD.LOADING_DASHBOARD_DATA' | translate }}</span>
               </div>
-              <p class="mt-2 text-muted">Loading dashboard statistics...</p>
+              <p class="mt-2 text-muted">{{ 'ROLE_DASHBOARD.LOADING_DASHBOARD_STATISTICS' | translate }}</p>
             </div>
 
             <!-- KPI Cards -->
@@ -60,12 +60,12 @@
                     </div>
                     <button class="btn-download-new" 
                             (click)="downloadKpiData('totalTrainingsApproved', $event)"
-                            title="Download Data">
+                            title="{{ 'ROLE_DASHBOARD.DOWNLOAD_DATA' | translate }}">
                       <i class="fas fa-download"></i>
                     </button>
                   </div>
                   <div class="kpi-content">
-                    <div class="kpi-title">Training Schedule Approved</div>
+                    <div class="kpi-title">{{ 'ROLE_DASHBOARD.TRAINING_SCHEDULE_APPROVED' | translate }}</div>
                     <div class="kpi-value">{{ getKpiCards()[0]?.value || '0' }}</div>
                     
                   </div>
@@ -81,12 +81,12 @@
                     </div>
                     <button class="btn-download-new" 
                             (click)="downloadKpiData('totalTrainingsRejected', $event)"
-                            title="Download Data">
+                            title="{{ 'ROLE_DASHBOARD.DOWNLOAD_DATA' | translate }}">
                       <i class="fas fa-download"></i>
                     </button>
                   </div>
                   <div class="kpi-content">
-                    <div class="kpi-title">Training Schedule Rejected</div>
+                    <div class="kpi-title">{{ 'ROLE_DASHBOARD.TRAINING_SCHEDULE_REJECTED' | translate }}</div>
                     <div class="kpi-value">{{ getKpiCards()[1]?.value || '0' }}</div>
                    
                   </div>
@@ -102,12 +102,12 @@
                     </div>
                     <button class="btn-download-new" 
                             (click)="downloadKpiData('totalTraineesApproved', $event)"
-                            title="Download Data">
+                            title="{{ 'ROLE_DASHBOARD.DOWNLOAD_DATA' | translate }}">
                       <i class="fas fa-download"></i>
                     </button>
                   </div>
                   <div class="kpi-content">
-                    <div class="kpi-title">Trainee Approved</div>
+                    <div class="kpi-title">{{ 'ROLE_DASHBOARD.TRAINEE_APPROVED' | translate }}</div>
                     <div class="kpi-value">{{ getKpiCards()[2]?.value || '0' }}</div>
                    
                   </div>
@@ -123,12 +123,12 @@
                     </div>
                     <button class="btn-download-new" 
                             (click)="downloadKpiData('totalTraineesRejected', $event)"
-                            title="Download Data">
+                            title="{{ 'ROLE_DASHBOARD.DOWNLOAD_DATA' | translate }}">
                       <i class="fas fa-download"></i>
                     </button>
                   </div>
                   <div class="kpi-content">
-                    <div class="kpi-title">Trainee Rejected</div>
+                    <div class="kpi-title">{{ 'ROLE_DASHBOARD.TRAINEE_REJECTED' | translate }}</div>
                     <div class="kpi-value">{{ getKpiCards()[3]?.value || '0' }}</div>
                     
                   </div>
@@ -144,12 +144,12 @@
                     </div>
                     <button class="btn-download-new" 
                             (click)="downloadKpiData('registeredTrainers', $event)"
-                            title="Download Data">
+                            title="{{ 'ROLE_DASHBOARD.DOWNLOAD_DATA' | translate }}">
                       <i class="fas fa-download"></i>
                     </button>
                   </div>
                   <div class="kpi-content">
-                     <div class="kpi-title">Count of Registered Trainers</div>
+                     <div class="kpi-title">{{ 'ROLE_DASHBOARD.COUNT_OF_REGISTERED_TRAINERS' | translate }}</div>
                      <div class="kpi-value">{{ getKpiCards()[4]?.value || '0' }}</div>
                    </div>
                 </div>
@@ -168,16 +168,16 @@
         <div class="card-header bg-light border-0">
           <h5 class="card-title mb-0 text-primary">
             <i class="fas fa-chart-pie me-2"></i>
-            No of Training Type
+            {{ 'ROLE_DASHBOARD.NO_OF_TRAINING_TYPE' | translate }}
           </h5>
         </div>
         <div class="card-body">
           <!-- Loading Indicator -->
           <div *ngIf="isTrainingTypesChartLoading" class="text-center py-4">
             <div class="spinner-border text-primary" role="status">
-              <span class="visually-hidden">Loading...</span>
+              <span class="visually-hidden">{{ 'ROLE_DASHBOARD.LOADING' | translate }}</span>
             </div>
-            <p class="mt-2 text-muted">Loading training types data...</p>
+            <p class="mt-2 text-muted">{{ 'ROLE_DASHBOARD.LOADING_TRAINING_TYPES_DATA' | translate }}</p>
           </div>
 
           <!-- Pie Chart Container -->
@@ -194,8 +194,8 @@
             <!-- Show empty state when no data -->
             <div *ngIf="!hasTrainingTypesData" class="text-center py-5">
               <i class="fas fa-chart-pie text-muted mb-3" style="font-size: 3rem; opacity: 0.3;"></i>
-              <h5 class="text-muted mb-2">No Training Type Data Available</h5>
-              <p class="text-muted mb-0">Training type statistics will appear here when data is available.</p>
+              <h5 class="text-muted mb-2">{{ 'ROLE_DASHBOARD.NO_TRAINING_TYPE_DATA_AVAILABLE' | translate }}</h5>
+              <p class="text-muted mb-0">{{ 'ROLE_DASHBOARD.TRAINING_TYPE_STATISTICS_MESSAGE' | translate }}</p>
             </div>
           </div>
         </div>

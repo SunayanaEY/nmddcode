@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { BreadcrumbComponent } from '../../../components/breadcrumb/breadcrumb.component';
 import { UserProfileCreationComponent } from '../../user-profile-creation/user-profile-creation.component';
 import { RegisteredDataEntryOperatorsComponent } from '../registered-data-entry-operators/registered-data-entry-operators.component';
+import { TranslateModule } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-training-manager-management',
@@ -11,7 +12,8 @@ import { RegisteredDataEntryOperatorsComponent } from '../registered-data-entry-
     CommonModule,
     BreadcrumbComponent,
     UserProfileCreationComponent,
-    RegisteredDataEntryOperatorsComponent
+    RegisteredDataEntryOperatorsComponent,
+    TranslateModule
   ],
   templateUrl: './training-manager-management.component.html',
   styleUrls: ['./training-manager-management.component.css']
