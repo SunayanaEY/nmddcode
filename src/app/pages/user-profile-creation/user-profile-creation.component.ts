@@ -22,7 +22,7 @@ import {
 @Component({
   selector: 'app-user-profile-creation',
   standalone: true,
-  imports: [ReactiveFormsModule, CommonModule, BreadcrumbComponent],
+  imports: [ReactiveFormsModule, CommonModule],
   templateUrl: './user-profile-creation.component.html',
   styleUrls: ['./user-profile-creation.component.css'],
 })

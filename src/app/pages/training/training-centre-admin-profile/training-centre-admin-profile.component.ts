@@ -21,11 +21,12 @@ import {
 } from '../../../services/location.service';
 import { AuthService } from '../../../services/auth.service';
 import * as pdfjsLib from 'pdfjs-dist';
+import { TranslateModule } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-training-centre-admin-profile',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, BreadcrumbComponent],
+  imports: [CommonModule, ReactiveFormsModule, BreadcrumbComponent,TranslateModule],
   templateUrl: './training-centre-admin-profile.component.html',
   styleUrls: ['./training-centre-admin-profile.component.css'],
 })
@@ -96,7 +97,7 @@ export class TrainingCentreAdminProfileComponent implements OnInit {
     private route: ActivatedRoute
   ) {
     // Configure PDF.js worker to use bundled version
-    pdfjsLib.GlobalWorkerOptions.workerSrc = '/assets/pdf.worker.min.js';
+    pdfjsLib.GlobalWorkerOptions.workerSrc = 'assets/pdf.worker.min.js';
     
     this.getRole();
     if (this.userRole == 5 || this.userRole == 6) {
@@ -251,6 +252,23 @@ export class TrainingCentreAdminProfileComponent implements OnInit {
         this.isLoadingDistricts = false;
       },
     });
+  }
+
+  /**
+   * Handle state selection change
+   */
+  onStateChange(event: Event) {
+    const target = event.target as HTMLSelectElement;
+    const stateId = parseInt(target.value);
+    
+    if (stateId) {
+      this.loadDistricts(stateId);
+      // Reset district selection when state changes
+      this.profileForm.get('district')?.setValue('');
+    } else {
+      this.districts = [];
+      this.profileForm.get('district')?.setValue('');
+    }
   }
   initializeForm() {
     this.profileForm.patchValue({
@@ -689,7 +707,7 @@ export class TrainingCentreAdminProfileComponent implements OnInit {
    * Handle cancel button click
    */
   onCancel() {
-    this.router.navigate(['/admin/training-module']);
+    this.router.navigate(['/admin/training-institute-management']);
   }
 
   /**

@@ -34,6 +34,7 @@ import { ToastrService } from 'ngx-toastr';
 import { NgxSpinnerModule, NgxSpinnerService } from 'ngx-spinner';
 import { CertificateLayoutComponent } from '../../certificate-layout/certificate-layout.component';
 import { NewCertificateLayoutComponent } from '../../new-certificate-layout/new-certificate-layout.component';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-all-trainings-admin',
@@ -46,6 +47,7 @@ import { NewCertificateLayoutComponent } from '../../new-certificate-layout/new-
     FormsModule,
     NgxSpinnerModule,
     NewCertificateLayoutComponent,
+    TranslateModule,
   ],
   templateUrl: './all-trainings-admin.component.html',
   styleUrl: './all-trainings-admin.component.css',
@@ -85,7 +87,7 @@ export class AllTrainingsAdminComponent {
   fileNameTrainees: String = 'All_trainee_List_';
   traineesFile: String = 'All_trainee_List_';
   falseVariable: boolean = false;
-  pdfHeaders: Array<string> = [
+   pdfHeaders: Array<string> = [
     'Sr.No.',
     'Training Title',
     'Scheme',
@@ -108,12 +110,11 @@ export class AllTrainingsAdminComponent {
     { label: 'Dashboard', url: '/admin/role-dashboard' },
     { label: 'All Trainings' },
   ];
-  tableColumns: TableColumn[] = [
+   tableColumns: TableColumn[] = [
     { key: 'trainingTitle', header: 'Training Title' },
     { key: 'scheme', header: 'Scheme' },
     { key: 'trainingInstituteName', header: 'Training Institute' },
     { key: 'trainerName', header: 'Trainer Name' },
-
     { key: 'location', header: 'Location' },
     { key: 'trainingDate', header: 'Training Date' },
     { key: 'status', header: 'Status' },
@@ -254,7 +255,8 @@ export class AllTrainingsAdminComponent {
     private trainingsService: TrainingService,
     private adminService: AdminService,
     private toastr: ToastrService,
-    private spinner: NgxSpinnerService
+    private spinner: NgxSpinnerService,
+    private translate: TranslateService
   ) {}
   filteredData = [...this.trainingsList];
 

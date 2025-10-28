@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { TrainingCentreAdminProfileComponent } from '../training-centre-admin-profile/training-centre-admin-profile.component';
 import { TrainingCentreComponent } from '../training-centre/training-centre.component';
 import { BreadcrumbComponent } from '../../../components/breadcrumb/breadcrumb.component';
+import { TranslateModule } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-training-institute-management',
@@ -11,7 +12,8 @@ import { BreadcrumbComponent } from '../../../components/breadcrumb/breadcrumb.c
     CommonModule,
     TrainingCentreAdminProfileComponent,
     TrainingCentreComponent,
-    BreadcrumbComponent
+    BreadcrumbComponent,
+    TranslateModule
   ],
   templateUrl: './training-institute-management.component.html',
   styleUrls: ['./training-institute-management.component.css']

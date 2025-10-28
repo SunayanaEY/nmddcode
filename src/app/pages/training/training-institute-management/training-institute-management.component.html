@@ -9,7 +9,7 @@
       (click)="toggleForm()"
       [class.active]="showForm">
       <i class="fas fa-plus"></i>
-      {{ showForm ? 'Hide Form' : 'Add New Training Institute' }}
+      {{ showForm ? ('Hide Form' | translate) : ('Add New Training Institute' | translate) }}
     </button>
   </div>
 
