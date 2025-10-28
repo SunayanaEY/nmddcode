@@ -276,7 +276,7 @@
         class="btn btn-danger"
         style="width: 20%"
         *ngIf="trainingDetails.status === 'NEW' && this.userRole === 3"
-        (click)="rejectTrainingSchedule()"
+        (click)="openRejectModal(rejectTrainingModal)"
       >
         Reject
       </button>
@@ -286,9 +286,9 @@
         class="btn btn-primary"
         style="width: 20%; margin-left: 30%"
         *ngIf="
-           trainingDetails.status === 'VALIDATED_BY_INSTITUTE_HEAD' &&
-           this.userRole !== 3
-         "
+          trainingDetails.status === 'VALIDATED_BY_INSTITUTE_HEAD' &&
+          this.userRole !== 3
+        "
         (click)="approveTrainingSchedule()"
       >
         Approve
@@ -301,7 +301,7 @@
           trainingDetails.status === 'VALIDATED_BY_INSTITUTE_HEAD' &&
           this.userRole !== 3
         "
-        (click)="rejectTrainingSchedule()"
+        (click)="openRejectModal(rejectTrainingModal)"
       >
         Reject
       </button>
@@ -310,11 +310,11 @@
     <div
       class="card-header col-12 mb-4 mt-4 bg-appColor"
       *ngIf="
-         trainingDetails.status !== 'NEW' &&
-         trainingDetails.status !== 'VALIDATED_BY_INSTITUTE_HEAD' &&
-         trainingDetails.status !== 'APPROVED_BY_STATE_ADMIN' &&
-         trainingDetails.status !== 'VALIDATED_BY_INSTITUTE_HEAD'
-       "
+        trainingDetails.status !== 'NEW' &&
+        trainingDetails.status !== 'VALIDATED_BY_INSTITUTE_HEAD' &&
+        trainingDetails.status !== 'APPROVED_BY_STATE_ADMIN' &&
+        trainingDetails.status !== 'VALIDATED_BY_INSTITUTE_HEAD'
+      "
     >
       <h3 class="mb-0 text-white">
         {{ "Trainee List" }}
@@ -360,6 +360,43 @@
       style="background-color: #155e91"
     >
       {{ "close" }}
+    </button>
+  </div>
+</ng-template>
+<!--rejection modal-->
+<!-- Reject Remark Modal -->
+<ng-template #rejectTrainingModal let-modal>
+  <div class="modal-header bg-danger text-white">
+    <h5 class="modal-title">Reject Training</h5>
+    <button
+      type="button"
+      class="btn-close btn-close-white"
+      aria-label="Close"
+      (click)="modal.dismiss('Cross click')"
+    ></button>
+  </div>
+
+  <div class="modal-body">
+    <label for="remark" class="form-label">Rejection Remark:</label>
+    <textarea
+      id="remark"
+      class="form-control"
+      [(ngModel)]="rejectionRemark"
+      rows="3"
+      placeholder="Enter reason for rejection"
+    ></textarea>
+  </div>
+
+  <div class="modal-footer">
+    <button type="button" class="btn btn-secondary" (click)="modal.dismiss()">
+      Cancel
+    </button>
+    <button
+      type="button"
+      class="btn btn-danger"
+      (click)="submitRejection(modal)"
+    >
+      Submit
     </button>
   </div>
 </ng-template>
@@ -414,7 +451,7 @@
         <p class="mt-2 text-primary">Processing...</p>
       </div>
     </div>
-    
+
     <div *ngIf="selectedTraineesForBulkReject.length > 0" class="mb-3">
       <p class="text-muted">
         You are about to reject

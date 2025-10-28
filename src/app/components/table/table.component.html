@@ -1,44 +1,86 @@
-<div class="table-container" style="position: relative;">
+<div class="table-container" style="position: relative">
   <!-- Loading Overlay -->
-  <div *ngIf="isLoading" class="loading-overlay" style="position: absolute; top: 0; left: 0; right: 0; bottom: 0; background: rgba(255, 255, 255, 0.8); display: flex; justify-content: center; align-items: center; z-index: 1000;">
+  <div
+    *ngIf="isLoading"
+    class="loading-overlay"
+    style="
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(255, 255, 255, 0.8);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      z-index: 1000;
+    "
+  >
     <div class="spinner-border text-primary" role="status">
-      <span class="visually-hidden">{{'Loading...'|translate}}</span>
+      <span class="visually-hidden">{{ "Loading..." | translate }}</span>
     </div>
   </div>
 
-  <div class="d-flex justify-content-between align-items-center mb-3" style="margin-top: 3%">
+  <div
+    class="d-flex justify-content-between align-items-center mb-3"
+    style="margin-top: 3%"
+  >
     <div class="input-group search mb-4" style="max-width: 500px">
       <div class="input-group-prepend">
         <span class="input-group-text">
           <!-- search icon -->
         </span>
       </div>
-      <input type="text" [(ngModel)]="searchTextActive" (input)="p = 1" class="form-control" placeholder="Search"
-        autocomplete="off" />
+      <input
+        type="text"
+        [(ngModel)]="searchTextActive"
+        (input)="p = 1"
+        class="form-control"
+        placeholder="Search"
+        autocomplete="off"
+      />
     </div>
 
     <div class="d-flex gap-2">
       <!-- Bulk Action Buttons -->
-      <div *ngIf="enableMultiSelect && hasSelectedItems" class="d-flex gap-2 me-3">
-        <button *ngFor="let action of bulkActions" class="btn {{ action.class }}"
-          (click)="onBulkActionClick(action.name)" [title]="action.title">
+      <div
+        *ngIf="enableMultiSelect && hasSelectedItems"
+        class="d-flex gap-2 me-3"
+      >
+        <button
+          *ngFor="let action of bulkActions"
+          class="btn {{ action.class }}"
+          (click)="onBulkActionClick(action.name)"
+          [title]="action.title"
+        >
           <i class="bi {{ action.icon }}"></i> {{ action.title }}
         </button>
       </div>
 
-      <button *ngIf="isExportPDF  && !hasSelectedItems" class="btn btn-primary" (click)="createPdf()">
-        {{'Export PDF'|translate}}
+      <button
+        *ngIf="isExportPDF && !hasSelectedItems"
+        class="btn btn-primary"
+        (click)="createPdf()"
+      >
+        {{ "Export PDF" | translate }}
       </button>
-      <button *ngIf="isExportCSV  && !hasSelectedItems" class="btn btn-warning" (click)="exportExcel()">
-        {{'Export Excel'|translate}}
+      <button
+        *ngIf="isExportCSV && !hasSelectedItems"
+        class="btn btn-warning"
+        (click)="exportExcel()"
+      >
+        {{ "Export Excel" | translate }}
       </button>
       <!-- <button *ngIf="isBulkCertDownload" class="btn btn-primary" (click)="downloadCerts('Download Certs')">
         <i class="bi bi-download"></i> Download Certificates
       </button> -->
       <!-- Add new row -->
-      <button *ngIf="tableNamesArray.includes(tableName)" class="btn btn-link add-more-btn"
-        (click)="addNewRow(data.length)">
-        <i class="bi bi-plus-circle"></i> {{ addNew |translate}}
+      <button
+        *ngIf="tableNamesArray.includes(tableName)"
+        class="btn btn-link add-more-btn"
+        (click)="addNewRow(data.length)"
+      >
+        <i class="bi bi-plus-circle"></i> {{ addNew | translate }}
       </button>
     </div>
   </div>
@@ -47,49 +89,82 @@
     <table class="table table-striped w-100">
       <thead>
         <tr>
-          <th *ngIf="enableMultiSelect && eligibleItemsCount>0" scope="col" style="width: 50px;">
+          <th
+            *ngIf="enableMultiSelect && eligibleItemsCount > 0"
+            scope="col"
+            style="width: 50px"
+          >
             <input
               type="checkbox"
               class="form-check-input"
               [checked]="selectAll"
               (change)="toggleSelectAll()"
-              [indeterminate]="selectedItems.size > 0 && selectedItems.size < eligibleItemsCount"
+              [indeterminate]="
+                selectedItems.size > 0 &&
+                selectedItems.size < eligibleItemsCount
+              "
             />
           </th>
           <th scope="col">Sr.No.</th>
           <th *ngFor="let col of columns" scope="col">{{ col.header }}</th>
-          <th *ngIf="actions.length > 0" scope="col">{{'Actions'|translate}}</th>
+          <th *ngIf="actions.length > 0" scope="col">
+            {{ "Actions" | translate }}
+          </th>
         </tr>
       </thead>
       <tbody>
-        <tr *ngFor="
+        <tr
+          *ngFor="
             let item of data
               | tableSearch : searchTextActive
               | paginate
                 : { id: 'pagination2', itemsPerPage: 10, currentPage: p };
             let i = index
-          " [class.odd-row]="i % 2 === 0">
-          <td *ngIf="enableMultiSelect && eligibleItemsCount>0" style="width: 50px;">
+          "
+          [class.odd-row]="i % 2 === 0"
+        >
+          <td
+            *ngIf="enableMultiSelect && eligibleItemsCount > 0"
+            style="width: 50px"
+          >
             <input
-              *ngIf=" (tableName==='Verify-Trainings' && item.status === 'IN PROGRESS') || (tableName==='Trainee-List' && (item.status === 'TRAINEE_UPLOADED' || ((userRole === 5 || userRole === 6) && item.status === 'VALIDATED_BY_INSTITUTE_HEAD'))) || (tableName!=='Verify-Trainings' && tableName!=='Trainee-List' && item.status === 'VERIFIED')"
+              *ngIf="
+                (tableName === 'Verify-Trainings' &&
+                  item.status === 'IN PROGRESS') ||
+                (tableName === 'Trainee-List' &&
+                  (item.status === 'TRAINEE_UPLOADED' ||
+                    ((userRole === 5 || userRole === 6) &&
+                      item.status === 'VALIDATED_BY_INSTITUTE_HEAD'))) ||
+                (tableName !== 'Verify-Trainings' &&
+                  tableName !== 'Trainee-List' &&
+                  item.status === 'VERIFIED')
+              "
               type="checkbox"
               class="form-check-input"
               [checked]="isItemSelected(item)"
               (change)="toggleItemSelection(item)"
             />
           </td>
-          <td>{{ formatSerialNumber((p-1)*10+i) }}</td>
-          <ng-container *ngIf="tableNamesArray.includes(tableName) && item.editable">
+          <td>{{ formatSerialNumber((p - 1) * 10 + i) }}</td>
+          <ng-container
+            *ngIf="tableNamesArray.includes(tableName) && item.editable"
+          >
             <td *ngFor="let col of columns">
-              <input [(ngModel)]="item[col.key]" (change)="onActionClick('save', item, i)" class="form-control"
-                required />
+              <input
+                [(ngModel)]="item[col.key]"
+                (change)="onActionClick('save', item, i)"
+                class="form-control"
+                required
+              />
               <!-- {{ item[col.key] }} -->
             </td>
           </ng-container>
-          <ng-container *ngIf="tableNamesArray.includes(tableName) && !item.editable">
+          <ng-container
+            *ngIf="tableNamesArray.includes(tableName) && !item.editable"
+          >
             <td *ngFor="let col of columns">{{ item[col.key] }}</td>
           </ng-container>
-          <ng-container *ngIf="!tableNamesArray.includes(tableName)">
+          <!-- <ng-container *ngIf="!tableNamesArray.includes(tableName)">
             <td *ngFor="let col of columns">
               <ng-container *ngIf="col.isLink && (!col.linkCondition || col.linkCondition(item)); else normalCell">
                 <a href="javascript:void(0)" class="text-primary" (click)="onLinkClick(col, item)">
@@ -108,24 +183,87 @@
                 }}
               </ng-template>
             </td>
+          </ng-container> -->
+          <ng-container *ngIf="!tableNamesArray.includes(tableName)">
+            <td
+              *ngFor="let col of columns"
+              [hidden]="!shouldShowColumn(col, item)"
+            >
+              <ng-container
+                *ngIf="
+                  col.isLink && (!col.linkCondition || col.linkCondition(item));
+                  else normalCell
+                "
+              >
+                <a
+                  href="javascript:void(0)"
+                  class="text-primary"
+                  (click)="onLinkClick(col, item)"
+                >
+                  {{
+                    col.transform
+                      ? col.transform(item[col.key], item)
+                      : item[col.key]
+                  }}
+                </a>
+              </ng-container>
+
+              <ng-template #normalCell>
+                {{
+                  col.transform
+                    ? col.transform(item[col.key], item)
+                    : item[col.key]
+                }}
+              </ng-template>
+            </td>
           </ng-container>
 
-          <td *ngIf="!tableNamesArray.includes(tableName) && actions.length > 0">
+          <td
+            *ngIf="!tableNamesArray.includes(tableName) && actions.length > 0"
+          >
             <div class="action-buttons">
-
-
               <ng-container *ngFor="let action of actions">
-                <button type="button" *ngIf="!action.condition || action.condition(item)"
-                  class="btn btn-action {{ action.class }}" [ngClass]="{
-                    'btn-toggle-active': action.name === 'toggle' && (item.active === true || item.active === 'true' || item.active === 'Active' || item.active === 'active'),
-                    'btn-toggle-inactive': action.name === 'toggle' && !(item.active === true || item.active === 'true' || item.active === 'Active' || item.active === 'active')
-                  }" (click)="onActionClick(action.name, item, i)" [title]="action.title">
+                <button
+                  type="button"
+                  *ngIf="!action.condition || action.condition(item)"
+                  class="btn btn-action {{ action.class }}"
+                  [ngClass]="{
+                    'btn-toggle-active':
+                      action.name === 'toggle' &&
+                      (item.active === true ||
+                        item.active === 'true' ||
+                        item.active === 'Active' ||
+                        item.active === 'active'),
+                    'btn-toggle-inactive':
+                      action.name === 'toggle' &&
+                      !(
+                        item.active === true ||
+                        item.active === 'true' ||
+                        item.active === 'Active' ||
+                        item.active === 'active'
+                      )
+                  }"
+                  (click)="onActionClick(action.name, item, i)"
+                  [title]="action.title"
+                >
                   <ng-container *ngIf="action.name === 'toggle'">
                     <div class="toggle-switch">
-                      <div class="toggle-slider" [ngClass]="{
-                      'slider-active': item.active === true || item.active === 'true' || item.active === 'Active' || item.active === 'active',
-                      'slider-inactive': !(item.active === true || item.active === 'true' || item.active === 'Active' || item.active === 'active')
-                    }">
+                      <div
+                        class="toggle-slider"
+                        [ngClass]="{
+                          'slider-active':
+                            item.active === true ||
+                            item.active === 'true' ||
+                            item.active === 'Active' ||
+                            item.active === 'active',
+                          'slider-inactive': !(
+                            item.active === true ||
+                            item.active === 'true' ||
+                            item.active === 'Active' ||
+                            item.active === 'active'
+                          )
+                        }"
+                      >
                         <div class="toggle-button"></div>
                       </div>
                     </div>
@@ -135,16 +273,22 @@
                   </ng-container>
                 </button>
               </ng-container>
-
             </div>
           </td>
           <!-- for scheems and training types actions -->
-          <td *ngIf="
+          <td
+            *ngIf="
               tableNamesArray.includes(tableName) && item.actions.length > 0
-            ">
+            "
+          >
             <div class="action-buttons">
-              <button *ngFor="let action of item.actions" type="button" class="btn btn-action {{ action.class }}"
-                (click)="onActionClick(action.name, item, i)" [title]="action.title">
+              <button
+                *ngFor="let action of item.actions"
+                type="button"
+                class="btn btn-action {{ action.class }}"
+                (click)="onActionClick(action.name, item, i)"
+                [title]="action.title"
+              >
                 <i class="bi {{ action.icon }}"></i>
               </button>
             </div>
@@ -154,18 +298,36 @@
     </table>
 
     <!-- No Records Available Message -->
-    <div *ngIf="!isLoading && (data | tableSearch : searchTextActive).length === 0" class="text-center py-5">
+    <div
+      *ngIf="!isLoading && (data | tableSearch : searchTextActive).length === 0"
+      class="text-center py-5"
+    >
       <div class="no-data-message">
-        <i class="bi bi-inbox" style="font-size: 3rem; color: #6c757d; margin-bottom: 1rem;"></i>
-        <h5 class="text-muted">{{'No Records Available'|translate}}</h5>
-        <p class="text-muted mb-0">{{ searchTextActive ? 'No records match your search criteria.' : 'There are no records to display.'  | translate}}</p>
+        <i
+          class="bi bi-inbox"
+          style="font-size: 3rem; color: #6c757d; margin-bottom: 1rem"
+        ></i>
+        <h5 class="text-muted">{{ "No Records Available" | translate }}</h5>
+        <p class="text-muted mb-0">
+          {{
+            searchTextActive
+              ? "No records match your search criteria."
+              : ("There are no records to display." | translate)
+          }}
+        </p>
       </div>
     </div>
   </div>
 
-  <div class="card-footer py-4" *ngIf="!isLoading && (data | tableSearch : searchTextActive).length > 0">
+  <div
+    class="card-footer py-4"
+    *ngIf="!isLoading && (data | tableSearch : searchTextActive).length > 0"
+  >
     <nav aria-label="..." class="text-right">
-      <pagination-controls id="pagination2" (pageChange)="p = $event"></pagination-controls>
+      <pagination-controls
+        id="pagination2"
+        (pageChange)="p = $event"
+      ></pagination-controls>
     </nav>
   </div>
 </div>

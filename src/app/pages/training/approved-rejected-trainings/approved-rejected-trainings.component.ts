@@ -86,7 +86,8 @@ export class ApprovedRejectedTrainingsComponent {
       header: 'Training Title',
       isLink: true,
       linkHandler: (row) => this.openTrainingDetails(row),
-      linkCondition: (row) => row.status !== 'TRAINEE_STATE_DECISIONS_COMPLETED',
+      linkCondition: (row) =>
+        row.status !== 'TRAINEE_STATE_DECISIONS_COMPLETED',
     },
     { key: 'scheme', header: 'Scheme' },
     { key: 'trainingInstituteName', header: 'Training Institute' },
@@ -95,6 +96,11 @@ export class ApprovedRejectedTrainingsComponent {
     { key: 'location', header: 'Location' },
     { key: 'trainingDate', header: 'Training Date' },
     { key: 'status', header: 'Status' },
+    {
+      key: 'rejectionRemark',
+      header: 'Remarks',
+      showColumn: (row) => row.status === 'REJECTED_BY_INSTITUTE_HEAD',
+    },
   ];
 
   tableColumnsPending: TableColumn[] = [
@@ -121,7 +127,8 @@ export class ApprovedRejectedTrainingsComponent {
       icon: 'bi bi-pencil-fill',
       class: 'btn-info',
       title: 'Add Data',
-      condition: (row: any) => row.status !== 'TRAINEE_STATE_DECISIONS_COMPLETED',
+      condition: (row: any) =>
+        row.status !== 'TRAINEE_STATE_DECISIONS_COMPLETED',
     },
   ];
   tableActions2: TableAction[] = [
@@ -271,7 +278,6 @@ export class ApprovedRejectedTrainingsComponent {
     });
   }
   handleTableAction(event: { action: string; item: any; index: number }): void {
-
     if (event.action === 'download') {
       // Handle certificate download for trainee
       this.downloadCertificate(event.item);

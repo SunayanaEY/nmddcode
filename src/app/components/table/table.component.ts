@@ -20,6 +20,7 @@ export interface TableColumn {
   isLink?: boolean;
   linkHandler?: (row: any) => void;
   linkCondition?: (row: any) => boolean;
+  showColumn?: (row: any) => boolean;
 }
 
 export interface TableAction {
@@ -40,7 +41,7 @@ export interface TableAction {
     TableSearchPipe,
     PaginationModule,
     NgxPaginationModule,
-    TranslateModule
+    TranslateModule,
   ],
   templateUrl: './table.component.html',
   styleUrls: ['./table.component.css'],
@@ -90,9 +91,7 @@ export class TableComponent {
   constructor(
     private excelService: ExcelService,
     private toatsr: ToastrService
-  ) {
-
-  }
+  ) {}
 
   ngOnInit() {}
   onActionClick(action: string, item: any, index: number): void {
@@ -108,7 +107,17 @@ export class TableComponent {
   downloadCerts(action: string) {
     this.downloadAllCerts.emit({ action: action });
   }
+  shouldShowColumn(col: any, item: any): boolean {
+    if (col.showColumn === undefined || col.showColumn === null) {
+      return true; // default: show column
+    }
 
+    if (typeof col.showColumn === 'function') {
+      return col.showColumn(item); // evaluate function if provided
+    }
+
+    return col.showColumn !== false; // only hide if explicitly false
+  }
   formatSerialNumber(index: number): string {
     if (index < 10) {
       return String(index + 1).padStart(2, '0');
@@ -209,7 +218,6 @@ export class TableComponent {
   }
 
   exportExcel() {
-
     this.excelHeaders = this.pdfHeaders.splice(0, 1);
 
     this.data.forEach((element) => {
@@ -244,16 +252,24 @@ export class TableComponent {
     if (this.selectAll) {
       // Only select items that are not APPROVED or REJECTED
 
-      this.data.forEach(item => {
-
-         if(this.tableName==='Verify-Trainings' && item.status === 'IN PROGRESS')
-      {
-         this.selectedItems.add(item);
-      }
-        else if (this.tableName === 'Trainee-List' && (item.status === 'TRAINEE_UPLOADED' || ((this.userRole === 5 || this.userRole === 6) && item.status === 'VALIDATED_BY_INSTITUTE_HEAD'))) {
-           this.selectedItems.add(item);
-         }
-        else if (this.tableName!=='Verify-Trainings' && this.tableName!=='Trainee-List' && item.status === 'VERIFIED') {
+      this.data.forEach((item) => {
+        if (
+          this.tableName === 'Verify-Trainings' &&
+          item.status === 'IN PROGRESS'
+        ) {
+          this.selectedItems.add(item);
+        } else if (
+          this.tableName === 'Trainee-List' &&
+          (item.status === 'TRAINEE_UPLOADED' ||
+            ((this.userRole === 5 || this.userRole === 6) &&
+              item.status === 'VALIDATED_BY_INSTITUTE_HEAD'))
+        ) {
+          this.selectedItems.add(item);
+        } else if (
+          this.tableName !== 'Verify-Trainings' &&
+          this.tableName !== 'Trainee-List' &&
+          item.status === 'VERIFIED'
+        ) {
           this.selectedItems.add(item);
         }
       });
@@ -269,8 +285,12 @@ export class TableComponent {
       this.selectedItems.add(item);
     }
     // Update selectAll based on eligible items only
-    const eligibleItems = this.data.filter(item => item.status !== 'APPROVED' && item.status !== 'REJECTED');
-    this.selectAll = eligibleItems.length > 0 && eligibleItems.every(item => this.selectedItems.has(item));
+    const eligibleItems = this.data.filter(
+      (item) => item.status !== 'APPROVED' && item.status !== 'REJECTED'
+    );
+    this.selectAll =
+      eligibleItems.length > 0 &&
+      eligibleItems.every((item) => this.selectedItems.has(item));
   }
 
   isItemSelected(item: any): boolean {
@@ -289,12 +309,16 @@ export class TableComponent {
   }
 
   get eligibleItemsCount(): number {
-    if(this.tableName==='Verify-Trainings')
-      return this.data.filter(item => item.status === 'IN PROGRESS').length;
-    else if(this.tableName==='Trainee-List')
-      return this.data.filter(item => item.status === 'TRAINEE_UPLOADED' || ((this.userRole === 5 || this.userRole === 6) && item.status === 'VALIDATED_BY_INSTITUTE_HEAD')).length;
-    else
-    return this.data.filter(item => item.status === 'VERIFIED' ).length;
+    if (this.tableName === 'Verify-Trainings')
+      return this.data.filter((item) => item.status === 'IN PROGRESS').length;
+    else if (this.tableName === 'Trainee-List')
+      return this.data.filter(
+        (item) =>
+          item.status === 'TRAINEE_UPLOADED' ||
+          ((this.userRole === 5 || this.userRole === 6) &&
+            item.status === 'VALIDATED_BY_INSTITUTE_HEAD')
+      ).length;
+    else return this.data.filter((item) => item.status === 'VERIFIED').length;
   }
 
   // Method to clear selected items - can be called from parent component
@@ -302,6 +326,4 @@ export class TableComponent {
     this.selectedItems.clear();
     this.selectAll = false;
   }
-
-
 }

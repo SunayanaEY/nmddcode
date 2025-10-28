@@ -332,19 +332,44 @@ export class AdminService {
       this.getHttpOptions()
     );
   }
-  rejectTrainingSchedule(trainingId: string): Observable<{
+  // rejectTrainingSchedule(trainingId: string): Observable<{
+  //   success: boolean;
+  //   message: string;
+  //   data: any;
+  //   statusCode: number;
+  // }> {
+  //   return this.http.get<{
+  //     success: boolean;
+  //     message: string;
+  //     data: any;
+  //     statusCode: number;
+  //   }>(
+  //     `${this.apiUrl}training/rejectTrainingSchedule/${trainingId}`,
+  //     this.getHttpOptions()
+  //   );
+  // }
+  rejectTrainingSchedule(
+    trainingId: string,
+    rejectionRemark: string
+  ): Observable<{
     success: boolean;
     message: string;
     data: any;
     statusCode: number;
   }> {
-    return this.http.get<{
+    const body = {
+      trainingId,
+      rejectionRemark,
+    };
+
+    return this.http.post<{
       success: boolean;
       message: string;
       data: any;
       statusCode: number;
     }>(
-      `${this.apiUrl}training/rejectTrainingSchedule/${trainingId}`,
+      `${this.apiUrl}training/rejectTrainingSchedule`,
+      body,
       this.getHttpOptions()
     );
   }
@@ -427,7 +452,11 @@ export class AdminService {
     };
     statusCode: number;
   }> {
-    return this.http.post<any>(`${this.apiUrl}states/saveOrUpdate`, payload, this.getHttpOptions());
+    return this.http.post<any>(
+      `${this.apiUrl}states/saveOrUpdate`,
+      payload,
+      this.getHttpOptions()
+    );
   }
 
   getAllActiveStateHeads(): Observable<{
@@ -450,7 +479,10 @@ export class AdminService {
     }[];
     statusCode: number;
   }> {
-    return this.http.get<any>(`${this.apiUrl}states/AllActiveStateHeads`, this.getHttpOptions());
+    return this.http.get<any>(
+      `${this.apiUrl}states/AllActiveStateHeads`,
+      this.getHttpOptions()
+    );
   }
 
   getPreviousStateHeads(stateId: number): Observable<{
@@ -473,6 +505,9 @@ export class AdminService {
     }[];
     statusCode: number;
   }> {
-    return this.http.get<any>(`${this.apiUrl}states/previousStateHead/${stateId}`, this.getHttpOptions());
+    return this.http.get<any>(
+      `${this.apiUrl}states/previousStateHead/${stateId}`,
+      this.getHttpOptions()
+    );
   }
 }

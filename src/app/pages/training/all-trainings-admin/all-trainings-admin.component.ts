@@ -2,6 +2,7 @@ import { CommonModule, DatePipe } from '@angular/common';
 import {
   Component,
   ElementRef,
+  TemplateRef,
   ViewChild,
   ViewEncapsulation,
 } from '@angular/core';
@@ -39,7 +40,7 @@ import { NewCertificateLayoutComponent } from '../../new-certificate-layout/new-
   selector: 'app-all-trainings-admin',
   imports: [
     CommonModule,
-    BreadcrumbComponent,
+    // BreadcrumbComponent,
     TableComponent,
     NgSelectModule,
     ReactiveFormsModule,
@@ -68,6 +69,8 @@ export class AllTrainingsAdminComponent {
   certificateData: any = null;
   selectedTraineeForCertificate: any = null;
   trainingForm!: FormGroup;
+  rejectionRemark: string = '';
+  // falseVariable = false;
   rejectForm!: FormGroup;
   selectedTraineeForReject: any = null;
   selectedTraineesForBulkReject: any[] = [];
@@ -196,7 +199,8 @@ export class AllTrainingsAdminComponent {
       title: 'Download certificate',
       condition: (row: any) =>
         row.status === 'APPROVED_BY_STATE_ADMIN' ||
-        row.status === 'APPROVED_BY_ORGANIZATION' || row.status === 'CERTIFICATE_ISSUED',
+        row.status === 'APPROVED_BY_ORGANIZATION' ||
+        row.status === 'CERTIFICATE_ISSUED',
     },
   ];
 
@@ -504,10 +508,24 @@ export class AllTrainingsAdminComponent {
         },
       });
   }
+  openRejectModal(modal: TemplateRef<any>) {
+    this.rejectionRemark = ''; // reset each time
+    this.modalService.open(modal, { centered: true, backdrop: 'static' });
+  }
+  submitRejection(modal: any) {
+    if (!this.rejectionRemark.trim()) {
+      this.toastr.warning('Please enter a remark before rejecting.');
+      return;
+    }
+
+    modal.close(); // close modal before proceeding
+    this.rejectTrainingSchedule();
+  }
+
   rejectTrainingSchedule() {
     this.spinner.show();
     this.adminService
-      .rejectTrainingSchedule(this.trainingDetails.id)
+      .rejectTrainingSchedule(this.trainingDetails.id, this.rejectionRemark)
       .subscribe({
         next: (response) => {
           this.spinner.hide();
@@ -540,6 +558,39 @@ export class AllTrainingsAdminComponent {
         },
       });
   }
+  // rejectTrainingSchedule() {
+  //   this.spinner.show();
+  //   this.adminService
+  //     .rejectTrainingSchedule(this.trainingDetails.id, this.rejectionRemark)
+  //     .subscribe({
+  //       next: (response) => {
+  //         this.spinner.hide();
+  //         if (response.success) {
+  //           this.toastr.success(
+  //             response.data.message || 'Training rejected successfully',
+  //             'Success'
+  //           );
+  //           this.ngOnInit();
+  //           this.falseVariable = true;
+  //         } else {
+  //           this.toastr.error(
+  //             response.message || 'Failed to reject training',
+  //             'Error'
+  //           );
+  //           this.falseVariable = false;
+  //         }
+  //       },
+  //       error: (error) => {
+  //         this.spinner.hide();
+  //         const errorMessage =
+  //           error.error?.message ||
+  //           'An error occurred while rejecting training';
+  //         this.toastr.error(errorMessage, 'Error');
+  //         console.error('Error rejecting training:', error);
+  //         this.falseVariable = false;
+  //       },
+  //     });
+  // }
 
   approveTrainingSchedule() {
     this.spinner.show();
@@ -596,7 +647,6 @@ export class AllTrainingsAdminComponent {
   }
 
   handleTableAction(event: { action: string; item: any; index: number }): void {
-
     if (event.action === 'view') {
       this.traineeList = [];
       this.trainingDetails = event.item;
@@ -1093,19 +1143,22 @@ export class AllTrainingsAdminComponent {
       // Filter out already approved or rejected trainees to prevent re-rejection
       const eligibleTraineesForReject = items.filter(
         (trainee) =>
-          trainee.status !== 'APPROVED' && 
+          trainee.status !== 'APPROVED' &&
           trainee.status !== 'REJECTED' &&
           trainee.status !== 'APPROVED_BY_STATE_ADMIN' &&
           trainee.status !== 'APPROVED_BY_ORGANIZATION' &&
           trainee.status !== 'REJECTED_BY_INSTITUTE_HEAD' &&
           trainee.status !== 'CERTIFICATE_ISSUED'
       );
-      
+
       if (eligibleTraineesForReject.length === 0) {
-        this.toastr.warning('No eligible trainees to reject. Please select trainees that are not already approved or rejected.', 'Warning');
+        this.toastr.warning(
+          'No eligible trainees to reject. Please select trainees that are not already approved or rejected.',
+          'Warning'
+        );
         return;
       }
-      
+
       this.selectedTraineesForBulkReject = eligibleTraineesForReject;
       this.rejectForm.reset();
       this.modalService.open(this.rejectModal, { centered: true });
@@ -1180,7 +1233,7 @@ export class AllTrainingsAdminComponent {
 
   bulkRejectTraineesWithRemarks(trainees: any[], remarks: string): void {
     this.isTableLoading = true;
-    
+
     // Filter trainees that can be rejected (not already approved or rejected)
     const eligibleTrainees = trainees.filter(
       (trainee) =>
@@ -1208,7 +1261,7 @@ export class AllTrainingsAdminComponent {
     this.adminService.rejectTrainees(payload).subscribe({
       next: (response) => {
         this.isTableLoading = false;
-        
+
         if (response.success) {
           // Update status for all rejected trainees based on user role
           eligibleTrainees.forEach((trainee) => {
@@ -1219,18 +1272,18 @@ export class AllTrainingsAdminComponent {
             }
             trainee.remarks = remarks;
           });
-          
+
           // Show success message
           this.toastr.success(
             `${eligibleTrainees.length} trainee(s) rejected successfully`,
             'Success'
           );
-          
+
           // Clear selected items in the table
           if (this.traineeTable) {
             this.traineeTable.clearSelectedItems();
           }
-          
+
           // Refresh the trainee list
           this.refreshTraineeList();
         } else {
@@ -1239,7 +1292,7 @@ export class AllTrainingsAdminComponent {
             'Error'
           );
         }
-        
+
         // Always close modal and cleanup after API response (success or failure)
         if (this.rejectModalRef) {
           this.rejectModalRef.close();
@@ -1254,7 +1307,7 @@ export class AllTrainingsAdminComponent {
         this.isTableLoading = false;
         this.toastr.error(errorMessage, 'Error');
         console.error('Error rejecting trainees:', error);
-        
+
         // Close modal and cleanup even on error
         if (this.rejectModalRef) {
           this.rejectModalRef.close();
