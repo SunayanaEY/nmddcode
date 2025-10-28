@@ -67,6 +67,7 @@ export class AuthService {
         tap((response) => {
           if (response && response.data) {
             const loginTime = Date.now();
+            console.log('Rsponse login : ' + JSON.stringify(response.data));
             sessionStorage.setItem('user', JSON.stringify(response.data));
             sessionStorage.setItem('loginTime', loginTime.toString());
             this.user = response.data;
@@ -113,21 +114,24 @@ export class AuthService {
     this.isLoggingOut = true;
 
     // Call logout API and clear session data only after successful response
-    this.http.post(`${this.apiUrl}api/auth/logout`, {}).pipe(
-      catchError((error) => {
-        console.error('Logout API failed', error);
-        // Clear session data even if API fails
-        this.clearSessionData();
-        this.isLoggingOut = false;
-        return of(null);
-      })
-    ).subscribe({
-      next: (response) => {
-        // Only clear session data after successful API response
-        this.clearSessionData();
-        this.isLoggingOut = false;
-      }
-    });
+    this.http
+      .post(`${this.apiUrl}api/auth/logout`, {})
+      .pipe(
+        catchError((error) => {
+          console.error('Logout API failed', error);
+          // Clear session data even if API fails
+          this.clearSessionData();
+          this.isLoggingOut = false;
+          return of(null);
+        })
+      )
+      .subscribe({
+        next: (response) => {
+          // Only clear session data after successful API response
+          this.clearSessionData();
+          this.isLoggingOut = false;
+        },
+      });
   }
 
   private clearSessionData(): void {
