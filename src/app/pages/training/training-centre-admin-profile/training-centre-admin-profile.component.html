@@ -490,6 +490,42 @@
                     ></i>
                   </button>
                 </div>
+                
+                <!-- Password Policy Information -->
+                <div class="password-policy">
+                  <div class="password-policy-title">Password must contain:</div>
+                  <ul class="password-requirements">
+                    <li [class.valid]="hasMinLength" [class.invalid]="!hasMinLength && profileForm.get('password')?.value">
+                      <span class="icon" [class.valid]="hasMinLength" [class.invalid]="!hasMinLength && profileForm.get('password')?.value">
+                        <i class="fas fa-check" *ngIf="hasMinLength"></i>
+                        <i class="fas fa-times" *ngIf="!hasMinLength && profileForm.get('password')?.value"></i>
+                      </span>
+                      <span class="text">At least 8 characters</span>
+                    </li>
+                    <li [class.valid]="hasUppercase" [class.invalid]="!hasUppercase && profileForm.get('password')?.value">
+                      <span class="icon" [class.valid]="hasUppercase" [class.invalid]="!hasUppercase && profileForm.get('password')?.value">
+                        <i class="fas fa-check" *ngIf="hasUppercase"></i>
+                        <i class="fas fa-times" *ngIf="!hasUppercase && profileForm.get('password')?.value"></i>
+                      </span>
+                      <span class="text">Contains an uppercase letter</span>
+                    </li>
+                    <li [class.valid]="hasLowercase" [class.invalid]="!hasLowercase && profileForm.get('password')?.value">
+                      <span class="icon" [class.valid]="hasLowercase" [class.invalid]="!hasLowercase && profileForm.get('password')?.value">
+                        <i class="fas fa-check" *ngIf="hasLowercase"></i>
+                        <i class="fas fa-times" *ngIf="!hasLowercase && profileForm.get('password')?.value"></i>
+                      </span>
+                      <span class="text">Contains a lowercase letter</span>
+                    </li>
+                    <li [class.valid]="hasNumber && hasSpecialChar" [class.invalid]="(!hasNumber || !hasSpecialChar) && profileForm.get('password')?.value">
+                      <span class="icon" [class.valid]="hasNumber && hasSpecialChar" [class.invalid]="(!hasNumber || !hasSpecialChar) && profileForm.get('password')?.value">
+                        <i class="fas fa-check" *ngIf="hasNumber && hasSpecialChar"></i>
+                        <i class="fas fa-times" *ngIf="(!hasNumber || !hasSpecialChar) && profileForm.get('password')?.value"></i>
+                      </span>
+                      <span class="text">Contains a number and symbol</span>
+                    </li>
+                  </ul>
+                </div>
+
                 <div
                   class="invalid-feedback"
                   *ngIf="
@@ -581,19 +617,25 @@
                 (dragover)="onDragOverDoc($event)"
                 (dragleave)="onDragLeaveDoc($event)"
                 (drop)="onDropDoc($event)"
-                [class.drag-over]="isDragOver"
+                [class.drag-over]="isDragOverDoc"
               >
                 <div *ngIf="!selectedDocPreview" class="upload-placeholder">
                   <i class="fas fa-cloud-upload-alt upload-icon"></i>
                   <p>Drag and drop the document here or click to select</p>
                   <span class="file-types">PDF up to 5MB</span>
                 </div>
-                <div *ngIf="selectedDocPreview">
-                  <img
-                    [src]="selectedDocPreview"
-                    alt="Preview"
-                    class="preview-image"
-                  />
+                <div *ngIf="selectedDocPreview" class="pdf-preview-container">
+                  <div class="pdf-info">
+                    <i class="fas fa-file-pdf pdf-icon"></i>
+                    <span class="pdf-name">{{ selectedDocPreview }}</span>
+                  </div>
+                  <div *ngIf="pdfPreviewUrl" class="pdf-preview">
+                    <img
+                      [src]="pdfPreviewUrl"
+                      alt="PDF Preview"
+                      class="preview-image pdf-preview-image"
+                    />
+                  </div>
                   <button
                     type="button"
                     class="remove-image"
