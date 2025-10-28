@@ -4,11 +4,12 @@ import { BreadcrumbComponent, BreadcrumbItem } from '../../../components/breadcr
 import { TableComponent, TableColumn, TableAction } from '../../../components/table/table.component';
 import { DataEntryOperatorService } from '../services/data-entry-operator.service';
 import { DataEntryOperator } from '../models/data-entry-operator.model';
+import { TranslateModule } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-registered-data-entry-operators',
   standalone: true,
-  imports: [CommonModule, BreadcrumbComponent, TableComponent],
+  imports: [CommonModule, BreadcrumbComponent, TableComponent, TranslateModule],
   templateUrl: './registered-data-entry-operators.component.html',
   styleUrl: './registered-data-entry-operators.component.css'
 })
@@ -19,16 +20,16 @@ export class RegisteredDataEntryOperatorsComponent implements OnInit {
   ];
 
   tableColumns: TableColumn[] = [
-    { key: 'operatorName', header: 'Operator Name' },
-    { key: 'designation', header: 'Designation' },
-    { key: 'contactNumber', header: 'Contact Number' },
-    { key: 'emailId', header: 'Email ID' },
-    { key: 'createdBy', header: 'Created By' },
-    { key: 'createdAt', header: 'Creation Date', transform: (value: string) => {
+    { key: 'operatorName', header: 'TABLE_COLUMNS.OPERATOR_NAME' },
+    { key: 'designation', header: 'TABLE_COLUMNS.DESIGNATION' },
+    { key: 'contactNumber', header: 'TABLE_COLUMNS.CONTACT_NUMBER' },
+    { key: 'emailId', header: 'TABLE_COLUMNS.EMAIL_ID' },
+    { key: 'createdBy', header: 'TABLE_COLUMNS.CREATED_BY' },
+    { key: 'createdAt', header: 'TABLE_COLUMNS.CREATION_DATE', transform: (value: string) => {
       return new Date(value).toLocaleDateString('en-IN');
     }},
-    { key: 'active', header: 'Status', transform: (value: boolean) => {
-      return value ? 'Active' : 'Inactive';
+    { key: 'active', header: 'TABLE_COLUMNS.STATUS', transform: (value: boolean) => {
+      return value ? 'TABLE_COLUMNS.ACTIVE' : 'TABLE_COLUMNS.INACTIVE';
     }}
   ];
 

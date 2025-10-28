@@ -18,11 +18,12 @@ import {
   RegisterInstituteRequest,
   RegisterDataEntryOperatorRequest,
 } from './models/user-profile.model';
+import { TranslateModule } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-user-profile-creation',
   standalone: true,
-  imports: [ReactiveFormsModule, CommonModule],
+  imports: [ReactiveFormsModule, CommonModule, TranslateModule],
   templateUrl: './user-profile-creation.component.html',
   styleUrls: ['./user-profile-creation.component.css'],
 })

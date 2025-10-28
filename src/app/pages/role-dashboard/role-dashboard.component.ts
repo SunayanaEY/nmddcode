@@ -9,6 +9,7 @@ import { TrainingService } from '../training/services/training.service';
 import { RoleDashboardService, RoleDashboardStats, TrainingDataResponse, TraineeDataResponse, TrainerDataResponse, TrainingTypeResponse, TrainingTypeData } from './role-dashboard.service';
 import { ExcelService } from '../../_services/Excel/excel.service';
 import { forkJoin } from 'rxjs';
+import { TranslateModule } from '@ngx-translate/core';
 
 // Interface for KPI Card
 interface KpiCard {
@@ -27,7 +28,7 @@ interface KpiCard {
 @Component({
   selector: 'app-role-dashboard',
   standalone: true,
-  imports: [CommonModule, BreadcrumbComponent, ReactiveFormsModule, NgxEchartsDirective],
+  imports: [CommonModule, BreadcrumbComponent, ReactiveFormsModule, NgxEchartsDirective, TranslateModule],
   templateUrl: './role-dashboard.component.html',
   styleUrls: ['./role-dashboard.component.css']
 })
