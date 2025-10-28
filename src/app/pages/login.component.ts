@@ -25,6 +25,7 @@ import { TrainingService } from './training/services/training.service';
 import { CertificateLayoutComponent } from './certificate-layout/certificate-layout.component';
 import { NewCertificateLayoutComponent } from './new-certificate-layout/new-certificate-layout.component';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
+import { HeartbeatService } from './training/services/heartbeat-service.service';
 
 @Component({
   selector: 'app-login',
@@ -36,7 +37,7 @@ import { TranslateModule, TranslateService } from '@ngx-translate/core';
     IndiaMapComponent,
     ModalComponent,
     NewCertificateLayoutComponent,
-    TranslateModule
+    TranslateModule,
   ],
   templateUrl: './login.component.html',
   styleUrls: ['./login.component.css'],
@@ -162,7 +163,8 @@ export class LoginComponent implements OnInit {
     private locationService: LocationService,
     private geocodingService: GeocodingService,
     private trainingsService: TrainingService,
-    private translateService: TranslateService
+    private translateService: TranslateService,
+    private heartbeatService: HeartbeatService
   ) {
     this.signInForm = this.fb.group({
       email: ['', [Validators.required, Validators.email]],
@@ -267,6 +269,10 @@ export class LoginComponent implements OnInit {
       },
     });
   }
+  onLoginSuccess(token: string) {
+    localStorage.setItem('authToken', token);
+    this.heartbeatService.startHeartbeat();
+  }
 
   onSignIn() {
     if (this.signInForm.invalid) {
@@ -290,6 +296,11 @@ export class LoginComponent implements OnInit {
           this.toastr.success('Login successful!', 'Welcome');
           localStorage.setItem('username', response.data.username);
           localStorage.setItem('roleId', response.data.role.toString());
+          const user = JSON.parse(sessionStorage.getItem('user') || '{}');
+          const authToken = user.authData;
+          if (authToken != null) {
+            this.onLoginSuccess(authToken);
+          }
 
           // Role-based redirect
           this.redirectBasedOnRole(response.data.role);
@@ -300,16 +311,16 @@ export class LoginComponent implements OnInit {
       },
       error: (error) => {
         this.isLoading = false;
-        
+
         // Extract specific error message from server response
         let errorMessage = 'Login failed. Please try again.';
-        
+
         if (error.error && error.error.message) {
           errorMessage = error.error.message;
         } else if (error.message) {
           errorMessage = error.message;
         }
-        
+
         this.errorMessage = errorMessage;
         this.toastr.error(errorMessage, 'Login Failed');
         console.error('Login error:', error);
