@@ -35,87 +35,379 @@
   margin-bottom: 20px;
 }
 
-.filter-container {
+/* Modern Filter Section Styles */
+.filter-section {
+  background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+  border-radius: 16px;
+  padding: 24px;
+  margin-bottom: 32px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.filter-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 18px;
-  background-color: #f8f9fa;
-  padding: 5px;
+  margin-bottom: 24px;
+  padding-bottom: 16px;
+  border-bottom: 2px solid rgba(21, 94, 145, 0.1);
+}
+
+.filter-title-container {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.filter-icon {
+  font-size: 24px;
+  color: #155e91;
+  background: rgba(21, 94, 145, 0.1);
+  padding: 8px;
   border-radius: 8px;
-  height: 46px;
 }
 
-.filter-controls {
+.filter-title {
+  font-size: 20px;
+  font-weight: 600;
+  color: #2c3e50;
+  margin: 0;
+  letter-spacing: -0.02em;
+}
+
+.clear-filters-btn {
+  border-radius: 8px;
+  font-weight: 500;
+  padding: 8px 16px;
+  transition: all 0.3s ease;
+  border: 1px solid #dee2e6;
+}
+
+.clear-filters-btn:hover:not(:disabled) {
+  background-color: #dc3545;
+  border-color: #dc3545;
+  color: white;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(220, 53, 69, 0.3);
+}
+
+.clear-filters-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.modern-filter-container {
+  background: white;
+  border-radius: 12px;
+  padding: 24px;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.05);
+}
+
+.filter-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 24px;
+  margin-bottom: 20px;
+}
+
+.filter-item {
   display: flex;
-  gap: 10px;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.filter-label {
+  display: flex;
   align-items: center;
+  gap: 8px;
+  font-weight: 600;
+  font-size: 14px;
+  color: #495057;
+  margin-bottom: 4px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
 }
 
-.filter-controls .form-control {
-  height: 38px;
+.filter-label-icon {
+  font-size: 16px;
+  color: #155e91;
 }
 
-.filter-controls .form-check {
+/* Modern ng-select styling */
+::ng-deep .modern-select {
+  .ng-select-container {
+    border: 2px solid #e9ecef;
+    border-radius: 10px;
+    min-height: 48px;
+    background: white;
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+  }
+
+  .ng-select-container:hover {
+    border-color: #155e91;
+    box-shadow: 0 4px 16px rgba(21, 94, 145, 0.1);
+  }
+
+  &.ng-select-focused .ng-select-container {
+    border-color: #155e91;
+    box-shadow: 0 0 0 3px rgba(21, 94, 145, 0.1);
+  }
+
+  .ng-placeholder {
+    color: #6c757d;
+    font-weight: 400;
+    font-size: 14px;
+  }
+
+  .ng-value-container {
+    padding: 0 16px;
+    font-size: 14px;
+    font-weight: 500;
+  }
+
+  .ng-arrow-wrapper {
+    padding-right: 16px;
+    width: 25px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+  }
+
+  .ng-arrow-wrapper::after {
+    content: '\F282'; /* Bootstrap chevron-down icon */
+    font-family: 'bootstrap-icons';
+    font-size: 14px;
+    color: #155e91;
+    position: absolute;
+    transition: all 0.2s ease;
+    pointer-events: none;
+  }
+
+  &.ng-select-opened .ng-arrow-wrapper::after {
+    content: '\F281'; /* Bootstrap chevron-up icon */
+    color: #155e91;
+  }
+
+  &:hover .ng-arrow-wrapper::after {
+    color: #0d4a73;
+  }
+
+  .ng-arrow {
+    display: none; /* Hide default arrow in favor of Bootstrap icon */
+  }
+
+  .ng-clear-wrapper {
+    padding-right: 8px;
+  }
+
+  .ng-clear {
+    font-size: 18px;
+    color: #dc3545;
+    opacity: 0.7;
+    transition: opacity 0.2s ease;
+  }
+
+  .ng-clear:hover {
+    opacity: 1;
+  }
+}
+
+::ng-deep .modern-select .ng-dropdown-panel {
+  background-color: #ffffff !important;
+  border: 2px solid #e9ecef;
+  border-radius: 10px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.25);
+  margin-top: 4px;
+  overflow: hidden;
+  z-index: 9999;
+  opacity: 1 !important;
+}
+
+::ng-deep .modern-select .ng-dropdown-panel .ng-option {
+  background-color: #ffffff !important;
+  padding: 12px 16px;
+  font-size: 14px;
+  font-weight: 500;
+  border-bottom: 1px solid #f8f9fa;
+  transition: all 0.2s ease;
+}
+
+::ng-deep .modern-select .ng-dropdown-panel .ng-option:hover {
+  background-color: #f8f9fa !important;
+  color: #155e91;
+}
+
+::ng-deep .modern-select .ng-dropdown-panel .ng-option.ng-option-selected {
+  background-color: #155e91 !important;
+  color: white;
+}
+
+::ng-deep .modern-select .ng-dropdown-panel .ng-option.ng-option-highlighted {
+  background-color: rgba(21, 94, 145, 0.15) !important;
+  color: #155e91;
+}
+
+/* Status option styling */
+.status-option {
   display: flex;
   align-items: center;
-  gap: 5px;
+  gap: 8px;
+  font-weight: 500;
 }
 
-.action-buttons {
+.status-option.status-new {
+  color: #6c757d;
+}
+
+.status-option.status-validated {
+  color: #17a2b8;
+}
+
+.status-option.status-approved {
+  color: #28a745;
+}
+
+.status-option.status-rejected {
+  color: #dc3545;
+}
+
+.status-option.status-pending {
+  color: #ffc107;
+}
+
+/* Active Filters Section */
+.active-filters {
+  margin-top: 20px;
+  padding-top: 20px;
+  border-top: 1px solid #e9ecef;
+}
+
+.active-filters-label {
+  font-weight: 600;
+  color: #495057;
+  font-size: 14px;
+  margin-bottom: 12px;
+  display: block;
+}
+
+.filter-tags {
   display: flex;
-  gap: 10px;
+  flex-wrap: wrap;
+  gap: 8px;
 }
 
+.filter-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: linear-gradient(135deg, #155e91, #1a6ba3);
+  color: white;
+  padding: 6px 12px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 500;
+  box-shadow: 0 2px 8px rgba(21, 94, 145, 0.3);
+  animation: slideIn 0.3s ease;
+}
+
+.filter-tag i {
+  font-size: 12px;
+}
+
+.remove-filter {
+  background: rgba(255, 255, 255, 0.2);
+  border: none;
+  border-radius: 50%;
+  width: 18px;
+  height: 18px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  margin-left: 4px;
+}
+
+.remove-filter:hover {
+  background: rgba(255, 255, 255, 0.3);
+  transform: scale(1.1);
+}
+
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .filter-section {
+    padding: 16px;
+    margin-bottom: 24px;
+  }
+
+  .filter-header {
+    flex-direction: column;
+    gap: 16px;
+    align-items: flex-start;
+  }
+
+  .filter-grid {
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
+
+  .modern-filter-container {
+    padding: 16px;
+  }
+
+  .filter-tags {
+    justify-content: flex-start;
+  }
+}
+
+/* Legacy filter container - keeping for compatibility but hiding */
+.filter-container {
+  display: none;
+}
+
+/* Trainings Summary Styling */
 .trainings-summary {
   display: flex;
   align-items: center;
-  gap: 10px;
-  margin-bottom: 20px;
+  gap: 12px;
+  margin-bottom: 24px;
+  padding: 16px 20px;
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.05);
+  border-left: 4px solid #155e91;
 }
 
 .trainings-summary h4 {
   margin: 0;
   font-size: 18px;
+  font-weight: 600;
+  color: #2c3e50;
 }
 
 .trainings-summary .badge {
   font-size: 14px;
-}
-
-.custom-ng-select .custom-option {
-  color: #4caf50; /* Green text */
-  font-weight: bold;
-  padding: 5px;
-}
-
-.custom-ng-select .custom-option:hover {
-  background-color: #f0f0f0; /* Light gray on hover */
-}
-
-::ng-deep .custom-ng-select .ng-dropdown-panel {
-  width: auto;
-  z-index: 1050;
-  border: 1px solid lightgrey;
-  border-radius: 2.5px;
-  background: white;
-  height: auto;
-  overflow: hidden;
-  overflow-y: scroll;
-  scroll-behavior: smooth;
-  scrollbar-width: none;
-}
-.custom-ng-select.ng-option {
-  background-color: #f0f0f0;
-  width: 100px;
-}
-.ng-option-label {
-  background-color: #f0f0f0;
-  width: 100px;
-}
-
-::ng-deep .custom-ng-select .ng-dropdown-panel .ng-option {
-  border: 1px solid whitesmoke;
+  font-weight: 500;
+  padding: 8px 12px;
+  border-radius: 8px;
+  background: linear-gradient(135deg, #155e91, #1a6ba3);
+  color: white;
+  box-shadow: 0 2px 8px rgba(21, 94, 145, 0.3);
 }
 
 /* modal css */

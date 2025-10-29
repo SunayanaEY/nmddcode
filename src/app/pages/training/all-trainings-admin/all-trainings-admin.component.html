@@ -5,101 +5,145 @@
     <h2>{{ 'Approve and Reject Trainings' | translate }}</h2>
   </div>
 
-  <div style="height: 34px">
-    <span>
-      <h3>{{ 'ALL_TRAININGS.FILTER_BY' | translate }}</h3>
-    </span>
-    <br />
-  </div>
-
-  <div class="filter-container">
-    <div class="filter-controls">
-      <ng-select
-        class="custom-ng-select form-control"
-        placeholder="Scheme"
-        [(ngModel)]="filters.scheme"
-        style="
-          height: 100%;
-          width: 100%;
-          font-weight: 400;
-          line-height: 1.5;
-          color: #121213;
-          background-color: #fff;
-          background-clip: padding-box;
-          box-shadow: none;
-        "
-        (change)="applyFilters()"
-      >
-        <ng-option *ngFor="let name of uniqueValuesScheme()" [value]="name">{{
-          name
-        }}</ng-option>
-      </ng-select>
-
-      <ng-select
-        class="custom-ng-select form-control"
-        placeholder="District"
-        [(ngModel)]="filters.district"
-        style="
-          height: 100%;
-          width: 100%;
-          font-weight: 400;
-          line-height: 1.5;
-          color: #121213;
-          background-color: #fff;
-          background-clip: padding-box;
-          box-shadow: none;
-        "
-        (change)="applyFilters()"
-      >
-        <ng-option *ngFor="let name of uniqueValuesDistrict()" [value]="name">{{
-          name
-        }}</ng-option>
-      </ng-select>
-      <ng-select
-        class="custom-ng-select form-control"
-        placeholder="Training Date"
-        [(ngModel)]="filters.trainingDate"
-        style="
-          height: 100%;
-          width: 100%;
-          font-weight: 400;
-          line-height: 1.5;
-          color: #121213;
-          background-color: #fff;
-          background-clip: padding-box;
-          box-shadow: none;
-        "
-        (change)="applyFilters()"
-      >
-        <ng-option
-          *ngFor="let name of uniqueValuesTrainingDate()"
-          [value]="name"
-          >{{ name }}</ng-option
+  <!-- Modern Filter Section -->
+  <div class="filter-section">
+    <div class="filter-header">
+      <div class="filter-title-container">
+        <i class="bi bi-funnel filter-icon"></i>
+        <h3 class="filter-title">{{ 'ALL_TRAININGS.FILTER_BY' | translate }}</h3>
+      </div>
+      <div class="filter-actions">
+        <button 
+          class="btn btn-outline-secondary btn-sm clear-filters-btn"
+          (click)="clearAllFilters()"
+          [disabled]="!hasActiveFilters()"
         >
-      </ng-select>
+          <i class="bi bi-x-circle me-1"></i>
+          Clear All
+        </button>
+      </div>
+    </div>
 
-      <ng-select
-        class="custom-ng-select form-control"
-        placeholder="Status"
-        [(ngModel)]="filters.status"
-        style="
-          height: 100%;
-          width: 100%;
-          font-weight: 400;
-          line-height: 1.5;
-          color: #121213;
-          background-color: #fff;
-          background-clip: padding-box;
-          box-shadow: none;
-        "
-        (change)="applyFilters()"
-      >
-        <ng-option
-          *ngFor="let status of uniqueValuesStatus()"
-          [value]="status"
-          >{{ status }}</ng-option
-        >
-      </ng-select>
+    <div class="modern-filter-container">
+      <div class="filter-grid">
+        <!-- Scheme Filter -->
+        <div class="filter-item">
+          <label class="filter-label">
+            <i class="bi bi-diagram-3 filter-label-icon"></i>
+            Scheme
+          </label>
+          <ng-select
+            class="modern-select"
+            placeholder="Select Scheme"
+            [(ngModel)]="filters.scheme"
+            (change)="applyFilters()"
+            clearable="true"
+            [searchable]="true"
+          >
+            <ng-option *ngFor="let name of uniqueValuesScheme()" [value]="name">
+              {{ name }}
+            </ng-option>
+          </ng-select>
+        </div>
+
+        <!-- District Filter -->
+        <div class="filter-item">
+          <label class="filter-label">
+            <i class="bi bi-geo-alt filter-label-icon"></i>
+            District
+          </label>
+          <ng-select
+            class="modern-select"
+            placeholder="Select District"
+            [(ngModel)]="filters.district"
+            (change)="applyFilters()"
+            clearable="true"
+            [searchable]="true"
+          >
+            <ng-option *ngFor="let name of uniqueValuesDistrict()" [value]="name">
+              {{ name }}
+            </ng-option>
+          </ng-select>
+        </div>
+
+        <!-- Training Date Filter -->
+        <div class="filter-item">
+          <label class="filter-label">
+            <i class="bi bi-calendar-event filter-label-icon"></i>
+            Training Date
+          </label>
+          <ng-select
+            class="modern-select"
+            placeholder="Select Training Date"
+            [(ngModel)]="filters.trainingDate"
+            (change)="applyFilters()"
+            clearable="true"
+            [searchable]="true"
+          >
+            <ng-option *ngFor="let name of uniqueValuesTrainingDate()" [value]="name">
+              {{ name }}
+            </ng-option>
+          </ng-select>
+        </div>
+
+        <!-- Status Filter -->
+        <div class="filter-item">
+          <label class="filter-label">
+            <i class="bi bi-check-circle filter-label-icon"></i>
+            Status
+          </label>
+          <ng-select
+            class="modern-select"
+            placeholder="Select Status"
+            [(ngModel)]="filters.status"
+            (change)="applyFilters()"
+            clearable="true"
+            [searchable]="true"
+          >
+            <ng-option *ngFor="let status of uniqueValuesStatus()" [value]="status">
+              <span class="status-option" [ngClass]="getStatusClass(status)">
+                <i class="bi" [ngClass]="getStatusIcon(status)"></i>
+                {{ status }}
+              </span>
+            </ng-option>
+          </ng-select>
+        </div>
+      </div>
+
+      <!-- Active Filters Display -->
+      <div class="active-filters" *ngIf="hasActiveFilters()">
+        <span class="active-filters-label">Active Filters:</span>
+        <div class="filter-tags">
+          <span class="filter-tag" *ngIf="filters.scheme">
+            <i class="bi bi-diagram-3"></i>
+            Scheme: {{ filters.scheme }}
+            <button class="remove-filter" (click)="removeFilter('scheme')">
+              <i class="bi bi-x"></i>
+            </button>
+          </span>
+          <span class="filter-tag" *ngIf="filters.district">
+            <i class="bi bi-geo-alt"></i>
+            District: {{ filters.district }}
+            <button class="remove-filter" (click)="removeFilter('district')">
+              <i class="bi bi-x"></i>
+            </button>
+          </span>
+          <span class="filter-tag" *ngIf="filters.trainingDate">
+            <i class="bi bi-calendar-event"></i>
+            Date: {{ filters.trainingDate }}
+            <button class="remove-filter" (click)="removeFilter('trainingDate')">
+              <i class="bi bi-x"></i>
+            </button>
+          </span>
+          <span class="filter-tag" *ngIf="filters.status">
+            <i class="bi bi-check-circle"></i>
+            Status: {{ filters.status }}
+            <button class="remove-filter" (click)="removeFilter('status')">
+              <i class="bi bi-x"></i>
+            </button>
+          </span>
+        </div>
+      </div>
     </div>
   </div>
 
