@@ -92,6 +92,89 @@
   flex-wrap: wrap;
 }
 
+/* Filters Section */
+.filters-section {
+  background: white;
+  border-radius: 12px;
+  padding: 20px;
+  margin-bottom: 24px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.filters-container {
+  display: flex;
+  gap: 20px;
+  align-items: end;
+  flex-wrap: wrap;
+}
+
+.filter-group {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  min-width: 200px;
+}
+
+.filter-label {
+  font-size: 14px;
+  font-weight: 500;
+  color: #495057;
+  margin: 0;
+}
+
+.filter-select {
+  padding: 10px 12px;
+  border: 2px solid #e9ecef;
+  border-radius: 8px;
+  font-size: 14px;
+  color: #495057;
+  background-color: white;
+  transition: all 0.2s ease;
+  cursor: pointer;
+}
+
+.filter-select:focus {
+  outline: none;
+  border-color: #667eea;
+  box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+}
+
+.filter-select:hover {
+  border-color: #ced4da;
+}
+
+.filter-actions {
+  display: flex;
+  gap: 10px;
+  align-items: end;
+}
+
+.btn-secondary {
+  background: #6c757d;
+  color: white;
+  border: none;
+  padding: 10px 16px;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.btn-secondary:hover {
+  background: #5a6268;
+  transform: translateY(-1px);
+  box-shadow: 0 2px 8px rgba(108, 117, 125, 0.3);
+}
+
+.btn-sm {
+  padding: 8px 12px;
+  font-size: 13px;
+}
+
 .btn {
   padding: 12px 20px;
   border-radius: 8px;
@@ -297,6 +380,22 @@
   .action-buttons {
     flex-direction: column;
     gap: 10px;
+  }
+
+  .filters-container {
+    flex-direction: column;
+    gap: 15px;
+    align-items: stretch;
+  }
+
+  .filter-group {
+    min-width: auto;
+    width: 100%;
+  }
+
+  .filter-actions {
+    justify-content: center;
+    margin-top: 10px;
   }
 
   .btn {
