@@ -128,6 +128,26 @@
   background: linear-gradient(135deg, #ffe0b2 0%, #fff3e0 100%);
 }
 
+.kpi-card-teal {
+  --card-color-start: #20c997;
+  --card-color-end: #17a2b8;
+  background: linear-gradient(135deg, #e0f7fa 0%, #f0fdff 100%);
+}
+
+.kpi-card-teal:hover {
+  background: linear-gradient(135deg, #b2ebf2 0%, #e0f7fa 100%);
+}
+
+.kpi-card-indigo {
+  --card-color-start: #6610f2;
+  --card-color-end: #4e0d99;
+  background: linear-gradient(135deg, #f3e8ff 0%, #faf5ff 100%);
+}
+
+.kpi-card-indigo:hover {
+  background: linear-gradient(135deg, #e9d5ff 0%, #f3e8ff 100%);
+}
+
 /* KPI Header */
 .kpi-header {
   display: flex;
@@ -168,6 +188,16 @@
   color: white;
 }
 
+.kpi-card-teal .kpi-icon {
+  background: linear-gradient(135deg, #20c997, #17a2b8);
+  color: white;
+}
+
+.kpi-card-indigo .kpi-icon {
+  background: linear-gradient(135deg, #6610f2, #4e0d99);
+  color: white;
+}
+
 .kpi-card:hover .kpi-icon {
   transform: scale(1.1) rotate(5deg);
   box-shadow: 0 6px 20px rgba(0, 0, 0, 0.25);
@@ -205,6 +235,16 @@
 
 .kpi-card-orange .btn-download-new {
   background: linear-gradient(135deg, #ff6b35, #fd7e14);
+  color: white;
+}
+
+.kpi-card-teal .btn-download-new {
+  background: linear-gradient(135deg, #20c997, #17a2b8);
+  color: white;
+}
+
+.kpi-card-indigo .btn-download-new {
+  background: linear-gradient(135deg, #6610f2, #4e0d99);
   color: white;
 }
 
@@ -264,6 +304,20 @@
 
 .kpi-card-orange .kpi-value {
   background: linear-gradient(135deg, #ff6b35, #fd7e14);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.kpi-card-teal .kpi-value {
+  background: linear-gradient(135deg, #20c997, #17a2b8);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.kpi-card-indigo .kpi-value {
+  background: linear-gradient(135deg, #6610f2, #4e0d99);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;

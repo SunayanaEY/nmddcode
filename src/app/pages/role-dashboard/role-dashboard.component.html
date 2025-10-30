@@ -137,7 +137,7 @@
 
               <!-- Count of Registered Trainers (Only for Role 3) -->
               <div *ngIf="userRole === 3" class="col-lg-3 col-md-6 mb-4">
-                <div class="kpi-card kpi-card-green">
+                <div class="kpi-card kpi-card-teal">
                   <div class="kpi-header">
                     <div class="kpi-icon">
                       <i class="fas fa-chalkboard-teacher"></i>
@@ -151,6 +151,26 @@
                   <div class="kpi-content">
                      <div class="kpi-title">{{ 'ROLE_DASHBOARD.COUNT_OF_REGISTERED_TRAINERS' | translate }}</div>
                      <div class="kpi-value">{{ getKpiCards()[4]?.value || '0' }}</div>
+                   </div>
+                </div>
+              </div>
+
+              <!-- Trainee Recommended for Certification (Only for Role 3) -->
+              <div *ngIf="userRole === 3" class="col-lg-3 col-md-6 mb-4">
+                <div class="kpi-card kpi-card-indigo">
+                  <div class="kpi-header">
+                    <div class="kpi-icon">
+                      <i class="fas fa-certificate"></i>
+                    </div>
+                    <button class="btn-download-new" 
+                            (click)="downloadKpiData('traineeRecommendedCertification', $event)"
+                            title="{{ 'ROLE_DASHBOARD.DOWNLOAD_DATA' | translate }}">
+                      <i class="fas fa-download"></i>
+                    </button>
+                  </div>
+                  <div class="kpi-content">
+                     <div class="kpi-title">Trainee Recommended for Certification</div>
+                     <div class="kpi-value">{{ getKpiCards()[5]?.value || '0' }}</div>
                    </div>
                 </div>
               </div>

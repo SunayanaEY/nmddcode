@@ -390,9 +390,20 @@ export class RoleDashboardComponent implements OnInit {
           title: 'Count of Registered Trainers',
           value: this.trainerCount,
           icon: 'fas fa-chalkboard-teacher',
-          colorClass: 'kpi-card-green',
+          colorClass: 'kpi-card-teal',
           growth: {
             value: '↑ 7% from last month',
+            isPositive: true
+          }
+        },
+        {
+          id: 'traineeRecommendedCertification',
+          title: 'Trainee Recommended for Certification',
+          value: 0, // This will be updated when API is available
+          icon: 'fas fa-certificate',
+          colorClass: 'kpi-card-indigo',
+          growth: {
+            value: '↑ 10% from last month',
             isPositive: true
           }
         }
