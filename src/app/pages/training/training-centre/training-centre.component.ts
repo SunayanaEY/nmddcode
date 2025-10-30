@@ -33,7 +33,7 @@ import { TranslateModule } from '@ngx-translate/core';
   standalone: true,
   imports: [
     CommonModule,
-    BreadcrumbComponent,
+    // BreadcrumbComponent,
     TableComponent,
     ModalComponent,
     HttpClientModule,
@@ -143,16 +143,16 @@ export class TrainingCentreComponent implements OnInit {
 
   ngOnInit(): void {
     this.getRole();
-    if (this.userRole === 5 || this.userRole === 6) {
-      this.tableActions.splice(1, 0, {
-        name: 'fill',
-        icon: 'bi-card-text',
-        class: 'btn-success',
-        title: 'Complete Form',
-        condition: (row: any) =>
-          row.status === 'PENDING STATE INPUT',
-      });
-    }
+    // if (this.userRole === 5 || this.userRole === 6) {
+    //   this.tableActions.splice(1, 0, {
+    //     name: 'fill',
+    //     icon: 'bi-card-text',
+    //     class: 'btn-success',
+    //     title: 'Complete Form',
+    //     condition: (row: any) =>
+    //       row.status === 'PENDING STATE INPUT',
+    //   });
+    // }
     if (this.userRole === 1) {
       this.tableActions.splice(1, 0, {
         name: 'toggle',
@@ -631,7 +631,7 @@ export class TrainingCentreComponent implements OnInit {
         error: (error) => {
           console.error('Error toggling centre status:', error);
           alert('Failed to update centre status. Please try again.');
-          
+
           // Reset loading state and close the confirmation modal
           this.confirmModalConfig.isLoading = false;
           this.showConfirmModal = false;

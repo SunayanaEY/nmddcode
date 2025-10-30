@@ -25,7 +25,7 @@
                 type="text"
                 id="trainingTitle"
                 formControlName="trainingTitle"
-                [placeholder]="'Enter the Training Title here' | translate"
+                [attr.placeholder]="'Enter the Training Title here' | translate"
                 class="form-control"
                 [class.is-invalid]="
                   trainingForm.get('trainingTitle')?.invalid &&
@@ -533,7 +533,9 @@
 
         <!-- Upload Signature Section -->
         <div class="form-section">
-          <h3 class="section-title">Upload Signature ( Maximum 2)</h3>
+          <h3 class="section-title">
+            {{ "Upload Signature ( Maximum 2)" | translate }}
+          </h3>
 
           <div
             class="signature-section"
@@ -541,12 +543,15 @@
           >
             <div class="form-row">
               <div class="form-group third-width">
-                <label>Signatory Name <span class="text-danger">*</span></label>
+                <label
+                  >{{ "Signatory Name" | translate }}
+                  <span class="text-danger">*</span></label
+                >
                 <input
                   type="text"
                   [value]="signature.name"
                   (input)="onSignatureNameChange($event, i)"
-                  placeholder="Enter the Name of Signatory here"
+                  [placeholder]="'Enter the Name of Signatory here' | translate"
                   class="form-control"
                   [class.is-invalid]="signatureFieldErrors[i]?.name"
                 />
@@ -554,19 +559,23 @@
                   *ngIf="signatureFieldErrors[i]?.name"
                   class="invalid-feedback"
                 >
-                  <small class="text-danger">Signatory name is required</small>
+                  <small class="text-danger">{{
+                    "Signatory name is required" | translate
+                  }}</small>
                 </div>
               </div>
               <div class="form-group third-width">
                 <label
-                  >Signatory Designation
+                  >{{ "Signatory Designation" | translate }}
                   <span class="text-danger">*</span></label
                 >
                 <input
                   type="text"
                   [value]="signature.designation"
                   (input)="onSignatureDesignationChange($event, i)"
-                  placeholder="Enter the Designation of Signatory here"
+                  [placeholder]="
+                    'Enter the Designation of Signatory here' | translate
+                  "
                   class="form-control"
                   [class.is-invalid]="signatureFieldErrors[i]?.designation"
                 />
@@ -574,21 +583,23 @@
                   *ngIf="signatureFieldErrors[i]?.designation"
                   class="invalid-feedback"
                 >
-                  <small class="text-danger"
-                    >Signatory designation is required</small
-                  >
+                  <small class="text-danger">{{
+                    "Signatory designation is required" | translate
+                  }}</small>
                 </div>
               </div>
               <div class="form-group third-width">
                 <label
-                  >Signatory Organization
+                  >{{ "Signatory Organization" | translate }}
                   <span class="text-danger">*</span></label
                 >
                 <input
                   type="text"
                   [value]="signature.organization"
                   (input)="onSignatureOrganizationChange($event, i)"
-                  placeholder="Enter the Organization of Signatory here"
+                  [placeholder]="
+                    'Enter the Organization of Signatory here' | translate
+                  "
                   class="form-control"
                   [class.is-invalid]="signatureFieldErrors[i]?.organization"
                 />
@@ -596,9 +607,9 @@
                   *ngIf="signatureFieldErrors[i]?.organization"
                   class="invalid-feedback"
                 >
-                  <small class="text-danger"
-                    >Signatory organization is required</small
-                  >
+                  <small class="text-danger">{{
+                    "Signatory organization is required" | translate
+                  }}</small>
                 </div>
               </div>
             </div>
@@ -639,7 +650,9 @@
 
         <!-- Upload Logo Section -->
         <div class="form-section">
-          <h3 class="section-title">Upload Logo ( Maximum 3)</h3>
+          <h3 class="section-title">
+            {{ "Upload Logo ( Maximum 3)" | translate }}
+          </h3>
 
           <div class="logo-section" *ngFor="let logo of logos; let i = index">
             <div class="form-row">
