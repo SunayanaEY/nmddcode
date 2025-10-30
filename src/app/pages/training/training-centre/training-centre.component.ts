@@ -35,7 +35,7 @@ import { TranslateModule } from '@ngx-translate/core';
   imports: [
     CommonModule,
     FormsModule,
-    BreadcrumbComponent,
+    // BreadcrumbComponent,
     TableComponent,
     ModalComponent,
     HttpClientModule,
