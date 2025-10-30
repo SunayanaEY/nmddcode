@@ -83,8 +83,10 @@
           type="button"
           class="btn btn-success mt-2"
           (click)="downloadExcelTemplate()"
+          [disabled]="isSpinning"
         >
-          Download
+          <span *ngIf="isSpinning" class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
+          {{ isSpinning ? 'Downloading...' : 'Download' }}
         </button>
       </div>
     </div>
@@ -141,10 +143,12 @@
     class="btn btn-primary mb-4"
     (click)="submitData()"
     *ngIf="excelData.length != 0 && errorCount == 0"
+    [disabled]="isSpinning"
   >
-    Submit Data
+    <span *ngIf="isSpinning" class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
+    {{ isSpinning ? 'Submitting...' : 'Submit Data' }}
   </button>
-  <div class="upload-section">
+  <div class="upload-section" *ngIf="excelData.length === 0">
     <h2>Upload Your File</h2>
     <app-file-upload
       *ngIf="showFileUpload"
@@ -221,5 +225,15 @@
         </tbody>
       </table>
     </div>
+  </div>
+</div>
+
+<!-- Loading Spinner Overlay -->
+<div *ngIf="isSpinning" class="spinner-overlay">
+  <div class="spinner-container">
+    <div class="spinner-border text-primary" role="status" style="width: 3rem; height: 3rem;">
+      <span class="visually-hidden">Loading...</span>
+    </div>
+    <p class="mt-3 text-center">{{ isSpinning && excelData.length > 0 ? 'Submitting data...' : 'Loading...' }}</p>
   </div>
 </div>

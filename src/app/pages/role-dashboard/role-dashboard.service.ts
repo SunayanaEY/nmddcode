@@ -8,6 +8,7 @@ export interface RoleDashboardStats {
   totalTrainingsRejected: number;
   totalTraineesApproved: number;
   totalTraineesRejected: number;
+  recommendedTrainees: number;
 }
 
 export interface TrainingScheduleStats {
@@ -308,6 +309,13 @@ export class RoleDashboardService {
    */
   getRejectedTraineeData(): Observable<TraineeDataResponse> {
     return this.http.get<TraineeDataResponse>(`${this.apiUrl}public/dashboard/training-trainee-list/totalTraineesRejected`);
+  }
+
+  /**
+   * Get recommended trainees data for Excel export
+   */
+  getRecommendedTraineesData(): Observable<TraineeDataResponse> {
+    return this.http.get<TraineeDataResponse>(`${this.apiUrl}public/dashboard/training-trainee-list/recommendedTrainees`);
   }
 
   /**

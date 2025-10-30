@@ -1,5 +1,6 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
 import {
   BreadcrumbComponent,
   BreadcrumbItem,
@@ -33,7 +34,8 @@ import { TranslateModule } from '@ngx-translate/core';
   standalone: true,
   imports: [
     CommonModule,
-    // BreadcrumbComponent,
+    FormsModule,
+    BreadcrumbComponent,
     TableComponent,
     ModalComponent,
     HttpClientModule,
@@ -58,6 +60,7 @@ export class TrainingCentreComponent implements OnInit {
   confirmationText = '';
   pendingToggleItem: any = null;
   statusFilter: string = '';
+  stateFilter: string = '';
   userRole: any;
   userId: any;
   modalConfig!: ModalConfig; // declare only, initialize in ngOnInit
@@ -384,6 +387,45 @@ export class TrainingCentreComponent implements OnInit {
 
   get statesCovered(): number {
     return new Set(this.trainingCentres.map((centre) => centre.state)).size;
+  }
+
+  get uniqueStates(): string[] {
+    return [...new Set(this.trainingCentres.map((centre) => centre.state))]
+      .filter(Boolean)
+      .sort();
+  }
+
+  get filteredTrainingCentres(): any[] {
+    let filtered = [...this.trainingCentres];
+
+    // Filter by state
+    if (this.stateFilter) {
+      filtered = filtered.filter((centre) => centre.state === this.stateFilter);
+    }
+
+    // Filter by status
+    if (this.statusFilter) {
+      if (this.statusFilter === 'active') {
+        filtered = filtered.filter((centre) => centre.active === true);
+      } else if (this.statusFilter === 'inactive') {
+        filtered = filtered.filter((centre) => centre.active === false);
+      }
+    }
+
+    return filtered;
+  }
+
+  onStateFilterChange(state: string): void {
+    this.stateFilter = state;
+  }
+
+  onStatusFilterChange(status: string): void {
+    this.statusFilter = status;
+  }
+
+  clearFilters(): void {
+    this.stateFilter = '';
+    this.statusFilter = '';
   }
 
   onTableAction(event: { action: string; item: any; index: number }) {
@@ -802,13 +844,13 @@ export class TrainingCentreComponent implements OnInit {
   }
 
   exportToExcel(): void {
-    if (this.trainingCentres.length === 0) {
+    if (this.filteredTrainingCentres.length === 0) {
       alert('No data available to export');
       return;
     }
 
     // Prepare data for export
-    const exportData = this.trainingCentres.map((centre) => {
+    const exportData = this.filteredTrainingCentres.map((centre) => {
       const row: any = {};
       this.exportHeaders.forEach((header, index) => {
         const key = this.exportColumnKeys[index];

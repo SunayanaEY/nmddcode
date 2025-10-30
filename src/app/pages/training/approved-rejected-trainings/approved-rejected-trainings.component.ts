@@ -82,7 +82,8 @@ export class ApprovedRejectedTrainingsComponent {
     { label: 'Approved/Rejected Trainings' },
   ];
 
-  tableColumns: TableColumn[] = [
+  // Table columns for Approved Trainings (without remark column)
+  tableColumnsApproved: TableColumn[] = [
     {
       key: 'trainingTitle',
       header: 'Training Title',
@@ -94,7 +95,24 @@ export class ApprovedRejectedTrainingsComponent {
     { key: 'scheme', header: 'Scheme' },
     { key: 'trainingInstituteName', header: 'Training Institute' },
     { key: 'trainerName', header: 'Trainer Name' },
+    { key: 'location', header: 'Location' },
+    { key: 'trainingDate', header: 'Training Date' },
+    { key: 'status', header: 'Status' },
+  ];
 
+  // Table columns for Rejected Trainings (with remark column)
+  tableColumnsRejected: TableColumn[] = [
+    {
+      key: 'trainingTitle',
+      header: 'Training Title',
+      isLink: true,
+      linkHandler: (row) => this.openTrainingDetails(row),
+      linkCondition: (row) =>
+        row.status !== 'TRAINEE_STATE_DECISIONS_COMPLETED',
+    },
+    { key: 'scheme', header: 'Scheme' },
+    { key: 'trainingInstituteName', header: 'Training Institute' },
+    { key: 'trainerName', header: 'Trainer Name' },
     { key: 'location', header: 'Location' },
     { key: 'trainingDate', header: 'Training Date' },
     { key: 'status', header: 'Status' },
