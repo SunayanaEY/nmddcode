@@ -8,104 +8,182 @@
       <div class="header-content">
         <div class="title-section">
           <div class="icon-wrapper">
-            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <path d="M9 12L11 14L15 10" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-              <path d="M21 12C21 16.9706 16.9706 21 12 21C7.02944 21 3 16.9706 3 12C3 7.02944 7.02944 3 12 3C16.9706 3 21 7.02944 21 12Z" stroke="currentColor" stroke-width="2"/>
+            <svg
+              width="32"
+              height="32"
+              viewBox="0 0 24 24"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                d="M9 12L11 14L15 10"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              />
+              <path
+                d="M21 12C21 16.9706 16.9706 21 12 21C7.02944 21 3 16.9706 3 12C3 7.02944 7.02944 3 12 3C16.9706 3 21 7.02944 21 12Z"
+                stroke="currentColor"
+                stroke-width="2"
+              />
             </svg>
           </div>
           <div>
-            <h1 class="page-title">{{'Activity Log Feed'|translate}}</h1>
-            <p class="page-subtitle">{{'Real-time feed of training uploads, approvals, and comments'|translate}}</p>
+            <h1 class="page-title">{{ "Activity Log Feed" | translate }}</h1>
+            <p class="page-subtitle">
+              {{
+                "Real-time feed of training uploads, approvals, and comments"
+                  | translate
+              }}
+            </p>
           </div>
         </div>
-        <button class="refresh-btn" (click)="refreshLogs()" title="Refresh Activity Log">
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <path d="M3 12C3 7.02944 7.02944 3 12 3C16.9706 3 21 7.02944 21 12C21 16.9706 16.9706 21 12 21C9.61386 21 7.50196 19.9553 6.10139 18.3" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
-            <path d="M3 16V12H7" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        <button
+          class="refresh-btn"
+          (click)="refreshLogs()"
+          title="Refresh Activity Log"
+        >
+          <svg
+            width="20"
+            height="20"
+            viewBox="0 0 24 24"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              d="M3 12C3 7.02944 7.02944 3 12 3C16.9706 3 21 7.02944 21 12C21 16.9706 16.9706 21 12 21C9.61386 21 7.50196 19.9553 6.10139 18.3"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+            />
+            <path
+              d="M3 16V12H7"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            />
           </svg>
-          {{'Refresh'|translate}}
+          {{ "Refresh" | translate }}
         </button>
       </div>
     </div>
 
-  <!-- Date Filter Section -->
-  <div class="date-filter-section">
-    <div class="filter-header">
-      <h3>{{'Filter by Date Range'|translate}}:</h3>
+    <!-- Date Filter Section -->
+    <div class="date-filter-section">
+      <div class="filter-header">
+        <h3>{{ "Filter by Date Range" | translate }}:</h3>
+      </div>
+      <div class="date-filter-controls">
+        <div class="date-input-group">
+          <label for="startDate">{{ "Start Date" | translate }}:</label>
+          <input
+            type="date"
+            id="startDate"
+            class="date-input"
+            [(ngModel)]="startDate"
+            placeholder="Select start date"
+          />
+        </div>
+        <div class="date-input-group">
+          <label for="endDate">{{ "End Date" | translate }}:</label>
+          <input
+            type="date"
+            id="endDate"
+            class="date-input"
+            [(ngModel)]="endDate"
+            placeholder="Select end date"
+          />
+        </div>
+        <div class="date-filter-actions">
+          <button class="show-logs-btn" (click)="filterByDateRange()">
+            <svg
+              width="16"
+              height="16"
+              viewBox="0 0 24 24"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                d="M21 21L16.514 16.506L21 21ZM18.485 10.485C18.485 15.054 14.808 18.727 10.243 18.727C5.678 18.727 2 15.054 2 10.485C2 5.916 5.678 2.243 10.243 2.243C14.808 2.243 18.485 5.916 18.485 10.485Z"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              />
+            </svg>
+            {{ "Show Logs" | translate }}
+          </button>
+          <button class="clear-filter-btn" (click)="clearDateFilter()">
+            <svg
+              width="16"
+              height="16"
+              viewBox="0 0 24 24"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                d="M18 6L6 18"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              />
+              <path
+                d="M6 6L18 18"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              />
+            </svg>
+            {{ "Clear" | translate }}
+          </button>
+        </div>
+      </div>
     </div>
-    <div class="date-filter-controls">
-      <div class="date-input-group">
-        <label for="startDate">{{'Start Date'|translate}}:</label>
-        <input
-          type="date"
-          id="startDate"
-          class="date-input"
-          [(ngModel)]="startDate"
-          placeholder="Select start date">
-      </div>
-      <div class="date-input-group">
-        <label for="endDate">{{'End Date'|translate}}:</label>
-        <input
-          type="date"
-          id="endDate"
-          class="date-input"
-          [(ngModel)]="endDate"
-          placeholder="Select end date">
-      </div>
-      <div class="date-filter-actions">
-        <button class="show-logs-btn" (click)="filterByDateRange()">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <path d="M21 21L16.514 16.506L21 21ZM18.485 10.485C18.485 15.054 14.808 18.727 10.243 18.727C5.678 18.727 2 15.054 2 10.485C2 5.916 5.678 2.243 10.243 2.243C14.808 2.243 18.485 5.916 18.485 10.485Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-          </svg>
-          {{'Show Logs'|translate}}
-        </button>
-        <button class="clear-filter-btn" (click)="clearDateFilter()">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <path d="M18 6L6 18" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-            <path d="M6 6L18 18" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-          </svg>
-          {{'Clear'|translate}}
-        </button>
-      </div>
-    </div>
-  </div>
 
-  <!-- Status Filter Section -->
-  <div class="filter-section">
-    <div class="filter-container">
-      <h3 class="filter-title">Filter by Status:</h3>
-      <div class="filter-buttons">
-        <button
-          class="filter-btn"
-          [class.active]="selectedFilter === 'all'"
-          (click)="filterLogs('all')">
-          <span class="filter-icon">📋</span>
-          {{'All Activities'|translate}}
-        </button>
-        <button
-          class="filter-btn status-approved"
-          [class.active]="selectedFilter === 'approved'"
-          (click)="filterLogs('approved')">
-          <span class="filter-icon">✅</span>
-          {{'Approved'|translate}}
-        </button>
-        <button
-        class="filter-btn status-rejected"
-        [class.active]="selectedFilter === 'rejected'"
-        (click)="filterLogs('rejected')">
-        <span class="filter-icon">❌</span>
-        {{'Rejected'|translate}}
-      </button>
-      <button
-        class="filter-btn status-others"
-        [class.active]="selectedFilter === 'others'"
-        (click)="filterLogs('others')">
-        <span class="filter-icon">📝</span>
-        {{'Others'|translate}}
-      </button>
+    <!-- Status Filter Section -->
+    <div class="filter-section">
+      <div class="filter-container">
+        <h3 class="filter-title">{{ "Filter by Status" | translate }}:</h3>
+        <div class="filter-buttons">
+          <button
+            class="filter-btn"
+            [class.active]="selectedFilter === 'all'"
+            (click)="filterLogs('all')"
+          >
+            <span class="filter-icon">📋</span>
+            {{ "All Activities" | translate }}
+          </button>
+          <button
+            class="filter-btn status-approved"
+            [class.active]="selectedFilter === 'approved'"
+            (click)="filterLogs('approved')"
+          >
+            <span class="filter-icon">✅</span>
+            {{ "Approved" | translate }}
+          </button>
+          <button
+            class="filter-btn status-rejected"
+            [class.active]="selectedFilter === 'rejected'"
+            (click)="filterLogs('rejected')"
+          >
+            <span class="filter-icon">❌</span>
+            {{ "Rejected" | translate }}
+          </button>
+          <button
+            class="filter-btn status-others"
+            [class.active]="selectedFilter === 'others'"
+            (click)="filterLogs('others')"
+          >
+            <span class="filter-icon">📝</span>
+            {{ "Others" | translate }}
+          </button>
+        </div>
       </div>
     </div>
-  </div>
 
     <!-- Loading State -->
     <div class="loading-container" *ngIf="isLoading">
@@ -118,50 +196,105 @@
     <!-- Error Message -->
     <div class="error-container" *ngIf="errorMessage && !isLoading">
       <div class="error-message">
-        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <path d="M12 9V13M12 17H12.01M21 12C21 16.9706 16.9706 21 12 21C7.02944 21 3 16.9706 3 12C3 7.02944 7.02944 3 12 3C16.9706 3 21 7.02944 21 12Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        <svg
+          width="24"
+          height="24"
+          viewBox="0 0 24 24"
+          fill="none"
+          xmlns="http://www.w3.org/2000/svg"
+        >
+          <path
+            d="M12 9V13M12 17H12.01M21 12C21 16.9706 16.9706 21 12 21C7.02944 21 3 16.9706 3 12C3 7.02944 7.02944 3 12 3C16.9706 3 21 7.02944 21 12Z"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          />
         </svg>
-        <p>{{ errorMessage |translate }}</p>
-        <button class="retry-btn" (click)="loadActivityLogs()">{{'Try Again'|translate}}</button>
+        <p>{{ errorMessage | translate }}</p>
+        <button class="retry-btn" (click)="loadActivityLogs()">
+          {{ "Try Again" | translate }}
+        </button>
       </div>
     </div>
 
     <!-- No Data Message -->
-    <div class="no-data-container" *ngIf="!isLoading && !errorMessage && filteredLogs.length === 0">
+    <div
+      class="no-data-container"
+      *ngIf="!isLoading && !errorMessage && filteredLogs.length === 0"
+    >
       <div class="no-data-message">
-        <svg width="48" height="48" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <path d="M9 12L11 14L15 10M21 12C21 16.9706 16.9706 21 12 21C7.02944 21 3 16.9706 3 12C3 7.02944 7.02944 3 12 3C16.9706 3 21 7.02944 21 12Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        <svg
+          width="48"
+          height="48"
+          viewBox="0 0 24 24"
+          fill="none"
+          xmlns="http://www.w3.org/2000/svg"
+        >
+          <path
+            d="M9 12L11 14L15 10M21 12C21 16.9706 16.9706 21 12 21C7.02944 21 3 16.9706 3 12C3 7.02944 7.02944 3 12 3C16.9706 3 21 7.02944 21 12Z"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          />
         </svg>
-        <h3>{{'No Activity Logs Found'|translate}}</h3>
-        <p>There are no activity logs for the selected date range and filters.</p>
+        <h3>{{ "No Activity Logs Found" | translate }}</h3>
+        <p>
+          There are no activity logs for the selected date range and filters.
+        </p>
       </div>
     </div>
 
     <!-- Results Summary -->
-    <div class="results-summary" *ngIf="!isLoading && !errorMessage && filteredLogs.length > 0">
-      <p>Showing {{ (currentPage - 1) * itemsPerPage + 1 }} - {{ Math.min(currentPage * itemsPerPage, filteredLogs.length) }} of {{ filteredLogs.length }} activities</p>
+    <div
+      class="results-summary"
+      *ngIf="!isLoading && !errorMessage && filteredLogs.length > 0"
+    >
+      <p>
+        Showing {{ (currentPage - 1) * itemsPerPage + 1 }} -
+        {{ Math.min(currentPage * itemsPerPage, filteredLogs.length) }} of
+        {{ filteredLogs.length }} activities
+      </p>
     </div>
 
     <!-- Activity Feed -->
-    <div class="activity-feed" *ngIf="!isLoading && !errorMessage && paginatedLogs.length > 0">
+    <div
+      class="activity-feed"
+      *ngIf="!isLoading && !errorMessage && paginatedLogs.length > 0"
+    >
       <div class="timeline">
-        <div class="activity-item"
-             *ngFor="let log of paginatedLogs; trackBy: trackByLogId"
-             [class]="'status-' + log.status">
+        <div
+          class="activity-item"
+          *ngFor="let log of paginatedLogs; trackBy: trackByLogId"
+          [class]="'status-' + log.status"
+        >
           <div class="activity-marker">
-            <div class="marker-icon" [innerHTML]="getStatusIcon(log.status)"></div>
+            <div
+              class="marker-icon"
+              [innerHTML]="getStatusIcon(log.status)"
+            ></div>
           </div>
           <div class="activity-card">
             <div class="activity-header">
               <div class="activity-title">{{ log.title }}</div>
               <div class="activity-meta">
-                <span class="status-badge" [class]="getStatusClass(log.status)">{{ log.status | titlecase }}</span>
-                <span class="activity-time">{{ formatTimestamp(log.timestamp) }}</span>
+                <span
+                  class="status-badge"
+                  [class]="getStatusClass(log.status)"
+                  >{{ log.status | titlecase }}</span
+                >
+                <span class="activity-time">{{
+                  formatTimestamp(log.timestamp)
+                }}</span>
               </div>
             </div>
             <div class="activity-description">{{ log.description }}</div>
             <div class="activity-details" *ngIf="log.details">
-              <div class="detail-item" *ngFor="let detail of log.details | keyvalue">
+              <div
+                class="detail-item"
+                *ngFor="let detail of log.details | keyvalue"
+              >
                 <span class="detail-label">{{ detail.key | titlecase }}:</span>
                 <span class="detail-value">{{ detail.value }}</span>
               </div>
@@ -178,30 +311,60 @@
     <!-- Pagination Controls -->
     <div class="pagination-container" *ngIf="totalPages > 1">
       <div class="pagination">
-        <button class="pagination-btn"
-                [disabled]="currentPage === 1"
-                (click)="previousPage()">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <path d="M15 18L9 12L15 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        <button
+          class="pagination-btn"
+          [disabled]="currentPage === 1"
+          (click)="previousPage()"
+        >
+          <svg
+            width="16"
+            height="16"
+            viewBox="0 0 24 24"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              d="M15 18L9 12L15 6"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            />
           </svg>
-          {{'Previous'|translate}}
+          {{ "Previous" | translate }}
         </button>
 
         <div class="page-numbers">
-          <button class="page-number"
-                  *ngFor="let page of getPageNumbers()"
-                  [class.active]="page === currentPage"
-                  (click)="goToPage(page)">
+          <button
+            class="page-number"
+            *ngFor="let page of getPageNumbers()"
+            [class.active]="page === currentPage"
+            (click)="goToPage(page)"
+          >
             {{ page }}
           </button>
         </div>
 
-        <button class="pagination-btn"
-                [disabled]="currentPage === totalPages"
-                (click)="nextPage()">
-          {{'Next'|translate}}
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <path d="M9 18L15 12L9 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        <button
+          class="pagination-btn"
+          [disabled]="currentPage === totalPages"
+          (click)="nextPage()"
+        >
+          {{ "Next" | translate }}
+          <svg
+            width="16"
+            height="16"
+            viewBox="0 0 24 24"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              d="M9 18L15 12L9 6"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            />
           </svg>
         </button>
       </div>
@@ -210,13 +373,34 @@
     <!-- Empty State -->
     <div class="empty-state" *ngIf="filteredLogs.length === 0">
       <div class="empty-icon">
-        <svg width="64" height="64" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <path d="M9 12L11 14L15 10" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-          <path d="M21 12C21 16.9706 16.9706 21 12 21C7.02944 21 3 16.9706 3 12C3 7.02944 7.02944 3 12 3C16.9706 3 21 7.02944 21 12Z" stroke="currentColor" stroke-width="2"/>
+        <svg
+          width="64"
+          height="64"
+          viewBox="0 0 24 24"
+          fill="none"
+          xmlns="http://www.w3.org/2000/svg"
+        >
+          <path
+            d="M9 12L11 14L15 10"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          />
+          <path
+            d="M21 12C21 16.9706 16.9706 21 12 21C7.02944 21 3 16.9706 3 12C3 7.02944 7.02944 3 12 3C16.9706 3 21 7.02944 21 12Z"
+            stroke="currentColor"
+            stroke-width="2"
+          />
         </svg>
       </div>
-      <h3>{{'No Activity Found'|translate}}</h3>
-      <p>{{'There are no activities matching your current filter. Try selecting a different status or refresh the page.'|translate}}</p>
+      <h3>{{ "No Activity Found" | translate }}</h3>
+      <p>
+        {{
+          "There are no activities matching your current filter. Try selecting a different status or refresh the page."
+            | translate
+        }}
+      </p>
     </div>
   </div>
 </div>

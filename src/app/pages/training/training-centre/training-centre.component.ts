@@ -35,7 +35,7 @@ import { TranslateModule } from '@ngx-translate/core';
   imports: [
     CommonModule,
     FormsModule,
-    BreadcrumbComponent,
+    // BreadcrumbComponent,
     TableComponent,
     ModalComponent,
     HttpClientModule,
@@ -146,16 +146,16 @@ export class TrainingCentreComponent implements OnInit {
 
   ngOnInit(): void {
     this.getRole();
-    if (this.userRole === 5 || this.userRole === 6) {
-      this.tableActions.splice(1, 0, {
-        name: 'fill',
-        icon: 'bi-card-text',
-        class: 'btn-success',
-        title: 'Complete Form',
-        condition: (row: any) =>
-          row.status === 'PENDING STATE INPUT',
-      });
-    }
+    // if (this.userRole === 5 || this.userRole === 6) {
+    //   this.tableActions.splice(1, 0, {
+    //     name: 'fill',
+    //     icon: 'bi-card-text',
+    //     class: 'btn-success',
+    //     title: 'Complete Form',
+    //     condition: (row: any) =>
+    //       row.status === 'PENDING STATE INPUT',
+    //   });
+    // }
     if (this.userRole === 1) {
       this.tableActions.splice(1, 0, {
         name: 'toggle',
@@ -390,7 +390,9 @@ export class TrainingCentreComponent implements OnInit {
   }
 
   get uniqueStates(): string[] {
-    return [...new Set(this.trainingCentres.map((centre) => centre.state))].filter(Boolean).sort();
+    return [...new Set(this.trainingCentres.map((centre) => centre.state))]
+      .filter(Boolean)
+      .sort();
   }
 
   get filteredTrainingCentres(): any[] {
@@ -398,15 +400,15 @@ export class TrainingCentreComponent implements OnInit {
 
     // Filter by state
     if (this.stateFilter) {
-      filtered = filtered.filter(centre => centre.state === this.stateFilter);
+      filtered = filtered.filter((centre) => centre.state === this.stateFilter);
     }
 
     // Filter by status
     if (this.statusFilter) {
       if (this.statusFilter === 'active') {
-        filtered = filtered.filter(centre => centre.active === true);
+        filtered = filtered.filter((centre) => centre.active === true);
       } else if (this.statusFilter === 'inactive') {
-        filtered = filtered.filter(centre => centre.active === false);
+        filtered = filtered.filter((centre) => centre.active === false);
       }
     }
 
@@ -671,7 +673,7 @@ export class TrainingCentreComponent implements OnInit {
         error: (error) => {
           console.error('Error toggling centre status:', error);
           alert('Failed to update centre status. Please try again.');
-          
+
           // Reset loading state and close the confirmation modal
           this.confirmModalConfig.isLoading = false;
           this.showConfirmModal = false;

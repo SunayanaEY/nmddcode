@@ -7,7 +7,7 @@ import { environment } from '../../../../environments/environment';
   providedIn: 'root',
 })
 export class HeartbeatService implements OnDestroy {
-  private heartbeatInterval = 4 * 60 * 1000;
+  private heartbeatInterval = 0.5 * 60 * 1000;
   private subscription?: Subscription;
   private apiUrl = environment.apiUrl;
 
