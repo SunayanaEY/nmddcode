@@ -46,7 +46,8 @@ export class RoleDashboardComponent implements OnInit {
     totalTrainingsApproved: 0,
     totalTrainingsRejected: 0,
     totalTraineesApproved: 0,
-    totalTraineesRejected: 0
+    totalTraineesRejected: 0,
+    recommendedTrainees:0
   };
 
   // Filter form and data
@@ -228,7 +229,8 @@ export class RoleDashboardComponent implements OnInit {
       totalTrainingsApproved: 0,
       totalTrainingsRejected: 0,
       totalTraineesApproved: 0,
-      totalTraineesRejected: 0
+      totalTraineesRejected: 0,
+      recommendedTrainees: 0
     };
   }
 
@@ -399,7 +401,7 @@ export class RoleDashboardComponent implements OnInit {
         {
           id: 'traineeRecommendedCertification',
           title: 'Trainee Recommended for Certification',
-          value: 0, // This will be updated when API is available
+          value: this.dashboardStats.recommendedTrainees,
           icon: 'fas fa-certificate',
           colorClass: 'kpi-card-indigo',
           growth: {

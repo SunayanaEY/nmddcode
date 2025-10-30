@@ -37,7 +37,7 @@
   </div>
 
   <app-table
-    [columns]="tableColumns"
+    [columns]="tableColumnsApproved"
     [data]="trainingsList"
     [actions]="tableActions"
     (actionClick)="handleTableAction($event)"
@@ -64,7 +64,7 @@
   </div>
 
   <app-table
-    [columns]="tableColumns"
+    [columns]="tableColumnsRejected"
     [data]="trainingsList2"
     [actions]="tableActions2"
     (actionClick)="handleTableAction($event)"

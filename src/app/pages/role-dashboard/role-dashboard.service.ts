@@ -8,6 +8,7 @@ export interface RoleDashboardStats {
   totalTrainingsRejected: number;
   totalTraineesApproved: number;
   totalTraineesRejected: number;
+  recommendedTrainees: number;
 }
 
 export interface TrainingScheduleStats {

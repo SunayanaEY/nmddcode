@@ -336,6 +336,7 @@ export class ManualTrainingUploadComponent implements OnInit {
       next: (response) => {
         this.isSpinning = false;
         this.toastr.success('Participants submitted successfully!', 'Success');
+        this.router.navigate(['/admin/approvedrejectedTrainings']);
       },
       error: (error) => {
         this.isSpinning = false;
