@@ -150,6 +150,7 @@ export class AllTrainingsAdminComponent {
   ];
 
   tableColumnsTrainee: TableColumn[] = [
+    { key: 'uin', header: 'Uin' },
     { key: 'name', header: 'Name' },
     { key: 'age', header: 'Age' },
     { key: 'gender', header: 'Gender' },
@@ -1319,5 +1320,56 @@ export class AllTrainingsAdminComponent {
         this.rejectForm.reset();
       },
     });
+  }
+
+  // Enhanced Filter Methods for Modern UI
+  hasActiveFilters(): boolean {
+    return !!(
+      this.filters.scheme ||
+      this.filters.district ||
+      this.filters.trainingDate ||
+      this.filters.status
+    );
+  }
+
+  clearAllFilters(): void {
+    this.filters = {
+      trainingTitle: null,
+      scheme: null,
+      trainingInstituteName: null,
+      trainerName: null,
+      location: null,
+      trainingDate: null,
+      status: null,
+      district: null,
+    };
+    this.applyFilters();
+  }
+
+  removeFilter(filterKey: string): void {
+    if (this.filters.hasOwnProperty(filterKey)) {
+      (this.filters as any)[filterKey] = null;
+      this.applyFilters();
+    }
+  }
+
+  getStatusClass(status: string): string {
+    const statusLower = status.toLowerCase();
+    if (statusLower.includes('new')) return 'status-new';
+    if (statusLower.includes('validated') || statusLower.includes('pending')) return 'status-validated';
+    if (statusLower.includes('approved')) return 'status-approved';
+    if (statusLower.includes('rejected')) return 'status-rejected';
+    if (statusLower.includes('uploaded')) return 'status-pending';
+    return '';
+  }
+
+  getStatusIcon(status: string): string {
+    const statusLower = status.toLowerCase();
+    if (statusLower.includes('new')) return 'bi-circle';
+    if (statusLower.includes('validated') || statusLower.includes('pending')) return 'bi-clock';
+    if (statusLower.includes('approved')) return 'bi-check-circle';
+    if (statusLower.includes('rejected')) return 'bi-x-circle';
+    if (statusLower.includes('uploaded')) return 'bi-upload';
+    return 'bi-circle';
   }
 }

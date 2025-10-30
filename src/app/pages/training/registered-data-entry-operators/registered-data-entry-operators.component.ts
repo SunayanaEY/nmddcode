@@ -28,8 +28,8 @@ export class RegisteredDataEntryOperatorsComponent implements OnInit {
     { key: 'createdAt', header: 'TABLE_COLUMNS.CREATION_DATE', transform: (value: string) => {
       return new Date(value).toLocaleDateString('en-IN');
     }},
-    { key: 'active', header: 'TABLE_COLUMNS.STATUS', transform: (value: boolean) => {
-      return value ? 'TABLE_COLUMNS.ACTIVE' : 'TABLE_COLUMNS.INACTIVE';
+    { key: 'active', header: 'STATUS', transform: (value: boolean) => {
+      return value ? 'ACTIVE' : 'INACTIVE';
     }}
   ];
 
