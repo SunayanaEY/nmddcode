@@ -1,20 +1,24 @@
 <div class="container-fluid">
   <!-- Breadcrumb -->
   <app-breadcrumb [items]="breadcrumbItems"></app-breadcrumb>
-  
+
   <!-- Page Header -->
   <div class="page-header">
-    <h1 class="page-title">Training Master Management</h1>
-    <p class="page-description">Manage training master data and configurations</p>
+    <h1 class="page-title">
+      {{ "Training Master Management" | translate }}
+    </h1>
+    <p class="page-description">
+      {{ "Manage training master data and configurations" | translate }}
+    </p>
   </div>
-  
+
   <!-- Main Content -->
   <div class="main-content">
     <!-- Scheme Management Section -->
     <div class="management-section">
       <app-scheme-management></app-scheme-management>
     </div>
-    
+
     <!-- Training Type Management Section -->
     <div class="management-section">
       <app-training-type-management></app-training-type-management>

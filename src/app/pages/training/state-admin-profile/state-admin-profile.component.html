@@ -2,25 +2,32 @@
   <app-breadcrumb [items]="breadcrumbItems"></app-breadcrumb>
 
   <div class="page-header">
-    <h2>State Admin Profile</h2>
+    <h2>{{ "State Admin Profile" | translate }}</h2>
     <p class="page-description">
-      Create and manage state administrator profiles for regional oversight
+      {{
+        "Create and manage state administrator profiles for regional oversight"
+          | translate
+      }}
     </p>
   </div>
 
   <div class="profile-form-container">
-    <form [formGroup]="profileForm" (ngSubmit)="onSubmit()" class="profile-form">
+    <form
+      [formGroup]="profileForm"
+      (ngSubmit)="onSubmit()"
+      class="profile-form"
+    >
       <!-- State Admin Information Section -->
       <div class="form-section">
         <h3 class="section-title">
           <i class="fas fa-user"></i>
-          State Admin Information
+          {{ "State Admin Information" | translate }}
         </h3>
 
         <div class="form-row">
           <div class="form-group">
             <label for="state" class="form-label">
-              State <span class="required">*</span>
+              {{ "State" | translate }} <span class="required">*</span>
             </label>
             <select
               id="state"
@@ -31,7 +38,7 @@
                 profileForm.get('state')?.touched
               "
             >
-              <option value="">Select State</option>
+              <option value="">{{ "Select State" | translate }}</option>
               <option *ngFor="let state of states" [value]="state.id">
                 {{ state.stateName }}
               </option>
@@ -44,14 +51,15 @@
               "
             >
               <small *ngIf="profileForm.get('state')?.errors?.['required']">
-                State is required
+                {{ "State is required" | translate }}
               </small>
             </div>
           </div>
 
           <div class="form-group">
             <label for="adminName" class="form-label">
-              Contact Person Name <span class="required">*</span>
+              {{ "Contact Person Name" | translate }}
+              <span class="required">*</span>
             </label>
             <input
               type="text"
@@ -62,7 +70,7 @@
                 profileForm.get('adminName')?.invalid &&
                 profileForm.get('adminName')?.touched
               "
-              placeholder="Enter contact person full name"
+              [placeholder]="'Enter contact person full name' | translate"
             />
             <div
               class="invalid-feedback"
@@ -72,10 +80,12 @@
               "
             >
               <small *ngIf="profileForm.get('adminName')?.errors?.['required']">
-                Contact person name is required
+                {{ "Contact person name is required" | translate }}
               </small>
-              <small *ngIf="profileForm.get('adminName')?.errors?.['minlength']">
-                Name must be at least 2 characters
+              <small
+                *ngIf="profileForm.get('adminName')?.errors?.['minlength']"
+              >
+                {{ "Name must be at least 2 characters" | translate }}
               </small>
             </div>
           </div>
@@ -84,7 +94,7 @@
         <div class="form-row">
           <div class="form-group">
             <label for="designation" class="form-label">
-              Designation <span class="required">*</span>
+              {{ "Designation" | translate }} <span class="required">*</span>
             </label>
             <input
               type="text"
@@ -95,7 +105,7 @@
                 profileForm.get('designation')?.invalid &&
                 profileForm.get('designation')?.touched
               "
-              placeholder="Enter designation"
+              [placeholder]="'Enter designation' | translate"
             />
             <div
               class="invalid-feedback"
@@ -104,15 +114,17 @@
                 profileForm.get('designation')?.touched
               "
             >
-              <small *ngIf="profileForm.get('designation')?.errors?.['required']">
-                Designation is required
+              <small
+                *ngIf="profileForm.get('designation')?.errors?.['required']"
+              >
+                {{ "Designation is required" | translate }}
               </small>
             </div>
           </div>
 
           <div class="form-group">
             <label for="phone" class="form-label">
-              Contact Number <span class="required">*</span>
+              {{ "Contact Number" | translate }} <span class="required">*</span>
             </label>
             <input
               type="tel"
@@ -123,7 +135,7 @@
                 profileForm.get('phone')?.invalid &&
                 profileForm.get('phone')?.touched
               "
-              placeholder="Enter 10-digit contact number"
+              [placeholder]="'Enter 10-digit contact number' | translate"
               maxlength="10"
             />
             <div
@@ -134,10 +146,10 @@
               "
             >
               <small *ngIf="profileForm.get('phone')?.errors?.['required']">
-                Contact number is required
+                {{ "Contact number is required" | translate }}
               </small>
               <small *ngIf="profileForm.get('phone')?.errors?.['pattern']">
-                Please enter a valid 10-digit contact number
+                {{ "Please enter a valid 10-digit contact number" | translate }}
               </small>
             </div>
           </div>
@@ -146,7 +158,7 @@
         <div class="form-row">
           <div class="form-group">
             <label for="email" class="form-label">
-              Email <span class="required">*</span>
+              {{ "Email" | translate }} <span class="required">*</span>
             </label>
             <input
               type="email"
@@ -157,7 +169,7 @@
                 profileForm.get('email')?.invalid &&
                 profileForm.get('email')?.touched
               "
-              placeholder="Enter email address"
+              [placeholder]="'Enter email address' | translate"
             />
             <div
               class="invalid-feedback"
@@ -167,10 +179,10 @@
               "
             >
               <small *ngIf="profileForm.get('email')?.errors?.['required']">
-                Email is required
+                {{ "Email is required" | translate }}
               </small>
               <small *ngIf="profileForm.get('email')?.errors?.['email']">
-                Please enter a valid email address
+                {{ "Please enter a valid email address" | translate }}
               </small>
             </div>
           </div>
@@ -181,13 +193,13 @@
       <div class="form-section">
         <h3 class="section-title">
           <i class="fas fa-lock"></i>
-          Security Information
+          {{ "Security Information" | translate }}
         </h3>
 
         <div class="form-row">
           <div class="form-group">
             <label for="password" class="form-label">
-              Password <span class="required">*</span>
+              {{ "Password" | translate }} <span class="required">*</span>
             </label>
             <div class="password-input-wrapper">
               <input
@@ -199,7 +211,7 @@
                   profileForm.get('password')?.invalid &&
                   profileForm.get('password')?.touched
                 "
-                placeholder="Enter password"
+                [placeholder]="'Enter password' | translate"
               />
               <button
                 type="button"
@@ -219,20 +231,24 @@
               "
             >
               <small *ngIf="profileForm.get('password')?.errors?.['required']">
-                Password is required
+                {{ "Password is required" | translate }}
               </small>
               <small *ngIf="profileForm.get('password')?.errors?.['minlength']">
-                Password must be at least 8 characters
+                {{ "Password must be at least 8 characters" | translate }}
               </small>
               <small *ngIf="profileForm.get('password')?.errors?.['pattern']">
-                Password must contain uppercase, lowercase, number and special character
+                {{
+                  "Password must contain uppercase, lowercase, number and special character"
+                    | translate
+                }}
               </small>
             </div>
           </div>
 
           <div class="form-group">
             <label for="confirmPassword" class="form-label">
-              Confirm Password <span class="required">*</span>
+              {{ "Confirm Password" | translate }}
+              <span class="required">*</span>
             </label>
             <div class="password-input-wrapper">
               <input
@@ -240,12 +256,8 @@
                 id="confirmPassword"
                 formControlName="confirmPassword"
                 class="form-control"
-                [class.is-invalid]="
-                  (profileForm.get('confirmPassword')?.invalid &&
-                    profileForm.get('confirmPassword')?.touched) ||
-                  profileForm.errors?.['passwordMismatch']
-                "
-                placeholder="Confirm password"
+                [class.is-invalid]="(profileForm.get('confirmPassword')?.invalid && profileForm.get('confirmPassword')?.touched) || profileForm.errors?.['passwordMismatch']"
+                [placeholder]="'Confirm password' | translate"
               />
               <button
                 type="button"
@@ -253,25 +265,23 @@
                 (click)="toggleConfirmPassword()"
               >
                 <i
-                  [class]="showConfirmPassword ? 'fas fa-eye-slash' : 'fas fa-eye'"
+                  [class]="
+                    showConfirmPassword ? 'fas fa-eye-slash' : 'fas fa-eye'
+                  "
                 ></i>
               </button>
             </div>
             <div
               class="invalid-feedback"
-              *ngIf="
-                (profileForm.get('confirmPassword')?.invalid &&
-                  profileForm.get('confirmPassword')?.touched) ||
-                profileForm.errors?.['passwordMismatch']
-              "
+              *ngIf="(profileForm.get('confirmPassword')?.invalid && profileForm.get('confirmPassword')?.touched) || profileForm.errors?.['passwordMismatch']"
             >
               <small
                 *ngIf="profileForm.get('confirmPassword')?.errors?.['required']"
               >
-                Confirm password is required
+                {{ "Confirm password is required" | translate }}
               </small>
               <small *ngIf="profileForm.errors?.['passwordMismatch']">
-                Passwords do not match
+                {{ "Passwords do not match" | translate }}
               </small>
             </div>
           </div>
@@ -287,7 +297,11 @@
         >
           <i *ngIf="isLoading" class="fas fa-spinner fa-spin"></i>
           <i *ngIf="!isLoading" class="fas fa-save"></i>
-          {{ isLoading ? 'Creating...' : 'Update Data' }}
+          {{
+            isLoading
+              ? ("Creating..." | translate)
+              : ("Update Data" | translate)
+          }}
         </button>
       </div>
     </form>
@@ -298,7 +312,7 @@
     <div class="card-header">
       <h4 class="card-title mb-0">
         <i class="fas fa-table"></i>
-        Existing State Admins
+        {{ "Existing State Admins" | translate }}
       </h4>
     </div>
     <div class="card-body">
@@ -309,8 +323,8 @@
         [isLoading]="isTableLoading"
         (actionClick)="onTableActionClick($event)"
         tableName="state-admin"
-        fileName="State_Admin_Data">
-      </app-table>
+        fileName="State_Admin_Data"
+      ></app-table>
     </div>
   </div>
 </div>
@@ -323,79 +337,119 @@
   mode="edit"
   (close)="onEditModalClose()"
   (primaryAction)="onEditModalUpdate($event)"
-  (secondaryAction)="onEditModalCancel()">
+  (secondaryAction)="onEditModalCancel()"
+>
 </app-modal>
 
 <!-- Custom Previous State Heads Modal -->
-<div class="modal fade" [class.show]="showPreviousStateHeadsModal" [style.display]="showPreviousStateHeadsModal ? 'block' : 'none'" tabindex="-1" role="dialog" aria-labelledby="previousStateHeadsModalLabel" aria-hidden="true">
-  <div class="modal-backdrop fade" [class.show]="showPreviousStateHeadsModal" (click)="onPreviousStateHeadsModalClose()"></div>
+<div
+  class="modal fade"
+  [class.show]="showPreviousStateHeadsModal"
+  [style.display]="showPreviousStateHeadsModal ? 'block' : 'none'"
+  tabindex="-1"
+  role="dialog"
+  aria-labelledby="previousStateHeadsModalLabel"
+  aria-hidden="true"
+>
+  <div
+    class="modal-backdrop fade"
+    [class.show]="showPreviousStateHeadsModal"
+    (click)="onPreviousStateHeadsModalClose()"
+  ></div>
+
   <div class="modal-dialog modal-xl" role="document">
     <div class="modal-content">
       <div class="modal-header">
         <h5 class="modal-title" id="previousStateHeadsModalLabel">
           <i class="fas fa-history"></i>
-          Previous State Admin History
+          {{ "Previous State Admin History" | translate }}
         </h5>
-        <button type="button" class="btn-close" aria-label="Close" (click)="onPreviousStateHeadsModalClose()"></button>
+        <button
+          type="button"
+          class="btn-close"
+          [attr.aria-label]="'Close' | translate"
+          (click)="onPreviousStateHeadsModalClose()"
+        ></button>
       </div>
+
       <div class="modal-body">
         <div class="d-flex justify-content-between align-items-center mb-3">
-          <span class="badge bg-info">{{previousStateHeadsData.length}} Records</span>
+          <span class="badge bg-info">
+            {{ previousStateHeadsData.length }}
+            {{ "Records" | translate }}
+          </span>
         </div>
-        
+
         <!-- Loading state -->
         <div *ngIf="isPreviousStateHeadsLoading" class="text-center py-4">
           <div class="spinner-border text-primary" role="status">
-            <span class="visually-hidden">Loading...</span>
+            <span class="visually-hidden">{{ "Loading..." | translate }}</span>
           </div>
-          <p class="mt-2 text-muted">Loading previous state heads...</p>
+          <p class="mt-2 text-muted">
+            {{ "Loading previous state heads..." | translate }}
+          </p>
         </div>
-        
+
         <!-- Error state -->
-        <div *ngIf="!isPreviousStateHeadsLoading && previousStateHeadsError" class="alert alert-danger" role="alert">
+        <div
+          *ngIf="!isPreviousStateHeadsLoading && previousStateHeadsError"
+          class="alert alert-danger"
+          role="alert"
+        >
           <i class="fas fa-exclamation-triangle me-2"></i>
-          {{previousStateHeadsError}}
+          {{ previousStateHeadsError }}
         </div>
-        
+
         <!-- Data table -->
-        <div *ngIf="!isPreviousStateHeadsLoading && !previousStateHeadsError" class="table-responsive">
+        <div
+          *ngIf="!isPreviousStateHeadsLoading && !previousStateHeadsError"
+          class="table-responsive"
+        >
           <table class="table table-striped table-hover">
             <thead class="table-dark">
               <tr>
                 <th scope="col">#</th>
-                <th scope="col">Name</th>
-                <th scope="col">Position</th>
-                <th scope="col">Contact</th>
-                <th scope="col">Email</th>
-                <th scope="col">Start Date</th>
-                <th scope="col">End Date</th>
-                <th scope="col">State</th>
+                <th scope="col">{{ "Name" | translate }}</th>
+                <th scope="col">{{ "Position" | translate }}</th>
+                <th scope="col">{{ "Contact" | translate }}</th>
+                <th scope="col">{{ "Email" | translate }}</th>
+                <th scope="col">{{ "Start Date" | translate }}</th>
+                <th scope="col">{{ "End Date" | translate }}</th>
+                <th scope="col">{{ "State" | translate }}</th>
               </tr>
             </thead>
             <tbody>
               <tr *ngFor="let item of previousStateHeadsData; let i = index">
-                <td>{{i + 1}}</td>
-                <td>{{item.contactPersonName}}</td>
-                <td>{{item.designation}}</td>
-                <td>{{item.contactNumber}}</td>
-                <td>{{item.emailId}}</td>
-                <td>{{item.validFrom | date:'dd/MM/yyyy'}}</td>
-                <td>{{item.validTo | date:'dd/MM/yyyy'}}</td>
-                <td>{{item.stateName}}</td>
+                <td>{{ i + 1 }}</td>
+                <td>{{ item.contactPersonName }}</td>
+                <td>{{ item.designation }}</td>
+                <td>{{ item.contactNumber }}</td>
+                <td>{{ item.emailId }}</td>
+                <td>{{ item.validFrom | date : "dd/MM/yyyy" }}</td>
+                <td>{{ item.validTo | date : "dd/MM/yyyy" }}</td>
+                <td>{{ item.stateName }}</td>
               </tr>
+
               <tr *ngIf="previousStateHeadsData.length === 0">
                 <td colspan="8" class="text-center py-4 text-muted">
                   <i class="fas fa-inbox fa-2x mb-2"></i>
-                  <br>
-                  No previous state heads found
+                  <br />
+                  {{ "No previous state heads found" | translate }}
                 </td>
               </tr>
             </tbody>
           </table>
         </div>
       </div>
+
       <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" (click)="onPreviousStateHeadsModalClose()">Close</button>
+        <button
+          type="button"
+          class="btn btn-secondary"
+          (click)="onPreviousStateHeadsModalClose()"
+        >
+          {{ "Close" | translate }}
+        </button>
       </div>
     </div>
   </div>

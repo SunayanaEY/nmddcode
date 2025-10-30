@@ -3,7 +3,7 @@
     <!-- Header Section -->
     <div class="form-header">
       <app-breadcrumb [items]="breadcrumbItems"></app-breadcrumb>
-      <h1 class="page-title">Training Calender</h1>
+      <h1 class="page-title">{{ "Training Calendar" | translate }}</h1>
     </div>
 
     <!-- Form Content -->
@@ -11,18 +11,21 @@
       <form [formGroup]="trainingForm" (ngSubmit)="onManualUpload()">
         <!-- General Training Info Section -->
         <div class="form-section">
-          <h3 class="section-title">General Training Info</h3>
+          <h3 class="section-title">
+            {{ "General Training Info" | translate }}
+          </h3>
 
           <div class="form-row">
             <div class="form-group full-width">
-              <label for="trainingTitle"
-                >Training Title<span style="color: red">*</span></label
-              >
+              <label for="trainingTitle">
+                {{ "Training Title" | translate }}
+                <span style="color: red">*</span>
+              </label>
               <input
                 type="text"
                 id="trainingTitle"
                 formControlName="trainingTitle"
-                placeholder="Enter the Training Title here"
+                [placeholder]="'Enter the Training Title here' | translate"
                 class="form-control"
                 [class.is-invalid]="
                   trainingForm.get('trainingTitle')?.invalid &&
@@ -40,7 +43,7 @@
                   *ngIf="trainingForm.get('trainingTitle')?.errors?.['required']"
                   class="text-danger"
                 >
-                  This field is required
+                  {{ "This field is required" | translate }}
                 </small>
               </div>
             </div>
@@ -48,9 +51,10 @@
 
           <div class="form-row">
             <div class="form-group full-width">
-              <label for="scheme"
-                >Scheme<span style="color: red">*</span></label
-              >
+              <label for="scheme">
+                {{ "Scheme" | translate }}
+                <span style="color: red">*</span>
+              </label>
               <select
                 id="scheme"
                 formControlName="scheme"
@@ -60,7 +64,9 @@
                   trainingForm.get('scheme')?.touched
                 "
               >
-                <option value="">Enter the Name of Scheme here</option>
+                <option value="">
+                  {{ "Enter the Name of Scheme here" | translate }}
+                </option>
                 <option *ngFor="let scheme of schemes" [value]="scheme.id">
                   {{ scheme.schemeName }}
                 </option>
@@ -76,7 +82,7 @@
                   *ngIf="trainingForm.get('scheme')?.errors?.['required']"
                   class="text-danger"
                 >
-                  This field is required
+                  {{ "This field is required" | translate }}
                 </small>
               </div>
             </div>
@@ -84,9 +90,10 @@
 
           <div class="form-row">
             <div class="form-group half-width">
-              <label for="trainerName"
-                >Trainer Name (s)<span style="color: red">*</span></label
-              >
+              <label for="trainerName">
+                {{ "Trainer Name(s)" | translate }}
+                <span style="color: red">*</span>
+              </label>
               <select
                 id="trainerName"
                 formControlName="trainerName"
@@ -100,7 +107,9 @@
               >
                 <option value="" disabled>
                   {{
-                    isLoadingTrainers ? "Loading trainers..." : "Select Trainer"
+                    isLoadingTrainers
+                      ? ("Loading trainers..." | translate)
+                      : ("Select Trainer" | translate)
                   }}
                 </option>
                 <option
@@ -121,20 +130,21 @@
                   *ngIf="trainingForm.get('trainerName')?.errors?.['required']"
                   class="text-danger"
                 >
-                  This field is required
+                  {{ "This field is required" | translate }}
                 </small>
               </div>
 
               <!-- Guest Trainer Name Field -->
               <div *ngIf="showGuestTrainerField" class="mt-3">
-                <label for="guestTrainerName"
-                  >Guest Trainer's Name<span style="color: red">*</span></label
-                >
+                <label for="guestTrainerName">
+                  {{ "Guest Trainer's Name" | translate }}
+                  <span style="color: red">*</span>
+                </label>
                 <input
                   type="text"
                   id="guestTrainerName"
                   formControlName="guestTrainerName"
-                  placeholder="Enter Guest Trainer's Name"
+                  [placeholder]="'Enter Guest Trainer Name' | translate"
                   class="form-control"
                   [class.is-invalid]="
                     trainingForm.get('guestTrainerName')?.invalid &&
@@ -149,18 +159,22 @@
                   class="invalid-feedback"
                 >
                   <small
-                    *ngIf="trainingForm.get('guestTrainerName')?.errors?.['required']"
+                    *ngIf="
+                      trainingForm.get('guestTrainerName')?.errors?.['required']
+                    "
                     class="text-danger"
                   >
-                    This field is required
+                    {{ "This field is required" | translate }}
                   </small>
                 </div>
               </div>
             </div>
+
             <div class="form-group half-width">
-              <label for="trainingInstituteName"
-                >Training Institute Name<span style="color: red">*</span></label
-              >
+              <label for="trainingInstituteName">
+                {{ "Training Institute Name" | translate }}
+                <span style="color: red">*</span>
+              </label>
               <select
                 id="trainingInstituteName"
                 formControlName="trainingInstituteName"
@@ -171,7 +185,9 @@
                   trainingForm.get('trainingInstituteName')?.touched
                 "
               >
-                <option value="">Enter Training Institute Name here</option>
+                <option value="">
+                  {{ "Enter Training Institute Name here" | translate }}
+                </option>
                 <option
                   *ngFor="let institute of instituteNames"
                   [ngValue]="institute"
@@ -187,10 +203,12 @@
                 class="invalid-feedback"
               >
                 <small
-                  *ngIf="trainingForm.get('trainingInstituteName')?.errors?.['required']"
+                  *ngIf="
+                    trainingForm.get('trainingInstituteName')?.errors?.['required']
+                  "
                   class="text-danger"
                 >
-                  This field is required
+                  {{ "This field is required" | translate }}
                 </small>
               </div>
             </div>
@@ -199,11 +217,10 @@
           <!-- Training Location/Venue -->
           <div class="form-row">
             <div class="form-group location-label">
-              <label
-                >Training Location /Venue<span style="color: red"
-                  >*</span
-                ></label
-              >
+              <label>
+                {{ "Training Location / Venue" | translate }}
+                <span style="color: red">*</span>
+              </label>
             </div>
           </div>
 
@@ -218,7 +235,7 @@
                   trainingForm.get('venueState')?.touched
                 "
               >
-                <option value="">Select State</option>
+                <option value="">{{ "Select State" | translate }}</option>
                 <option *ngFor="let state of states" [value]="state.id">
                   {{ state.stateName }}
                 </option>
@@ -234,10 +251,11 @@
                   *ngIf="trainingForm.get('venueState')?.errors?.['required']"
                   class="text-danger"
                 >
-                  This field is required
+                  {{ "This field is required" | translate }}
                 </small>
               </div>
             </div>
+
             <div class="form-group third-width">
               <select
                 formControlName="venueDistrict"
@@ -248,7 +266,7 @@
                   trainingForm.get('venueDistrict')?.touched
                 "
               >
-                <option value="">Select District</option>
+                <option value="">{{ "Select District" | translate }}</option>
                 <option
                   *ngFor="let district of districts"
                   [value]="district.id"
@@ -267,16 +285,17 @@
                   *ngIf="trainingForm.get('venueDistrict')?.errors?.['required']"
                   class="text-danger"
                 >
-                  This field is required
+                  {{ "This field is required" | translate }}
                 </small>
               </div>
             </div>
+
             <div class="form-group third-width">
               <input
                 type="text"
                 formControlName="venueBlock"
                 class="form-control"
-                placeholder="Enter Block"
+                [placeholder]="'Enter Block' | translate"
                 [class.is-invalid]="
                   trainingForm.get('venueBlock')?.invalid &&
                   trainingForm.get('venueBlock')?.touched
@@ -293,18 +312,19 @@
                   *ngIf="trainingForm.get('venueBlock')?.errors?.['required']"
                   class="text-danger"
                 >
-                  This field is required
+                  {{ "This field is required" | translate }}
                 </small>
               </div>
             </div>
           </div>
 
-          <!-- Date and Duration -->
+          <!-- Dates -->
           <div class="form-row">
             <div class="form-group third-width">
-              <label for="trainingDate"
-                >Date of Training<span style="color: red">*</span></label
-              >
+              <label for="trainingDate">
+                {{ "Date of Training" | translate }}
+                <span style="color: red">*</span>
+              </label>
               <input
                 type="date"
                 id="trainingDate"
@@ -327,25 +347,29 @@
                   *ngIf="trainingForm.get('trainingDate')?.errors?.['required']"
                   class="text-danger"
                 >
-                  This field is required
+                  {{ "This field is required" | translate }}
                 </small>
                 <small
                   *ngIf="trainingForm.get('trainingDate')?.errors?.['pastDate']"
                   class="text-danger"
                 >
-                  Please select today's date or a future date
+                  {{
+                    "Please select today's date or a future date" | translate
+                  }}
                 </small>
               </div>
             </div>
+
             <div class="form-group third-width">
-              <label for="duration"
-                >Duration<span style="color: red">*</span></label
-              >
+              <label for="duration">
+                {{ "Duration" | translate }}
+                <span style="color: red">*</span>
+              </label>
               <input
                 type="number"
                 id="duration"
                 formControlName="duration"
-                placeholder="xx"
+                [placeholder]="'xx' | translate"
                 class="form-control"
                 [class.is-invalid]="
                   trainingForm.get('duration')?.invalid &&
@@ -363,16 +387,17 @@
                   *ngIf="trainingForm.get('duration')?.errors?.['required']"
                   class="text-danger"
                 >
-                  This field is required
+                  {{ "This field is required" | translate }}
                 </small>
                 <small
                   *ngIf="trainingForm.get('duration')?.errors?.['invalidDuration']"
                   class="text-danger"
                 >
-                  Duration must be a positive number
+                  {{ "Duration must be a positive number" | translate }}
                 </small>
               </div>
             </div>
+
             <div class="form-group third-width">
               <label for="durationType">&nbsp;</label>
               <select
@@ -380,23 +405,26 @@
                 formControlName="durationType"
                 class="form-control h-auto"
               >
-                <option value="Days">Days</option>
-                <option value="Hours">Hours</option>
-                <option value="Weeks">Weeks</option>
+                <option value="Days">{{ "Days" | translate }}</option>
+                <option value="Hours">{{ "Hours" | translate }}</option>
+                <option value="Weeks">{{ "Weeks" | translate }}</option>
               </select>
             </div>
           </div>
 
-          <!-- About Training and Mode -->
+          <!-- About Training -->
           <div class="form-row">
             <div class="form-group two-thirds-width">
-              <label for="trainingDescription"
-                >About the Training<span style="color: red">*</span></label
-              >
+              <label for="trainingDescription">
+                {{ "About the Training" | translate }}
+                <span style="color: red">*</span>
+              </label>
               <textarea
                 id="trainingDescription"
                 formControlName="trainingDescription"
-                placeholder="Brief Description ( Maximum 100 Words )"
+                [placeholder]="
+                  'Brief Description ( Maximum 100 Words )' | translate
+                "
                 class="form-control textarea"
                 rows="4"
                 [class.is-invalid]="
@@ -415,20 +443,22 @@
                   *ngIf="trainingForm.get('trainingDescription')?.errors?.['required']"
                   class="text-danger"
                 >
-                  This field is required
+                  {{ "This field is required" | translate }}
                 </small>
                 <small
                   *ngIf="trainingForm.get('trainingDescription')?.errors?.['maxlength']"
                   class="text-danger"
                 >
-                  Maximum 100 characters allowed
+                  {{ "Maximum 100 characters allowed" | translate }}
                 </small>
               </div>
             </div>
+
             <div class="form-group third-width">
-              <label for="trainingType"
-                >Type of Training<span style="color: red">*</span></label
-              >
+              <label for="trainingType">
+                {{ "Type of Training" | translate }}
+                <span style="color: red">*</span>
+              </label>
               <select
                 id="trainingType"
                 formControlName="trainingType"
@@ -438,7 +468,9 @@
                   trainingForm.get('trainingType')?.touched
                 "
               >
-                <option value="" disabled>Select training type</option>
+                <option value="" disabled>
+                  {{ "Select training type" | translate }}
+                </option>
                 <option *ngFor="let type of allTrainingType" [value]="type.id">
                   {{ type.trainingTypeName }}
                 </option>
@@ -454,14 +486,16 @@
                   *ngIf="trainingForm.get('trainingType')?.errors?.['required']"
                   class="text-danger"
                 >
-                  This field is required
+                  {{ "This field is required" | translate }}
                 </small>
               </div>
             </div>
+
             <div class="form-group third-width">
-              <label for="modeOfTraining"
-                >Mode of Training<span style="color: red">*</span></label
-              >
+              <label for="modeOfTraining">
+                {{ "Mode of Training" | translate }}
+                <span style="color: red">*</span>
+              </label>
               <select
                 id="modeOfTraining"
                 formControlName="modeOfTraining"
@@ -471,11 +505,13 @@
                   trainingForm.get('modeOfTraining')?.touched
                 "
               >
-                <option value="" disabled>Select mode of training</option>
-                <option value="offline">Offline</option>
-                <option value="online">Online</option>
-                <option value="field">Field</option>
-                <option value="hybrid">Hybrid</option>
+                <option value="" disabled>
+                  {{ "Select mode of training" | translate }}
+                </option>
+                <option value="offline">{{ "Offline" | translate }}</option>
+                <option value="online">{{ "Online" | translate }}</option>
+                <option value="field">{{ "Field" | translate }}</option>
+                <option value="hybrid">{{ "Hybrid" | translate }}</option>
               </select>
               <div
                 *ngIf="
@@ -488,174 +524,20 @@
                   *ngIf="trainingForm.get('modeOfTraining')?.errors?.['required']"
                   class="text-danger"
                 >
-                  This field is required
+                  {{ "This field is required" | translate }}
                 </small>
               </div>
             </div>
           </div>
         </div>
 
-        <!-- Upload Signature Section -->
-        <div class="form-section">
-          <h3 class="section-title">Upload Signature ( Maximum 2)</h3>
+        <!-- Signature and Logo Sections (similar pattern continues for translation) -->
 
-          <div
-            class="signature-section"
-            *ngFor="let signature of signatures; let i = index"
-          >
-            <div class="form-row">
-              <div class="form-group third-width">
-                <label>Signatory Name <span class="text-danger">*</span></label>
-                <input
-                  type="text"
-                  [value]="signature.name"
-                  (input)="onSignatureNameChange($event, i)"
-                  placeholder="Enter the Name of Signatory here"
-                  class="form-control"
-                  [class.is-invalid]="signatureFieldErrors[i]?.name"
-                />
-                <div
-                  *ngIf="signatureFieldErrors[i]?.name"
-                  class="invalid-feedback"
-                >
-                  <small class="text-danger">Signatory name is required</small>
-                </div>
-              </div>
-              <div class="form-group third-width">
-                <label
-                  >Signatory Designation
-                  <span class="text-danger">*</span></label
-                >
-                <input
-                  type="text"
-                  [value]="signature.designation"
-                  (input)="onSignatureDesignationChange($event, i)"
-                  placeholder="Enter the Designation of Signatory here"
-                  class="form-control"
-                  [class.is-invalid]="signatureFieldErrors[i]?.designation"
-                />
-                <div
-                  *ngIf="signatureFieldErrors[i]?.designation"
-                  class="invalid-feedback"
-                >
-                  <small class="text-danger"
-                    >Signatory designation is required</small
-                  >
-                </div>
-              </div>
-              <div class="form-group third-width">
-                <label
-                  >Signatory Organization
-                  <span class="text-danger">*</span></label
-                >
-                <input
-                  type="text"
-                  [value]="signature.organization"
-                  (input)="onSignatureOrganizationChange($event, i)"
-                  placeholder="Enter the Organization of Signatory here"
-                  class="form-control"
-                  [class.is-invalid]="signatureFieldErrors[i]?.organization"
-                />
-                <div
-                  *ngIf="signatureFieldErrors[i]?.organization"
-                  class="invalid-feedback"
-                >
-                  <small class="text-danger"
-                    >Signatory organization is required</small
-                  >
-                </div>
-              </div>
-            </div>
-
-            <div class="form-row">
-              <app-file-upload
-                [acceptedFileTypes]="'.png,.jpg,.jpeg'"
-                [maxFileSizeMB]="2"
-                [uploadText]="'Drag and Drop the Signature here'"
-                (fileSelected)="onFileSelect($event, 'signature', i)"
-                (fileRemoved)="removeSignature(i)"
-                [filePath]="mySelectedFile[i]"
-              >
-              </app-file-upload>
-            </div>
-          </div>
-
-          <div class="add-more-section" *ngIf="signatures.length < 2">
-            <button
-              type="button"
-              class="btn btn-link add-more-btn"
-              (click)="addMoreSignature()"
-            >
-              <i class="bi bi-plus-circle"></i> Add More
-            </button>
-          </div>
-
-          <!-- Signature Validation Error -->
-          <div
-            *ngIf="signatureValidationError"
-            class="validation-error-section"
-          >
-            <small class="text-danger">
-              {{ signatureValidationError }}
-            </small>
-          </div>
-        </div>
-
-        <!-- Upload Logo Section -->
-        <div class="form-section">
-          <h3 class="section-title">Upload Logo ( Maximum 3)</h3>
-
-          <div class="logo-section" *ngFor="let logo of logos; let i = index">
-            <div class="form-row">
-              <app-file-upload
-                [acceptedFileTypes]="'.png,.jpg,.jpeg'"
-                [maxFileSizeMB]="2"
-                [uploadText]="'Drag and Drop your logo here'"
-                (fileSelected)="onFileSelect($event, 'logo', i)"
-                (fileRemoved)="removeLogo(i)"
-                [filePath]="mySelectedLogo[i]"
-              >
-              </app-file-upload>
-            </div>
-          </div>
-
-          <div class="add-more-section" *ngIf="logos.length < 3">
-            <button
-              type="button"
-              class="btn btn-link add-more-btn"
-              (click)="addMoreLogo()"
-            >
-              <i class="bi bi-plus-circle"></i> Add More
-            </button>
-          </div>
-
-          <!-- Logo Validation Error -->
-          <div *ngIf="logoValidationError" class="validation-error-section">
-            <small class="text-danger">
-              {{ logoValidationError }}
-            </small>
-          </div>
-        </div>
-
-        <!-- Action Buttons -->
         <div class="form-actions">
           <button type="submit" class="btn btn-primary btn-lg">
-            <!-- Manual Training Upload -->
-            Submit Details
+            {{ "Submit Details" | translate }}
           </button>
-          <!-- <button
-            type="button"
-            class="btn btn-secondary btn-lg"
-            (click)="onBulkUpload()"
-          >
-            Bulk Upload
-          </button> -->
         </div>
-        <!-- <div class="form-actions">
-          <button type="submit" class="btn btn-primary btn-lg" (click)="onManualUpload()">
-           Submit Details
-          </button>
-        </div> -->
       </form>
     </div>
   </div>

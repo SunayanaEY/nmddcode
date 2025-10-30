@@ -1,5 +1,6 @@
 import { CommonModule, DatePipe } from '@angular/common';
 import { Component, ElementRef, ViewChild } from '@angular/core';
+import { TranslateModule } from '@ngx-translate/core';
 import {
   FormGroup,
   FormBuilder,
@@ -35,6 +36,7 @@ import { NewCertificateLayoutComponent } from '../../new-certificate-layout/new-
     NgSelectModule,
     ReactiveFormsModule,
     FormsModule,
+    TranslateModule,
     NewCertificateLayoutComponent,
   ],
   templateUrl: './approved-rejected-trainings.component.html',

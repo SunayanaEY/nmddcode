@@ -1,18 +1,36 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
+import {
+  FormBuilder,
+  FormGroup,
+  Validators,
+  ReactiveFormsModule,
+} from '@angular/forms';
 import { HttpClient } from '@angular/common/http';
-import { BreadcrumbComponent, BreadcrumbItem } from '../../../components/breadcrumb/breadcrumb.component';
+import {
+  BreadcrumbComponent,
+  BreadcrumbItem,
+} from '../../../components/breadcrumb/breadcrumb.component';
 import { AuthService } from '../../../services/auth.service';
-import { LocationService, State, District } from '../../../services/location.service';
+import { TranslateModule } from '@ngx-translate/core';
+import {
+  LocationService,
+  State,
+  District,
+} from '../../../services/location.service';
 import { environment } from '../../../../environments/environment';
 
 @Component({
   selector: 'app-update-profile',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, BreadcrumbComponent],
+  imports: [
+    CommonModule,
+    ReactiveFormsModule,
+    BreadcrumbComponent,
+    TranslateModule,
+  ],
   templateUrl: './update-profile.component.html',
-  styleUrls: ['./update-profile.component.css']
+  styleUrls: ['./update-profile.component.css'],
 })
 export class UpdateProfileComponent implements OnInit {
   updateProfileForm!: FormGroup;
@@ -25,10 +43,10 @@ export class UpdateProfileComponent implements OnInit {
   states: State[] = [];
   districts: District[] = [];
   selectedStateId: number | null = null;
-  
+
   breadcrumbItems: BreadcrumbItem[] = [
     { label: 'Training Dashboard', url: '/admin/training-module' },
-    { label: 'Update Profile' }
+    { label: 'Update Profile' },
   ];
 
   constructor(
@@ -42,7 +60,7 @@ export class UpdateProfileComponent implements OnInit {
 
   ngOnInit(): void {
     // Debug authentication status
-    
+
     this.loadProfileData();
     this.loadStates();
   }
@@ -52,7 +70,10 @@ export class UpdateProfileComponent implements OnInit {
       instituteName: ['', [Validators.required]],
       contactPerson: ['', [Validators.required]],
       designation: ['', [Validators.required]],
-      contactNumber: ['', [Validators.required, Validators.pattern(/^[0-9]{10}$/)]],
+      contactNumber: [
+        '',
+        [Validators.required, Validators.pattern(/^[0-9]{10}$/)],
+      ],
       emailId: ['', [Validators.required, Validators.email]],
       address: ['', [Validators.required]],
       latitude: ['', [Validators.required]],
@@ -64,51 +85,53 @@ export class UpdateProfileComponent implements OnInit {
       currentDistrictName: [''],
       newStateId: [''],
       newDistrictId: [''],
-      block: ['']
+      block: [''],
     });
 
     // Watch for state changes to load districts
-    this.updateProfileForm.get('newStateId')?.valueChanges.subscribe(stateId => {
-      if (stateId) {
-        this.selectedStateId = stateId;
-        this.loadDistrictsByState(stateId);
-        // Reset district selection when state changes
-        this.updateProfileForm.get('newDistrictId')?.setValue('');
-      } else {
-        this.districts = [];
-        this.updateProfileForm.get('newDistrictId')?.setValue('');
-      }
-    });
+    this.updateProfileForm
+      .get('newStateId')
+      ?.valueChanges.subscribe((stateId) => {
+        if (stateId) {
+          this.selectedStateId = stateId;
+          this.loadDistrictsByState(stateId);
+          // Reset district selection when state changes
+          this.updateProfileForm.get('newDistrictId')?.setValue('');
+        } else {
+          this.districts = [];
+          this.updateProfileForm.get('newDistrictId')?.setValue('');
+        }
+      });
   }
-
-
 
   loadProfileData(): void {
     this.isLoading = true;
     this.error = null;
 
-    this.http.get(`${environment.apiUrl}training/trainingInstitutes`).subscribe({
-      next: (response: any) => {
-        this.isLoading = false;
-        if (response.success && response.data && response.data.length > 0) {
-          this.profileData = response.data[0]; // Store the complete profile data
-          this.populateForm(this.profileData);
-          
-          // Set current image URL if available
-          if (this.profileData.instituteImageUrl) {
-            this.currentImageUrl = this.profileData.instituteImageUrl;
+    this.http
+      .get(`${environment.apiUrl}training/trainingInstitutes`)
+      .subscribe({
+        next: (response: any) => {
+          this.isLoading = false;
+          if (response.success && response.data && response.data.length > 0) {
+            this.profileData = response.data[0]; // Store the complete profile data
+            this.populateForm(this.profileData);
+
+            // Set current image URL if available
+            if (this.profileData.instituteImageUrl) {
+              this.currentImageUrl = this.profileData.instituteImageUrl;
+            }
+          } else {
+            this.error = 'No profile data available';
           }
-        } else {
-           this.error = 'No profile data available';
-         }
-       },
-       error: (error) => {
-         this.isLoading = false;
-         console.error('Error loading profile data:', error);
-         this.error = 'Failed to load profile data';
-       }
-     });
-   }
+        },
+        error: (error) => {
+          this.isLoading = false;
+          console.error('Error loading profile data:', error);
+          this.error = 'Failed to load profile data';
+        },
+      });
+  }
 
   loadStates(): void {
     this.locationService.getStates().subscribe({
@@ -117,7 +140,7 @@ export class UpdateProfileComponent implements OnInit {
       },
       error: (error) => {
         console.error('Error loading states:', error);
-      }
+      },
     });
   }
 
@@ -128,7 +151,7 @@ export class UpdateProfileComponent implements OnInit {
       },
       error: (error) => {
         console.error('Error loading districts:', error);
-      }
+      },
     });
   }
 
@@ -146,7 +169,7 @@ export class UpdateProfileComponent implements OnInit {
       currentStateId: data.stateId || '',
       currentDistrictId: data.districtId || '',
       currentStateName: data.state || '',
-      currentDistrictName: data.district || ''
+      currentDistrictName: data.district || '',
     });
   }
 
@@ -154,7 +177,12 @@ export class UpdateProfileComponent implements OnInit {
     const file = event.target.files[0];
     if (file) {
       // Validate file type
-      const allowedTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/gif'];
+      const allowedTypes = [
+        'image/jpeg',
+        'image/jpg',
+        'image/png',
+        'image/gif',
+      ];
       if (!allowedTypes.includes(file.type)) {
         this.error = 'Please select a valid image file (JPG, PNG, GIF)';
         return;
@@ -189,8 +217,10 @@ export class UpdateProfileComponent implements OnInit {
       const user = this.authService.getUser();
 
       // Determine final state and district IDs
-      const finalStateId = formValues.newStateId || this.profileData?.stateId || '';
-      const finalDistrictId = formValues.newDistrictId || this.profileData?.districtId || '';
+      const finalStateId =
+        formValues.newStateId || this.profileData?.stateId || '';
+      const finalDistrictId =
+        formValues.newDistrictId || this.profileData?.districtId || '';
 
       // Create institute details JSON object using profile data and form values
       const instituteDetails = {
@@ -207,43 +237,49 @@ export class UpdateProfileComponent implements OnInit {
         address: formValues.address || '',
         latitude: parseFloat(formValues.latitude) || 0,
         longitude: parseFloat(formValues.longitude) || 0,
-        password: null // Set password to null as requested
+        password: null, // Set password to null as requested
       };
 
       // Create a blob for the JSON data and append it as 'instituteDetails'
       const jsonBlob = new Blob([JSON.stringify(instituteDetails)], {
-        type: 'application/json'
+        type: 'application/json',
       });
       formData.append('instituteDetails', jsonBlob, 'blob');
 
       // Append image file if selected
       if (this.selectedImageFile) {
-        formData.append('instituteImage', this.selectedImageFile, this.selectedImageFile.name);
+        formData.append(
+          'instituteImage',
+          this.selectedImageFile,
+          this.selectedImageFile.name
+        );
       }
 
       // Make the API call to update profile using POST method
-      this.http.post(`${environment.apiUrl}api/auth/registerInstitute`, formData).subscribe({
-        next: (response: any) => {
-          this.isLoading = false;
-          this.success = 'Profile updated successfully!';
-          // Optionally reload the profile data
-          setTimeout(() => {
-            this.loadProfileData();
-          }, 1000);
-        },
-        error: (error) => {
-          this.isLoading = false;
-          console.error('Error updating profile:', error);
-          this.error = error.error?.message || 'Failed to update profile';
-        }
-      });
+      this.http
+        .post(`${environment.apiUrl}api/auth/registerInstitute`, formData)
+        .subscribe({
+          next: (response: any) => {
+            this.isLoading = false;
+            this.success = 'Profile updated successfully!';
+            // Optionally reload the profile data
+            setTimeout(() => {
+              this.loadProfileData();
+            }, 1000);
+          },
+          error: (error) => {
+            this.isLoading = false;
+            console.error('Error updating profile:', error);
+            this.error = error.error?.message || 'Failed to update profile';
+          },
+        });
     } else {
       this.markFormGroupTouched();
     }
   }
 
   markFormGroupTouched(): void {
-    Object.keys(this.updateProfileForm.controls).forEach(key => {
+    Object.keys(this.updateProfileForm.controls).forEach((key) => {
       const control = this.updateProfileForm.get(key);
       control?.markAsTouched();
     });

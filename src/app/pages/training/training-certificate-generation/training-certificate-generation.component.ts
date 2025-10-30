@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { TranslateModule } from '@ngx-translate/core';
 import {
   FormsModule,
   ReactiveFormsModule,
@@ -34,6 +35,7 @@ import { AdminService } from '../services/training-admin.service';
     ReactiveFormsModule,
     FileUploadComponent,
     BreadcrumbComponent,
+    TranslateModule,
   ],
   templateUrl: './training-certificate-generation.component.html',
   styleUrl: './training-certificate-generation.component.css',
@@ -113,15 +115,15 @@ export class TrainingCertificateGenerationComponent implements OnInit {
     if (!control.value) {
       return null; // Let required validator handle empty values
     }
-    
+
     const selectedDate = new Date(control.value);
     const today = new Date();
     today.setHours(0, 0, 0, 0); // Reset time to start of day
-    
+
     if (selectedDate < today) {
       return { pastDate: true };
     }
-    
+
     return null;
   }
 
@@ -129,13 +131,13 @@ export class TrainingCertificateGenerationComponent implements OnInit {
     if (!control.value) {
       return null; // Let required validator handle empty values
     }
-    
+
     const duration = Number(control.value);
-    
+
     if (duration <= 0) {
       return { invalidDuration: true };
     }
-    
+
     return null;
   }
 
@@ -158,8 +160,14 @@ export class TrainingCertificateGenerationComponent implements OnInit {
       venueState: ['', Validators.required],
       venueDistrict: ['', Validators.required],
       venueBlock: ['', Validators.required],
-      trainingDate: ['', [Validators.required, this.futureDateValidator.bind(this)]],
-      duration: ['', [Validators.required, this.positiveDurationValidator.bind(this)]],
+      trainingDate: [
+        '',
+        [Validators.required, this.futureDateValidator.bind(this)],
+      ],
+      duration: [
+        '',
+        [Validators.required, this.positiveDurationValidator.bind(this)],
+      ],
       durationType: ['Days', Validators.required],
       trainingDescription: [
         '',
@@ -202,7 +210,9 @@ export class TrainingCertificateGenerationComponent implements OnInit {
             guestTrainerName: this.trainingDetails.trainerName,
           });
           // Update validation for guest trainer
-          this.trainingForm.get('guestTrainerName')?.setValidators([Validators.required]);
+          this.trainingForm
+            .get('guestTrainerName')
+            ?.setValidators([Validators.required]);
           this.trainingForm.get('guestTrainerName')?.updateValueAndValidity();
         } else {
           // Regular trainer case
@@ -254,7 +264,6 @@ export class TrainingCertificateGenerationComponent implements OnInit {
           this.mySelectedFile = this.trainingDetails.signatures.map(
             (s: any) => s.signatorySignaturePath
           );
-
         }
         this.mySelectedLogo = [
           this.trainingDetails.logoPath1,
@@ -275,21 +284,22 @@ export class TrainingCertificateGenerationComponent implements OnInit {
   setTrainingInstitute(): void {
     if (this.trainingDetails && this.instituteNames) {
       const selectedInstitute = this.instituteNames.find(
-        (institute: any) => institute.id === this.trainingDetails.trainingInstituteId
+        (institute: any) =>
+          institute.id === this.trainingDetails.trainingInstituteId
       );
-      
+
       if (selectedInstitute) {
         this.trainingForm.patchValue({
-          trainingInstituteName: selectedInstitute
+          trainingInstituteName: selectedInstitute,
         });
       } else {
         // If institute not found in list, create a temporary object
         const tempInstitute = {
           id: this.trainingDetails.trainingInstituteId,
-          trainingInstituteName: this.trainingDetails.trainingInstituteName
+          trainingInstituteName: this.trainingDetails.trainingInstituteName,
         };
         this.trainingForm.patchValue({
-          trainingInstituteName: tempInstitute
+          trainingInstituteName: tempInstitute,
         });
       }
     }
@@ -329,7 +339,6 @@ export class TrainingCertificateGenerationComponent implements OnInit {
   }
 
   onFileSelect(file: File, type: 'signature' | 'logo', index: number) {
-
     // Check if we're in update mode (populate is 'true') or create mode (populate is 'false', undefined, or null)
     if (this.populate === 'true') {
       if (type === 'signature') {
@@ -443,25 +452,25 @@ export class TrainingCertificateGenerationComponent implements OnInit {
         console.error('Error loading trainers:', error);
         this.toastr.error('Failed to load trainers');
         this.isLoadingTrainers = false;
-      }
+      },
     });
-   }
+  }
 
-   onTrainerChange(): void {
-     const selectedTrainer = this.trainingForm.get('trainerName')?.value;
-     this.showGuestTrainerField = selectedTrainer === 'Other';
-     
-     const guestTrainerControl = this.trainingForm.get('guestTrainerName');
-     if (this.showGuestTrainerField) {
-       guestTrainerControl?.setValidators([Validators.required]);
-     } else {
-       guestTrainerControl?.clearValidators();
-       guestTrainerControl?.setValue('');
-     }
-     guestTrainerControl?.updateValueAndValidity();
-   }
+  onTrainerChange(): void {
+    const selectedTrainer = this.trainingForm.get('trainerName')?.value;
+    this.showGuestTrainerField = selectedTrainer === 'Other';
 
-   onTrainingInstituteChange() {
+    const guestTrainerControl = this.trainingForm.get('guestTrainerName');
+    if (this.showGuestTrainerField) {
+      guestTrainerControl?.setValidators([Validators.required]);
+    } else {
+      guestTrainerControl?.clearValidators();
+      guestTrainerControl?.setValue('');
+    }
+    guestTrainerControl?.updateValueAndValidity();
+  }
+
+  onTrainingInstituteChange() {
     const selectedInstitute = this.trainingForm.get(
       'trainingInstituteName'
     )?.value;
@@ -534,7 +543,9 @@ export class TrainingCertificateGenerationComponent implements OnInit {
         data['trainerId'] = 0;
       } else {
         // When specific trainer is selected, find trainerId and set trainerName to null
-        const selectedTrainer = this.trainers.find(trainer => trainer.trainerName === data['trainerName']);
+        const selectedTrainer = this.trainers.find(
+          (trainer) => trainer.trainerName === data['trainerName']
+        );
         data['trainerId'] = selectedTrainer ? selectedTrainer.id : null;
         data['trainerName'] = null;
       }

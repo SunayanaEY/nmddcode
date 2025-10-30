@@ -1,237 +1,307 @@
 <div class="update-profile-container">
   <!-- Breadcrumb -->
   <app-breadcrumb [items]="breadcrumbItems"></app-breadcrumb>
-  
+
   <!-- Page Header -->
   <div class="page-header">
-    <h2>Update Profile</h2>
-    <p class="page-description">Update your training institute profile information</p>
+    <h2>{{ "Update Profile" | translate }}</h2>
+    <p class="page-description">
+      {{ "Update your training institute profile information" | translate }}
+    </p>
   </div>
 
   <!-- Loading State -->
   <div *ngIf="isLoading" class="loading-container">
     <div class="loading-spinner"></div>
-    <p>Loading profile data...</p>
+    <p>{{ "Loading profile data..." | translate }}</p>
   </div>
 
   <!-- Error Message -->
   <div *ngIf="error" class="alert alert-danger" role="alert">
     <i class="bi bi-exclamation-triangle-fill me-2"></i>
-    {{ error }}
+    {{ error | translate }}
     <button type="button" class="btn-close" (click)="clearMessages()"></button>
   </div>
 
   <!-- Success Message -->
   <div *ngIf="success" class="alert alert-success" role="alert">
     <i class="bi bi-check-circle-fill me-2"></i>
-    {{ success }}
+    {{ success | translate }}
     <button type="button" class="btn-close" (click)="clearMessages()"></button>
   </div>
 
   <!-- Update Profile Form -->
   <div *ngIf="!isLoading" class="profile-form-container">
-    <form [formGroup]="updateProfileForm" (ngSubmit)="onSubmit()" class="profile-form">
-      
+    <form
+      [formGroup]="updateProfileForm"
+      (ngSubmit)="onSubmit()"
+      class="profile-form"
+    >
       <!-- Institute Image -->
       <div class="form-group">
-        <label for="instituteImage" class="form-label">Institute Image</label>
+        <label for="instituteImage" class="form-label">
+          {{ "Institute Image" | translate }}
+        </label>
         <div class="image-upload-container">
           <div class="current-image" *ngIf="currentImageUrl">
-            <img [src]="currentImageUrl" alt="Current Institute Image" class="preview-image">
+            <img
+              [src]="currentImageUrl"
+              alt="{{ 'Current Institute Image' | translate }}"
+              class="preview-image"
+            />
           </div>
-          <input 
-            type="file" 
-            id="instituteImage" 
+          <input
+            type="file"
+            id="instituteImage"
             class="form-control"
             accept=".jpg,.jpeg,.png,.gif"
-            (change)="onFileSelected($event)">
-          <small class="form-text text-muted">Select institute image (JPG, PNG, GIF - Max 5MB)</small>
+            (change)="onFileSelected($event)"
+          />
+          <small class="form-text text-muted">
+            {{ "Select institute image (JPG, PNG, GIF - Max 5MB)" | translate }}
+          </small>
         </div>
       </div>
 
       <!-- Institute Name -->
       <div class="form-group">
-        <label for="instituteName" class="form-label required">Institute Name</label>
-        <input 
-          type="text" 
-          id="instituteName" 
+        <label for="instituteName" class="form-label required">
+          {{ "Institute Name" | translate }}
+        </label>
+        <input
+          type="text"
+          id="instituteName"
           class="form-control"
           formControlName="instituteName"
           [class.is-invalid]="isFieldInvalid('instituteName')"
-          placeholder="Enter institute name">
+          [placeholder]="'Enter institute name' | translate"
+        />
         <div *ngIf="isFieldInvalid('instituteName')" class="invalid-feedback">
-          {{ getFieldError('instituteName') }}
+          {{ getFieldError("instituteName") | translate }}
         </div>
       </div>
 
       <!-- Current State (Read-only) -->
       <div class="form-group">
-        <label for="currentStateName" class="form-label">Current State</label>
-        <input 
-          type="text" 
-          id="currentStateName" 
+        <label for="currentStateName" class="form-label">
+          {{ "Current State" | translate }}
+        </label>
+        <input
+          type="text"
+          id="currentStateName"
           class="form-control"
           formControlName="currentStateName"
-          placeholder="Current state"
-          readonly>
+          [placeholder]="'Current state' | translate"
+          readonly
+        />
       </div>
 
       <!-- Current District (Read-only) -->
       <div class="form-group">
-        <label for="currentDistrictName" class="form-label">Current District</label>
-        <input 
-          type="text" 
-          id="currentDistrictName" 
+        <label for="currentDistrictName" class="form-label">
+          {{ "Current District" | translate }}
+        </label>
+        <input
+          type="text"
+          id="currentDistrictName"
           class="form-control"
           formControlName="currentDistrictName"
-          placeholder="Current district"
-          readonly>
+          [placeholder]="'Current district' | translate"
+          readonly
+        />
       </div>
 
       <!-- Change State (Optional) -->
       <div class="form-group">
-        <label for="newStateId" class="form-label">Change State (Optional)</label>
-        <select 
-          id="newStateId" 
+        <label for="newStateId" class="form-label">
+          {{ "Change State (Optional)" | translate }}
+        </label>
+        <select
+          id="newStateId"
           class="form-select"
-          formControlName="newStateId">
-          <option value="">Select new state if you want to change</option>
-          <option *ngFor="let state of states" [value]="state.id">{{ state.stateName }}</option>
+          formControlName="newStateId"
+        >
+          <option value="">
+            {{ "Select new state if you want to change" | translate }}
+          </option>
+          <option *ngFor="let state of states" [value]="state.id">
+            {{ state.stateName }}
+          </option>
         </select>
       </div>
 
       <!-- Change District (Optional) -->
       <div class="form-group">
-        <label for="newDistrictId" class="form-label">Change District (Optional)</label>
-        <select 
-          id="newDistrictId" 
+        <label for="newDistrictId" class="form-label">
+          {{ "Change District (Optional)" | translate }}
+        </label>
+        <select
+          id="newDistrictId"
           class="form-select"
           formControlName="newDistrictId"
-          [disabled]="!updateProfileForm.get('newStateId')?.value">
-          <option value="">Select new district if you want to change</option>
-          <option *ngFor="let district of districts" [value]="district.id">{{ district.districtName }}</option>
+          [disabled]="!updateProfileForm.get('newStateId')?.value"
+        >
+          <option value="">
+            {{ "Select new district if you want to change" | translate }}
+          </option>
+          <option *ngFor="let district of districts" [value]="district.id">
+            {{ district.districtName }}
+          </option>
         </select>
       </div>
 
       <!-- Contact Person -->
       <div class="form-group">
-        <label for="contactPerson" class="form-label required">Contact Person</label>
-        <input 
-          type="text" 
-          id="contactPerson" 
+        <label for="contactPerson" class="form-label required">
+          {{ "Contact Person" | translate }}
+        </label>
+        <input
+          type="text"
+          id="contactPerson"
           class="form-control"
           formControlName="contactPerson"
           [class.is-invalid]="isFieldInvalid('contactPerson')"
-          placeholder="Enter contact person name">
+          [placeholder]="'Enter contact person name' | translate"
+        />
         <div *ngIf="isFieldInvalid('contactPerson')" class="invalid-feedback">
-          {{ getFieldError('contactPerson') }}
+          {{ getFieldError("contactPerson") | translate }}
         </div>
       </div>
 
       <!-- Contact Number -->
       <div class="form-group">
-        <label for="contactNumber" class="form-label required">Contact Number</label>
-        <input 
-          type="tel" 
-          id="contactNumber" 
+        <label for="contactNumber" class="form-label required">
+          {{ "Contact Number" | translate }}
+        </label>
+        <input
+          type="tel"
+          id="contactNumber"
           class="form-control"
           formControlName="contactNumber"
           [class.is-invalid]="isFieldInvalid('contactNumber')"
-          placeholder="Enter contact number"
-          pattern="[0-9]{10}">
+          [placeholder]="'Enter contact number' | translate"
+          pattern="[0-9]{10}"
+        />
         <div *ngIf="isFieldInvalid('contactNumber')" class="invalid-feedback">
-          {{ getFieldError('contactNumber') }}
+          {{ getFieldError("contactNumber") | translate }}
         </div>
       </div>
 
       <!-- Email ID -->
       <div class="form-group">
-        <label for="emailId" class="form-label required">Email ID</label>
-        <input 
-          type="email" 
-          id="emailId" 
+        <label for="emailId" class="form-label required">
+          {{ "Email ID" | translate }}
+        </label>
+        <input
+          type="email"
+          id="emailId"
           class="form-control"
           formControlName="emailId"
           [class.is-invalid]="isFieldInvalid('emailId')"
-          placeholder="Enter email address">
+          [placeholder]="'Enter email address' | translate"
+        />
         <div *ngIf="isFieldInvalid('emailId')" class="invalid-feedback">
-          {{ getFieldError('emailId') }}
+          {{ getFieldError("emailId") | translate }}
         </div>
       </div>
 
       <!-- Designation -->
       <div class="form-group">
-        <label for="designation" class="form-label">Designation</label>
-        <input 
-          type="text" 
-          id="designation" 
+        <label for="designation" class="form-label">
+          {{ "Designation" | translate }}
+        </label>
+        <input
+          type="text"
+          id="designation"
           class="form-control"
           formControlName="designation"
-          placeholder="Enter designation">
+          [placeholder]="'Enter designation' | translate"
+        />
       </div>
 
       <!-- Registration ID (Read-only) -->
       <div class="form-group">
-        <label for="registrationId" class="form-label">Registration ID</label>
-        <input 
-          type="text" 
-          id="registrationId" 
+        <label for="registrationId" class="form-label">
+          {{ "Registration ID" | translate }}
+        </label>
+        <input
+          type="text"
+          id="registrationId"
           class="form-control"
           formControlName="registrationId"
-          placeholder="Registration ID"
-          readonly>
+          [placeholder]="'Registration ID' | translate"
+          readonly
+        />
       </div>
 
       <!-- Address -->
       <div class="form-group">
-        <label for="address" class="form-label">Address</label>
-        <textarea 
-          id="address" 
+        <label for="address" class="form-label">
+          {{ "Address" | translate }}
+        </label>
+        <textarea
+          id="address"
           class="form-control"
           formControlName="address"
           rows="3"
-          placeholder="Enter complete address"></textarea>
+          [placeholder]="'Enter complete address' | translate"
+        ></textarea>
       </div>
 
       <!-- Latitude -->
       <div class="form-group">
-        <label for="latitude" class="form-label">Latitude</label>
-        <input 
-          type="number" 
-          id="latitude" 
+        <label for="latitude" class="form-label">
+          {{ "Latitude" | translate }}
+        </label>
+        <input
+          type="number"
+          id="latitude"
           class="form-control"
           formControlName="latitude"
           step="any"
-          placeholder="Enter latitude (e.g., 28.6139)">
+          [placeholder]="'Enter latitude (e.g., 28.6139)' | translate"
+        />
       </div>
 
       <!-- Longitude -->
       <div class="form-group">
-        <label for="longitude" class="form-label">Longitude</label>
-        <input 
-          type="number" 
-          id="longitude" 
+        <label for="longitude" class="form-label">
+          {{ "Longitude" | translate }}
+        </label>
+        <input
+          type="number"
+          id="longitude"
           class="form-control"
           formControlName="longitude"
           step="any"
-          placeholder="Enter longitude (e.g., 77.2090)">
+          [placeholder]="'Enter longitude (e.g., 77.2090)' | translate"
+        />
       </div>
 
       <!-- Form Actions -->
       <div class="form-actions">
-        <button 
-          type="submit" 
+        <button
+          type="submit"
           class="btn btn-primary"
-          [disabled]="isLoading || updateProfileForm.invalid">
-          <span *ngIf="isLoading" class="spinner-border spinner-border-sm me-2"></span>
-          {{ isLoading ? 'Updating...' : 'Update Profile' }}
+          [disabled]="isLoading || updateProfileForm.invalid"
+        >
+          <span
+            *ngIf="isLoading"
+            class="spinner-border spinner-border-sm me-2"
+          ></span>
+          {{
+            isLoading
+              ? ("Updating..." | translate)
+              : ("Update Profile" | translate)
+          }}
         </button>
-        <button 
-          type="button" 
+        <button
+          type="button"
           class="btn btn-secondary ms-2"
           (click)="loadProfileData()"
-          [disabled]="isLoading">
-          Reset
+          [disabled]="isLoading"
+        >
+          {{ "Reset" | translate }}
         </button>
       </div>
     </form>

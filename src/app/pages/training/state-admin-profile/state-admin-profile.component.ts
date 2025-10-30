@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { TranslateModule } from '@ngx-translate/core';
 import {
   FormBuilder,
   FormGroup,
@@ -40,6 +41,7 @@ import {
     BreadcrumbComponent,
     TableComponent,
     ModalComponent,
+    TranslateModule,
   ],
   templateUrl: './state-admin-profile.component.html',
   styleUrl: './state-admin-profile.component.css',
