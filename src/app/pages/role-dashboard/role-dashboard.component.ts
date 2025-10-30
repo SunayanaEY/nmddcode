@@ -464,6 +464,9 @@ export class RoleDashboardComponent implements OnInit {
       case 'registeredTrainers':
         this.downloadTrainerData('Registered Trainers', button, originalText);
         break;
+      case 'traineeRecommendedCertification':
+        this.downloadRecommendedTraineesData('Trainee Recommended for Certification', button, originalText);
+        break;
       default:
         console.warn('Unknown KPI type:', kpiType);
         button.innerHTML = originalText;
@@ -587,6 +590,65 @@ export class RoleDashboardComponent implements OnInit {
       error: (error) => {
         console.error('Error downloading trainee data:', error);
         alert('Error downloading trainee data. Please try again.');
+        
+        // Reset button state
+        button.innerHTML = originalText;
+        button.disabled = false;
+      }
+    });
+  }
+
+  /**
+   * Download recommended trainees data as Excel file
+   */
+  private downloadRecommendedTraineesData(cardTitle: string, button: HTMLButtonElement, originalText: string): void {
+    this.roleDashboardService.getRecommendedTraineesData().subscribe({
+      next: (response: TraineeDataResponse) => {
+        if (response.success && response.data && response.data.length > 0) {
+          // Transform recommended trainees data for Excel export
+          const excelData = response.data.map(item => ({
+            'Trainee ID': item.id,
+            'Name': item.name,
+            'Father Name': item.fatherName,
+            'Gender': item.gender,
+            'Age': item.age,
+            'Date of Birth': new Date(item.dob).toLocaleDateString(),
+            'Contact Number': item.contactNumber,
+            'Email': item.email,
+            'UIN': item.uin,
+            'Status': item.status,
+            'Training ID': item.trainingId,
+            'Training Name': item.trainingName,
+            'Training Institute': item.trainingInstituteName,
+            'Upload Type': item.uploadType,
+            'Uploaded By': item.uploadedBy || 'N/A',
+            'Created By': item.createdBy,
+            'Created Date': new Date(item.createDate).toLocaleDateString(),
+            'Updated By': item.updatedBy || 'N/A',
+            'Updated Date': new Date(item.updateDate).toLocaleDateString(),
+            'Rejection Remarks': item.rejectionRemarks || 'N/A'
+          }));
+
+          // Generate filename with timestamp
+          const timestamp = new Date().toISOString().split('T')[0];
+          const filename = `${cardTitle.replace(/\s+/g, '_')}_${timestamp}`;
+
+          // Export to Excel
+          this.excelService.exportAsExcelFile(excelData, filename);
+          
+          console.log(`Successfully exported ${excelData.length} recommended trainee records for ${cardTitle}`);
+        } else {
+          console.warn('No recommended trainee data available for export');
+          alert('No recommended trainee data available for export');
+        }
+
+        // Reset button state
+        button.innerHTML = originalText;
+        button.disabled = false;
+      },
+      error: (error) => {
+        console.error('Error downloading recommended trainee data:', error);
+        alert('Error downloading recommended trainee data. Please try again.');
         
         // Reset button state
         button.innerHTML = originalText;

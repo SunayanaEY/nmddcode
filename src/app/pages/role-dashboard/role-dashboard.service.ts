@@ -312,6 +312,13 @@ export class RoleDashboardService {
   }
 
   /**
+   * Get recommended trainees data for Excel export
+   */
+  getRecommendedTraineesData(): Observable<TraineeDataResponse> {
+    return this.http.get<TraineeDataResponse>(`${this.apiUrl}public/dashboard/training-trainee-list/recommendedTrainees`);
+  }
+
+  /**
    * Get trainer data by training head ID for Excel export
    */
   getTrainerDataByTrainingHead(trainingHeadId: string): Observable<TrainerDataResponse> {
