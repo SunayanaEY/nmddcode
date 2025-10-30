@@ -4,9 +4,8 @@
 
     <div class="profile-card">
       <div class="card-header">
-        <h2 class="card-title">{{ 'TRAINING.REGISTRATION' | translate }}</h2>
-        <p class="card-subtitle">
-        </p>
+        <h2 class="card-title">{{ "TRAINING.REGISTRATION" | translate }}</h2>
+        <p class="card-subtitle"></p>
       </div>
 
       <div class="card-content">
@@ -16,18 +15,23 @@
             class="form-section"
             *ngIf="userRole == 1 || userRole == 5 || userRole == 6"
           >
-            <h3 class="section-title">{{ 'TRAINING.BASIC_INFORMATION' | translate }}</h3>
+            <h3 class="section-title">
+              {{ "TRAINING.BASIC_INFORMATION" | translate }}
+            </h3>
 
             <div class="form-row">
               <div class="form-group">
                 <label for="trainingInstituteName"
-                  >{{ 'TRAINING.INSTITUTE_NAME_LABEL' | translate }}<span class="required">*</span></label
+                  >{{ "TRAINING.INSTITUTE_NAME_LABEL" | translate
+                  }}<span class="required">*</span></label
                 >
                 <input
                   type="text"
                   id="trainingInstituteName"
                   formControlName="trainingInstituteName"
-                  [placeholder]="'TRAINING.PLACEHOLDERS.INSTITUTE_NAME' | translate"
+                  [placeholder]="
+                    'TRAINING.PLACEHOLDERS.INSTITUTE_NAME' | translate
+                  "
                   class="form-control"
                   [class.is-invalid]="
                     profileForm.get('trainingInstituteName')?.invalid &&
@@ -43,23 +47,31 @@
                 >
                   <span
                     *ngIf="profileForm.get('trainingInstituteName')?.errors?.['required']"
-                    >{{ 'TRAINING.VALIDATION.INSTITUTE_NAME_REQUIRED' | translate }}</span
+                    >{{
+                      "TRAINING.VALIDATION.INSTITUTE_NAME_REQUIRED" | translate
+                    }}</span
                   >
                   <span
                     *ngIf="profileForm.get('trainingInstituteName')?.errors?.['minlength']"
-                    >{{ 'TRAINING.VALIDATION.INSTITUTE_NAME_MIN_LENGTH' | translate }}</span
+                    >{{
+                      "TRAINING.VALIDATION.INSTITUTE_NAME_MIN_LENGTH"
+                        | translate
+                    }}</span
                   >
                 </div>
               </div>
               <div class="form-group">
                 <label for="trainingInstituteRegistration"
-                  >{{ 'TRAINING.REGISTRATION_NUMBER' | translate }}<span class="required">*</span></label
+                  >{{ "TRAINING.REGISTRATION_NUMBER" | translate
+                  }}<span class="required">*</span></label
                 >
                 <input
                   type="text"
                   id="trainingInstituteRegistration"
                   formControlName="trainingInstituteRegistration"
-                  [placeholder]="'TRAINING.PLACEHOLDERS.REGISTRATION_NUMBER' | translate"
+                  [placeholder]="
+                    'TRAINING.PLACEHOLDERS.REGISTRATION_NUMBER' | translate
+                  "
                   class="form-control"
                   [class.is-invalid]="
                     profileForm.get('trainingInstituteRegistration')?.invalid &&
@@ -74,13 +86,17 @@
                   "
                 >
                   <span
-                      *ngIf="profileForm.get('trainingInstituteRegistration')?.errors?.['required']"
-                      >{{ 'TRAINING.VALIDATION.REGISTRATION_REQUIRED' | translate }}</span
-                    >
-                    <span
-                      *ngIf="profileForm.get('trainingInstituteRegistration')?.errors?.['minlength']"
-                      >{{ 'TRAINING.VALIDATION.REGISTRATION_MIN_LENGTH' | translate }}</span
-                    >
+                    *ngIf="profileForm.get('trainingInstituteRegistration')?.errors?.['required']"
+                    >{{
+                      "TRAINING.VALIDATION.REGISTRATION_REQUIRED" | translate
+                    }}</span
+                  >
+                  <span
+                    *ngIf="profileForm.get('trainingInstituteRegistration')?.errors?.['minlength']"
+                    >{{
+                      "TRAINING.VALIDATION.REGISTRATION_MIN_LENGTH" | translate
+                    }}</span
+                  >
                 </div>
               </div>
             </div>
@@ -88,7 +104,8 @@
             <div class="form-row">
               <div class="form-group">
                 <label for="trainingInstituteExpiry">
-                  {{ 'TRAINING.REGISTRATION_VALIDITY' | translate }}<span class="required">*</span>
+                  {{ "TRAINING.REGISTRATION_VALIDITY" | translate
+                  }}<span class="required">*</span>
                 </label>
                 <input
                   type="date"
@@ -100,19 +117,23 @@
                 />
               </div>
               <div class="form-group">
-                  <label for="instituteType"
-                    >{{ 'TRAINING.INSTITUTE_TYPE' | translate }}<span class="required">*</span></label
-                  >
-                  <select
-                    id="instituteType"
-                    formControlName="instituteType"
-                    class="form-control"
+                <label for="instituteType"
+                  >{{ "TRAINING.INSTITUTE_TYPE" | translate
+                  }}<span class="required">*</span></label
+                >
+                <select
+                  id="instituteType"
+                  formControlName="instituteType"
+                  class="form-control"
+                  training-centre-admin-profile
                   [class.is-invalid]="
                     profileForm.get('instituteType')?.invalid &&
                     profileForm.get('instituteType')?.touched
                   "
                 >
-                  <option value="" disabled>{{ 'TRAINING.PLACEHOLDERS.INSTITUTE_TYPE' | translate }}</option>
+                  <option value="" disabled>
+                    {{ "TRAINING.PLACEHOLDERS.INSTITUTE_TYPE" | translate }}
+                  </option>
                   <option
                     *ngFor="let type of instituteTypes"
                     [value]="type.value"
@@ -128,16 +149,21 @@
                   "
                 >
                   <span
-                      *ngIf="profileForm.get('instituteType')?.errors?.['required']"
-                      >{{ 'TRAINING.VALIDATION.INSTITUTE_TYPE_REQUIRED' | translate }}</span
-                    >
+                    *ngIf="profileForm.get('instituteType')?.errors?.['required']"
+                    >{{
+                      "TRAINING.VALIDATION.INSTITUTE_TYPE_REQUIRED" | translate
+                    }}</span
+                  >
                 </div>
               </div>
             </div>
 
             <div class="form-row">
               <div class="form-group">
-                <label for="state">{{ 'COMMON.STATE' | translate }}<span class="required">*</span></label>
+                <label for="state"
+                  >{{ "COMMON.STATE" | translate
+                  }}<span class="required">*</span></label
+                >
                 <select
                   id="state"
                   formControlName="state"
@@ -150,7 +176,11 @@
                   [disabled]="isLoadingStates"
                 >
                   <option value="" disabled>
-                    {{ isLoadingStates ? ('TRAINING.LOADING.STATES' | translate) : ('TRAINING.PLACEHOLDERS.STATE' | translate) }}
+                    {{
+                      isLoadingStates
+                        ? ("TRAINING.LOADING.STATES" | translate)
+                        : ("TRAINING.PLACEHOLDERS.STATE" | translate)
+                    }}
                   </option>
                   <option *ngFor="let state of states" [value]="state.id">
                     {{ state.stateName }}
@@ -164,15 +194,18 @@
                   "
                 >
                   <span
-                      *ngIf="profileForm.get('state')?.errors?.['required']"
-                      >{{ 'TRAINING.VALIDATION.STATE_REQUIRED' | translate }}</span
-                    >
+                    *ngIf="profileForm.get('state')?.errors?.['required']"
+                    >{{
+                      "TRAINING.VALIDATION.STATE_REQUIRED" | translate
+                    }}</span
+                  >
                 </div>
               </div>
 
               <div class="form-group">
                 <label for="district"
-                  >{{ 'COMMON.DISTRICT' | translate }}<span class="required">*</span></label
+                  >{{ "COMMON.DISTRICT" | translate
+                  }}<span class="required">*</span></label
                 >
                 <select
                   id="district"
@@ -189,10 +222,10 @@
                   <option value="" disabled>
                     {{
                       isLoadingDistricts
-                        ? ('TRAINING.LOADING.DISTRICTS' | translate)
-                        : !profileForm.get('state')?.value
-                        ? ('TRAINING.SELECT_STATE_FIRST' | translate)
-                        : ('TRAINING.PLACEHOLDERS.DISTRICT' | translate)
+                        ? ("TRAINING.LOADING.DISTRICTS" | translate)
+                        : !profileForm.get("state")?.value
+                        ? ("TRAINING.SELECT_STATE_FIRST" | translate)
+                        : ("TRAINING.PLACEHOLDERS.DISTRICT" | translate)
                     }}
                   </option>
                   <option
@@ -210,9 +243,11 @@
                   "
                 >
                   <span
-                      *ngIf="profileForm.get('district')?.errors?.['required']"
-                      >{{ 'TRAINING.VALIDATION.DISTRICT_REQUIRED' | translate }}</span
-                    >
+                    *ngIf="profileForm.get('district')?.errors?.['required']"
+                    >{{
+                      "TRAINING.VALIDATION.DISTRICT_REQUIRED" | translate
+                    }}</span
+                  >
                 </div>
               </div>
             </div>
@@ -222,11 +257,14 @@
             class="form-section"
             *ngIf="userRole == 1 || userRole == 5 || userRole == 6"
           >
-            <h3 class="section-title">{{ 'TRAINING.LOCATION_INFORMATION' | translate }}</h3>
+            <h3 class="section-title">
+              {{ "TRAINING.LOCATION_INFORMATION" | translate }}
+            </h3>
 
             <div class="form-group full-width">
               <label for="address"
-                >{{ 'TRAINING.ADDRESS' | translate }}<span class="required">*</span></label
+                >{{ "TRAINING.ADDRESS" | translate
+                }}<span class="required">*</span></label
               >
               <textarea
                 id="address"
@@ -246,11 +284,17 @@
                   profileForm.get('address')?.touched
                 "
               >
-                <span *ngIf="profileForm.get('address')?.errors?.['required']"
-                  >{{ 'TRAINING.VALIDATION.ADDRESS_REQUIRED' | translate }}</span
+                <span
+                  *ngIf="profileForm.get('address')?.errors?.['required']"
+                  >{{
+                    "TRAINING.VALIDATION.ADDRESS_REQUIRED" | translate
+                  }}</span
                 >
-                <span *ngIf="profileForm.get('address')?.errors?.['minlength']"
-                  >{{ 'TRAINING.VALIDATION.ADDRESS_MIN_LENGTH' | translate }}</span
+                <span
+                  *ngIf="profileForm.get('address')?.errors?.['minlength']"
+                  >{{
+                    "TRAINING.VALIDATION.ADDRESS_MIN_LENGTH" | translate
+                  }}</span
                 >
               </div>
             </div>
@@ -258,7 +302,8 @@
             <div class="form-row">
               <div class="form-group">
                 <label for="latitude"
-                  >{{ 'TRAINING.LATITUDE' | translate }}<span class="required">*</span></label
+                  >{{ "TRAINING.LATITUDE" | translate
+                  }}<span class="required">*</span></label
                 >
                 <input
                   type="number"
@@ -280,19 +325,24 @@
                   "
                 >
                   <span
-                      *ngIf="profileForm.get('latitude')?.errors?.['required']"
-                      >{{ 'TRAINING.VALIDATION.LATITUDE_REQUIRED' | translate }}</span
-                    >
-                    <span
-                      *ngIf="profileForm.get('latitude')?.errors?.['min'] || profileForm.get('latitude')?.errors?.['max']"
-                      >{{ 'TRAINING.VALIDATION.LATITUDE_RANGE' | translate }}</span
-                    >
+                    *ngIf="profileForm.get('latitude')?.errors?.['required']"
+                    >{{
+                      "TRAINING.VALIDATION.LATITUDE_REQUIRED" | translate
+                    }}</span
+                  >
+                  <span
+                    *ngIf="profileForm.get('latitude')?.errors?.['min'] || profileForm.get('latitude')?.errors?.['max']"
+                    >{{
+                      "TRAINING.VALIDATION.LATITUDE_RANGE" | translate
+                    }}</span
+                  >
                 </div>
               </div>
 
               <div class="form-group">
                 <label for="longitude"
-                  >{{ 'TRAINING.LONGITUDE' | translate }}<span class="required">*</span></label
+                  >{{ "TRAINING.LONGITUDE" | translate
+                  }}<span class="required">*</span></label
                 >
                 <input
                   type="number"
@@ -314,32 +364,41 @@
                   "
                 >
                   <span
-                      *ngIf="profileForm.get('longitude')?.errors?.['required']"
-                      >{{ 'TRAINING.VALIDATION.LONGITUDE_REQUIRED' | translate }}</span
-                    >
-                    <span
-                      *ngIf="profileForm.get('longitude')?.errors?.['min'] || profileForm.get('longitude')?.errors?.['max']"
-                      >{{ 'TRAINING.VALIDATION.LONGITUDE_RANGE' | translate }}</span
-                    >
+                    *ngIf="profileForm.get('longitude')?.errors?.['required']"
+                    >{{
+                      "TRAINING.VALIDATION.LONGITUDE_REQUIRED" | translate
+                    }}</span
+                  >
+                  <span
+                    *ngIf="profileForm.get('longitude')?.errors?.['min'] || profileForm.get('longitude')?.errors?.['max']"
+                    >{{
+                      "TRAINING.VALIDATION.LONGITUDE_RANGE" | translate
+                    }}</span
+                  >
                 </div>
               </div>
             </div>
           </div>
 
           <!-- Contact Information Section -->
-          <div class="form-section" *ngIf="userRole == 5 || userRole == 6">
-            <h3 class="section-title">{{ 'TRAINING.CONTACT_INFORMATION' | translate }}</h3>
+          <div class="form-section" *ngIf="userRole == 1">
+            <h3 class="section-title">
+              {{ "TRAINING.CONTACT_INFORMATION" | translate }}
+            </h3>
 
             <div class="form-row">
               <div class="form-group">
                 <label for="contactPersonName"
-                  >{{ 'TRAINING.INSTITUTE_HEAD' | translate }}<span class="required">*</span></label
+                  >{{ "TRAINING.INSTITUTE_HEAD" | translate
+                  }}<span class="required">*</span></label
                 >
                 <input
                   type="text"
                   id="contactPersonName"
                   formControlName="contactPersonName"
-                  [placeholder]="'TRAINING.PLACEHOLDERS.INSTITUTE_HEAD' | translate"
+                  [placeholder]="
+                    'TRAINING.PLACEHOLDERS.INSTITUTE_HEAD' | translate
+                  "
                   class="form-control"
                   [class.is-invalid]="
                     profileForm.get('contactPersonName')?.invalid &&
@@ -355,24 +414,31 @@
                 >
                   <span
                     *ngIf="profileForm.get('contactPersonName')?.errors?.['required']"
-                    >{{ 'TRAINING.VALIDATION.CONTACT_NAME_REQUIRED' | translate }}</span
+                    >{{
+                      "TRAINING.VALIDATION.CONTACT_NAME_REQUIRED" | translate
+                    }}</span
                   >
                   <span
                     *ngIf="profileForm.get('contactPersonName')?.errors?.['minlength']"
-                    >{{ 'TRAINING.VALIDATION.CONTACT_NAME_MIN_LENGTH' | translate }}</span
+                    >{{
+                      "TRAINING.VALIDATION.CONTACT_NAME_MIN_LENGTH" | translate
+                    }}</span
                   >
                 </div>
               </div>
 
               <div class="form-group">
                 <label for="designation"
-                  >{{ 'TRAINING.DESIGNATION' | translate }}<span class="required">*</span></label
+                  >{{ "TRAINING.DESIGNATION" | translate
+                  }}<span class="required">*</span></label
                 >
                 <input
                   type="text"
                   id="designation"
                   formControlName="designation"
-                  [placeholder]="'TRAINING.PLACEHOLDERS.DESIGNATION' | translate"
+                  [placeholder]="
+                    'TRAINING.PLACEHOLDERS.DESIGNATION' | translate
+                  "
                   class="form-control"
                   [class.is-invalid]="
                     profileForm.get('designation')?.invalid &&
@@ -387,9 +453,11 @@
                   "
                 >
                   <span
-                      *ngIf="profileForm.get('designation')?.errors?.['required']"
-                      >{{ 'TRAINING.VALIDATION.DESIGNATION_REQUIRED' | translate }}</span
-                    >
+                    *ngIf="profileForm.get('designation')?.errors?.['required']"
+                    >{{
+                      "TRAINING.VALIDATION.DESIGNATION_REQUIRED" | translate
+                    }}</span
+                  >
                 </div>
               </div>
             </div>
@@ -397,13 +465,16 @@
             <div class="form-row">
               <div class="form-group">
                 <label for="contactNumber"
-                  >{{ 'COMMON.CONTACT_NUMBER' | translate }}<span class="required">*</span></label
+                  >{{ "COMMON.CONTACT_NUMBER" | translate
+                  }}<span class="required">*</span></label
                 >
                 <input
                   type="tel"
                   id="contactNumber"
                   formControlName="contactNumber"
-                  [placeholder]="'TRAINING.PLACEHOLDERS.CONTACT_NUMBER' | translate"
+                  [placeholder]="
+                    'TRAINING.PLACEHOLDERS.CONTACT_NUMBER' | translate
+                  "
                   class="form-control"
                   [class.is-invalid]="
                     profileForm.get('contactNumber')?.invalid &&
@@ -418,20 +489,25 @@
                   "
                 >
                   <span
-                      *ngIf="profileForm.get('contactNumber')?.errors?.['required']"
-                      >{{ 'TRAINING.VALIDATION.CONTACT_NUMBER_REQUIRED' | translate }}</span
-                    >
-                    <span
-                      *ngIf="profileForm.get('contactNumber')?.errors?.['pattern']"
-                      >{{ 'TRAINING.VALIDATION.CONTACT_NUMBER_PATTERN' | translate }}</span
-                    >
+                    *ngIf="profileForm.get('contactNumber')?.errors?.['required']"
+                    >{{
+                      "TRAINING.VALIDATION.CONTACT_NUMBER_REQUIRED" | translate
+                    }}</span
+                  >
+                  <span
+                    *ngIf="profileForm.get('contactNumber')?.errors?.['pattern']"
+                    >{{
+                      "TRAINING.VALIDATION.CONTACT_NUMBER_PATTERN" | translate
+                    }}</span
+                  >
                 </div>
               </div>
 
               <div class="form-group">
-                  <label for="emailId"
-                    >{{ 'COMMON.EMAIL' | translate }}<span class="required">*</span></label
-                  >
+                <label for="emailId"
+                  >{{ "COMMON.EMAIL" | translate
+                  }}<span class="required">*</span></label
+                >
                 <input
                   type="email"
                   id="emailId"
@@ -451,26 +527,30 @@
                   "
                 >
                   <span
-                      *ngIf="profileForm.get('emailId')?.errors?.['required']"
-                      >{{ 'TRAINING.VALIDATION.EMAIL_REQUIRED' | translate }}</span
-                    >
-                    <span
-                      *ngIf="profileForm.get('emailId')?.errors?.['email']"
-                      >{{ 'TRAINING.VALIDATION.EMAIL_INVALID' | translate }}</span
-                    >
+                    *ngIf="profileForm.get('emailId')?.errors?.['required']"
+                    >{{
+                      "TRAINING.VALIDATION.EMAIL_REQUIRED" | translate
+                    }}</span
+                  >
+                  <span *ngIf="profileForm.get('emailId')?.errors?.['email']">{{
+                    "TRAINING.VALIDATION.EMAIL_INVALID" | translate
+                  }}</span>
                 </div>
               </div>
             </div>
           </div>
 
           <!-- Security Information Section -->
-          <div class="form-section" *ngIf="userRole == 5 || userRole == 6">
-            <h3 class="section-title">{{ 'TRAINING.SECURITY_INFORMATION' | translate }}</h3>
+          <div class="form-section" *ngIf="userRole == 1">
+            <h3 class="section-title">
+              {{ "TRAINING.SECURITY_INFORMATION" | translate }}
+            </h3>
 
             <div class="form-row">
               <div class="form-group">
                 <label for="password"
-                  >{{ 'TRAINING.PASSWORD' | translate }}<span class="required">*</span></label
+                  >{{ "TRAINING.PASSWORD" | translate
+                  }}<span class="required">*</span></label
                 >
                 <div class="password-input-container">
                   <input
@@ -494,38 +574,119 @@
                     ></i>
                   </button>
                 </div>
-                
+
                 <!-- Password Policy Information -->
                 <div class="password-policy">
-                  <div class="password-policy-title">{{ 'TRAINING.PASSWORD_REQUIREMENTS.TITLE' | translate }}</div>
+                  <div class="password-policy-title">
+                    {{ "TRAINING.PASSWORD_REQUIREMENTS.TITLE" | translate }}
+                  </div>
                   <ul class="password-requirements">
-                    <li [class.valid]="hasMinLength" [class.invalid]="!hasMinLength && profileForm.get('password')?.value">
-                      <span class="icon" [class.valid]="hasMinLength" [class.invalid]="!hasMinLength && profileForm.get('password')?.value">
+                    <li
+                      [class.valid]="hasMinLength"
+                      [class.invalid]="
+                        !hasMinLength && profileForm.get('password')?.value
+                      "
+                    >
+                      <span
+                        class="icon"
+                        [class.valid]="hasMinLength"
+                        [class.invalid]="
+                          !hasMinLength && profileForm.get('password')?.value
+                        "
+                      >
                         <i class="fas fa-check" *ngIf="hasMinLength"></i>
-                        <i class="fas fa-times" *ngIf="!hasMinLength && profileForm.get('password')?.value"></i>
+                        <i
+                          class="fas fa-times"
+                          *ngIf="
+                            !hasMinLength && profileForm.get('password')?.value
+                          "
+                        ></i>
                       </span>
-                      <span class="text">{{ 'TRAINING.PASSWORD_REQUIREMENTS.MIN_LENGTH' | translate }}</span>
+                      <span class="text">{{
+                        "TRAINING.PASSWORD_REQUIREMENTS.MIN_LENGTH" | translate
+                      }}</span>
                     </li>
-                    <li [class.valid]="hasUppercase" [class.invalid]="!hasUppercase && profileForm.get('password')?.value">
-                      <span class="icon" [class.valid]="hasUppercase" [class.invalid]="!hasUppercase && profileForm.get('password')?.value">
+                    <li
+                      [class.valid]="hasUppercase"
+                      [class.invalid]="
+                        !hasUppercase && profileForm.get('password')?.value
+                      "
+                    >
+                      <span
+                        class="icon"
+                        [class.valid]="hasUppercase"
+                        [class.invalid]="
+                          !hasUppercase && profileForm.get('password')?.value
+                        "
+                      >
                         <i class="fas fa-check" *ngIf="hasUppercase"></i>
-                        <i class="fas fa-times" *ngIf="!hasUppercase && profileForm.get('password')?.value"></i>
+                        <i
+                          class="fas fa-times"
+                          *ngIf="
+                            !hasUppercase && profileForm.get('password')?.value
+                          "
+                        ></i>
                       </span>
-                      <span class="text">{{ 'TRAINING.PASSWORD_REQUIREMENTS.UPPERCASE' | translate }}</span>
+                      <span class="text">{{
+                        "TRAINING.PASSWORD_REQUIREMENTS.UPPERCASE" | translate
+                      }}</span>
                     </li>
-                    <li [class.valid]="hasLowercase" [class.invalid]="!hasLowercase && profileForm.get('password')?.value">
-                      <span class="icon" [class.valid]="hasLowercase" [class.invalid]="!hasLowercase && profileForm.get('password')?.value">
+                    <li
+                      [class.valid]="hasLowercase"
+                      [class.invalid]="
+                        !hasLowercase && profileForm.get('password')?.value
+                      "
+                    >
+                      <span
+                        class="icon"
+                        [class.valid]="hasLowercase"
+                        [class.invalid]="
+                          !hasLowercase && profileForm.get('password')?.value
+                        "
+                      >
                         <i class="fas fa-check" *ngIf="hasLowercase"></i>
-                        <i class="fas fa-times" *ngIf="!hasLowercase && profileForm.get('password')?.value"></i>
+                        <i
+                          class="fas fa-times"
+                          *ngIf="
+                            !hasLowercase && profileForm.get('password')?.value
+                          "
+                        ></i>
                       </span>
-                      <span class="text">{{ 'TRAINING.PASSWORD_REQUIREMENTS.LOWERCASE' | translate }}</span>
+                      <span class="text">{{
+                        "TRAINING.PASSWORD_REQUIREMENTS.LOWERCASE" | translate
+                      }}</span>
                     </li>
-                    <li [class.valid]="hasNumber && hasSpecialChar" [class.invalid]="(!hasNumber || !hasSpecialChar) && profileForm.get('password')?.value">
-                      <span class="icon" [class.valid]="hasNumber && hasSpecialChar" [class.invalid]="(!hasNumber || !hasSpecialChar) && profileForm.get('password')?.value">
-                        <i class="fas fa-check" *ngIf="hasNumber && hasSpecialChar"></i>
-                        <i class="fas fa-times" *ngIf="(!hasNumber || !hasSpecialChar) && profileForm.get('password')?.value"></i>
+                    <li
+                      [class.valid]="hasNumber && hasSpecialChar"
+                      [class.invalid]="
+                        (!hasNumber || !hasSpecialChar) &&
+                        profileForm.get('password')?.value
+                      "
+                    >
+                      <span
+                        class="icon"
+                        [class.valid]="hasNumber && hasSpecialChar"
+                        [class.invalid]="
+                          (!hasNumber || !hasSpecialChar) &&
+                          profileForm.get('password')?.value
+                        "
+                      >
+                        <i
+                          class="fas fa-check"
+                          *ngIf="hasNumber && hasSpecialChar"
+                        ></i>
+                        <i
+                          class="fas fa-times"
+                          *ngIf="
+                            (!hasNumber || !hasSpecialChar) &&
+                            profileForm.get('password')?.value
+                          "
+                        ></i>
                       </span>
-                      <span class="text">{{ 'TRAINING.PASSWORD_REQUIREMENTS.NUMBER_SYMBOL' | translate }}</span>
+                      <span class="text">{{
+                        "TRAINING.PASSWORD_REQUIREMENTS.NUMBER_SYMBOL"
+                          | translate
+                      }}</span>
                     </li>
                   </ul>
                 </div>
@@ -539,28 +700,38 @@
                 >
                   <span
                     *ngIf="profileForm.get('password')?.errors?.['required']"
-                    >{{ 'TRAINING.VALIDATION.PASSWORD_REQUIRED' | translate }}</span
+                    >{{
+                      "TRAINING.VALIDATION.PASSWORD_REQUIRED" | translate
+                    }}</span
                   >
                   <span
                     *ngIf="profileForm.get('password')?.errors?.['minlength']"
-                    >{{ 'TRAINING.VALIDATION.PASSWORD_MIN_LENGTH' | translate }}</span
+                    >{{
+                      "TRAINING.VALIDATION.PASSWORD_MIN_LENGTH" | translate
+                    }}</span
                   >
-                  <span *ngIf="profileForm.get('password')?.errors?.['pattern']"
-                    >{{ 'TRAINING.VALIDATION.PASSWORD_PATTERN' | translate }}</span
+                  <span
+                    *ngIf="profileForm.get('password')?.errors?.['pattern']"
+                    >{{
+                      "TRAINING.VALIDATION.PASSWORD_PATTERN" | translate
+                    }}</span
                   >
                 </div>
               </div>
 
               <div class="form-group">
                 <label for="confirmPassword"
-                  >{{ 'TRAINING.CONFIRM_PASSWORD' | translate }}<span class="required">*</span></label
+                  >{{ "TRAINING.CONFIRM_PASSWORD" | translate
+                  }}<span class="required">*</span></label
                 >
                 <div class="password-input-container">
                   <input
                     [type]="showConfirmPassword ? 'text' : 'password'"
                     id="confirmPassword"
                     formControlName="confirmPassword"
-                    [placeholder]="'TRAINING.PLACEHOLDERS.CONFIRM_PASSWORD' | translate"
+                    [placeholder]="
+                      'TRAINING.PLACEHOLDERS.CONFIRM_PASSWORD' | translate
+                    "
                     class="form-control"
                     [class.is-invalid]="
                     (profileForm.get('confirmPassword')?.invalid &&
@@ -592,11 +763,14 @@
                 >
                   <span
                     *ngIf="profileForm.get('confirmPassword')?.errors?.['required']"
-                    >{{ 'TRAINING.VALIDATION.CONFIRM_PASSWORD_REQUIRED' | translate }}</span
+                    >{{
+                      "TRAINING.VALIDATION.CONFIRM_PASSWORD_REQUIRED"
+                        | translate
+                    }}</span
                   >
-                  <span *ngIf="profileForm.errors?.['passwordMismatch']"
-                    >{{ 'TRAINING.VALIDATION.PASSWORD_MISMATCH' | translate }}</span
-                  >
+                  <span *ngIf="profileForm.errors?.['passwordMismatch']">{{
+                    "TRAINING.VALIDATION.PASSWORD_MISMATCH" | translate
+                  }}</span>
                 </div>
               </div>
             </div>
@@ -604,15 +778,15 @@
 
           <!-- Security Document Upload Section -->
           <div class="form-section" *ngIf="userRole == 1">
-          <h3 class="section-title">
-            {{ 'TRAINING.REGISTRATION_DOCUMENT' | translate }}<span class="required">*</span>
-          </h3>
+            <h3 class="section-title">
+              {{ "TRAINING.REGISTRATION_DOCUMENT" | translate
+              }}<span class="required">*</span>
+            </h3>
 
             <div class="image-upload-container">
-              <label
-                > {{ 'TRAINING.REGISTRATION_DOCUMENT_LABEL' | translate }}<span class="required"
-                  >*</span
-                ></label
+              <label>
+                {{ "TRAINING.REGISTRATION_DOCUMENT_LABEL" | translate
+                }}<span class="required">*</span></label
               >
               <div
                 class="image-upload-area"
@@ -624,8 +798,12 @@
               >
                 <div *ngIf="!selectedDocPreview" class="upload-placeholder">
                   <i class="fas fa-cloud-upload-alt upload-icon"></i>
-                  <p>{{ 'TRAINING.DOCUMENT_UPLOAD.DRAG_DROP_PDF' | translate }}</p>
-                  <span class="file-types">{{ 'TRAINING.DOCUMENT_UPLOAD.PDF_TYPES' | translate }}</span>
+                  <p>
+                    {{ "TRAINING.DOCUMENT_UPLOAD.DRAG_DROP_PDF" | translate }}
+                  </p>
+                  <span class="file-types">{{
+                    "TRAINING.DOCUMENT_UPLOAD.PDF_TYPES" | translate
+                  }}</span>
                 </div>
                 <div *ngIf="selectedDocPreview" class="pdf-preview-container">
                   <div class="pdf-info">
@@ -660,14 +838,14 @@
           <!-- Image Upload Section -->
           <div class="form-section" *ngIf="userRole == 1">
             <h3 class="section-title">
-              {{ 'TRAINING.INSTITUTE_IMAGE' | translate }}<span class="required">*</span>
+              {{ "TRAINING.INSTITUTE_IMAGE" | translate
+              }}<span class="required">*</span>
             </h3>
 
             <div class="image-upload-container">
               <label
-                >{{ 'TRAINING.IMAGE_UPLOAD.INSTITUTE_LABEL' | translate }}<span class="required"
-                  >*</span
-                ></label
+                >{{ "TRAINING.IMAGE_UPLOAD.INSTITUTE_LABEL" | translate
+                }}<span class="required">*</span></label
               >
               <div
                 class="image-upload-area"
@@ -679,8 +857,12 @@
               >
                 <div *ngIf="!selectedImagePreview" class="upload-placeholder">
                   <i class="fas fa-cloud-upload-alt upload-icon"></i>
-                  <p>{{ 'TRAINING.IMAGE_UPLOAD.DRAG_DROP_IMAGE' | translate }}</p>
-                  <span class="file-types">{{ 'TRAINING.IMAGE_UPLOAD.IMAGE_TYPES' | translate }}</span>
+                  <p>
+                    {{ "TRAINING.IMAGE_UPLOAD.DRAG_DROP_IMAGE" | translate }}
+                  </p>
+                  <span class="file-types">{{
+                    "TRAINING.IMAGE_UPLOAD.IMAGE_TYPES" | translate
+                  }}</span>
                 </div>
                 <div *ngIf="selectedImagePreview" class="image-preview">
                   <img
@@ -714,7 +896,7 @@
               class="btn btn-secondary"
               (click)="onCancel()"
             >
-              {{ 'TRAINING.CANCEL' | translate }}
+              {{ "TRAINING.CANCEL" | translate }}
             </button>
             <button
               type="submit"
@@ -722,10 +904,12 @@
               [disabled]="isLoading || profileForm.invalid"
             >
               <span *ngIf="!isLoading">
-                <i class="fas fa-save me-2"></i>{{ 'TRAINING.CREATE_PROFILE' | translate }}
+                <i class="fas fa-save me-2"></i
+                >{{ "TRAINING.CREATE_PROFILE" | translate }}
               </span>
               <span *ngIf="isLoading">
-                <i class="fas fa-spinner fa-spin me-2"></i>{{ 'TRAINING.CREATING' | translate }}
+                <i class="fas fa-spinner fa-spin me-2"></i
+                >{{ "TRAINING.CREATING" | translate }}
               </span>
             </button>
           </div>

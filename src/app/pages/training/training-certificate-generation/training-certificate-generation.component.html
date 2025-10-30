@@ -531,12 +531,161 @@
           </div>
         </div>
 
-        <!-- Signature and Logo Sections (similar pattern continues for translation) -->
+        <!-- Upload Signature Section -->
+        <div class="form-section">
+          <h3 class="section-title">Upload Signature ( Maximum 2)</h3>
 
+          <div
+            class="signature-section"
+            *ngFor="let signature of signatures; let i = index"
+          >
+            <div class="form-row">
+              <div class="form-group third-width">
+                <label>Signatory Name <span class="text-danger">*</span></label>
+                <input
+                  type="text"
+                  [value]="signature.name"
+                  (input)="onSignatureNameChange($event, i)"
+                  placeholder="Enter the Name of Signatory here"
+                  class="form-control"
+                  [class.is-invalid]="signatureFieldErrors[i]?.name"
+                />
+                <div
+                  *ngIf="signatureFieldErrors[i]?.name"
+                  class="invalid-feedback"
+                >
+                  <small class="text-danger">Signatory name is required</small>
+                </div>
+              </div>
+              <div class="form-group third-width">
+                <label
+                  >Signatory Designation
+                  <span class="text-danger">*</span></label
+                >
+                <input
+                  type="text"
+                  [value]="signature.designation"
+                  (input)="onSignatureDesignationChange($event, i)"
+                  placeholder="Enter the Designation of Signatory here"
+                  class="form-control"
+                  [class.is-invalid]="signatureFieldErrors[i]?.designation"
+                />
+                <div
+                  *ngIf="signatureFieldErrors[i]?.designation"
+                  class="invalid-feedback"
+                >
+                  <small class="text-danger"
+                    >Signatory designation is required</small
+                  >
+                </div>
+              </div>
+              <div class="form-group third-width">
+                <label
+                  >Signatory Organization
+                  <span class="text-danger">*</span></label
+                >
+                <input
+                  type="text"
+                  [value]="signature.organization"
+                  (input)="onSignatureOrganizationChange($event, i)"
+                  placeholder="Enter the Organization of Signatory here"
+                  class="form-control"
+                  [class.is-invalid]="signatureFieldErrors[i]?.organization"
+                />
+                <div
+                  *ngIf="signatureFieldErrors[i]?.organization"
+                  class="invalid-feedback"
+                >
+                  <small class="text-danger"
+                    >Signatory organization is required</small
+                  >
+                </div>
+              </div>
+            </div>
+
+            <div class="form-row">
+              <app-file-upload
+                [acceptedFileTypes]="'.png,.jpg,.jpeg'"
+                [maxFileSizeMB]="2"
+                [uploadText]="'Drag and Drop the Signature here'"
+                (fileSelected)="onFileSelect($event, 'signature', i)"
+                (fileRemoved)="removeSignature(i)"
+                [filePath]="mySelectedFile[i]"
+              >
+              </app-file-upload>
+            </div>
+          </div>
+
+          <div class="add-more-section" *ngIf="signatures.length < 2">
+            <button
+              type="button"
+              class="btn btn-link add-more-btn"
+              (click)="addMoreSignature()"
+            >
+              <i class="bi bi-plus-circle"></i> Add More
+            </button>
+          </div>
+
+          <!-- Signature Validation Error -->
+          <div
+            *ngIf="signatureValidationError"
+            class="validation-error-section"
+          >
+            <small class="text-danger">
+              {{ signatureValidationError }}
+            </small>
+          </div>
+        </div>
+
+        <!-- Upload Logo Section -->
+        <div class="form-section">
+          <h3 class="section-title">Upload Logo ( Maximum 3)</h3>
+
+          <div class="logo-section" *ngFor="let logo of logos; let i = index">
+            <div class="form-row">
+              <app-file-upload
+                [acceptedFileTypes]="'.png,.jpg,.jpeg'"
+                [maxFileSizeMB]="2"
+                [uploadText]="'Drag and Drop your logo here'"
+                (fileSelected)="onFileSelect($event, 'logo', i)"
+                (fileRemoved)="removeLogo(i)"
+                [filePath]="mySelectedLogo[i]"
+              >
+              </app-file-upload>
+            </div>
+          </div>
+
+          <div class="add-more-section" *ngIf="logos.length < 3">
+            <button
+              type="button"
+              class="btn btn-link add-more-btn"
+              (click)="addMoreLogo()"
+            >
+              <i class="bi bi-plus-circle"></i> Add More
+            </button>
+          </div>
+
+          <!-- Logo Validation Error -->
+          <div *ngIf="logoValidationError" class="validation-error-section">
+            <small class="text-danger">
+              {{ logoValidationError }}
+            </small>
+          </div>
+        </div>
+
+        <!-- Action Buttons -->
         <div class="form-actions">
           <button type="submit" class="btn btn-primary btn-lg">
-            {{ "Submit Details" | translate }}
+            <!-- Manual Training Upload -->
+            Submit Details
           </button>
+          <!-- <button
+            type="button"
+            class="btn btn-secondary btn-lg"
+            (click)="onBulkUpload()"
+          >
+            Bulk Upload
+          </button> -->
         </div>
       </form>
     </div>
