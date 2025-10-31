@@ -853,6 +853,7 @@ export class AllTrainingsAdminComponent {
     location: null,
     trainingDate: null,
     status: null,
+    state: null,
     district: null,
   };
 
@@ -867,6 +868,8 @@ export class AllTrainingsAdminComponent {
         (!this.filters.trainerName ||
           row.trainerName === this.filters.trainerName) &&
         (!this.filters.location || row.location === this.filters.location) &&
+        (!this.filters.state ||
+          row.venueState === this.filters.state) &&
         (!this.filters.district ||
           row.venueDistrict === this.filters.district) &&
         (!this.filters.trainingDate ||
@@ -888,9 +891,27 @@ export class AllTrainingsAdminComponent {
   }
 
   uniqueValuesDistrict(): any[] {
+    // If state filter is applied, only show districts from that state
+    const dataToFilter = this.filters.state 
+      ? this.trainingsList.filter(item => item['venueState'] === this.filters.state)
+      : this.trainingsList;
+    
     return [
-      ...new Set(this.trainingsList.map((item) => item['venueDistrict'])),
+      ...new Set(dataToFilter.map((item) => item['venueDistrict'])),
     ];
+  }
+
+  uniqueValuesState(): any[] {
+    return [
+      ...new Set(this.trainingsList.map((item) => item['venueState'])),
+    ];
+  }
+
+  onStateFilterChange(): void {
+    // Clear district filter when state changes
+    this.filters.district = null;
+    // Apply filters
+    this.applyFilters();
   }
 
   uniqueValuesTrainingDate(): any[] {
@@ -1328,6 +1349,7 @@ export class AllTrainingsAdminComponent {
   hasActiveFilters(): boolean {
     return !!(
       this.filters.scheme ||
+      this.filters.state ||
       this.filters.district ||
       this.filters.trainingDate ||
       this.filters.status
@@ -1343,6 +1365,7 @@ export class AllTrainingsAdminComponent {
       location: null,
       trainingDate: null,
       status: null,
+      state: null,
       district: null,
     };
     this.applyFilters();
