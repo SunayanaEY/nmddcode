@@ -13,6 +13,7 @@
 .table-responsive {
   overflow-x: auto;
   max-width: 100%;
+  -webkit-overflow-scrolling: touch; /* smooth scrolling on mobile */
 }
 
 /* Table */
@@ -21,7 +22,8 @@
   border-collapse: separate;
   border-spacing: 0;
   width: 100%;
-  table-layout: auto; /* dynamic column widths */
+  min-width: 1500px; /* adjusted to fit optimized column widths */
+  table-layout: fixed; /* fixed layout for consistent column widths */
 }
 
 /* Table Header */
@@ -34,11 +36,14 @@
   text-align: center;
   font-size: 14px;
   border-top: none;
-  white-space: normal; /* allow wrapping */
+  white-space: nowrap; /* prevent header text wrapping */
   vertical-align: middle;
+  min-width: 120px; /* minimum width for each column */
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
-/* Table Body */
+/* Table Body - Allow text wrapping for better content display */
 .table tbody td {
   padding: 10px 8px;
   text-align: center;
@@ -46,8 +51,67 @@
   border-bottom: 1px solid #dee2e6;
   font-size: 14px;
   color: #495057;
-  white-space: normal; /* wrap text */
-  overflow: hidden;
+  white-space: normal; /* allow text wrapping in data cells */
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+  min-width: 120px; /* consistent with header width */
+  line-height: 1.4; /* better readability for wrapped text */
+}
+
+/* Specific column width adjustments optimized for header content */
+.table th:nth-child(1), .table td:nth-child(1) { /* Sr.No. */
+  width: 75px;
+  min-width: 70px;
+}
+
+.table th:nth-child(2), .table td:nth-child(2) { /* Institute Name */
+  width: 180px;
+  min-width: 180px;
+}
+
+.table th:nth-child(3), .table td:nth-child(3) { /* State */
+  width: 100px;
+  min-width: 100px;
+}
+
+.table th:nth-child(4), .table td:nth-child(4) { /* District */
+  width: 120px;
+  min-width: 120px;
+}
+
+.table th:nth-child(5), .table td:nth-child(5) { /* State Head Name */
+  width: 180px;
+  min-width: 160px;
+}
+
+.table th:nth-child(6), .table td:nth-child(6) { /* State Head Contact */
+  width: 200px;
+  min-width: 170px;
+}
+
+.table th:nth-child(7), .table td:nth-child(7) { /* State Head Email */
+  width: 170px;
+  min-width: 160px;
+}
+
+.table th:nth-child(8), .table td:nth-child(8) { /* Institute Head */
+  width: 150px;
+  min-width: 150px;
+}
+
+.table th:nth-child(9), .table td:nth-child(9) { /* Contact Number */
+  width: 180px;
+  min-width: 140px;
+}
+
+.table th:nth-child(10), .table td:nth-child(10) { /* Status */
+  width: 100px;
+  min-width: 100px;
+}
+
+.table th:last-child, .table td:last-child { /* Actions */
+  width: 120px;
+  min-width: 120px;
 }
 
 /* No Data Message */

@@ -17,6 +17,9 @@ export interface TrainingInstitute {
   designation: string;
   contactNumber: string;
   emailId: string;
+  stateHeadContactPerson: string;
+  stateHeadContact: string;
+  stateHeadEmail: string;
   active: boolean;
   createdAt: string;
   updatedAt: string;
@@ -35,6 +38,9 @@ export interface NewRegisteredInstitute {
   designation: string;
   contactNumber: string;
   emailId: string;
+  stateHeadContactPerson: string;
+  stateHeadContact: string;
+  stateHeadEmail: string;
   active: boolean;
   createdAt: string;
   updatedAt: string;

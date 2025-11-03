@@ -48,6 +48,29 @@
           </ng-select>
         </div>
 
+        <!-- State Filter (Only for user role 1) -->
+        <div class="filter-item" *ngIf="userRole === 1">
+          <label class="filter-label">
+            <i class="bi bi-map filter-label-icon"></i>
+            State
+          </label>
+          <ng-select
+            class="modern-select"
+            placeholder="Select State"
+            [(ngModel)]="filters.state"
+            (change)="onStateFilterChange()"
+            clearable="true"
+            [searchable]="true"
+          >
+            <ng-option
+              *ngFor="let name of uniqueValuesState()"
+              [value]="name"
+            >
+              {{ name }}
+            </ng-option>
+          </ng-select>
+        </div>
+
         <!-- District Filter -->
         <div class="filter-item">
           <label class="filter-label">

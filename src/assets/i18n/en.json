@@ -640,5 +640,12 @@
   "TABLE_COLUMNS.CREATION_DATE": "Creation Date",
   "TABLE_COLUMNS.STATUS": "Status",
   "TABLE_COLUMNS.ACTIVE": "Active",
-  "TABLE_COLUMNS.INACTIVE": "Inactive"
+  "TABLE_COLUMNS.INACTIVE": "Inactive",
+  "TRAINING.INSTITUTE_NAME": "Institute Name",
+  "TRAINING.INSTITUTE_HEAD": "Institute Head",
+  "TRAINING.STATE_HEAD_NAME": "State Head Name",
+  "TRAINING.STATE_HEAD_CONTACT": "State Head Contact",
+  "TRAINING.STATE_HEAD_EMAIL": "State Head Email",
+  "STATE": "State",
+  "SELECT_STATE": "Select State"
 }

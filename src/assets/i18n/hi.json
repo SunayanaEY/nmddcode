@@ -743,6 +743,11 @@
   "TABLE_COLUMNS.CREATION_DATE": "निर्माण तिथि",
   "TABLE_COLUMNS.STATUS": "स्थिति",
   "TABLE_COLUMNS.ACTIVE": "सक्रिय",
-  "TABLE_COLUMNS.INACTIVE": "निष्क्रिय"
+  "TABLE_COLUMNS.INACTIVE": "निष्क्रिय",
+  "TRAINING.INSTITUTE_NAME": "संस्थान का नाम",
+  "TRAINING.INSTITUTE_HEAD": "संस्थान प्रमुख",
+  "TRAINING.STATE_HEAD_NAME": "राज्य प्रमुख का नाम",
+  "TRAINING.STATE_HEAD_CONTACT": "राज्य प्रमुख संपर्क",
+  "TRAINING.STATE_HEAD_EMAIL": "राज्य प्रमुख ईमेल"
 
 }
