@@ -253,10 +253,7 @@
             </div>
           </div>
           <!-- Location Information Section -->
-          <div
-            class="form-section"
-            *ngIf="userRole == 1 || userRole == 5 || userRole == 6"
-          >
+          <div class="form-section" *ngIf="userRole == 1 || userRole == 5">
             <h3 class="section-title">
               {{ "TRAINING.LOCATION_INFORMATION" | translate }}
             </h3>
@@ -381,7 +378,7 @@
           </div>
 
           <!-- Contact Information Section -->
-          <div class="form-section" *ngIf="userRole == 1">
+          <div class="form-section" *ngIf="userRole == 5">
             <h3 class="section-title">
               {{ "TRAINING.CONTACT_INFORMATION" | translate }}
             </h3>
@@ -541,7 +538,7 @@
           </div>
 
           <!-- Security Information Section -->
-          <div class="form-section" *ngIf="userRole == 1">
+          <div class="form-section" *ngIf="userRole == 5">
             <h3 class="section-title">
               {{ "TRAINING.SECURITY_INFORMATION" | translate }}
             </h3>

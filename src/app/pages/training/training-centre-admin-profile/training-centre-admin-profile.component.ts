@@ -26,7 +26,12 @@ import { TranslateModule } from '@ngx-translate/core';
 @Component({
   selector: 'app-training-centre-admin-profile',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, TranslateModule],
+  imports: [
+    CommonModule,
+    ReactiveFormsModule,
+    // BreadcrumbComponent,
+    TranslateModule,
+  ],
   templateUrl: './training-centre-admin-profile.component.html',
   styleUrls: ['./training-centre-admin-profile.component.css'],
 })
@@ -101,75 +106,111 @@ export class TrainingCentreAdminProfileComponent implements OnInit {
 
     this.getRole();
     if (this.userRole == 5 || this.userRole == 6) {
-      // const nav = this.router.getCurrentNavigation();
-      // const passedData = nav?.extras.state?.['data'];
-      // this.trainingInstituteId = passedData.id;
-      // this.instituteData = passedData;
+      const nav = this.router.getCurrentNavigation();
+      const passedData = nav?.extras.state?.['data'];
+      this.trainingInstituteId = passedData.id;
+      this.instituteData = passedData;
       // alert(JSON.stringify(this.instituteData));
     }
-
-    this.profileForm = this.fb.group({
-      trainingInstituteName: [
-        '',
-        [Validators.required, Validators.minLength(3)],
-      ],
-      instituteType: ['', [Validators.required]],
-      trainingInstituteRegistration: [
-        '',
-        [Validators.required, Validators.minLength(3)],
-      ],
-      trainingInstituteExpiry: ['', []],
-      state: ['', [Validators.required]],
-      district: ['', [Validators.required]],
-
-      address: ['', [Validators.required, Validators.minLength(10)]],
-      latitude: [
-        '',
-        [Validators.required, Validators.min(-90), Validators.max(90)],
-      ],
-      longitude: [
-        '',
-        [Validators.required, Validators.min(-180), Validators.max(180)],
-      ],
-      contactPersonName: ['', [Validators.required, Validators.minLength(2)]],
-      designation: ['', [Validators.required]],
-      contactNumber: [
-        '',
-        [Validators.required, Validators.pattern(/^[0-9]{10}$/)],
-      ],
-      emailId: ['', [Validators.required, Validators.email]],
-      password: [
-        '',
-        [
-          Validators.required,
-          Validators.minLength(8),
-          Validators.pattern(
-            /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]/
-          ),
+    if (this.userRole == 1) {
+      this.profileForm = this.fb.group({
+        trainingInstituteName: [
+          '',
+          [Validators.required, Validators.minLength(3)],
         ],
-      ],
-      confirmPassword: ['', [Validators.required]],
-    });
+        instituteType: ['', [Validators.required]],
+        trainingInstituteRegistration: [
+          '',
+          [Validators.required, Validators.minLength(3)],
+        ],
+        trainingInstituteExpiry: ['', []],
+        state: ['', [Validators.required]],
+        district: ['', [Validators.required]],
+
+        address: ['', [Validators.required, Validators.minLength(10)]],
+        latitude: [
+          '',
+          [Validators.required, Validators.min(-90), Validators.max(90)],
+        ],
+        longitude: [
+          '',
+          [Validators.required, Validators.min(-180), Validators.max(180)],
+        ],
+      });
+      this.profileForm.get('state')?.valueChanges.subscribe((stateId) => {
+        if (stateId) {
+          this.loadDistricts(stateId);
+          // Reset district selection when state changes
+          this.profileForm.get('district')?.setValue('');
+        } else {
+          this.districts = [];
+          this.profileForm.get('district')?.setValue('');
+        }
+      });
+    } else {
+      this.profileForm = this.fb.group({
+        trainingInstituteName: [
+          '',
+          [Validators.required, Validators.minLength(3)],
+        ],
+        instituteType: ['', [Validators.required]],
+        trainingInstituteRegistration: [
+          '',
+          [Validators.required, Validators.minLength(3)],
+        ],
+        trainingInstituteExpiry: ['', []],
+        state: ['', [Validators.required]],
+        district: ['', [Validators.required]],
+
+        address: ['', [Validators.required, Validators.minLength(10)]],
+        latitude: [
+          '',
+          [Validators.required, Validators.min(-90), Validators.max(90)],
+        ],
+        longitude: [
+          '',
+          [Validators.required, Validators.min(-180), Validators.max(180)],
+        ],
+        contactPersonName: ['', [Validators.required, Validators.minLength(2)]],
+        designation: ['', [Validators.required]],
+        contactNumber: [
+          '',
+          [Validators.required, Validators.pattern(/^[0-9]{10}$/)],
+        ],
+        emailId: ['', [Validators.required, Validators.email]],
+        password: [
+          '',
+          [
+            Validators.required,
+            Validators.minLength(8),
+            Validators.pattern(
+              /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]/
+            ),
+          ],
+        ],
+        confirmPassword: ['', [Validators.required]],
+      });
+      // this.profileForm.get('state')?.valueChanges.subscribe((stateId) => {
+      //   if (stateId) {
+      //     this.loadDistricts(stateId);
+      //     // Reset district selection when state changes
+      //     this.profileForm.get('district')?.setValue('');
+      //   } else {
+      //     this.districts = [];
+      //     this.profileForm.get('district')?.setValue('');
+      //   }
+      // });
+    }
 
     // Subscribe to state changes to load districts
-    this.profileForm.get('state')?.valueChanges.subscribe((stateId) => {
-      if (stateId) {
-        this.loadDistricts(stateId);
-        // Reset district selection when state changes
-        this.profileForm.get('district')?.setValue('');
-      } else {
-        this.districts = [];
-        this.profileForm.get('district')?.setValue('');
-      }
-    });
   }
 
   ngOnInit() {
     const now = new Date();
     this.today = now.toISOString().split('T')[0];
     this.loadStates();
-    if (this.userRole == 1) {
-      // this.initializeForm();
+    if (this.userRole == 5) {
+      this.initializeForm();
       // Subscribe to password field changes for real-time validation
       this.profileForm.get('password')?.valueChanges.subscribe((password) => {
         this.validatePassword(password || '');
@@ -313,12 +354,6 @@ export class TrainingCentreAdminProfileComponent implements OnInit {
         address: this.profileForm.get('address')?.value || '',
         latitude: this.profileForm.get('latitude')?.value || null,
         longitude: this.profileForm.get('longitude')?.value || null,
-        contactPersonName:
-          this.profileForm.get('contactPersonName')?.value || '',
-        designation: this.profileForm.get('designation')?.value || '',
-        contactNumber: this.profileForm.get('contactNumber')?.value || '',
-        emailId: this.profileForm.get('emailId')?.value || '',
-        password: this.profileForm.get('password')?.value || '',
       };
 
       // Append instituteDetails as JSON string with explicit content type
