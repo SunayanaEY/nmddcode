@@ -90,7 +90,8 @@ export class AllTrainingsAdminComponent {
   fileNameTrainees: String = 'All_trainee_List_';
   traineesFile: String = 'All_trainee_List_';
   falseVariable: boolean = false;
-   pdfHeaders: Array<string> = [
+  selectedItems: Set<any> = new Set();
+  pdfHeaders: Array<string> = [
     'Sr.No.',
     'Training Title',
     'Scheme',
@@ -113,7 +114,7 @@ export class AllTrainingsAdminComponent {
     { label: 'Dashboard', url: '/admin/role-dashboard' },
     { label: 'All Trainings' },
   ];
-   tableColumns: TableColumn[] = [
+  tableColumns: TableColumn[] = [
     { key: 'trainingTitle', header: 'Training Title' },
     { key: 'scheme', header: 'Scheme' },
     { key: 'trainingInstituteName', header: 'Training Institute' },
@@ -868,8 +869,7 @@ export class AllTrainingsAdminComponent {
         (!this.filters.trainerName ||
           row.trainerName === this.filters.trainerName) &&
         (!this.filters.location || row.location === this.filters.location) &&
-        (!this.filters.state ||
-          row.venueState === this.filters.state) &&
+        (!this.filters.state || row.venueState === this.filters.state) &&
         (!this.filters.district ||
           row.venueDistrict === this.filters.district) &&
         (!this.filters.trainingDate ||
@@ -892,19 +892,17 @@ export class AllTrainingsAdminComponent {
 
   uniqueValuesDistrict(): any[] {
     // If state filter is applied, only show districts from that state
-    const dataToFilter = this.filters.state 
-      ? this.trainingsList.filter(item => item['venueState'] === this.filters.state)
+    const dataToFilter = this.filters.state
+      ? this.trainingsList.filter(
+          (item) => item['venueState'] === this.filters.state
+        )
       : this.trainingsList;
-    
-    return [
-      ...new Set(dataToFilter.map((item) => item['venueDistrict'])),
-    ];
+
+    return [...new Set(dataToFilter.map((item) => item['venueDistrict']))];
   }
 
   uniqueValuesState(): any[] {
-    return [
-      ...new Set(this.trainingsList.map((item) => item['venueState'])),
-    ];
+    return [...new Set(this.trainingsList.map((item) => item['venueState']))];
   }
 
   onStateFilterChange(): void {
@@ -1090,6 +1088,7 @@ export class AllTrainingsAdminComponent {
       .subscribe((res) => {
         this.traineeList = res.data;
       });
+    this.selectedItems = new Set();
   }
 
   downloadCertificate(trainee: any): void {
@@ -1381,7 +1380,8 @@ export class AllTrainingsAdminComponent {
   getStatusClass(status: string): string {
     const statusLower = status.toLowerCase();
     if (statusLower.includes('new')) return 'status-new';
-    if (statusLower.includes('validated') || statusLower.includes('pending')) return 'status-validated';
+    if (statusLower.includes('validated') || statusLower.includes('pending'))
+      return 'status-validated';
     if (statusLower.includes('approved')) return 'status-approved';
     if (statusLower.includes('rejected')) return 'status-rejected';
     if (statusLower.includes('uploaded')) return 'status-pending';
@@ -1391,7 +1391,8 @@ export class AllTrainingsAdminComponent {
   getStatusIcon(status: string): string {
     const statusLower = status.toLowerCase();
     if (statusLower.includes('new')) return 'bi-circle';
-    if (statusLower.includes('validated') || statusLower.includes('pending')) return 'bi-clock';
+    if (statusLower.includes('validated') || statusLower.includes('pending'))
+      return 'bi-clock';
     if (statusLower.includes('approved')) return 'bi-check-circle';
     if (statusLower.includes('rejected')) return 'bi-x-circle';
     if (statusLower.includes('uploaded')) return 'bi-upload';

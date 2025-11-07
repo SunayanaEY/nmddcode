@@ -57,7 +57,7 @@ export class TableComponent {
   @Input() columns: TableColumn[] = [];
   @Input() enableMultiSelect: boolean = false;
   @Input() bulkActions: TableAction[] = [];
-  selectedItems: Set<any> = new Set();
+  @Input() selectedItems: Set<any> = new Set();
   selectAll: boolean = false;
   @Input() actions: TableAction[] = [];
   @Input() pdfHeaders: Array<string> = [];

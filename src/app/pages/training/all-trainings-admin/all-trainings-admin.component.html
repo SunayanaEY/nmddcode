@@ -62,10 +62,7 @@
             clearable="true"
             [searchable]="true"
           >
-            <ng-option
-              *ngFor="let name of uniqueValuesState()"
-              [value]="name"
-            >
+            <ng-option *ngFor="let name of uniqueValuesState()" [value]="name">
               {{ name }}
             </ng-option>
           </ng-select>
@@ -337,6 +334,7 @@
         [tableName]="'Trainee-List'"
         [columns]="tableColumnsTrainee"
         [data]="traineeList"
+        [selectedItems]="selectedItems"
         [actions]="tableActionsTrainee"
         (actionClick)="handleTableAction($event)"
         [enableMultiSelect]="enableMultiSelectTrainee"
