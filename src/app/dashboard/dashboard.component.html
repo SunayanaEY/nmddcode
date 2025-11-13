@@ -201,7 +201,7 @@
                 <div class="kpi-value">
                   {{ getKpiCards()[4]?.value || "0" }}
                 </div>
-                <div
+                <!-- <div
                   class="kpi-growth"
                   [ngClass]="
                     getKpiCards()[4]?.growth?.isPositive
@@ -221,7 +221,7 @@
                     getKpiCards()[4]?.growth?.value ||
                       ("0% from last Quarter" | translate)
                   }}
-                </div>
+                </div> -->
               </div>
             </div>
           </div>
@@ -389,7 +389,7 @@
                 <div class="kpi-value">
                   {{ getKpiCards()[3]?.value || "0" }}
                 </div>
-                <!-- <div
+                <div
                   class="kpi-growth"
                   [ngClass]="
                     getKpiCards()[3]?.growth?.isPositive
@@ -412,7 +412,6 @@
                 </div> -->
               </div>
             </div>
-          </div> -->
         </div>
       </div>
     </div>
@@ -529,7 +528,7 @@
         </div>
       </div>
     </div>
-  </div>
+  <!-- </div> -->
   <!-- Modal -->
   <div
     class="modal fade"
@@ -561,7 +560,7 @@
       </div>
     </div>
   </div>
-</div>
+<!-- </div> -->
 
 <!-- Loading Overlay -->
 <div class="loading-overlay" *ngIf="isLoading">
