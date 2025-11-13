@@ -103,7 +103,9 @@
               [disabled]="isLoadingDistricts || !selectedStateId"
             >
               <!-- <option value="null" selected disabled>Select District</option> -->
-              <option value="" selected>{{ "All Districts" | translate }}</option>
+              <option value="" selected>
+                {{ "All Districts" | translate }}
+              </option>
               <option *ngFor="let district of districts" [value]="district.id">
                 {{ district.districtName }}
               </option>
@@ -125,7 +127,9 @@
               formControlName="trainingInstituteId"
               [disabled]="isLoadingTrainingInstitutes"
             >
-              <option value="" selected>{{ "All Training Institutes" | translate }}</option>
+              <option value="" selected>
+                {{ "All Training Institutes" | translate }}
+              </option>
               <option
                 *ngFor="let institute of trainingInstitutes"
                 [value]="institute.id"
@@ -168,11 +172,60 @@
           <div class="spinner-border text-primary" role="status">
             <span class="visually-hidden">Loading dashboard data...</span>
           </div>
-          <p class="mt-2 text-muted loading-text">{{ "Loading dashboard statistics..." | translate }}</p>
+          <p class="mt-2 text-muted loading-text">
+            {{ "Loading dashboard statistics..." | translate }}
+          </p>
         </div>
 
         <!-- KPI Cards -->
         <div *ngIf="!isLoading" class="row">
+          <!-- Total Institutes -->
+          <div class="col-lg-3 col-md-6 mb-4">
+            <div class="kpi-card kpi-card-orange">
+              <div class="kpi-header">
+                <div class="kpi-icon">
+                  <i class="fas fa-university"></i>
+                </div>
+                <button
+                  class="btn-download-new"
+                  (click)="downloadKpiData('totalTrainingsConducted', $event)"
+                  [title]="'Download Data' | translate"
+                >
+                  <i class="fas fa-download"></i>
+                </button>
+              </div>
+              <div class="kpi-content">
+                <div class="kpi-title">
+                  {{ "TOTAL INSTITUTES" | translate }}
+                </div>
+                <div class="kpi-value">
+                  {{ getKpiCards()[4]?.value || "0" }}
+                </div>
+                <div
+                  class="kpi-growth"
+                  [ngClass]="
+                    getKpiCards()[4]?.growth?.isPositive
+                      ? 'positive'
+                      : 'negative'
+                  "
+                >
+                  <i
+                    class="fas"
+                    [ngClass]="
+                      getKpiCards()[4]?.growth?.isPositive
+                        ? 'fa-arrow-up'
+                        : 'fa-arrow-down'
+                    "
+                  ></i>
+                  {{
+                    getKpiCards()[4]?.growth?.value ||
+                      ("0% from last Quarter" | translate)
+                  }}
+                </div>
+              </div>
+            </div>
+          </div>
+
           <!-- Total Trainings Conducted -->
           <div class="col-lg-3 col-md-6 mb-4">
             <div class="kpi-card kpi-card-green">
@@ -189,7 +242,9 @@
                 </button>
               </div>
               <div class="kpi-content">
-                <div class="kpi-title">{{ "TOTAL TRAININGS CONDUCTED" | translate }}</div>
+                <div class="kpi-title">
+                  {{ "TOTAL TRAININGS CONDUCTED" | translate }}
+                </div>
                 <div class="kpi-value">
                   {{ getKpiCards()[0]?.value || "0" }}
                 </div>
@@ -210,7 +265,8 @@
                     "
                   ></i>
                   {{
-                    getKpiCards()[0]?.growth?.value || ("0% from last Quarter" | translate)
+                    getKpiCards()[0]?.growth?.value ||
+                      ("0% from last Quarter" | translate)
                   }}
                 </div> -->
               </div>
@@ -233,7 +289,9 @@
                 </button>
               </div>
               <div class="kpi-content">
-                <div class="kpi-title">{{ "TOTAL PERSONNEL TRAINED" | translate }}</div>
+                <div class="kpi-title">
+                  {{ "TOTAL PERSONNEL TRAINED" | translate }}
+                </div>
                 <div class="kpi-value">
                   {{ getKpiCards()[1]?.value || "0" }}
                 </div>
@@ -254,7 +312,8 @@
                     "
                   ></i>
                   {{
-                    getKpiCards()[1]?.growth?.value || ("0% from last Quarter" | translate)
+                    getKpiCards()[1]?.growth?.value ||
+                      ("0% from last Quarter" | translate)
                   }}
                 </div> -->
               </div>
@@ -277,7 +336,9 @@
                 </button>
               </div>
               <div class="kpi-content">
-                <div class="kpi-title">{{ "TOTAL CERTIFICATES APPROVED" | translate }}</div>
+                <div class="kpi-title">
+                  {{ "TOTAL CERTIFICATES APPROVED" | translate }}
+                </div>
                 <div class="kpi-value">
                   {{ getKpiCards()[2]?.value || "0" }}
                 </div>
@@ -298,7 +359,8 @@
                     "
                   ></i>
                   {{
-                    getKpiCards()[2]?.growth?.value || ("0% from last Quarter" | translate)
+                    getKpiCards()[2]?.growth?.value ||
+                      ("0% from last Quarter" | translate)
                   }}
                 </div> -->
               </div>
@@ -306,7 +368,7 @@
           </div>
 
           <!-- Total Certificates Issued -->
-          <div class="col-lg-3 col-md-6 mb-4">
+          <!-- <div class="col-lg-3 col-md-6 mb-4">
             <div class="kpi-card kpi-card-orange">
               <div class="kpi-header">
                 <div class="kpi-icon">
@@ -321,7 +383,9 @@
                 </button>
               </div>
               <div class="kpi-content">
-                <div class="kpi-title">{{ "Total Certificates Downloaded" | translate }}</div>
+                <div class="kpi-title">
+                  {{ "Total Certificates Downloaded" | translate }}
+                </div>
                 <div class="kpi-value">
                   {{ getKpiCards()[3]?.value || "0" }}
                 </div>
@@ -342,16 +406,61 @@
                     "
                   ></i>
                   {{
-                    getKpiCards()[3]?.growth?.value || ("0% from last Quarter" | translate)
+                    getKpiCards()[3]?.growth?.value ||
+                      ("0% from last Quarter" | translate)
                   }}
                 </div> -->
               </div>
             </div>
-          </div>
+          </div> -->
         </div>
       </div>
     </div>
 
+    <!-- Second Row: Training Institutes and Mode of Training -->
+    <div class="row g-4">
+      <!-- India Map -->
+      <div class="col-lg-6">
+        <div class="card">
+          <div
+            class="card-header d-flex justify-content-between align-items-center"
+          >
+            <h5 class="card-title mb-0">
+              <i class="fas fa-map-marked-alt text-primary me-2"></i>
+              {{ "Training Institutes in India" | translate }}
+            </h5>
+          </div>
+          <div class="card-body">
+            <app-india-map
+              [selectedState]="selectedState"
+              (stateSelected)="onStateSelected($event)"
+            >
+            </app-india-map>
+          </div>
+        </div>
+      </div>
+
+      <!-- Institute Type Chart -->
+      <div class="col-lg-6">
+        <div class="card">
+          <div class="card-header">
+            <h5 class="card-title mb-0">
+              <i class="fas fa-building text-info me-2"></i>
+              {{ "Govt Registered VS Private Institutes" | translate }}
+            </h5>
+          </div>
+          <div class="card-body">
+            <app-institute-type-chart
+              [selectedState]="selectedState"
+              [isLoading]="isLoading"
+              [stateId]="selectedStateId"
+              [districtId]="selectedDistrictId"
+            >
+            </app-institute-type-chart>
+          </div>
+        </div>
+      </div>
+    </div>
     <!-- First Row: Monthly Trainings and Age Group -->
     <div class="row g-4 mb-4">
       <!-- Monthly Trainings Chart -->
@@ -416,51 +525,6 @@
               [trainingInstituteId]="selectedTrainingInstituteId"
             >
             </app-top-training-types-chart>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- Second Row: Training Institutes and Mode of Training -->
-    <div class="row g-4">
-      <!-- India Map -->
-      <div class="col-lg-6">
-        <div class="card">
-          <div
-            class="card-header d-flex justify-content-between align-items-center"
-          >
-            <h5 class="card-title mb-0">
-              <i class="fas fa-map-marked-alt text-primary me-2"></i>
-              {{ "Training Institutes in India" | translate }}
-            </h5>
-          </div>
-          <div class="card-body">
-            <app-india-map
-              [selectedState]="selectedState"
-              (stateSelected)="onStateSelected($event)"
-            >
-            </app-india-map>
-          </div>
-        </div>
-      </div>
-
-      <!-- Institute Type Chart -->
-      <div class="col-lg-6">
-        <div class="card">
-          <div class="card-header">
-            <h5 class="card-title mb-0">
-              <i class="fas fa-building text-info me-2"></i>
-              {{ "Govt Registered VS Private Institutes" | translate }}
-            </h5>
-          </div>
-          <div class="card-body">
-            <app-institute-type-chart
-              [selectedState]="selectedState"
-              [isLoading]="isLoading"
-              [stateId]="selectedStateId"
-              [districtId]="selectedDistrictId"
-            >
-            </app-institute-type-chart>
           </div>
         </div>
       </div>

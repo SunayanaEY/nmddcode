@@ -22,11 +22,13 @@ import { TrainingService } from '../training/services/training.service';
 import { NewCertificateLayoutComponent } from '../new-certificate-layout/new-certificate-layout.component';
 
 export interface DashboardStats {
+  instituteGrowth: number;
   totalTrainings: number;
   totalFarmers: number;
   totalCertificatesApproved: number;
   totalCertificatesIssued: number;
   trainingGrowth: number;
+  totalInstitute: number;
   farmerGrowth: number;
   approvedGrowth: number;
   issuedGrowth: number;
@@ -144,6 +146,8 @@ export class PublicDashboardComponent implements OnInit {
     farmerGrowth: 24,
     approvedGrowth: 37,
     issuedGrowth: 26,
+    totalInstitute: 0,
+    instituteGrowth: 0,
   };
 
   selectedState: StateData | null = null;
@@ -250,7 +254,9 @@ export class PublicDashboardComponent implements OnInit {
               trainingGrowth: 8, // Keep existing growth values or calculate from API
               farmerGrowth: 24,
               approvedGrowth: 37,
+              totalInstitute: 38,
               issuedGrowth: 26,
+              instituteGrowth: 0,
             };
           }
           this.isLoading = false;

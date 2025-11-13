@@ -20,7 +20,12 @@ import { TopTrainingTypesChartComponent } from '../pages/public-dashboard/compon
 import { CommonModule } from '@angular/common';
 import { NewCertificateLayoutComponent } from '../pages/new-certificate-layout/new-certificate-layout.component';
 import { TranslateModule } from '@ngx-translate/core';
-import { DashboardApiService, KpiData, TrainingDetailItem, TrainingInstitute } from './services/dashboard-api.service';
+import {
+  DashboardApiService,
+  KpiData,
+  TrainingDetailItem,
+  TrainingInstitute,
+} from './services/dashboard-api.service';
 import { ExcelService } from '../_services/Excel/excel.service';
 
 @Component({
@@ -34,7 +39,7 @@ import { ExcelService } from '../_services/Excel/excel.service';
     ReactiveFormsModule,
     CommonModule,
     NewCertificateLayoutComponent,
-    TranslateModule
+    TranslateModule,
   ],
   templateUrl: './dashboard.component.html',
   styleUrl: './dashboard.component.css',
@@ -42,12 +47,10 @@ import { ExcelService } from '../_services/Excel/excel.service';
 export class DashboardComponent {
   selectedItem: any;
   //certificate modal component properties
-  
+
   // openModal() {
   //   this.showModal = true;
   // }
-
-  
 
   onSubmit(formData: any) {
     this.trainingsService
@@ -81,10 +84,7 @@ export class DashboardComponent {
           console.error('Error fetching trainees:', err);
         },
       });
-
   }
-
-  
 
   dashboardStats: DashboardStats = {
     totalTrainings: 54,
@@ -92,9 +92,11 @@ export class DashboardComponent {
     totalCertificatesApproved: 2912,
     totalCertificatesIssued: 1640,
     trainingGrowth: 8,
+    totalInstitute: 8,
     farmerGrowth: 24,
     approvedGrowth: 37,
     issuedGrowth: 26,
+    instituteGrowth: 21,
   };
 
   selectedState: StateData | null = null;
@@ -240,9 +242,9 @@ export class DashboardComponent {
         this.trainingInstitutes = [];
         this.selectedTrainingInstituteId = null;
         if (!this.isUpdatingFilters) {
-          this.filterForm.patchValue({ 
+          this.filterForm.patchValue({
             districtId: '',
-            trainingInstituteId: ''
+            trainingInstituteId: '',
           });
         }
       }
@@ -260,12 +262,14 @@ export class DashboardComponent {
     });
 
     // Subscribe to training institute changes
-    this.filterForm.get('trainingInstituteId')?.valueChanges.subscribe((instituteId) => {
-      this.selectedTrainingInstituteId = instituteId;
-      if (!this.isUpdatingFilters) {
-        this.loadDashboardData();
-      }
-    });
+    this.filterForm
+      .get('trainingInstituteId')
+      ?.valueChanges.subscribe((instituteId) => {
+        this.selectedTrainingInstituteId = instituteId;
+        if (!this.isUpdatingFilters) {
+          this.loadDashboardData();
+        }
+      });
   }
 
   loadDashboardData(): void {
@@ -290,6 +294,8 @@ export class DashboardComponent {
               farmerGrowth: response.data.farmerGrowth,
               approvedGrowth: response.data.approvedGrowth,
               issuedGrowth: response.data.issuedGrowth,
+              totalInstitute: response.data.totalInstitute,
+              instituteGrowth: response.data?.instituteGrowth,
             };
           }
           this.isLoading = false;
@@ -371,8 +377,6 @@ export class DashboardComponent {
     this.router.navigate(['/signup']);
   }
 
-  
-
   exportData(): void {
     // TODO: Implement data export functionality
     console.log('Export data clicked');
@@ -384,7 +388,7 @@ export class DashboardComponent {
   }
 
   // New KPI Cards Methods
-  
+
   /**
    * Load KPI data from API
    */
@@ -401,7 +405,7 @@ export class DashboardComponent {
         console.error('Error loading KPI data:', error);
         this.kpiDataError = 'Failed to load KPI data';
         this.isLoadingKpiData = false;
-      }
+      },
     });
   }
 
@@ -418,8 +422,8 @@ export class DashboardComponent {
         colorClass: 'kpi-card-green',
         growth: {
           value: `↑ ${this.dashboardStats.trainingGrowth}% from last Quarter`,
-          isPositive: this.dashboardStats.trainingGrowth >= 0
-        }
+          isPositive: this.dashboardStats.trainingGrowth >= 0,
+        },
       },
       {
         id: 'totalFarmersTrained',
@@ -428,20 +432,26 @@ export class DashboardComponent {
         icon: 'fas fa-users',
         colorClass: 'kpi-card-blue',
         growth: {
-          value: `${this.dashboardStats.farmerGrowth >= 0 ? '↑' : '↓'} ${Math.abs(this.dashboardStats.farmerGrowth)}% from last Quarter`,
-          isPositive: this.dashboardStats.farmerGrowth >= 0
-        }
+          value: `${
+            this.dashboardStats.farmerGrowth >= 0 ? '↑' : '↓'
+          } ${Math.abs(this.dashboardStats.farmerGrowth)}% from last Quarter`,
+          isPositive: this.dashboardStats.farmerGrowth >= 0,
+        },
       },
       {
         id: 'totalCertificatesApproved',
         title: 'Total Certificates Approved',
-        value: this.formatKpiValue(this.dashboardStats.totalCertificatesApproved),
+        value: this.formatKpiValue(
+          this.dashboardStats.totalCertificatesApproved
+        ),
         icon: 'fas fa-certificate',
         colorClass: 'kpi-card-purple',
         growth: {
-          value: `${this.dashboardStats.approvedGrowth >= 0 ? '↑' : '↓'} ${Math.abs(this.dashboardStats.approvedGrowth)}% from last Quarter`,
-          isPositive: this.dashboardStats.approvedGrowth >= 0
-        }
+          value: `${
+            this.dashboardStats.approvedGrowth >= 0 ? '↑' : '↓'
+          } ${Math.abs(this.dashboardStats.approvedGrowth)}% from last Quarter`,
+          isPositive: this.dashboardStats.approvedGrowth >= 0,
+        },
       },
       {
         id: 'totalCertificatesIssued',
@@ -450,10 +460,23 @@ export class DashboardComponent {
         icon: 'fas fa-award',
         colorClass: 'kpi-card-orange',
         growth: {
-          value: `${this.dashboardStats.issuedGrowth >= 0 ? '↑' : '↓'} ${Math.abs(this.dashboardStats.issuedGrowth)}% from last Quarter`,
-          isPositive: this.dashboardStats.issuedGrowth >= 0
-        }
-      }
+          value: `${
+            this.dashboardStats.issuedGrowth >= 0 ? '↑' : '↓'
+          } ${Math.abs(this.dashboardStats.issuedGrowth)}% from last Quarter`,
+          isPositive: this.dashboardStats.issuedGrowth >= 0,
+        },
+      },
+      {
+        id: 'totalInstitute',
+        title: 'Total Institutes',
+        value: this.formatKpiValue(this.dashboardStats.totalInstitute),
+        icon: 'fas fa-university',
+        colorClass: 'kpi-card-green',
+        growth: {
+          value: `↑ ${this.dashboardStats.instituteGrowth}% from last Quarter`,
+          isPositive: this.dashboardStats.instituteGrowth >= 0,
+        },
+      },
     ];
   }
 
@@ -474,18 +497,18 @@ export class DashboardComponent {
    */
   downloadKpiData(kpiType: string, event: Event): void {
     event.preventDefault();
-    
+
     console.log('Download KPI Data clicked:', {
       kpiType: kpiType,
       timestamp: new Date().toISOString(),
       currentFilters: {
         selectedState: this.selectedStateId,
-        selectedDistrict: this.selectedDistrictId
+        selectedDistrict: this.selectedDistrictId,
       },
       apiParams: {
         stateId: this.selectedStateId,
-        districtId: this.selectedDistrictId
-      }
+        districtId: this.selectedDistrictId,
+      },
     });
 
     // Show loading state (you can add a loading indicator here)
@@ -495,46 +518,50 @@ export class DashboardComponent {
     button.disabled = true;
 
     // Fetch data and export to Excel with current filter values
-    this.dashboardApiService.getTrainingDetailsByType(
-      kpiType, 
-      this.selectedStateId || undefined, 
-      this.selectedDistrictId || undefined,
-      this.selectedTrainingInstituteId || undefined
-    ).subscribe({
-      next: (response) => {
-        if (response.success && response.data.length > 0) {
-          // Transform data for Excel export
-          const excelData = response.data.map(item => ({
-            'ID': item.id,
-            'Name': item.name,
-            'Gender': item.gender,
-            'Age': item.age,
-            'Contact Number': item.contactNumber,
-            'Email': item.email,
-            'Status': item.status,
-            'UIN': item.uin,
-            'Father Name': item.fatherName,
-            'Date of Birth': new Date(item.dob).toLocaleDateString(),
-            'Training ID': item.trainingId,
-            'Upload Type': item.uploadType,
-            'Created Date': new Date(item.createDate).toLocaleDateString(),
-            'Updated Date': new Date(item.updateDate).toLocaleDateString(),
-            'Created By': item.createdBy,
-            'Training Institute ID': item.trainingInstituteId
-          }));
+    this.dashboardApiService
+      .getTrainingDetailsByType(
+        kpiType,
+        this.selectedStateId || undefined,
+        this.selectedDistrictId || undefined,
+        this.selectedTrainingInstituteId || undefined
+      )
+      .subscribe({
+        next: (response) => {
+          if (response.success && response.data.length > 0) {
+            // Transform data for Excel export
+            const excelData = response.data.map((item) => ({
+              ID: item.id,
+              Name: item.name,
+              Gender: item.gender,
+              Age: item.age,
+              'Contact Number': item.contactNumber,
+              Email: item.email,
+              Status: item.status,
+              UIN: item.uin,
+              'Father Name': item.fatherName,
+              'Date of Birth': new Date(item.dob).toLocaleDateString(),
+              'Training ID': item.trainingId,
+              'Upload Type': item.uploadType,
+              'Created Date': new Date(item.createDate).toLocaleDateString(),
+              'Updated Date': new Date(item.updateDate).toLocaleDateString(),
+              'Created By': item.createdBy,
+              'Training Institute ID': item.trainingInstituteId,
+            }));
 
-          // Generate filename with timestamp
-          const timestamp = new Date().toISOString().split('T')[0];
-          const filename = `${kpiType}_${timestamp}`;
+            // Generate filename with timestamp
+            const timestamp = new Date().toISOString().split('T')[0];
+            const filename = `${kpiType}_${timestamp}`;
 
-          // Export to Excel
-          this.excelService.exportAsExcelFile(excelData, filename);
-          
-          console.log(`Successfully exported ${excelData.length} records for ${kpiType}`);
-        } else {
-          console.warn('No data available for export');
-          alert('No data available for export');
-        }
+            // Export to Excel
+            this.excelService.exportAsExcelFile(excelData, filename);
+
+            console.log(
+              `Successfully exported ${excelData.length} records for ${kpiType}`
+            );
+          } else {
+            console.warn('No data available for export');
+            alert('No data available for export');
+          }
 
         // Reset button state
         button.innerHTML = originalText;

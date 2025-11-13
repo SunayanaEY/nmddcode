@@ -24,6 +24,11 @@ export interface DashboardStats {
     growth: number;
     isPositive: boolean;
   };
+  totalInstitutes: {
+    value: number;
+    growth: number;
+    isPositive: boolean;
+  };
 }
 
 export interface StateData {
@@ -71,14 +76,17 @@ export interface TrainingSummaryResponse {
   success: boolean;
   message: string;
   data: {
+    [x: string]: number;
     farmerGrowth: number;
     approvedGrowth: number;
     issuedGrowth: number;
     trainingGrowth: number;
+    instituteGrowth: number;
     totalCertificatesIssued: number;
     totalTrainingsConducted: number;
     totalFarmersTrained: number;
     totalCertificatesApproved: number;
+    totalInstitute: number;
   };
   statusCode: number;
 }
@@ -113,10 +121,10 @@ export interface AgeWiseDistributionResponse {
   success: boolean;
   message: string;
   data: {
-    "18-25": number;
-    "26-35": number;
-    "36-45": number;
-    "46-60": number;
+    '18-25': number;
+    '26-35': number;
+    '36-45': number;
+    '46-60': number;
   };
   statusCode: number;
 }
@@ -162,13 +170,15 @@ export interface TopTrainingTypesResponse {
 }
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class DashboardDataService {
   private readonly API_BASE_URL = environment.apiUrl;
 
   // BehaviorSubjects for reactive data
-  private dashboardStatsSubject = new BehaviorSubject<DashboardStats | null>(null);
+  private dashboardStatsSubject = new BehaviorSubject<DashboardStats | null>(
+    null
+  );
   private selectedStateSubject = new BehaviorSubject<StateData | null>(null);
   private loadingSubject = new BehaviorSubject<boolean>(false);
 
@@ -186,23 +196,28 @@ export class DashboardDataService {
     totalTrainings: {
       value: 0,
       growth: 0,
-      isPositive: true
+      isPositive: true,
     },
     totalFarmers: {
       value: 0,
       growth: 0,
-      isPositive: true
+      isPositive: true,
     },
     totalCertificatesApproved: {
       value: 0,
       growth: 0,
-      isPositive: true
+      isPositive: true,
     },
     totalCertificatesIssued: {
       value: 0,
       growth: 0,
-      isPositive: true
-    }
+      isPositive: true,
+    },
+    totalInstitutes: {
+      value: 0,
+      growth: 0,
+      isPositive: true,
+    },
   };
 
   private mockStatesData: StateData[] = [
@@ -212,7 +227,7 @@ export class DashboardDataService {
       totalInstitutes: 0,
       totalTrainings: 0,
       totalFarmers: 0,
-      coordinates: [80.9462, 26.8467]
+      coordinates: [80.9462, 26.8467],
     },
     {
       stateId: 'MH',
@@ -220,7 +235,7 @@ export class DashboardDataService {
       totalInstitutes: 0,
       totalTrainings: 0,
       totalFarmers: 0,
-      coordinates: [75.7139, 19.7515]
+      coordinates: [75.7139, 19.7515],
     },
     {
       stateId: 'GJ',
@@ -228,7 +243,7 @@ export class DashboardDataService {
       totalInstitutes: 0,
       totalTrainings: 0,
       totalFarmers: 0,
-      coordinates: [71.1924, 22.2587]
+      coordinates: [71.1924, 22.2587],
     },
     {
       stateId: 'RJ',
@@ -236,7 +251,7 @@ export class DashboardDataService {
       totalInstitutes: 0,
       totalTrainings: 0,
       totalFarmers: 0,
-      coordinates: [74.2179, 27.0238]
+      coordinates: [74.2179, 27.0238],
     },
     {
       stateId: 'PB',
@@ -244,8 +259,8 @@ export class DashboardDataService {
       totalInstitutes: 0,
       totalTrainings: 0,
       totalFarmers: 0,
-      coordinates: [75.3412, 31.1471]
-    }
+      coordinates: [75.3412, 31.1471],
+    },
   ];
 
   private mockInstitutesData: InstituteData[] = [
@@ -256,16 +271,16 @@ export class DashboardDataService {
       coordinates: [80.9462, 26.8467],
       totalTrainings: 0,
       totalFarmers: 0,
-      type: 'research'
+      type: 'research',
     },
     {
       id: 'inst_002',
       name: 'Dairy Training Center Mumbai',
       stateId: 'MH',
-      coordinates: [72.8777, 19.0760],
+      coordinates: [72.8777, 19.076],
       totalTrainings: 0,
       totalFarmers: 0,
-      type: 'primary'
+      type: 'primary',
     },
     {
       id: 'inst_003',
@@ -274,8 +289,8 @@ export class DashboardDataService {
       coordinates: [72.5714, 23.0225],
       totalTrainings: 0,
       totalFarmers: 0,
-      type: 'primary'
-    }
+      type: 'primary',
+    },
   ];
 
   private mockMonthlyData: MonthlyData[] = [
@@ -290,7 +305,7 @@ export class DashboardDataService {
     { month: 'Sep', trainings: 0, farmers: 0, certificates: 0 },
     { month: 'Oct', trainings: 0, farmers: 0, certificates: 0 },
     { month: 'Nov', trainings: 0, farmers: 0, certificates: 0 },
-    { month: 'Dec', trainings: 0, farmers: 0, certificates: 0 }
+    { month: 'Dec', trainings: 0, farmers: 0, certificates: 0 },
   ];
 
   // Initialize data on service creation
@@ -328,7 +343,7 @@ export class DashboardDataService {
 
     let data = this.mockInstitutesData;
     if (stateId) {
-      data = data.filter(institute => institute.stateId === stateId);
+      data = data.filter((institute) => institute.stateId === stateId);
     }
 
     return of(data).pipe(delay(300));
@@ -354,7 +369,7 @@ export class DashboardDataService {
       { ageGroup: '18-25', count: 0, percentage: 0, color: '#FF6B6B' },
       { ageGroup: '26-35', count: 0, percentage: 0, color: '#4ECDC4' },
       { ageGroup: '36-45', count: 0, percentage: 0, color: '#45B7D1' },
-      { ageGroup: '46-60', count: 0, percentage: 0, color: '#96CEB4' }
+      { ageGroup: '46-60', count: 0, percentage: 0, color: '#96CEB4' },
     ];
 
     return of(mockAgeGroupData).pipe(delay(400));
@@ -367,10 +382,34 @@ export class DashboardDataService {
     // return this.http.get<ModeOfTrainingData[]>(url);
 
     const mockTrainingModeData: ModeOfTrainingData[] = [
-      { mode: 'Online', count: 0, percentage: 0, color: '#4F46E5', icon: 'laptop' },
-      { mode: 'Offline', count: 0, percentage: 0, color: '#059669', icon: 'users' },
-      { mode: 'Hybrid', count: 0, percentage: 0, color: '#DC2626', icon: 'globe' },
-      { mode: 'Field Training', count: 0, percentage: 0, color: '#D97706', icon: 'map-marker-alt' }
+      {
+        mode: 'Online',
+        count: 0,
+        percentage: 0,
+        color: '#4F46E5',
+        icon: 'laptop',
+      },
+      {
+        mode: 'Offline',
+        count: 0,
+        percentage: 0,
+        color: '#059669',
+        icon: 'users',
+      },
+      {
+        mode: 'Hybrid',
+        count: 0,
+        percentage: 0,
+        color: '#DC2626',
+        icon: 'globe',
+      },
+      {
+        mode: 'Field Training',
+        count: 0,
+        percentage: 0,
+        color: '#D97706',
+        icon: 'map-marker-alt',
+      },
     ];
 
     return of(mockTrainingModeData).pipe(delay(400));
@@ -428,13 +467,17 @@ export class DashboardDataService {
     // Mock implementation
     const mockResults = [
       { id: 1, title: 'Mock Result 1', type: 'training' },
-      { id: 2, title: 'Mock Result 2', type: 'farmer' }
+      { id: 2, title: 'Mock Result 2', type: 'farmer' },
     ];
 
     return of(mockResults).pipe(delay(500));
   }
 
-  getTrainingSummaryCount(stateId?: number, districtId?: number, trainingInstituteId?: string): Observable<TrainingSummaryResponse> {
+  getTrainingSummaryCount(
+    stateId?: number,
+    districtId?: number,
+    trainingInstituteId?: string
+  ): Observable<TrainingSummaryResponse> {
     let url = `${this.API_BASE_URL}public/dashboard/trainingSummaryCount`;
     const params = new URLSearchParams();
 
@@ -452,10 +495,22 @@ export class DashboardDataService {
       url += `?${params.toString()}`;
     }
 
-    return this.http.get<TrainingSummaryResponse>(url);
+    return this.http.get<TrainingSummaryResponse>(url).pipe(
+      map((response) => ({
+        ...response,
+        data: {
+          ...response.data,
+          instituteGrowth: response.data?.instituteGrowth ?? 0,
+        },
+      }))
+    );
   }
 
-  getMonthlyTrainingCount(stateId?: number, districtId?: number, trainingInstituteId?: string): Observable<MonthlyTrainingResponse> {
+  getMonthlyTrainingCount(
+    stateId?: number,
+    districtId?: number,
+    trainingInstituteId?: string
+  ): Observable<MonthlyTrainingResponse> {
     let url = `${this.API_BASE_URL}public/dashboard/monthlyTrainingCount`;
     const params = new URLSearchParams();
 
@@ -476,7 +531,10 @@ export class DashboardDataService {
     return this.http.get<MonthlyTrainingResponse>(url);
   }
 
-  getModeOfTrainingDistribution(stateId?: number, districtId?: number): Observable<ModeOfTrainingDistributionResponse> {
+  getModeOfTrainingDistribution(
+    stateId?: number,
+    districtId?: number
+  ): Observable<ModeOfTrainingDistributionResponse> {
     let url = `${this.API_BASE_URL}public/dashboard/modeOfTrainingDistribution`;
     const params = new URLSearchParams();
 
@@ -494,7 +552,11 @@ export class DashboardDataService {
     return this.http.get<ModeOfTrainingDistributionResponse>(url);
   }
 
-  getAgeWiseDistribution(stateId?: number, districtId?: number, trainingInstituteId?: string): Observable<AgeWiseDistributionResponse> {
+  getAgeWiseDistribution(
+    stateId?: number,
+    districtId?: number,
+    trainingInstituteId?: string
+  ): Observable<AgeWiseDistributionResponse> {
     let url = `${this.API_BASE_URL}public/dashboard/ageWiseDistribution`;
     const params = new URLSearchParams();
 
@@ -517,13 +579,17 @@ export class DashboardDataService {
 
   // Get institute locations from API
   getInstituteLocations(): Observable<InstituteLocationData[]> {
-    return this.http.get<InstituteLocationResponse>(`${this.API_BASE_URL}public/dashboard/institute-locations`)
-      .pipe(
-        map(response => response.data)
-      );
+    return this.http
+      .get<InstituteLocationResponse>(
+        `${this.API_BASE_URL}public/dashboard/institute-locations`
+      )
+      .pipe(map((response) => response.data));
   }
 
-  getTrainingInstituteTypeDistribution(stateId?: number, districtId?: number): Observable<TrainingInstituteTypeDistributionResponse> {
+  getTrainingInstituteTypeDistribution(
+    stateId?: number,
+    districtId?: number
+  ): Observable<TrainingInstituteTypeDistributionResponse> {
     let url = `${this.API_BASE_URL}public/dashboard/trainingInstituteTypeDistribution`;
     const params = new URLSearchParams();
 
@@ -541,7 +607,11 @@ export class DashboardDataService {
     return this.http.get<TrainingInstituteTypeDistributionResponse>(url);
   }
 
-  getTopTrainingTypes(stateId?: number | null, districtId?: number | null, trainingInstituteId?: string | null): Observable<TopTrainingTypesResponse> {
+  getTopTrainingTypes(
+    stateId?: number | null,
+    districtId?: number | null,
+    trainingInstituteId?: string | null
+  ): Observable<TopTrainingTypesResponse> {
     let url = `${this.API_BASE_URL}public/dashboard/toptrainingtypes`;
     const params = new URLSearchParams();
 
