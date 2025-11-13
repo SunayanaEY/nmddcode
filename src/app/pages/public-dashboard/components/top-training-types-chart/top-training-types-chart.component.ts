@@ -63,7 +63,7 @@ export class TopTrainingTypesChartComponent implements OnInit, OnChanges, OnDest
 
     this.chartOption = {
       title: {
-        text: 'Top 5 Training Types',
+        text: '',
         left: 'center',
         textStyle: {
           fontSize: 16,

@@ -305,19 +305,54 @@ export class DashboardComponent {
   clearFilters(): void {
     this.isUpdatingFilters = true;
     
-    this.filterForm.reset();
-    this.filterForm.patchValue({ 
-      stateId: '',
-      districtId: '',
-      trainingInstituteId: ''
-    });
-    
-    this.selectedStateId = null;
-    this.selectedDistrictId = null;
-    this.selectedTrainingInstituteId = null;
-    this.districts = [];
-    this.trainingInstitutes = [];
-    this.loadTrainingInstitutes(); // Reload all training institutes
+    if (this.userRole === 5) {
+      // For State Admin (role 5): Only reset District and Training Institutes fields
+      this.filterForm.patchValue({ 
+        districtId: '',
+        trainingInstituteId: ''
+      });
+      
+      this.selectedDistrictId = null;
+      this.selectedTrainingInstituteId = null;
+      this.trainingInstitutes = []; // Clear training institutes
+      
+      // Reload training institutes for the selected state (if any)
+      if (this.selectedStateId) {
+        this.loadTrainingInstitutes(this.selectedStateId);
+      }
+      
+    } else if (this.userRole === 1) {
+      // For Centre Admin (role 1): Clear all field values
+      this.filterForm.reset();
+      this.filterForm.patchValue({ 
+        stateId: '',
+        districtId: '',
+        trainingInstituteId: ''
+      });
+      
+      this.selectedStateId = null;
+      this.selectedDistrictId = null;
+      this.selectedTrainingInstituteId = null;
+      this.districts = [];
+      this.trainingInstitutes = [];
+      this.loadTrainingInstitutes(); // Reload all training institutes
+      
+    } else {
+      // For other roles: Use existing functionality
+      this.filterForm.reset();
+      this.filterForm.patchValue({ 
+        stateId: '',
+        districtId: '',
+        trainingInstituteId: ''
+      });
+      
+      this.selectedStateId = null;
+      this.selectedDistrictId = null;
+      this.selectedTrainingInstituteId = null;
+      this.districts = [];
+      this.trainingInstitutes = [];
+      this.loadTrainingInstitutes(); // Reload all training institutes
+    }
     
     this.isUpdatingFilters = false;
     this.loadDashboardData(); // Call only once after all updates
@@ -515,4 +550,14 @@ export class DashboardComponent {
       }
     });
   }
+  getDashboardTitle(): string {
+    if (this.userRole === 1) {
+      return 'Centre Admin Dashboard';
+    } else if (this.userRole === 5) {
+      return 'State Admin Dashboard';
+    } else {
+      return 'Training Dashboard';
+    }
+  }
 }
+
