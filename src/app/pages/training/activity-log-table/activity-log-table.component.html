@@ -1,0 +1,121 @@
+<div class="activity-log-container">
+  <div class="activity-log-content">
+    <app-breadcrumb [items]="breadcrumbItems"></app-breadcrumb>
+
+    <div class="header-section">
+      <div class="header-content">
+        <div class="title-section">
+          <div class="icon-wrapper">
+            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M9 12L11 14L15 10" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+              <path d="M21 12C21 16.9706 16.9706 21 12 21C7.02944 21 3 16.9706 3 12C3 7.02944 7.02944 3 12 3C16.9706 3 21 7.02944 21 12Z" stroke="currentColor" stroke-width="2" />
+            </svg>
+          </div>
+          <div>
+            <h1 class="page-title">{{ "Activity Log Feed" | translate }}</h1>
+            <p class="page-subtitle">{{ "Real-time feed of training uploads, approvals, and comments" | translate }}</p>
+          </div>
+        </div>
+        <button class="refresh-btn" (click)="refreshLogs()">{{ "Refresh" | translate }}</button>
+      </div>
+    </div>
+
+    <div class="date-filter-section">
+      <div class="filter-header"><h3>{{ "Filter by Date Range" | translate }}:</h3></div>
+      <div class="date-filter-controls">
+        <div class="date-input-group">
+          <label for="startDate">{{ "Start Date" | translate }}:</label>
+          <input type="date" id="startDate" class="date-input" [(ngModel)]="startDate" />
+        </div>
+        <div class="date-input-group">
+          <label for="endDate">{{ "End Date" | translate }}:</label>
+          <input type="date" id="endDate" class="date-input" [(ngModel)]="endDate" />
+        </div>
+        <div class="date-filter-actions">
+          <button class="show-logs-btn" (click)="filterByDateRange()">{{ "Show Logs" | translate }}</button>
+          <button class="clear-filter-btn" (click)="clearDateFilter()">{{ "Clear" | translate }}</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="filter-section">
+      <div class="filter-container">
+        <h3 class="filter-title">{{ "Filter by Status" | translate }}:</h3>
+        <div class="filter-buttons">
+          <button class="filter-btn" [class.active]="selectedFilter === 'all'" (click)="filterLogs('all')">📋 {{ "All Activities" | translate }}</button>
+          <button class="filter-btn status-approved" [class.active]="selectedFilter === 'approved'" (click)="filterLogs('approved')">✅ {{ "Approved" | translate }}</button>
+          <button class="filter-btn status-rejected" [class.active]="selectedFilter === 'rejected'" (click)="filterLogs('rejected')">❌ {{ "Rejected" | translate }}</button>
+          <button class="filter-btn status-others" [class.active]="selectedFilter === 'others'" (click)="filterLogs('others')">📝 {{ "Others" | translate }}</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="table-wrapper" *ngIf="!isLoading && !errorMessage && paginatedLogs.length > 0">
+      <div class="table-responsive">
+        <table class="activity-table">
+          <thead>
+            <tr>
+              <th>{{ 'Title' | translate }}</th>
+              <th>{{ 'Description' | translate }}</th>
+              <th>{{ 'User' | translate }}</th>
+              <th>{{ 'Status' | translate }}</th>
+              <th>{{ 'Type' | translate }}</th>
+              <th>{{ 'Time' | translate }}</th>
+              <th>{{ 'Action' | translate }}</th>
+              <th>{{ 'Username' | translate }}</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let log of paginatedLogs; trackBy: trackByLogId">
+              <td>{{ log.title }}</td>
+              <td>{{ log.description }}</td>
+              <td>{{ log.user }}</td>
+              <td>
+                <span class="status-badge" [ngClass]="['status-badge', getStatusClass(log.status)]">
+                  <span class="status-icon" [innerHTML]="getStatusIcon(log.status)"></span>
+                  {{ log.status | titlecase }}
+                </span>
+              </td>
+              <td>
+                <span class="type-icon" [innerHTML]="getTypeIcon(log.type)"></span>
+                {{ log.type | titlecase }}
+              </td>
+              <td>{{ formatTimestamp(log.timestamp) }}</td>
+              <td>{{ log.details?.['action'] }}</td>
+              <td>{{ log.details?.['userName'] }}</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="pagination-container" *ngIf="totalPages > 1">
+      <div class="pagination">
+        <button class="pagination-btn" [disabled]="currentPage === 1" (click)="previousPage()">&#8592;</button>
+        <div class="page-numbers">
+          <button class="page-number" *ngFor="let page of getPageNumbers()" [class.active]="page === currentPage" (click)="goToPage(page)">{{ page }}</button>
+        </div>
+        <button class="pagination-btn" [disabled]="currentPage === totalPages" (click)="nextPage()">&#8594;</button>
+      </div>
+    </div>
+
+    <div class="loading-container" *ngIf="isLoading">
+      <div class="spinner"></div>
+      <p>{{ "Loading activity logs..." | translate }}</p>
+    </div>
+
+    <div class="no-data-container" *ngIf="!isLoading && !errorMessage && filteredLogs.length === 0">
+      <div class="no-data-message">
+        <h3>{{ "No Activity Logs Found" | translate }}</h3>
+        <p>There are no activity logs for the selected date range and filters.</p>
+      </div>
+    </div>
+
+    <div class="error-container" *ngIf="errorMessage && !isLoading">
+      <div class="error-message">
+        <p>{{ errorMessage | translate }}</p>
+        <button class="retry-btn" (click)="loadActivityLogs()">{{ "Try Again" | translate }}</button>
+      </div>
+    </div>
+  </div>
+</div>
