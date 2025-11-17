@@ -469,6 +469,7 @@
   "TRAINING.BASIC_INFORMATION": "Basic Information",
   "TRAINING.INSTITUTE_NAME_LABEL": "Training Institute Name",
   "TRAINING.REGISTRATION_NUMBER": "Registration Number",
+  "REGISTRATION_DOCUMENT_LABEL":"Registration Certificate",
   "TRAINING.REGISTRATION_VALIDITY": "Registration Validity",
   "TRAINING.INSTITUTE_TYPE": "Institute Type",
   "TRAINING.LOCATION_INFORMATION": "Location Information",

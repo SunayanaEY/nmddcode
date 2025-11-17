@@ -180,6 +180,12 @@ export class DashboardComponent {
         if (this.isStateAdmin && this.stateAdminStateId) {
           this.filterForm.patchValue({ stateId: this.stateAdminStateId });
           this.selectedStateId = parseInt(this.stateAdminStateId);
+          const selected = this.states.find(
+            (s) => s.id === this.selectedStateId
+          );
+          this.selectedState = selected
+            ? { stateId: String(selected.id), stateName: selected.stateName }
+            : null;
         }
       },
       error: (error) => {
@@ -233,6 +239,11 @@ export class DashboardComponent {
     // Subscribe to state changes
     this.filterForm.get('stateId')?.valueChanges.subscribe((stateId) => {
       this.selectedStateId = stateId;
+      // Map numeric stateId from dropdown to StateData for the map
+      const selected = this.states.find((s) => s.id === Number(stateId));
+      this.selectedState = selected
+        ? { stateId: String(selected.id), stateName: selected.stateName }
+        : null;
       if (stateId) {
         this.loadDistricts(stateId);
         this.loadTrainingInstitutes(stateId);
@@ -241,6 +252,7 @@ export class DashboardComponent {
         this.selectedDistrictId = null;
         this.trainingInstitutes = [];
         this.selectedTrainingInstituteId = null;
+        this.selectedState = null;
         if (!this.isUpdatingFilters) {
           this.filterForm.patchValue({
             districtId: '',

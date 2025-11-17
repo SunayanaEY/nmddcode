@@ -8,6 +8,8 @@ import {
   OnDestroy,
   ViewChild,
   AfterViewInit,
+  OnChanges,
+  SimpleChanges,
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import * as d3 from 'd3';
@@ -36,7 +38,7 @@ interface InstituteMarker {
   templateUrl: './india-map.component.html',
   styleUrls: ['./india-map.component.css'],
 })
-export class IndiaMapComponent implements OnInit, AfterViewInit, OnDestroy {
+export class IndiaMapComponent implements OnInit, AfterViewInit, OnDestroy, OnChanges {
   @ViewChild('mapContainer', { static: false }) mapContainer!: ElementRef;
   @Input() selectedState: StateData | null = null;
   @Input() isLoading = false;
@@ -112,6 +114,20 @@ export class IndiaMapComponent implements OnInit, AfterViewInit, OnDestroy {
   };
 
   constructor(private dashboardService: DashboardDataService) {}
+
+  ngOnChanges(changes: SimpleChanges): void {
+    if (changes['selectedState']) {
+      const next = changes['selectedState'].currentValue as StateData | null;
+      if (next && next.stateName) {
+        const topoPath = this.getStateTopoJsonPath(next.stateName);
+        if (topoPath && this.svg && this.g) {
+          this.loadAndRenderStateMap(topoPath, next.stateName);
+        }
+      } else if (!next && this.isStateView && this.svg && this.g) {
+        this.backToIndia();
+      }
+    }
+  }
 
   ngOnInit(): void {
     this.checkUserRole();
@@ -306,6 +322,15 @@ export class IndiaMapComponent implements OnInit, AfterViewInit, OnDestroy {
     // Apply role-based zooming after map is created
     setTimeout(() => {
       this.applyRoleBasedZoom(geoData);
+      // If parent passed a selectedState, render it
+      if (this.selectedState && this.selectedState.stateName) {
+        const path = this.getStateTopoJsonPath(this.selectedState.stateName);
+        if (path) {
+          this.loadAndRenderStateMap(path, this.selectedState.stateName);
+        } else {
+          this.zoomToState(geoData, this.selectedState.stateName);
+        }
+      }
     }, 100);
   }
 
