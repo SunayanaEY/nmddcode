@@ -507,6 +507,17 @@ export class DashboardComponent {
   /**
    * Handle download KPI data button click
    */
+  formatDate(dateString: any): string {
+    if (!dateString) return '';
+
+    const date = new Date(dateString);
+
+    const day = String(date.getDate()).padStart(2, '0');
+    const month = String(date.getMonth() + 1).padStart(2, '0'); // Months are 0-based
+    const year = date.getFullYear();
+
+    return `${day}/${month}/${year}`;
+  }
   downloadKpiData(kpiType: string, event: Event): void {
     event.preventDefault();
 
@@ -543,7 +554,7 @@ export class DashboardComponent {
               'Institute Type': item.instituteType,
               'Registration No.': item.registrationId,
               'Institute Id': item.id,
-              'Registration Validity': item.expiryDate,
+              'Registration Validity': this.formatDate(item.expiryDate),
               Status: item.status,
             }));
 
@@ -597,8 +608,8 @@ export class DashboardComponent {
                 Scheme: item.scheme,
                 'Trainer Name': item.trainerName,
                 'No of Trainees': item.numberOfTrainees,
-                'From Date': item.fromDate,
-                'To Date': item.toDate,
+                'From Date': this.formatDate(item.fromDate),
+                'To Date': this.formatDate(item.toDate),
                 Duration: item.duration,
                 'Mode of Training': item.modeOfTraining,
               }));
@@ -654,10 +665,10 @@ export class DashboardComponent {
                 Email: item.email,
                 UIN: item.uin,
                 'Father Name': item.fatherName,
-                'Date of Birth': item.dob,
+                'Date of Birth': this.formatDate(item.dob),
                 'Upload Type': item.uploadType,
-                'Created Date': item.createDate,
-                'Approval Date': item.approvedDate,
+                'Created Date': this.formatDate(item.createDate),
+                'Approval Date': this.formatDate(item.approvedDate),
                 'Approved by ': item.approvedBy,
                 Status: item.status,
               }));
@@ -713,10 +724,10 @@ export class DashboardComponent {
                 Email: item.email,
                 UIN: item.uin,
                 'Father Name': item.fatherName,
-                'Date of Birth': item.dob,
+                'Date of Birth': this.formatDate(item.dob),
                 'Upload Type': item.uploadType,
-                'Created Date': item.createDate,
-                'Approval Date': item.approvedDate,
+                'Created Date': this.formatDate(item.createDate),
+                'Approval Date': this.formatDate(item.approvedDate),
                 'Approved by ': item.approvedBy,
               }));
 
@@ -752,7 +763,7 @@ export class DashboardComponent {
   }
   getDashboardTitle(): string {
     if (this.userRole === 1) {
-      return 'Centre Admin Dashboard';
+      return 'Central Admin Dashboard';
     } else if (this.userRole === 5) {
       return 'State Admin Dashboard';
     } else {

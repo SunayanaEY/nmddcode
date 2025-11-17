@@ -1,6 +1,6 @@
 <app-breadcrumb [items]="breadcrumbItems"></app-breadcrumb>
 
-<div class="page-header">
+<div class="page-header" id="pendingTable">
   <h2>{{ "Pending Trainings" | translate }}</h2>
 </div>
 <div class="trainings-summary">
@@ -24,7 +24,7 @@
 >
 </app-table>
 
-<div class="approved-certificate-container">
+<div class="approved-certificate-container" id="approvedTable">
   <div class="page-header">
     <h2>{{ "Approved Trainings" | translate }}</h2>
   </div>
@@ -51,7 +51,7 @@
 </div>
 
 <!--Rejected Trainings start-->
-<div class="approved-certificate-container">
+<div class="approved-certificate-container" id="rejectedTable">
   <div class="page-header">
     <h2>{{ "Rejected Trainings" | translate }}</h2>
   </div>

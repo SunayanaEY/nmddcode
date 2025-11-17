@@ -516,4 +516,29 @@ export class AdminService {
       this.getHttpOptions()
     );
   }
+  getPreviousInstituteHeads(instituteId: number): Observable<{
+    success: boolean;
+    message: string;
+    data: {
+      id: number;
+      trainingInstituteId: number;
+      contactPersonName: string;
+      designation: string;
+      contactNumber: number;
+      emailId: string;
+      roleId: number;
+      status: string;
+      active: string;
+      createdAt: Date;
+      updatedAt: Date;
+      startDate: Date;
+      endDate: Date;
+    }[];
+    statusCode: number;
+  }> {
+    return this.http.get<any>(
+      `${this.apiUrl}trainingInstitutes/getInstituteHead/${instituteId}`,
+      this.getHttpOptions()
+    );
+  }
 }

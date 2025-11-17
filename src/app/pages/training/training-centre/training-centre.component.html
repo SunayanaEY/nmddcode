@@ -239,3 +239,120 @@
   (secondaryAction)="onCancelToggle()"
 >
 </app-modal>
+<!-- Custom Previous Institute Heads Modal -->
+<div
+  class="modal fade"
+  [class.show]="showPreviousInstituteHeadsModal"
+  [style.display]="showPreviousInstituteHeadsModal ? 'block' : 'none'"
+  tabindex="-1"
+  role="dialog"
+  aria-labelledby="previousStateHeadsModalLabel"
+  aria-hidden="true"
+>
+  <div
+    class="modal-backdrop fade"
+    [class.show]="showPreviousInstituteHeadsModal"
+    (click)="onPreviousInstituteHeadsModalClose()"
+  ></div>
+
+  <div class="modal-dialog modal-xl modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="previousInstituteHeadsModalLabel">
+          <i class="fas fa-history"></i>
+          {{ "Previous Institute Head History" | translate }}
+        </h5>
+        <button
+          type="button"
+          class="btn-close"
+          [attr.aria-label]="'Close' | translate"
+          (click)="onPreviousInstituteHeadsModalClose()"
+        ></button>
+      </div>
+
+      <div class="modal-body">
+        <div class="d-flex justify-content-between align-items-center mb-3">
+          <span class="badge bg-info">
+            {{ previousInstituteHeadsData.length }}
+            {{ "Records" | translate }}
+          </span>
+        </div>
+
+        <!-- Loading state -->
+        <div *ngIf="isPreviousInstituteHeadsLoading" class="text-center py-4">
+          <div class="spinner-border text-primary" role="status">
+            <span class="visually-hidden">{{ "Loading..." | translate }}</span>
+          </div>
+          <p class="mt-2 text-muted">
+            {{ "Loading previous state heads..." | translate }}
+          </p>
+        </div>
+
+        <!-- Error state -->
+        <div
+          *ngIf="
+            !isPreviousInstituteHeadsLoading && previousInstituteHeadsError
+          "
+          class="alert alert-danger"
+          role="alert"
+        >
+          <i class="fas fa-exclamation-triangle me-2"></i>
+          {{ previousInstituteHeadsError }}
+        </div>
+
+        <!-- Data table -->
+        <div
+          *ngIf="
+            !isPreviousInstituteHeadsLoading && !previousInstituteHeadsError
+          "
+          class="table-responsive"
+        >
+          <table class="table table-striped table-hover">
+            <thead class="table-dark">
+              <tr>
+                <th scope="col">Sl. No.</th>
+                <th scope="col">{{ "Name" | translate }}</th>
+                <th scope="col">{{ "Designation" | translate }}</th>
+                <th scope="col">{{ "Contact" | translate }}</th>
+                <th scope="col">{{ "Email" | translate }}</th>
+                <th scope="col">{{ "Start Date" | translate }}</th>
+                <th scope="col">{{ "End Date" | translate }}</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr
+                *ngFor="let item of previousInstituteHeadsData; let i = index"
+              >
+                <td>{{ i + 1 }}</td>
+                <td>{{ item.contactPersonName }}</td>
+                <td>{{ item.designation }}</td>
+                <td>{{ item.contactNumber }}</td>
+                <td>{{ item.emailId }}</td>
+                <td>{{ item.startDate | date : "dd/MM/yyyy" }}</td>
+                <td>{{ item.endDate | date : "dd/MM/yyyy" }}</td>
+              </tr>
+
+              <tr *ngIf="previousInstituteHeadsData.length === 0">
+                <td colspan="8" class="text-center py-4 text-muted">
+                  <i class="fas fa-inbox fa-2x mb-2"></i>
+                  <br />
+                  {{ "No previous institute heads found" | translate }}
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="modal-footer">
+        <button
+          type="button"
+          class="btn btn-secondary"
+          (click)="onPreviousInstituteHeadsModalClose()"
+        >
+          {{ "Close" | translate }}
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

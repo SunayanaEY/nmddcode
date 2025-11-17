@@ -14,6 +14,7 @@ import {
 import {
   ModalComponent,
   ModalConfig,
+  ModalField,
 } from '../../../components/modal/modal.component';
 import {
   AdminService,
@@ -28,6 +29,7 @@ import {
   District,
 } from '../../../services/location.service';
 import { TranslateModule } from '@ngx-translate/core';
+import { ToastrService } from 'ngx-toastr';
 
 @Component({
   selector: 'app-training-centre',
@@ -99,6 +101,7 @@ export class TrainingCentreComponent implements OnInit {
     private adminService: AdminService,
     private authService: AuthService,
     private locationService: LocationService,
+    private toastr: ToastrService,
     private router: Router
   ) {}
 
@@ -132,12 +135,12 @@ export class TrainingCentreComponent implements OnInit {
   ];
 
   tableActions: TableAction[] = [
-    // {
-    //   name: 'edit',
-    //   icon: 'bi-pencil',
-    //   class: 'btn-warning',
-    //   title: 'Edit Details',
-    // },
+    {
+      name: 'history',
+      icon: 'bi-clock-history',
+      class: 'btn-success',
+      title: 'History',
+    },
   ];
 
   trainingCentres: any[] = [];
@@ -165,13 +168,42 @@ export class TrainingCentreComponent implements OnInit {
     'status',
   ];
 
+  // Previous State Heads Modal properties
+  showPreviousInstituteHeadsModal = false;
+  previousStateHeadsModalConfig: ModalConfig = {
+    title: 'Previous Institute Heads',
+    size: 'xl',
+    primaryButtonText: 'Close',
+  };
+  previousInstituteHeadsData: any[] = [];
+  previousStateHeadsTableColumns: TableColumn[] = [
+    { key: 'contactPersonName', header: 'Contact Person Name' },
+    { key: 'designation', header: 'Designation' },
+    { key: 'contactNumber', header: 'Contact Number' },
+    { key: 'emailId', header: 'Email' },
+    {
+      key: 'validFrom',
+      header: 'Valid From',
+      transform: (value: any) =>
+        value ? new Date(value).toLocaleDateString() : 'N/A',
+    },
+    {
+      key: 'validTo',
+      header: 'Valid To',
+      transform: (value: any) =>
+        value ? new Date(value).toLocaleDateString() : 'Active',
+    },
+  ];
+  isPreviousInstituteHeadsLoading = false;
+  previousInstituteHeadsError: string | null = null;
+
   ngOnInit(): void {
     this.getRole();
     if (this.userRole === 5 || this.userRole === 6) {
       this.tableActions.splice(1, 0, {
         name: 'fill',
-        icon: 'bi-card-text',
-        class: 'btn-success',
+        icon: 'bi-pencil',
+        class: 'btn-warning',
         title: 'Complete Form',
         // condition: (row: any) => row.status === 'PENDING STATE INPUT',
       });
@@ -335,6 +367,60 @@ export class TrainingCentreComponent implements OnInit {
     this.loadStates();
   }
 
+  onPreviousInstituteHeadsModalClose(): void {
+    this.showPreviousInstituteHeadsModal = false;
+    this.previousInstituteHeadsData = [];
+  }
+  onPreviousInstituteHeadsModalPrimaryAction(): void {
+    this.onPreviousInstituteHeadsModalClose();
+  }
+  viewPreviousStateHeads(item: any): void {
+    // Extract stateId from the item (assuming it's available in the item object)
+    // const stateId = item.originalData.stateId; // Default to 5 as per your API example
+
+    // Load data and show modal
+    this.loadPreviousInstituteHeads(item.id);
+  }
+  loadPreviousInstituteHeads(instituteId: number): void {
+    this.isPreviousInstituteHeadsLoading = true;
+    this.previousInstituteHeadsError = null; // Clear any previous errors
+
+    this.adminService.getPreviousInstituteHeads(instituteId).subscribe({
+      next: (response) => {
+        if (response.success && response.data) {
+          this.previousInstituteHeadsData = response.data;
+          this.previousInstituteHeadsError = null; // Clear error on success
+
+          this.toastr.success('Previous state admin data loaded successfully');
+
+          // Show modal only after successful data load
+          this.showPreviousInstituteHeadsModal = true;
+
+          // Add a small delay to ensure DOM updates
+          setTimeout(() => {}, 100);
+        } else {
+          const errorMessage =
+            response.message || 'Failed to load previous state heads data';
+          this.previousInstituteHeadsError = errorMessage;
+          this.toastr.error(errorMessage);
+          this.previousInstituteHeadsData = [];
+          this.showPreviousInstituteHeadsModal = true; // Still show modal to display error
+        }
+
+        this.isPreviousInstituteHeadsLoading = false;
+      },
+      error: (error) => {
+        const errorMessage =
+          'Failed to load previous state heads data. Please try again.';
+        this.previousInstituteHeadsError = errorMessage;
+        this.toastr.error(errorMessage);
+        this.previousInstituteHeadsData = [];
+        this.isPreviousInstituteHeadsLoading = false;
+        this.showPreviousInstituteHeadsModal = true; // Still show modal to display error
+      },
+    });
+  }
+
   loadTrainingInstitutes(): void {
     this.isLoading = true;
     this.error = null;
@@ -483,6 +569,9 @@ export class TrainingCentreComponent implements OnInit {
         break;
       case 'toggle':
         this.toggleCentreStatus(event.item);
+        break;
+      case 'history':
+        this.viewPreviousStateHeads(event.item);
         break;
       case 'delete':
         this.deleteTrainingCentre(event.item);

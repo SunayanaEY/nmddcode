@@ -199,11 +199,22 @@ export class ApprovedRejectedTrainingsComponent {
     private modalService: NgbModal,
     private trainingsService: TrainingService,
     private toastr: ToastrService,
-    private router: Router
+    private router: Router,
+    private route: ActivatedRoute
   ) {}
   filteredData = [...this.trainingsList];
 
   ngOnInit(): void {
+    this.route.fragment.subscribe((fragment) => {
+      if (fragment) {
+        setTimeout(() => {
+          document.getElementById(fragment)?.scrollIntoView({
+            behavior: 'smooth',
+            block: 'start',
+          });
+        }, 300); // delay ensures page is rendered
+      }
+    });
     this.trainingForm = this.formBuilder.group({
       id: [''],
       comment: ['', [Validators.required]],
