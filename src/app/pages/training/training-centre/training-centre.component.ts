@@ -106,9 +106,21 @@ export class TrainingCentreComponent implements OnInit {
     { key: 'trainingInstituteName', header: 'TRAINING.INSTITUTE_NAME' },
     { key: 'state', header: 'COMMON.STATE' },
     { key: 'district', header: 'COMMON.DISTRICT' },
-    { key: 'stateHeadContactPerson', header: 'TRAINING.STATE_HEAD_NAME' },
-    { key: 'stateHeadContact', header: 'TRAINING.STATE_HEAD_CONTACT' },
-    { key: 'stateHeadEmail', header: 'TRAINING.STATE_HEAD_EMAIL' },
+    {
+      key: 'stateHeadContactPerson',
+      header: 'TRAINING.STATE_HEAD_NAME',
+      showColumn: () => this.userRole != 5,
+    },
+    {
+      key: 'stateHeadContact',
+      header: 'TRAINING.STATE_HEAD_CONTACT',
+      showColumn: () => this.userRole != 5,
+    },
+    {
+      key: 'stateHeadEmail',
+      header: 'TRAINING.STATE_HEAD_EMAIL',
+      showColumn: () => this.userRole != 5,
+    },
     { key: 'contactPersonName', header: 'TRAINING.INSTITUTE_HEAD' },
     { key: 'contactNumber', header: 'COMMON.CONTACT_NUMBER' },
     {
@@ -120,12 +132,12 @@ export class TrainingCentreComponent implements OnInit {
   ];
 
   tableActions: TableAction[] = [
-    {
-      name: 'edit',
-      icon: 'bi-pencil',
-      class: 'btn-warning',
-      title: 'Edit Details',
-    },
+    // {
+    //   name: 'edit',
+    //   icon: 'bi-pencil',
+    //   class: 'btn-warning',
+    //   title: 'Edit Details',
+    // },
   ];
 
   trainingCentres: any[] = [];

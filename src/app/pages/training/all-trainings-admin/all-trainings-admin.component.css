@@ -162,7 +162,7 @@
   }
 
   .ng-value-container {
-    padding: 0 16px;
+    padding: 14px 16px;
     font-size: 14px;
     font-weight: 500;
   }
@@ -201,6 +201,7 @@
 
   .ng-clear-wrapper {
     padding-right: 8px;
+    padding-top : 13px;
   }
 
   .ng-clear {

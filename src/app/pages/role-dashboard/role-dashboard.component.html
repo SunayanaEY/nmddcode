@@ -1,7 +1,7 @@
 <div class="container-fluid">
   <!-- Breadcrumb -->
   <app-breadcrumb [items]="breadcrumbItems"></app-breadcrumb>
-  
+
   <!-- Page Header -->
   <div class="row mb-4">
     <div class="col-12">
@@ -9,10 +9,10 @@
         <div>
           <h2 class="page-title mb-0">
             <i class="fas fa-tachometer-alt me-2 text-primary"></i>
-            {{ 'ROLE_DASHBOARD.TRAINING_DASHBOARD' | translate }}
+            {{ "ROLE_DASHBOARD.TRAINING_DASHBOARD" | translate }}
           </h2>
           <p class="text-muted mb-0">
-            {{ 'ROLE_DASHBOARD.WELCOME' | translate }}
+            {{ "ROLE_DASHBOARD.WELCOME" | translate }}
           </p>
         </div>
       </div>
@@ -26,17 +26,20 @@
         <div class="card-header bg-light border-0">
           <h5 class="card-title mb-0 text-primary">
             <i class="fas fa-chart-bar me-2"></i>
-            {{ 'ROLE_DASHBOARD.TRAINING_SUMMARY' | translate }}
+            {{ "ROLE_DASHBOARD.TRAINING_SUMMARY" | translate }}
           </h5>
         </div>
         <div class="card-body">
-
           <!-- Loading Indicator -->
           <div *ngIf="isLoading" class="text-center py-4">
             <div class="spinner-border text-primary" role="status">
-              <span class="visually-hidden">{{ 'ROLE_DASHBOARD.LOADING' | translate }}</span>
+              <span class="visually-hidden">{{
+                "ROLE_DASHBOARD.LOADING" | translate
+              }}</span>
             </div>
-            <p class="mt-2 text-muted">{{ 'ROLE_DASHBOARD.LOADING_DASHBOARD_STATISTICS' | translate }}</p>
+            <p class="mt-2 text-muted">
+              {{ "ROLE_DASHBOARD.LOADING_DASHBOARD_STATISTICS" | translate }}
+            </p>
           </div>
 
           <!-- New KPI Cards Implementation -->
@@ -44,30 +47,44 @@
             <!-- Loading State -->
             <div *ngIf="isLoading" class="text-center py-5">
               <div class="spinner-border text-primary" role="status">
-                <span class="visually-hidden">{{ 'ROLE_DASHBOARD.LOADING_DASHBOARD_DATA' | translate }}</span>
+                <span class="visually-hidden">{{
+                  "ROLE_DASHBOARD.LOADING_DASHBOARD_DATA" | translate
+                }}</span>
               </div>
-              <p class="mt-2 text-muted">{{ 'ROLE_DASHBOARD.LOADING_DASHBOARD_STATISTICS' | translate }}</p>
+              <p class="mt-2 text-muted">
+                {{ "ROLE_DASHBOARD.LOADING_DASHBOARD_STATISTICS" | translate }}
+              </p>
             </div>
 
             <!-- KPI Cards -->
             <div *ngIf="!isLoading" class="row">
-              <!-- Training Schedule Approved -->
+              <!-- Training Schedule Recommended -->
               <div class="col-lg-3 col-md-6 mb-4">
                 <div class="kpi-card kpi-card-green">
                   <div class="kpi-header">
                     <div class="kpi-icon">
                       <i class="fas fa-check-circle"></i>
                     </div>
-                    <button class="btn-download-new" 
-                            (click)="downloadKpiData('totalTrainingsApproved', $event)"
-                            title="{{ 'ROLE_DASHBOARD.DOWNLOAD_DATA' | translate }}">
+                    <button
+                      class="btn-download-new"
+                      (click)="
+                        downloadKpiData('totalTrainingsApproved', $event)
+                      "
+                      title="{{ 'ROLE_DASHBOARD.DOWNLOAD_DATA' | translate }}"
+                    >
                       <i class="fas fa-download"></i>
                     </button>
                   </div>
                   <div class="kpi-content">
-                    <div class="kpi-title">{{ 'ROLE_DASHBOARD.TRAINING_SCHEDULE_APPROVED' | translate }}</div>
-                    <div class="kpi-value">{{ getKpiCards()[0]?.value || '0' }}</div>
-                    
+                    <div class="kpi-title">
+                      {{
+                        "ROLE_DASHBOARD.TRAINING_SCHEDULE_RECOMMENDED"
+                          | translate
+                      }}
+                    </div>
+                    <div class="kpi-value">
+                      {{ getKpiCards()[0]?.value || "0" }}
+                    </div>
                   </div>
                 </div>
               </div>
@@ -79,16 +96,25 @@
                     <div class="kpi-icon">
                       <i class="fas fa-times-circle"></i>
                     </div>
-                    <button class="btn-download-new" 
-                            (click)="downloadKpiData('totalTrainingsRejected', $event)"
-                            title="{{ 'ROLE_DASHBOARD.DOWNLOAD_DATA' | translate }}">
+                    <button
+                      class="btn-download-new"
+                      (click)="
+                        downloadKpiData('totalTrainingsRejected', $event)
+                      "
+                      title="{{ 'ROLE_DASHBOARD.DOWNLOAD_DATA' | translate }}"
+                    >
                       <i class="fas fa-download"></i>
                     </button>
                   </div>
                   <div class="kpi-content">
-                    <div class="kpi-title">{{ 'ROLE_DASHBOARD.TRAINING_SCHEDULE_REJECTED' | translate }}</div>
-                    <div class="kpi-value">{{ getKpiCards()[1]?.value || '0' }}</div>
-                   
+                    <div class="kpi-title">
+                      {{
+                        "ROLE_DASHBOARD.TRAINING_SCHEDULE_REJECTED" | translate
+                      }}
+                    </div>
+                    <div class="kpi-value">
+                      {{ getKpiCards()[1]?.value || "0" }}
+                    </div>
                   </div>
                 </div>
               </div>
@@ -100,16 +126,21 @@
                     <div class="kpi-icon">
                       <i class="fas fa-user-check"></i>
                     </div>
-                    <button class="btn-download-new" 
-                            (click)="downloadKpiData('totalTraineesApproved', $event)"
-                            title="{{ 'ROLE_DASHBOARD.DOWNLOAD_DATA' | translate }}">
+                    <button
+                      class="btn-download-new"
+                      (click)="downloadKpiData('totalTraineesApproved', $event)"
+                      title="{{ 'ROLE_DASHBOARD.DOWNLOAD_DATA' | translate }}"
+                    >
                       <i class="fas fa-download"></i>
                     </button>
                   </div>
                   <div class="kpi-content">
-                    <div class="kpi-title">{{ 'ROLE_DASHBOARD.TRAINEE_APPROVED' | translate }}</div>
-                    <div class="kpi-value">{{ getKpiCards()[2]?.value || '0' }}</div>
-                   
+                    <div class="kpi-title">
+                      {{ "ROLE_DASHBOARD.TRAINEE_APPROVED" | translate }}
+                    </div>
+                    <div class="kpi-value">
+                      {{ getKpiCards()[2]?.value || "0" }}
+                    </div>
                   </div>
                 </div>
               </div>
@@ -121,16 +152,21 @@
                     <div class="kpi-icon">
                       <i class="fas fa-user-times"></i>
                     </div>
-                    <button class="btn-download-new" 
-                            (click)="downloadKpiData('totalTraineesRejected', $event)"
-                            title="{{ 'ROLE_DASHBOARD.DOWNLOAD_DATA' | translate }}">
+                    <button
+                      class="btn-download-new"
+                      (click)="downloadKpiData('totalTraineesRejected', $event)"
+                      title="{{ 'ROLE_DASHBOARD.DOWNLOAD_DATA' | translate }}"
+                    >
                       <i class="fas fa-download"></i>
                     </button>
                   </div>
                   <div class="kpi-content">
-                    <div class="kpi-title">{{ 'ROLE_DASHBOARD.TRAINEE_REJECTED' | translate }}</div>
-                    <div class="kpi-value">{{ getKpiCards()[3]?.value || '0' }}</div>
-                    
+                    <div class="kpi-title">
+                      {{ "ROLE_DASHBOARD.TRAINEE_REJECTED" | translate }}
+                    </div>
+                    <div class="kpi-value">
+                      {{ getKpiCards()[3]?.value || "0" }}
+                    </div>
                   </div>
                 </div>
               </div>
@@ -142,16 +178,25 @@
                     <div class="kpi-icon">
                       <i class="fas fa-chalkboard-teacher"></i>
                     </div>
-                    <button class="btn-download-new" 
-                            (click)="downloadKpiData('registeredTrainers', $event)"
-                            title="{{ 'ROLE_DASHBOARD.DOWNLOAD_DATA' | translate }}">
+                    <button
+                      class="btn-download-new"
+                      (click)="downloadKpiData('registeredTrainers', $event)"
+                      title="{{ 'ROLE_DASHBOARD.DOWNLOAD_DATA' | translate }}"
+                    >
                       <i class="fas fa-download"></i>
                     </button>
                   </div>
                   <div class="kpi-content">
-                     <div class="kpi-title">{{ 'ROLE_DASHBOARD.COUNT_OF_REGISTERED_TRAINERS' | translate }}</div>
-                     <div class="kpi-value">{{ getKpiCards()[4]?.value || '0' }}</div>
-                   </div>
+                    <div class="kpi-title">
+                      {{
+                        "ROLE_DASHBOARD.COUNT_OF_REGISTERED_TRAINERS"
+                          | translate
+                      }}
+                    </div>
+                    <div class="kpi-value">
+                      {{ getKpiCards()[4]?.value || "0" }}
+                    </div>
+                  </div>
                 </div>
               </div>
 
@@ -162,16 +207,27 @@
                     <div class="kpi-icon">
                       <i class="fas fa-certificate"></i>
                     </div>
-                    <button class="btn-download-new" 
-                            (click)="downloadKpiData('traineeRecommendedCertification', $event)"
-                            title="{{ 'ROLE_DASHBOARD.DOWNLOAD_DATA' | translate }}">
+                    <button
+                      class="btn-download-new"
+                      (click)="
+                        downloadKpiData(
+                          'traineeRecommendedCertification',
+                          $event
+                        )
+                      "
+                      title="{{ 'ROLE_DASHBOARD.DOWNLOAD_DATA' | translate }}"
+                    >
                       <i class="fas fa-download"></i>
                     </button>
                   </div>
                   <div class="kpi-content">
-                     <div class="kpi-title">Trainee Recommended for Certification</div>
-                     <div class="kpi-value">{{ getKpiCards()[5]?.value || '0' }}</div>
-                   </div>
+                    <div class="kpi-title">
+                      Trainee Recommended for Certification
+                    </div>
+                    <div class="kpi-value">
+                      {{ getKpiCards()[5]?.value || "0" }}
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>
@@ -188,40 +244,56 @@
         <div class="card-header bg-light border-0">
           <h5 class="card-title mb-0 text-primary">
             <i class="fas fa-chart-pie me-2"></i>
-            {{ 'ROLE_DASHBOARD.NO_OF_TRAINING_TYPE' | translate }}
+            {{ "ROLE_DASHBOARD.NO_OF_TRAINING_TYPE" | translate }}
           </h5>
         </div>
         <div class="card-body">
           <!-- Loading Indicator -->
           <div *ngIf="isTrainingTypesChartLoading" class="text-center py-4">
             <div class="spinner-border text-primary" role="status">
-              <span class="visually-hidden">{{ 'ROLE_DASHBOARD.LOADING' | translate }}</span>
+              <span class="visually-hidden">{{
+                "ROLE_DASHBOARD.LOADING" | translate
+              }}</span>
             </div>
-            <p class="mt-2 text-muted">{{ 'ROLE_DASHBOARD.LOADING_TRAINING_TYPES_DATA' | translate }}</p>
+            <p class="mt-2 text-muted">
+              {{ "ROLE_DASHBOARD.LOADING_TRAINING_TYPES_DATA" | translate }}
+            </p>
           </div>
 
           <!-- Pie Chart Container -->
-          <div *ngIf="!isTrainingTypesChartLoading" class="training-types-chart-container">
+          <div
+            *ngIf="!isTrainingTypesChartLoading"
+            class="training-types-chart-container"
+          >
             <!-- Show chart when data is available -->
-            <div 
+            <div
               *ngIf="hasTrainingTypesData"
-              echarts 
-              [options]="trainingTypesChartOption" 
+              echarts
+              [options]="trainingTypesChartOption"
               [loading]="isTrainingTypesChartLoading"
-              class="training-types-pie-chart">
-            </div>
-            
+              class="training-types-pie-chart"
+            ></div>
+
             <!-- Show empty state when no data -->
             <div *ngIf="!hasTrainingTypesData" class="text-center py-5">
-              <i class="fas fa-chart-pie text-muted mb-3" style="font-size: 3rem; opacity: 0.3;"></i>
-              <h5 class="text-muted mb-2">{{ 'ROLE_DASHBOARD.NO_TRAINING_TYPE_DATA_AVAILABLE' | translate }}</h5>
-              <p class="text-muted mb-0">{{ 'ROLE_DASHBOARD.TRAINING_TYPE_STATISTICS_MESSAGE' | translate }}</p>
+              <i
+                class="fas fa-chart-pie text-muted mb-3"
+                style="font-size: 3rem; opacity: 0.3"
+              ></i>
+              <h5 class="text-muted mb-2">
+                {{
+                  "ROLE_DASHBOARD.NO_TRAINING_TYPE_DATA_AVAILABLE" | translate
+                }}
+              </h5>
+              <p class="text-muted mb-0">
+                {{
+                  "ROLE_DASHBOARD.TRAINING_TYPE_STATISTICS_MESSAGE" | translate
+                }}
+              </p>
             </div>
           </div>
         </div>
       </div>
     </div>
   </div>
-
-
 </div>

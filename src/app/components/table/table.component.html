@@ -106,9 +106,11 @@
             />
           </th>
           <th scope="col">{{ "Sr.No." | translate }}</th>
-          <th *ngFor="let col of columns" scope="col">
-            {{ col.header | translate }}
-          </th>
+          <ng-container *ngFor="let col of columns">
+            <th *ngIf="!col.showColumn || col.showColumn()" scope="col">
+              {{ col.header | translate }}
+            </th>
+          </ng-container>
           <th *ngIf="actions.length > 0" scope="col">
             {{ "COMMON.ACTIONS" | translate }}
           </th>
@@ -164,7 +166,11 @@
           <ng-container
             *ngIf="tableNamesArray.includes(tableName) && !item.editable"
           >
-            <td *ngFor="let col of columns">{{ item[col.key] }}</td>
+            <ng-container *ngFor="let col of columns">
+              <td *ngIf="!col.showColumn || col.showColumn(item)">
+                {{ item[col.key] }}
+              </td>
+            </ng-container>
           </ng-container>
           <!-- <ng-container *ngIf="!tableNamesArray.includes(tableName)">
             <td *ngFor="let col of columns">

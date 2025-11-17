@@ -270,6 +270,7 @@ export class LoginComponent implements OnInit {
     });
   }
   onLoginSuccess(token: string) {
+    // alert('Getting logged in !!');
     localStorage.setItem('authToken', token);
     this.heartbeatService.startHeartbeat();
   }

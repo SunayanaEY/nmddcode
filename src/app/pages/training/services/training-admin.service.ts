@@ -93,12 +93,12 @@ export class AdminService {
   }
 
   // Get all training institutes
-  getTrainingInstitutes(): Observable<TrainingInstitute[]> {
+  getTrainingInstitutes(): Observable<any[]> {
     return this.http
       .get<{
         success: boolean;
         message: string;
-        data: TrainingInstitute[];
+        data: any[];
         statusCode: number;
       }>(`${this.apiUrl}training/trainingInstitutes`, this.getHttpOptions())
       .pipe(map((response) => response.data));

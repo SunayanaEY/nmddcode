@@ -20,7 +20,7 @@ export interface TableColumn {
   isLink?: boolean;
   linkHandler?: (row: any) => void;
   linkCondition?: (row: any) => boolean;
-  showColumn?: (row: any) => boolean;
+  showColumn?: (row?: any) => boolean;
 }
 
 export interface TableAction {

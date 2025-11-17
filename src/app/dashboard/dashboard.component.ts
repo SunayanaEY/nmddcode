@@ -22,11 +22,12 @@ import { NewCertificateLayoutComponent } from '../pages/new-certificate-layout/n
 import { TranslateModule } from '@ngx-translate/core';
 import {
   DashboardApiService,
-  KpiData,
-  TrainingDetailItem,
+  // KpiData,
+  // TrainingDetailItem,
   TrainingInstitute,
 } from './services/dashboard-api.service';
 import { ExcelService } from '../_services/Excel/excel.service';
+import { AdminService } from '../pages/training/services/training-admin.service';
 
 @Component({
   selector: 'app-dashboard',
@@ -119,7 +120,7 @@ export class DashboardComponent {
   private isUpdatingFilters = false;
 
   // KPI Data properties
-  kpiData: KpiData[] = [];
+  kpiData: any[] = [];
   isLoadingKpiData = false;
   kpiDataError: string | null = null;
 
@@ -131,7 +132,8 @@ export class DashboardComponent {
     private trainingsService: TrainingService,
     private cdr: ChangeDetectorRef,
     private dashboardApiService: DashboardApiService,
-    private excelService: ExcelService
+    private excelService: ExcelService,
+    private adminService: AdminService
   ) {
     this.filterForm = this.fb.group({
       stateId: [''],
@@ -310,48 +312,46 @@ export class DashboardComponent {
 
   clearFilters(): void {
     this.isUpdatingFilters = true;
-    
+
     if (this.userRole === 5) {
       // For State Admin (role 5): Only reset District and Training Institutes fields
-      this.filterForm.patchValue({ 
+      this.filterForm.patchValue({
         districtId: '',
-        trainingInstituteId: ''
+        trainingInstituteId: '',
       });
-      
+
       this.selectedDistrictId = null;
       this.selectedTrainingInstituteId = null;
       this.trainingInstitutes = []; // Clear training institutes
-      
+
       // Reload training institutes for the selected state (if any)
       if (this.selectedStateId) {
         this.loadTrainingInstitutes(this.selectedStateId);
       }
-      
     } else if (this.userRole === 1) {
       // For Centre Admin (role 1): Clear all field values
       this.filterForm.reset();
-      this.filterForm.patchValue({ 
+      this.filterForm.patchValue({
         stateId: '',
         districtId: '',
-        trainingInstituteId: ''
+        trainingInstituteId: '',
       });
-      
+
       this.selectedStateId = null;
       this.selectedDistrictId = null;
       this.selectedTrainingInstituteId = null;
       this.districts = [];
       this.trainingInstitutes = [];
       this.loadTrainingInstitutes(); // Reload all training institutes
-      
     } else {
       // For other roles: Use existing functionality
       this.filterForm.reset();
-      this.filterForm.patchValue({ 
+      this.filterForm.patchValue({
         stateId: '',
         districtId: '',
-        trainingInstituteId: ''
+        trainingInstituteId: '',
       });
-      
+
       this.selectedStateId = null;
       this.selectedDistrictId = null;
       this.selectedTrainingInstituteId = null;
@@ -359,7 +359,7 @@ export class DashboardComponent {
       this.trainingInstitutes = [];
       this.loadTrainingInstitutes(); // Reload all training institutes
     }
-    
+
     this.isUpdatingFilters = false;
     this.loadDashboardData(); // Call only once after all updates
   }
@@ -510,7 +510,6 @@ export class DashboardComponent {
         districtId: this.selectedDistrictId,
       },
     });
-
     // Show loading state (you can add a loading indicator here)
     const button = event.target as HTMLButtonElement;
     const originalText = button.innerHTML;
@@ -518,34 +517,22 @@ export class DashboardComponent {
     button.disabled = true;
 
     // Fetch data and export to Excel with current filter values
-    this.dashboardApiService
-      .getTrainingDetailsByType(
-        kpiType,
-        this.selectedStateId || undefined,
-        this.selectedDistrictId || undefined,
-        this.selectedTrainingInstituteId || undefined
-      )
-      .subscribe({
+    if (kpiType == 'totalInstituteDetails') {
+      this.adminService.getTrainingInstitutes().subscribe({
         next: (response) => {
-          if (response.success && response.data.length > 0) {
+          if (response.length > 0) {
             // Transform data for Excel export
-            const excelData = response.data.map((item) => ({
-              ID: item.id,
-              Name: item.name,
-              Gender: item.gender,
-              Age: item.age,
-              'Contact Number': item.contactNumber,
-              Email: item.email,
+            const excelData = response.map((item, index) => ({
+              'S.No.': index + 1,
+              State: item.state,
+              District: item.district,
+              Address: item.address,
+              'Institute Name': item.trainingInstituteName,
+              'Institute Type': item.instituteType,
+              'Registration No.': item.registrationId,
+              'Institute Id': item.id,
+              'Registration Validity': item.expiryDate,
               Status: item.status,
-              UIN: item.uin,
-              'Father Name': item.fatherName,
-              'Date of Birth': new Date(item.dob).toLocaleDateString(),
-              'Training ID': item.trainingId,
-              'Upload Type': item.uploadType,
-              'Created Date': new Date(item.createDate).toLocaleDateString(),
-              'Updated Date': new Date(item.updateDate).toLocaleDateString(),
-              'Created By': item.createdBy,
-              'Training Institute ID': item.trainingInstituteId,
             }));
 
             // Generate filename with timestamp
@@ -563,19 +550,193 @@ export class DashboardComponent {
             alert('No data available for export');
           }
 
-        // Reset button state
-        button.innerHTML = originalText;
-        button.disabled = false;
-      },
-      error: (error) => {
-        console.error('Error downloading KPI data:', error);
-        alert('Error downloading data. Please try again.');
-        
-        // Reset button state
-        button.innerHTML = originalText;
-        button.disabled = false;
-      }
-    });
+          // Reset button state
+          button.innerHTML = originalText;
+          button.disabled = false;
+        },
+        error: (error) => {
+          console.error('Error downloading KPI data:', error);
+          alert('Error downloading data. Please try again.');
+
+          // Reset button state
+          button.innerHTML = originalText;
+          button.disabled = false;
+        },
+      });
+    } else if (kpiType == 'totalTrainingsConducted') {
+      this.dashboardApiService
+        .getTrainingDetailsByType(
+          kpiType,
+          this.selectedStateId || undefined,
+          this.selectedDistrictId || undefined,
+          this.selectedTrainingInstituteId || undefined
+        )
+        .subscribe({
+          next: (response) => {
+            if (response.success && response.data.length > 0) {
+              // Transform data for Excel export
+              const excelData = response.data.map((item, index) => ({
+                'Sl. No.': index + 1,
+                State: item.venueState,
+                District: item.venueDistrict,
+                'Institute Name': item.trainingInstituteName,
+                'Name of the Training': item.trainingTitle,
+                'Training ID': item.trainingId,
+                Scheme: item.scheme,
+                'Trainer Name': item.trainerName,
+                'No of Trainees': item.numberOfTrainees,
+                'From Date': item.fromDate,
+                'To Date': item.toDate,
+                Duration: item.duration,
+                'Mode of Training': item.modeOfTraining,
+              }));
+
+              // Generate filename with timestamp
+              const timestamp = new Date().toISOString().split('T')[0];
+              const filename = `${kpiType}_${timestamp}`;
+
+              // Export to Excel
+              this.excelService.exportAsExcelFile(excelData, filename);
+
+              console.log(
+                `Successfully exported ${excelData.length} records for ${kpiType}`
+              );
+            } else {
+              console.warn('No data available for export');
+              alert('No data available for export');
+            }
+
+            // Reset button state
+            button.innerHTML = originalText;
+            button.disabled = false;
+          },
+          error: (error) => {
+            console.error('Error downloading KPI data:', error);
+            alert('Error downloading data. Please try again.');
+
+            // Reset button state
+            button.innerHTML = originalText;
+            button.disabled = false;
+          },
+        });
+    } else if (kpiType == 'totalFarmersTrained') {
+      this.dashboardApiService
+        .getTrainingDetailsByType(
+          kpiType,
+          this.selectedStateId || undefined,
+          this.selectedDistrictId || undefined,
+          this.selectedTrainingInstituteId || undefined
+        )
+        .subscribe({
+          next: (response) => {
+            if (response.success && response.data.length > 0) {
+              // Transform data for Excel export
+              const excelData = response.data.map((item, index) => ({
+                'Training ID': item.trainingId,
+                'Training Institute ID': item.trainingInstituteId,
+                'Trainees ID': item.id,
+                Name: item.name,
+                Gender: item.gender,
+                Age: item.age,
+                'Contact Number': item.contactNumber,
+                Email: item.email,
+                UIN: item.uin,
+                'Father Name': item.fatherName,
+                'Date of Birth': item.dob,
+                'Upload Type': item.uploadType,
+                'Created Date': item.createDate,
+                'Approval Date': item.approvedDate,
+                'Approved by ': item.approvedBy,
+                Status: item.status,
+              }));
+
+              // Generate filename with timestamp
+              const timestamp = new Date().toISOString().split('T')[0];
+              const filename = `${kpiType}_${timestamp}`;
+
+              // Export to Excel
+              this.excelService.exportAsExcelFile(excelData, filename);
+
+              console.log(
+                `Successfully exported ${excelData.length} records for ${kpiType}`
+              );
+            } else {
+              console.warn('No data available for export');
+              alert('No data available for export');
+            }
+
+            // Reset button state
+            button.innerHTML = originalText;
+            button.disabled = false;
+          },
+          error: (error) => {
+            console.error('Error downloading KPI data:', error);
+            alert('Error downloading data. Please try again.');
+
+            // Reset button state
+            button.innerHTML = originalText;
+            button.disabled = false;
+          },
+        });
+    } else {
+      this.dashboardApiService
+        .getTrainingDetailsByType(
+          kpiType,
+          this.selectedStateId || undefined,
+          this.selectedDistrictId || undefined,
+          this.selectedTrainingInstituteId || undefined
+        )
+        .subscribe({
+          next: (response) => {
+            if (response.success && response.data.length > 0) {
+              // Transform data for Excel export
+              const excelData = response.data.map((item, index) => ({
+                'Training ID': item.trainingId,
+                'Training Institute ID': item.trainingInstituteId,
+                'Trainees ID': item.id,
+                Name: item.name,
+                Gender: item.gender,
+                Age: item.age,
+                'Contact Number': item.contactNumber,
+                Email: item.email,
+                UIN: item.uin,
+                'Father Name': item.fatherName,
+                'Date of Birth': item.dob,
+                'Upload Type': item.uploadType,
+                'Created Date': item.createDate,
+                'Approval Date': item.approvedDate,
+                'Approved by ': item.approvedBy,
+              }));
+
+              // Generate filename with timestamp
+              const timestamp = new Date().toISOString().split('T')[0];
+              const filename = `${kpiType}_${timestamp}`;
+
+              // Export to Excel
+              this.excelService.exportAsExcelFile(excelData, filename);
+
+              console.log(
+                `Successfully exported ${excelData.length} records for ${kpiType}`
+              );
+            } else {
+              console.warn('No data available for export');
+              alert('No data available for export');
+            }
+
+            // Reset button state
+            button.innerHTML = originalText;
+            button.disabled = false;
+          },
+          error: (error) => {
+            console.error('Error downloading KPI data:', error);
+            alert('Error downloading data. Please try again.');
+
+            // Reset button state
+            button.innerHTML = originalText;
+            button.disabled = false;
+          },
+        });
+    }
   }
   getDashboardTitle(): string {
     if (this.userRole === 1) {
@@ -587,4 +748,3 @@ export class DashboardComponent {
     }
   }
 }
-

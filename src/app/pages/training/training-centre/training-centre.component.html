@@ -6,12 +6,15 @@
   <div class="page-header">
     <h2>{{ "Training Management" | translate }}</h2>
     <p class="page-description">
-      {{ "Manage and view all training heads across different locations" | translate }}
+      {{
+        "Manage and view all training heads across different locations"
+          | translate
+      }}
     </p>
   </div>
 
   <!-- Statistics Cards -->
-  <div class="stats-grid">
+  <!-- <div class="stats-grid">
     <div class="stat-card">
       <div class="stat-icon">
         <svg
@@ -95,7 +98,7 @@
         <p>{{ "States Covered" | translate }}</p>
       </div>
     </div>
-  </div>
+  </div> -->
 
   <!-- Action Buttons -->
   <div class="action-buttons">
@@ -120,24 +123,30 @@
   <div class="filters-section">
     <div class="filters-container">
       <div class="filter-group">
-        <label for="stateFilter" class="filter-label">{{ "COMMON.STATE" | translate }}</label>
-        <select 
-          id="stateFilter" 
-          class="filter-select" 
-          [(ngModel)]="stateFilter" 
+        <label for="stateFilter" class="filter-label">{{
+          "COMMON.STATE" | translate
+        }}</label>
+        <select
+          id="stateFilter"
+          class="filter-select"
+          [(ngModel)]="stateFilter"
           (ngModelChange)="onStateFilterChange($event)"
         >
           <option value="">{{ "All States" | translate }}</option>
-          <option *ngFor="let state of uniqueStates" [value]="state">{{ state }}</option>
+          <option *ngFor="let state of uniqueStates" [value]="state">
+            {{ state }}
+          </option>
         </select>
       </div>
 
       <div class="filter-group">
-        <label for="statusFilter" class="filter-label">{{ "COMMON.STATUS" | translate }}</label>
-        <select 
-          id="statusFilter" 
-          class="filter-select" 
-          [(ngModel)]="statusFilter" 
+        <label for="statusFilter" class="filter-label">{{
+          "COMMON.STATUS" | translate
+        }}</label>
+        <select
+          id="statusFilter"
+          class="filter-select"
+          [(ngModel)]="statusFilter"
           (ngModelChange)="onStatusFilterChange($event)"
         >
           <option value="">{{ "All Status" | translate }}</option>

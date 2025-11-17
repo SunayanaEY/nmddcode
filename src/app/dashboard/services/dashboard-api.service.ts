@@ -4,41 +4,79 @@ import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { environment } from '../../../environments/environment';
 
+export interface InstituteDetailItem {
+  state: string;
+  district: string;
+  address: string;
+  instituteName: string;
+  instituteType: string;
+  uin: string;
+  instituteId: string;
+  registrationValidity: Date;
+  status: string;
+}
 export interface TrainingDetailItem {
+  venueState: string;
+  venueDistrict: string;
+  trainingInstituteName: string;
+  trainingTitle: string;
+  trainingId: number;
+  scheme: string;
+  trainerName: string;
+  numberOfTrainees: number;
+  fromDate: Date;
+  toDate: Date;
+  duration: number;
+  modeOfTraining: string;
+}
+export interface TraineesDetailItem {
+  trainingId: number;
+  trainingInstituteId: number;
   id: number;
   name: string;
   gender: string;
   age: number;
-  contactNumber: string;
+  contactNumber: number;
   email: string;
-  status: string;
-  createdBy: string;
-  updatedBy: string | null;
-  createDate: string;
-  updateDate: string;
-  trainingId: number;
   uin: string;
-  uploadType: string;
-  uploadedBy: string | null;
-  trainingInstituteId: string;
-  rejectionRemarks: string | null;
-  isDeleted: boolean;
   fatherName: string;
-  dob: string;
+  dob: Date;
+  uploadType: string;
+  createDate: Date;
+  approvedDate: Date;
+  approvedBy: string;
+  status: string;
+}
+export interface TraineesCertificateItem {
+  trainingId: number;
+  trainingInstituteId: number;
+  id: number;
+  name: string;
+  gender: string;
+  age: number;
+  contactNumber: number;
+  email: string;
+  uin: string;
+  fatherName: string;
+  dob: Date;
+  uploadType: string;
+  createDate: Date;
+  approvedDate: Date;
+  approvedBy: string;
 }
 
 export interface TrainingDetailsApiResponse {
   success: boolean;
   message: string;
-  data: TrainingDetailItem[];
+  data: any[];
   statusCode: number;
 }
 
-export interface KpiData {
-  type: string;
-  count: number;
-  data: TrainingDetailItem[];
-}
+// export interface KpiData {
+//   type: string;
+//   count: number;
+//   data: any[];
+// }
 
 export interface TrainingInstitute {
   id: string;
@@ -46,7 +84,7 @@ export interface TrainingInstitute {
 }
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class DashboardApiService {
   private apiUrl = environment.apiUrl;
@@ -61,55 +99,63 @@ export class DashboardApiService {
    * @param trainingInstituteId - Optional training institute ID for filtering
    * @returns Observable<TrainingDetailsApiResponse>
    */
-  getTrainingDetailsByType(type: string, stateId?: number, districtId?: number, trainingInstituteId?: string): Observable<TrainingDetailsApiResponse> {
+  getTrainingDetailsByType(
+    type: string,
+    stateId?: number,
+    districtId?: number,
+    trainingInstituteId?: string
+  ): Observable<TrainingDetailsApiResponse> {
     let params = new HttpParams();
-    
+
     if (stateId) {
       params = params.set('stateId', stateId.toString());
     }
-    
+
     if (districtId) {
       params = params.set('districtId', districtId.toString());
     }
-    
+
     if (trainingInstituteId) {
       params = params.set('trainingInstituteId', trainingInstituteId);
     }
-    
-    return this.http.get<TrainingDetailsApiResponse>(`${this.apiUrl}public/dashboard/trainingDetails/${type}`, { params });
+
+    return this.http.get<TrainingDetailsApiResponse>(
+      `${this.apiUrl}public/dashboard/trainingDetails/${type}`,
+      { params }
+    );
   }
 
   /**
    * Get KPI data for all types
    * @returns Observable<KpiData[]>
    */
-  getAllKpiData(): Observable<KpiData[]> {
+  getAllKpiData(): Observable<any[]> {
     const types = [
       'totalTrainingsConducted',
-      'totalFarmersTrained', 
+      'totalFarmersTrained',
       'totalCertificatesApproved',
-      'totalCertificatesIssued'
+      // 'totalCertificatesIssued',
     ];
 
     // Create an array of observables for all API calls
-    const apiCalls = types.map(type => 
+    const apiCalls = types.map((type) =>
       this.getTrainingDetailsByType(type).pipe(
-        map(response => ({
+        map((response) => ({
           type,
           count: response.data.length,
-          data: response.data
+          data: response.data,
         }))
       )
     );
 
     // Return all API calls as a combined observable
-    return new Observable<KpiData[]>(observer => {
-      Promise.all(apiCalls.map(call => call.toPromise()))
-        .then(results => {
-          observer.next(results as KpiData[]);
+    return new Observable<any[]>((observer) => {
+      Promise.all(apiCalls.map((call) => call.toPromise()))
+        .then((results) => {
+          observer.next(results as any[]);
           observer.complete();
         })
-        .catch(error => {
+        .catch((error) => {
           observer.error(error);
         });
     });
@@ -122,7 +168,7 @@ export class DashboardApiService {
    */
   getKpiCount(type: string): Observable<number> {
     return this.getTrainingDetailsByType(type).pipe(
-      map(response => response.data.length)
+      map((response) => response.data.length)
     );
   }
 
@@ -133,11 +179,14 @@ export class DashboardApiService {
    */
   getTrainingInstitutes(stateId?: number): Observable<TrainingInstitute[]> {
     let params = new HttpParams();
-    
+
     if (stateId) {
       params = params.set('stateId', stateId.toString());
     }
-    
-    return this.http.get<TrainingInstitute[]>(`${this.apiUrl}trainingInstitutes/getInstituteList`, { params });
+
+    return this.http.get<TrainingInstitute[]>(
+      `${this.apiUrl}trainingInstitutes/getInstituteList`,
+      { params }
+    );
   }
 }

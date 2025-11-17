@@ -27,12 +27,12 @@ import { TranslateModule } from '@ngx-translate/core';
   selector: 'app-all-trainings',
   imports: [
     CommonModule,
-    BreadcrumbComponent,
+    // BreadcrumbComponent,
     TableComponent,
     NgSelectModule,
     ReactiveFormsModule,
     FormsModule,
-    TranslateModule
+    TranslateModule,
   ],
   templateUrl: './all-trainings.component.html',
   styleUrl: './all-trainings.component.css',
@@ -206,6 +206,21 @@ export class AllTrainingsComponent {
       },
     });
   }
+  navigateToPending() {
+    this.router.navigate(['/admin/approvedrejectedTrainings'], {
+      fragment: 'pendingTable',
+    });
+  }
+  navigateToApproved() {
+    this.router.navigate(['/admin/approvedrejectedTrainings'], {
+      fragment: 'approvedTable',
+    });
+  }
+  navigateToRejected() {
+    this.router.navigate(['/admin/approvedrejectedTrainings'], {
+      fragment: 'rejectedTable',
+    });
+  }
 
   handleTableAction(event: { action: string; item: any; index: number }): void {
     if (event.action == 'edit') {
@@ -214,7 +229,6 @@ export class AllTrainingsComponent {
         queryParams: { trainingId: event.item.id, populate: true },
       });
     } else {
-
       this.traineeList = [];
       this.trainingDetails = event.item;
       this.fileNameTrainees = this.traineesFile;
