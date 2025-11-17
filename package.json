@@ -23,6 +23,7 @@
     "@ngx-translate/core": "^17.0.0",
     "@ngx-translate/http-loader": "^17.0.0",
     "@types/topojson": "^3.2.6",
+    "@types/topojson-client": "^3.1.5",
     "angularx-qrcode": "^19.0.0",
     "bootstrap": "^5.3.6",
     "d3": "^7.9.0",
@@ -41,6 +42,7 @@
     "pdfjs-dist": "^5.4.296",
     "rxjs": "~7.8.0",
     "topojson": "^3.0.2",
+    "topojson-client": "^3.1.0",
     "tslib": "^2.3.0",
     "xlsx": "^0.18.5",
     "zone.js": "~0.15.0"

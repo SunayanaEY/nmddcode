@@ -750,6 +750,13 @@
   "TRAINING.INSTITUTE_HEAD": "संस्थान प्रमुख",
   "TRAINING.STATE_HEAD_NAME": "राज्य प्रमुख का नाम",
   "TRAINING.STATE_HEAD_CONTACT": "राज्य प्रमुख संपर्क",
-  "TRAINING.STATE_HEAD_EMAIL": "राज्य प्रमुख ईमेल"
+  "TRAINING.STATE_HEAD_EMAIL": "राज्य प्रमुख ईमेल",
+  "Title": "शीर्षक",
+  "Description": "विवरण",
+  "User": "उपयोगकर्ता",
+  "Type": "प्रकार",
+  "Date/Time": "तिथि/समय",
+  "Action": "क्रिया",
+  "Username": "उपयोगकर्ता नाम"
 
 }

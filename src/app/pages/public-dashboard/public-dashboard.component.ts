@@ -277,7 +277,7 @@ export class PublicDashboardComponent implements OnInit {
     this.loadDashboardData();
   }
 
-  onStateSelected(stateData: StateData): void {
+  onStateSelected(stateData: StateData | null): void {
     this.selectedState = stateData;
     // Update charts and stats based on selected state
     console.log('Selected state:', stateData);

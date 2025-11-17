@@ -142,18 +142,20 @@ export class ActivityLogTableComponent implements OnInit {
   }
 
   formatTimestamp(timestamp: Date): string {
-    const now = new Date();
-    const diff = now.getTime() - timestamp.getTime();
-    const hours = Math.floor(diff / (1000 * 60 * 60));
-    const days = Math.floor(hours / 24);
-
-    if (days > 0) {
-      return `${days} day${days > 1 ? 's' : ''} ago`;
-    } else if (hours > 0) {
-      return `${hours} hour${hours > 1 ? 's' : ''} ago`;
-    } else {
-      const minutes = Math.floor(diff / (1000 * 60));
-      return `${minutes} minute${minutes > 1 ? 's' : ''} ago`;
+    if (!timestamp) return '';
+    try {
+      const d = new Date(timestamp);
+      const day = d.getDate().toString().padStart(2, '0');
+      const month = (d.getMonth() + 1).toString().padStart(2, '0');
+      const year = d.getFullYear();
+      let hours = d.getHours();
+      const minutes = d.getMinutes().toString().padStart(2, '0');
+      const ampm = hours >= 12 ? 'PM' : 'AM';
+      hours = hours % 12;
+      if (hours === 0) hours = 12;
+      return `${day}/${month}/${year} ${hours}:${minutes} ${ampm}`;
+    } catch (e) {
+      return timestamp?.toString() ?? '';
     }
   }
 
