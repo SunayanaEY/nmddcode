@@ -229,8 +229,8 @@
       class="card-header col-12 mb-4 mt-4 bg-appColor"
       *ngIf="
         trainingDetails.status !== 'NEW' &&
-        trainingDetails.status !== 'APPROVED_BY_STATE_ADMIN' &&
-        trainingDetails.status !== 'VALIDATED_BY_INSTITUTE_HEAD'
+        trainingDetails.status !== 'Approved by State Head' &&
+        trainingDetails.status !== 'Recommended by Institute Head'
       "
     >
       <!-- <ngx-spinner bdColor="rgba(51, 51, 51, 0.5)" size="default"  type="ball-beat" [fullScreen]="false" [name]="'dataSpinner3'"></ngx-spinner> -->
@@ -242,8 +242,8 @@
       class="card-body"
       *ngIf="
         trainingDetails.status !== 'NEW' &&
-        trainingDetails.status !== 'APPROVED_BY_STATE_ADMIN' &&
-        trainingDetails.status !== 'VALIDATED_BY_INSTITUTE_HEAD'
+        trainingDetails.status !== 'Approved by State Head' &&
+        trainingDetails.status !== 'Recommended by Institute Head'
       "
     >
       <app-table

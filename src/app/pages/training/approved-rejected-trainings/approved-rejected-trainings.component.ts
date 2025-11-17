@@ -90,8 +90,7 @@ export class ApprovedRejectedTrainingsComponent {
       header: 'Training Title',
       isLink: true,
       linkHandler: (row) => this.openTrainingDetails(row),
-      linkCondition: (row) =>
-        row.status !== 'TRAINEE_STATE_DECISIONS_COMPLETED',
+      linkCondition: (row) => row.status !== 'Certificate Approved / Rejected',
     },
     { key: 'scheme', header: 'Scheme' },
     { key: 'trainingInstituteName', header: 'Training Institute' },
@@ -108,8 +107,7 @@ export class ApprovedRejectedTrainingsComponent {
       header: 'Training Title',
       isLink: true,
       linkHandler: (row) => this.openTrainingDetails(row),
-      linkCondition: (row) =>
-        row.status !== 'TRAINEE_STATE_DECISIONS_COMPLETED',
+      linkCondition: (row) => row.status !== 'Certificate Approved / Rejected',
     },
     { key: 'scheme', header: 'Scheme' },
     { key: 'trainingInstituteName', header: 'Training Institute' },
@@ -120,7 +118,7 @@ export class ApprovedRejectedTrainingsComponent {
     {
       key: 'rejectionRemark',
       header: 'Remarks',
-      showColumn: (row) => row.status === 'REJECTED_BY_INSTITUTE_HEAD',
+      showColumn: (row) => row.status === 'Rejected by Institute Head',
     },
   ];
 
@@ -148,8 +146,7 @@ export class ApprovedRejectedTrainingsComponent {
       icon: 'bi bi-pencil-fill',
       class: 'btn-info',
       title: 'Add Data',
-      condition: (row: any) =>
-        row.status !== 'TRAINEE_STATE_DECISIONS_COMPLETED',
+      condition: (row: any) => row.status !== 'Certificate Approved / Rejected',
     },
   ];
   tableActions2: TableAction[] = [
@@ -193,7 +190,7 @@ export class ApprovedRejectedTrainingsComponent {
       icon: 'bi bi-download',
       class: 'btn-success',
       title: 'Download certificate',
-      condition: (row: any) => row.status === 'APPROVED_BY_STATE_ADMIN',
+      condition: (row: any) => row.status === 'Approved by State Head',
     },
   ];
 

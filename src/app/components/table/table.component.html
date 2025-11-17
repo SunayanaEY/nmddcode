@@ -136,9 +136,9 @@
                 (tableName === 'Verify-Trainings' &&
                   item.status === 'IN PROGRESS') ||
                 (tableName === 'Trainee-List' &&
-                  (item.status === 'TRAINEE_UPLOADED' ||
+                  (item.status === 'Trainees details uploaded' ||
                     ((userRole === 5 || userRole === 6) &&
-                      item.status === 'VALIDATED_BY_INSTITUTE_HEAD'))) ||
+                      item.status === 'Recommended by Institute Head'))) ||
                 (tableName !== 'Verify-Trainings' &&
                   tableName !== 'Trainee-List' &&
                   item.status === 'VERIFIED')

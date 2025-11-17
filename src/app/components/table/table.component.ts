@@ -260,9 +260,9 @@ export class TableComponent {
           this.selectedItems.add(item);
         } else if (
           this.tableName === 'Trainee-List' &&
-          (item.status === 'TRAINEE_UPLOADED' ||
+          (item.status === 'Trainees details uploaded' ||
             ((this.userRole === 5 || this.userRole === 6) &&
-              item.status === 'VALIDATED_BY_INSTITUTE_HEAD'))
+              item.status === 'Recommended by Institute Head'))
         ) {
           this.selectedItems.add(item);
         } else if (
@@ -314,9 +314,9 @@ export class TableComponent {
     else if (this.tableName === 'Trainee-List')
       return this.data.filter(
         (item) =>
-          item.status === 'TRAINEE_UPLOADED' ||
+          item.status === 'Trainees details uploaded' ||
           ((this.userRole === 5 || this.userRole === 6) &&
-            item.status === 'VALIDATED_BY_INSTITUTE_HEAD')
+            item.status === 'Recommended by Institute Head')
       ).length;
     else return this.data.filter((item) => item.status === 'VERIFIED').length;
   }

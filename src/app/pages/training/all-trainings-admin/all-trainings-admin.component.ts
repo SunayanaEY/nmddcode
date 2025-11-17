@@ -167,14 +167,14 @@ export class AllTrainingsAdminComponent {
       class: 'btn-success',
       title: 'Approve',
       condition: (row: any) => {
-        // For Institute Head (role 3), only show approve button for TRAINEE_UPLOADED status
+        // For Institute Head (role 3), only show approve button for Trainees details uploaded status
         if (this.userRole === 3) {
-          return row.status === 'TRAINEE_UPLOADED';
+          return row.status === 'Trainees details uploaded';
         }
-        // For other roles, show approve button for TRAINEE_UPLOADED or VALIDATED_BY_INSTITUTE_HEAD
+        // For other roles, show approve button for Trainees details uploaded or Recommended by Institute Head
         return (
-          row.status === 'TRAINEE_UPLOADED' ||
-          row.status === 'VALIDATED_BY_INSTITUTE_HEAD'
+          row.status === 'Trainees details uploaded' ||
+          row.status === 'Recommended by Institute Head'
         );
       },
     },
@@ -184,14 +184,14 @@ export class AllTrainingsAdminComponent {
       class: 'btn-danger',
       title: 'Reject',
       condition: (row: any) => {
-        // For Institute Head (role 3), only show reject button for TRAINEE_UPLOADED status
+        // For Institute Head (role 3), only show reject button for Trainees details uploaded status
         if (this.userRole === 3) {
-          return row.status === 'TRAINEE_UPLOADED';
+          return row.status === 'Trainees details uploaded';
         }
-        // For other roles, show reject button for TRAINEE_UPLOADED or VALIDATED_BY_INSTITUTE_HEAD
+        // For other roles, show reject button for Trainees details uploaded or Recommended by Institute Head
         return (
-          row.status === 'TRAINEE_UPLOADED' ||
-          row.status === 'VALIDATED_BY_INSTITUTE_HEAD'
+          row.status === 'Trainees details uploaded' ||
+          row.status === 'Recommended by Institute Head'
         );
       },
     },
@@ -201,9 +201,9 @@ export class AllTrainingsAdminComponent {
       class: 'btn-info',
       title: 'Download certificate',
       condition: (row: any) =>
-        row.status === 'APPROVED_BY_STATE_ADMIN' ||
-        row.status === 'APPROVED_BY_ORGANIZATION' ||
-        row.status === 'CERTIFICATE_ISSUED',
+        row.status === 'Approved by State Head' ||
+        row.status === 'APPROVED BY ORGANIZATION' ||
+        row.status === 'Certificate Issued & downloaded',
     },
   ];
 
@@ -215,19 +215,19 @@ export class AllTrainingsAdminComponent {
       class: 'btn-success',
       title: 'Bulk Approve',
       condition: (rows: any[]) => {
-        // For Institute Head (role 3), only show bulk approve if there are TRAINEE_UPLOADED status items
+        // For Institute Head (role 3), only show bulk approve if there are Trainees details uploaded status items
         if (this.userRole === 3 || this.userRole == 6) {
           return rows.some(
             (row) =>
-              row.status === 'TRAINEE_UPLOADED' ||
-              row.status === 'VALIDATED_BY_INSTITUTE_HEAD'
+              row.status === 'Trainees details uploaded' ||
+              row.status === 'Recommended by Institute Head'
           );
         }
         // For other roles, show bulk approve if there are eligible items
         return rows.some(
           (row) =>
-            row.status === 'TRAINEE_UPLOADED' ||
-            row.status === 'VALIDATED_BY_INSTITUTE_HEAD'
+            row.status === 'Trainees details uploaded' ||
+            row.status === 'Recommended by Institute Head'
         );
       },
     },
@@ -237,15 +237,15 @@ export class AllTrainingsAdminComponent {
       class: 'btn-danger',
       title: 'Bulk Reject',
       condition: (rows: any[]) => {
-        // For Institute Head (role 3), only show bulk reject if there are TRAINEE_UPLOADED status items
+        // For Institute Head (role 3), only show bulk reject if there are Trainees details uploaded status items
         if (this.userRole === 3) {
-          return rows.some((row) => row.status === 'TRAINEE_UPLOADED');
+          return rows.some((row) => row.status === 'Trainees details uploaded');
         }
         // For other roles, show bulk reject if there are eligible items
         return rows.some(
           (row) =>
-            row.status === 'TRAINEE_UPLOADED' ||
-            row.status === 'VALIDATED_BY_INSTITUTE_HEAD'
+            row.status === 'Trainees details uploaded' ||
+            row.status === 'Recommended by Institute Head'
         );
       },
     },
@@ -292,7 +292,7 @@ export class AllTrainingsAdminComponent {
           icon: 'bi bi-download',
           class: 'btn-info',
           title: 'Download certificate',
-          condition: (row: any) => row.status === 'APPROVED_BY_STATE_ADMIN',
+          condition: (row: any) => row.status === 'Approved by State Head',
         },
       ];
     }
@@ -303,14 +303,14 @@ export class AllTrainingsAdminComponent {
           icon: 'bi bi-check-circle',
           class: 'btn-success',
           title: 'Approve',
-          condition: (row: any) => row.status === 'TRAINEE_UPLOADED',
+          condition: (row: any) => row.status === 'Trainees details uploaded',
         },
         {
           name: 'reject',
           icon: 'bi bi-x-circle',
           class: 'btn-danger',
           title: 'Reject',
-          condition: (row: any) => row.status === 'TRAINEE_UPLOADED',
+          condition: (row: any) => row.status === 'Trainees details uploaded',
         },
         {
           name: 'download',
@@ -329,21 +329,23 @@ export class AllTrainingsAdminComponent {
           icon: 'bi bi-check-circle',
           class: 'btn-success',
           title: 'Approve',
-          condition: (row: any) => row.status === 'VALIDATED_BY_INSTITUTE_HEAD',
+          condition: (row: any) =>
+            row.status === 'Recommended by Institute Head',
         },
         {
           name: 'reject',
           icon: 'bi bi-x-circle',
           class: 'btn-danger',
           title: 'Reject',
-          condition: (row: any) => row.status === 'VALIDATED_BY_INSTITUTE_HEAD',
+          condition: (row: any) =>
+            row.status === 'Recommended by Institute Head',
         },
         {
           name: 'download',
           icon: 'bi bi-download',
           class: 'btn-info',
           title: 'Download certificate',
-          condition: (row: any) => row.status === 'APPROVED_BY_STATE_ADMIN',
+          condition: (row: any) => row.status === 'Approved by State Head',
         },
       ];
 
@@ -355,7 +357,7 @@ export class AllTrainingsAdminComponent {
           title: 'Bulk Approve',
           condition: (rows: any[]) => {
             return rows.some(
-              (row) => row.status === 'VALIDATED_BY_INSTITUTE_HEAD'
+              (row) => row.status === 'Recommended by Institute Head'
             );
           },
         },
@@ -366,7 +368,7 @@ export class AllTrainingsAdminComponent {
           title: 'Bulk Reject',
           condition: (rows: any[]) => {
             return rows.some(
-              (row) => row.status === 'VALIDATED_BY_INSTITUTE_HEAD'
+              (row) => row.status === 'Recommended by Institute Head'
             );
           },
         },
@@ -938,15 +940,15 @@ export class AllTrainingsAdminComponent {
     // Return predefined status values for filtering
     return [
       'NEW',
-      'VALIDATED_BY_INSTITUTE_HEAD',
-      'REJECTED_BY_INSTITUTE_HEAD',
-      'APPROVED_BY_STATE_ADMIN',
-      'REJECTED_BY_STATE_ADMIN',
-      'APPROVED_BY_ORGANIZATION',
-      'REJECTED_BY_ORGANIZATION',
-      'TRAINEE_UPLOADED',
-      'TRAINEE_PENDING_STATE_APPROVAL',
-      'TRAINEE_STATE_DECISIONS_COMPLETED',
+      'Recommended by Institute Head',
+      'Rejected by Institute Head',
+      'Approved by State Head',
+      'Rejected by State Head',
+      'APPROVED BY ORGANIZATION',
+      'REJECTED BY ORGANIZATION',
+      'Trainees details uploaded',
+      'Pending for State Head Approval',
+      'Certificate Approved / Rejected',
     ];
   }
 
@@ -976,7 +978,7 @@ export class AllTrainingsAdminComponent {
         if (response.success) {
           // Update trainee status based on user role
           if (this.userRole === 3) {
-            trainee.status = 'VALIDATED_BY_INSTITUTE_HEAD';
+            trainee.status = 'Recommended by Institute Head';
           } else {
             trainee.status = 'APPROVED';
           }
@@ -1033,7 +1035,7 @@ export class AllTrainingsAdminComponent {
               // Update trainee status based on user role
               if (this.userRole === 3) {
                 this.selectedTraineeForReject.status =
-                  'REJECTED_BY_INSTITUTE_HEAD';
+                  'Rejected by Institute Head';
               } else {
                 this.selectedTraineeForReject.status = 'REJECTED';
               }
@@ -1170,10 +1172,10 @@ export class AllTrainingsAdminComponent {
         (trainee) =>
           trainee.status !== 'APPROVED' &&
           trainee.status !== 'REJECTED' &&
-          trainee.status !== 'APPROVED_BY_STATE_ADMIN' &&
-          trainee.status !== 'APPROVED_BY_ORGANIZATION' &&
-          trainee.status !== 'REJECTED_BY_INSTITUTE_HEAD' &&
-          trainee.status !== 'CERTIFICATE_ISSUED'
+          trainee.status !== 'Approved by State Head' &&
+          trainee.status !== 'APPROVED BY ORGANIZATION' &&
+          trainee.status !== 'Rejected by Institute Head' &&
+          trainee.status !== 'Certificate Issued & downloaded'
       );
 
       if (eligibleTraineesForReject.length === 0) {
@@ -1214,7 +1216,7 @@ export class AllTrainingsAdminComponent {
           // Update status for all approved trainees based on user role
           eligibleTrainees.forEach((trainee) => {
             if (this.userRole === 3) {
-              trainee.status = 'VALIDATED_BY_INSTITUTE_HEAD';
+              trainee.status = 'Recommended by Institute Head';
             } else {
               trainee.status = 'APPROVED';
             }
@@ -1291,7 +1293,7 @@ export class AllTrainingsAdminComponent {
           // Update status for all rejected trainees based on user role
           eligibleTrainees.forEach((trainee) => {
             if (this.userRole === 3) {
-              trainee.status = 'REJECTED_BY_INSTITUTE_HEAD';
+              trainee.status = 'Rejected by Institute Head';
             } else {
               trainee.status = 'REJECTED';
             }

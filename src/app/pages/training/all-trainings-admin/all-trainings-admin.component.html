@@ -289,7 +289,7 @@
         <button
           class="btn btn-primary mx-2"
           *ngIf="
-            trainingDetails.status === 'VALIDATED_BY_INSTITUTE_HEAD' &&
+            trainingDetails.status === 'Recommended by Institute Head' &&
             userRole !== 3
           "
           (click)="approveTrainingSchedule()"
@@ -300,7 +300,7 @@
         <button
           class="btn btn-danger mx-2"
           *ngIf="
-            trainingDetails.status === 'VALIDATED_BY_INSTITUTE_HEAD' &&
+            trainingDetails.status === 'Recommended by Institute Head' &&
             userRole !== 3
           "
           (click)="openRejectModal(rejectTrainingModal)"
@@ -314,8 +314,8 @@
       class="card-header col-12 mb-4 mt-4 bg-appColor"
       *ngIf="
         trainingDetails.status !== 'NEW' &&
-        trainingDetails.status !== 'VALIDATED_BY_INSTITUTE_HEAD' &&
-        trainingDetails.status !== 'APPROVED_BY_STATE_ADMIN'
+        trainingDetails.status !== 'Recommended by Institute Head' &&
+        trainingDetails.status !== 'Approved by State Head'
       "
     >
       <h3 class="mb-0 text-white">{{ "Trainee List" | translate }}</h3>
@@ -325,8 +325,8 @@
       class="card-body"
       *ngIf="
         trainingDetails.status !== 'NEW' &&
-        trainingDetails.status !== 'VALIDATED_BY_INSTITUTE_HEAD' &&
-        trainingDetails.status !== 'APPROVED_BY_STATE_ADMIN'
+        trainingDetails.status !== 'Recommended by Institute Head' &&
+        trainingDetails.status !== 'Approved by State Head'
       "
     >
       <app-table
