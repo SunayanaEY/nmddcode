@@ -19,6 +19,14 @@
   <!-- Map Controls -->
   <div *ngIf="!isLoading" class="map-controls">
     <button
+      class="btn btn-sm btn-outline-secondary"
+      *ngIf="isStateView && userRole !== 5"
+      (click)="backToIndia()"
+      title="Back to India"
+    >
+      <i class="fas fa-arrow-left"></i>
+    </button>
+    <button
       class="btn btn-sm btn-outline-primary"
       (click)="resetZoom()"
       title="Reset Zoom"

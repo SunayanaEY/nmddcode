@@ -68,7 +68,7 @@ export class LoginComponent implements OnInit {
 
   //India Map
   selectedState: StateData | null = null;
-  onStateSelected(stateData: StateData): void {
+  onStateSelected(stateData: StateData | null): void {
     this.selectedState = stateData;
     // Update charts and stats based on selected state
   }

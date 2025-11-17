@@ -11,7 +11,7 @@ import {
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import * as d3 from 'd3';
-import * as topojson from 'topojson';
+import { feature as topojsonFeature } from 'topojson-client';
 import { StateData } from '../../public-dashboard.component';
 import {
   DashboardDataService,
@@ -40,7 +40,7 @@ export class IndiaMapComponent implements OnInit, AfterViewInit, OnDestroy {
   @ViewChild('mapContainer', { static: false }) mapContainer!: ElementRef;
   @Input() selectedState: StateData | null = null;
   @Input() isLoading = false;
-  @Output() stateSelected = new EventEmitter<StateData>();
+  @Output() stateSelected = new EventEmitter<StateData | null>();
 
   private svg: any;
   private g: any;
@@ -49,7 +49,7 @@ export class IndiaMapComponent implements OnInit, AfterViewInit, OnDestroy {
   private zoom: any;
   private width = 500;
   private height = 400;
-  private userRole: number = 0;
+  userRole: number = 0;
   private userStateName: string = '';
 
   // Institute data from API
@@ -66,6 +66,49 @@ export class IndiaMapComponent implements OnInit, AfterViewInit, OnDestroy {
     GJ: { stateId: 'GJ', stateName: 'Gujarat' },
     TS: { stateId: 'TS', stateName: 'Telangana' },
     DL: { stateId: 'DL', stateName: 'Delhi' },
+    KL: { stateId: 'KL', stateName: 'Kerala' },
+  };
+
+  isStateView = false;
+  private currentStateName: string | null = null;
+
+  private stateTopoFileMap: { [key: string]: string } = {
+    'Andaman and Nicobar Islands': 'andaman-and-nicobar-islands',
+    'Andhra Pradesh': 'andhra-pradesh',
+    'Arunachal Pradesh': 'arunachal-pradesh',
+    'Assam': 'assam',
+    'Bihar': 'bihar',
+    'Chandigarh': 'chandigarh',
+    'Chhattisgarh': 'chhattisgarh',
+    'Delhi': 'delhi',
+    'Dadra and Nagar Haveli and Daman and Diu': 'dnh-and-dd',
+    'Goa': 'goa',
+    'Gujarat': 'gujarat',
+    'Haryana': 'haryana',
+    'Himachal Pradesh': 'himachal-pradesh',
+    'Jammu and Kashmir': 'jammu-and-kashmir',
+    'Jharkhand': 'jharkhand',
+    'Karnataka': 'karnataka',
+    'Kerala': 'kerala',
+    'Ladakh': 'ladakh',
+    'Lakshadweep': 'lakshadweep',
+    'Madhya Pradesh': 'madhya-pradesh',
+    'Maharashtra': 'maharashtra',
+    'Manipur': 'manipur',
+    'Meghalaya': 'meghalaya',
+    'Mizoram': 'mizoram',
+    'Nagaland': 'nagaland',
+    'Odisha': 'odisha',
+    'Puducherry': 'puducherry',
+    'Punjab': 'punjab',
+    'Rajasthan': 'rajasthan',
+    'Sikkim': 'sikkim',
+    'Tamil Nadu': 'tamilnadu',
+    'Telangana': 'telangana',
+    'Tripura': 'tripura',
+    'Uttar Pradesh': 'uttar-pradesh',
+    'Uttarakhand': 'uttarakhand',
+    'West Bengal': 'west-bengal',
   };
 
   constructor(private dashboardService: DashboardDataService) {}
@@ -220,44 +263,35 @@ export class IndiaMapComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   private createMapFromGeoJSON(geoData: any): void {
-    // Set up projection for India
+    // Use fitExtent to match SVG size and preserve aspect
     this.projection = d3
       .geoMercator()
-      .center([82.9629, 20.5937]) // Center of India
-      .scale(650)
-      .translate([this.width / 2, this.height / 2]);
+      .fitExtent([[10, 10], [this.width - 10, this.height - 10]], geoData);
 
     this.path = d3.geoPath().projection(this.projection);
 
     // Create separate groups for proper layering
+    this.g.select('.states-group').remove();
     let statesGroup = this.g.select('.states-group');
     if (statesGroup.empty()) {
       statesGroup = this.g.append('g').attr('class', 'states-group');
     }
 
-    // Draw states/features from GeoJSON in the states group
     const stateSelection = statesGroup
       .selectAll('.state')
       .data(geoData.features);
 
-    const stateEnter = stateSelection
-      .enter()
-      .append('path')
-      .attr('class', 'state');
-
-    stateEnter
-      .attr('d', (d: any) => {
-        const pathData = this.path(d);
-        return pathData;
-      })
+    stateSelection
+      .join('path')
+      .attr('class', 'state')
+      .attr('d', (d: any) => this.path(d))
       .attr('fill', '#24a8efde')
       .attr('stroke', '#211e1ea6')
       .attr('stroke-width', 1)
       .style('cursor', 'pointer')
       .on('mouseover', (event: any, d: any) => {
         d3.select(event.currentTarget).attr('fill', '#6188afff');
-        const stateName =
-          d.properties.NAME || d.properties.name || 'Unknown State';
+        const stateName = d.properties.NAME || d.properties.name || 'Unknown State';
         this.showTooltip(event, stateName);
       })
       .on('mouseout', (event: any) => {
@@ -266,11 +300,7 @@ export class IndiaMapComponent implements OnInit, AfterViewInit, OnDestroy {
       })
       .on('click', (event: any, d: any) => {
         const stateName = d.properties.NAME || d.properties.name;
-        // Find matching state data
-        const stateCode = this.getStateCodeFromName(stateName);
-        if (stateCode && this.statesData[stateCode]) {
-          this.stateSelected.emit(this.statesData[stateCode]);
-        }
+        this.handleIndiaStateClick(stateName);
       });
 
     // Apply role-based zooming after map is created
@@ -279,10 +309,132 @@ export class IndiaMapComponent implements OnInit, AfterViewInit, OnDestroy {
     }, 100);
   }
 
+  private renderStateGeoJSON(geo: any): void {
+    // Remove old group entirely to avoid stale transforms
+    this.g.select('.states-group').remove();
+
+    // Fit projection to state extent with margin
+    this.projection = d3.geoMercator().fitExtent([[10, 10], [this.width - 10, this.height - 10]], geo);
+    this.path = d3.geoPath().projection(this.projection);
+
+    // Create fresh group
+    const statesGroup = this.g.append('g').attr('class', 'states-group');
+
+    const features = geo.features || (geo.type === 'FeatureCollection' ? geo.features : [geo]);
+
+    statesGroup
+      .selectAll('.state')
+      .data(features)
+      .join('path')
+      .attr('class', 'state fade-in')
+      .attr('d', (d: any) => this.path(d))
+      .attr('fill', '#24a8efde')
+      .attr('stroke', '#211e1ea6')
+      .attr('stroke-width', 1)
+      .style('cursor', 'pointer')
+      .style('opacity', 0)
+      .on('mouseover', (event: any, d: any) => {
+        d3.select(event.currentTarget).attr('fill', '#6188afff');
+        const districtName = d.properties?.district || d.properties?.name || this.currentStateName || '';
+        this.showTooltip(event, districtName);
+      })
+      .on('mouseout', (event: any) => {
+        d3.select(event.currentTarget).attr('fill', '#24a8efde');
+        this.hideTooltip();
+      })
+      .transition()
+      .duration(500)
+      .style('opacity', 1);
+
+    // Reset any zoom transform for a clean view
+    this.resetZoom();
+  }
+
+  private handleIndiaStateClick(stateName: string): void {
+    // Emit existing event for supported states to maintain functionality
+    const stateCode = this.getStateCodeFromName(stateName);
+    if (stateCode && this.statesData[stateCode]) {
+      this.stateSelected.emit(this.statesData[stateCode]);
+    }
+
+    const topoPath = this.getStateTopoJsonPath(stateName);
+    if (topoPath) {
+      this.loadAndRenderStateMap(topoPath, stateName);
+    } else {
+      // Fallback: just zoom to the state on India map
+      this.currentStateName = stateName;
+    }
+  }
+
+  private normalizeStateName(name: string): string {
+    return name
+      .replace(/\u0026|&/g, 'and')
+      .replace(/\s+/g, ' ')
+      .trim();
+  }
+
+  private getStateTopoJsonPath(stateName: string): string | null {
+    const normalized = this.normalizeStateName(stateName);
+    const key = Object.keys(this.stateTopoFileMap).find(
+      (k) => this.normalizeStateName(k).toLowerCase() === normalized.toLowerCase()
+    );
+    if (!key) {
+      // Handle common alias
+      if (normalized.toLowerCase().includes('nct') && normalized.toLowerCase().includes('delhi')) {
+        return 'assets/geoJsonData/topojson/states/delhi.json';
+      }
+      return null;
+    }
+    const fileSlug = this.stateTopoFileMap[key];
+    return `assets/geoJsonData/topojson/states/${fileSlug}.json`;
+  }
+
+  private async loadAndRenderStateMap(topoPath: string, stateName: string): Promise<void> {
+    try {
+      this.isStateView = true;
+      this.currentStateName = stateName;
+
+      const response = await fetch(topoPath);
+      if (!response.ok) {
+        throw new Error(`Failed to load ${topoPath}: ${response.statusText}`);
+      }
+      const topology = await response.json();
+      const objects: any = (topology as any).objects;
+      const firstKey = Object.keys(objects)[0];
+      const objectForFeatures = objects['districts'] ?? objects['features'] ?? objects['states'] ?? objects[firstKey];
+      const featureCollection: any = topojsonFeature(topology as any, objectForFeatures as any);
+
+      this.renderStateGeoJSON(featureCollection);
+      this.addInstituteMarkers();
+    } catch (err) {
+      console.error('Error loading state topojson:', err);
+    }
+  }
+
+
+  backToIndia(): void {
+    this.isStateView = false;
+    this.currentStateName = null;
+
+    // Inform parent to clear selected state label
+    this.stateSelected.emit(null);
+
+    // Clear existing states and re-load India map
+    this.g.select('.states-group').selectAll('path').remove();
+    this.loadIndiaMap();
+    this.resetZoom();
+  }
+
   private applyRoleBasedZoom(geoData: any): void {
     if (this.userRole === 5 && this.userStateName) {
-      // State admin - zoom to specific state
-      this.zoomToState(geoData, this.userStateName);
+      // State admin - open state map view instead of zooming
+      const topoPath = this.getStateTopoJsonPath(this.userStateName);
+      if (topoPath) {
+        this.loadAndRenderStateMap(topoPath, this.userStateName);
+      } else {
+        // Fallback: if topo not found, keep previous behavior
+        this.zoomToState(geoData, this.userStateName);
+      }
     } else if (this.userRole === 1) {
       // Center admin - show full India map (already default view)
     }
@@ -339,6 +491,7 @@ export class IndiaMapComponent implements OnInit, AfterViewInit, OnDestroy {
       Gujarat: 'GJ',
       Telangana: 'TS',
       Delhi: 'DL',
+      Kerala: 'KL',
     };
     return stateMapping[stateName] || null;
   }
