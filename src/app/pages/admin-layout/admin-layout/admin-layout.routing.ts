@@ -239,6 +239,15 @@ export const AdminLayoutRoutes: Routes = [
     component: VerifyTrainingsComponent,
   },
   {
+    path: 'calender',
+    loadComponent: () =>
+      import('../../../components/calender/calender.component').then(
+        (m) => m.CalenderComponent
+      ),
+    canActivate: [RoleGuard],
+    data: { allowedRoles: [1, 3, 4, 5, 6] },
+  },
+  {
     path: '',
     redirectTo: 'training-module',
     pathMatch: 'full',

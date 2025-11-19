@@ -1,0 +1,125 @@
+<div class="calendar">
+  <!-- Header / Controls -->
+  <div class="calendar-header">
+    <div class="nav">
+      <button class="btn icon" (click)="previous()" aria-label="Previous">&#x2039;</button>
+      <button class="btn" (click)="gotoToday()">Today</button>
+      <button class="btn icon" (click)="next()" aria-label="Next">&#x203A;</button>
+    </div>
+
+    <div class="current-label">
+      <span>{{ currentDate | date: 'MMMM y' }}</span>
+    </div>
+
+    <div class="actions">
+      <input class="date-input" type="month" [value]="currentDate | date:'yyyy-MM'" (change)="onMonthPicked($event)" />
+    </div>
+  </div>
+
+  <!-- Views -->
+  <div [ngSwitch]="view" class="calendar-body">
+    <!-- Month View -->
+    <div *ngSwitchCase="'month'" class="month-view">
+      <div class="dow-row">
+        <div class="dow" *ngFor="let d of (weekStartsOn === 1 ? ['Mon','Tue','Wed','Thu','Fri','Sat','Sun'] : ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'])">{{ d }}</div>
+      </div>
+      <div class="month-grid">
+        <ng-container *ngFor="let week of weeks">
+          <div class="day" *ngFor="let day of week.days; trackBy: trackByDay"
+               [class.outside]="!day.inCurrentMonth"
+               [class.today]="sameDay(day.date, today)"
+               [class.selected]="sameDay(day.date, selectedDate)"
+               (click)="selectDate(day.date)"
+               tabindex="0"
+               role="button"
+               [attr.aria-label]="day.date | date:'EEEE, MMMM d'">
+            <div class="date-label">{{ day.date | date:'d' }}</div>
+            <div class="indicators">
+              <span class="dot" *ngFor="let m of day.meetings | slice:0:3; trackBy: trackByMeeting"
+                    [style.background]="m.color"
+                    (click)="selectMeeting(m)"></span>
+              <span class="more" *ngIf="day.meetings.length > 3">+{{ day.meetings.length - 3 }}</span>
+            </div>
+          </div>
+        </ng-container>
+      </div>
+    </div>
+
+    <!-- Week View -->
+    <div *ngSwitchCase="'week'" class="week-view">
+      <div class="week-grid">
+        <div class="week-day" *ngFor="let d of getWeekDays(currentDate)">
+          <div class="week-day-header">
+            <span class="wday">{{ d | date:'EEE' }}</span>
+            <span class="wdate">{{ d | date:'d MMM' }}</span>
+          </div>
+          <div class="week-day-events">
+            <div class="event-card" *ngFor="let m of getDayEvents(d); trackBy: trackByMeeting"
+                 [style.borderLeftColor]="m.color" (click)="selectMeeting(m)">
+              <div class="event-title">{{ m.title }}</div>
+              <div class="event-time">{{ formatTime(m.start) }} - {{ formatTime(m.end) }}</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Day View -->
+    <div *ngSwitchCase="'day'" class="day-view">
+      <div class="day-header">
+        <span class="wday">{{ selectedDate | date:'EEEE' }}</span>
+        <span class="wdate">{{ selectedDate | date:'d MMM, y' }}</span>
+      </div>
+      <div class="timeline">
+        <div class="hour" *ngFor="let h of hours">
+          <span class="hour-label">{{ h }}:00</span>
+        </div>
+        <div class="events-layer">
+          <div class="event-block" *ngFor="let m of getDayEvents(selectedDate); trackBy: trackByMeeting"
+               [style.top.px]="toMinutes(m.start) * minutePixelRatio"
+               [style.height.px]="(toMinutes(m.end) - toMinutes(m.start)) * minutePixelRatio"
+               [style.background]="m.color"
+               (click)="selectMeeting(m)">
+            <div class="event-title">{{ m.title }}</div>
+            <div class="event-time">{{ formatTime(m.start) }} - {{ formatTime(m.end) }}</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Details Panel -->
+  <div class="details" *ngIf="selectedMeeting as sm; else dayDetails">
+    <div class="details-header">
+      <div class="details-title">{{ sm.title }}</div>
+      <button class="btn" (click)="clearSelection()">Close</button>
+    </div>
+    <div class="details-body">
+      <div class="row"><strong>Time:</strong> {{ formatTime(sm.start) }} - {{ formatTime(sm.end) }}</div>
+      <div class="row"><strong>Date:</strong> {{ sm.start | date:'EEE, MMM d, y' }}</div>
+      <div class="row" *ngIf="sm.location"><strong>Location:</strong> {{ sm.location }}</div>
+      <div class="row" *ngIf="sm.attendees"><strong>Attendees:</strong> {{ sm.attendees }}</div>
+      <div class="row"><strong>Status:</strong> {{ sm.status }}</div>
+    </div>
+  </div>
+  <ng-template #dayDetails>
+    <div class="details">
+      <div class="details-header">
+        <div class="details-title">Meetings on {{ selectedDate | date:'EEE, MMM d' }}</div>
+        <button class="btn" (click)="clearSelection()">Clear</button>
+      </div>
+      <div class="details-body" *ngIf="getDayEvents(selectedDate).length; else noMeetings">
+        <div class="details-item" *ngFor="let m of getDayEvents(selectedDate); trackBy: trackByMeeting" (click)="selectMeeting(m)">
+          <span class="dot" [style.background]="m.color"></span>
+          <div class="meta">
+            <div class="title">{{ m.title }}</div>
+            <div class="time">{{ formatTime(m.start) }} - {{ formatTime(m.end) }}</div>
+          </div>
+        </div>
+      </div>
+      <ng-template #noMeetings>
+        <div class="empty">No meetings scheduled.</div>
+      </ng-template>
+    </div>
+  </ng-template>
+</div>
