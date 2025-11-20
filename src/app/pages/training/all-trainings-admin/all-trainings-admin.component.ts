@@ -120,6 +120,7 @@ export class AllTrainingsAdminComponent {
     { key: 'trainingInstituteName', header: 'Training Institute' },
     { key: 'trainerName', header: 'Trainer Name' },
     { key: 'location', header: 'Location' },
+    { key: 'venueAddress', header: 'Training Venue' },
     { key: 'trainingDate', header: 'Training Date' },
     { key: 'status', header: 'Status' },
   ];

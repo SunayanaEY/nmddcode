@@ -96,6 +96,7 @@ export class ApprovedRejectedTrainingsComponent {
     { key: 'trainingInstituteName', header: 'Training Institute' },
     { key: 'trainerName', header: 'Trainer Name' },
     { key: 'location', header: 'Location' },
+    { key: 'venueAddress', header: 'Training Venue' },
     { key: 'trainingDate', header: 'Training Date' },
     { key: 'status', header: 'Status' },
   ];
@@ -113,6 +114,7 @@ export class ApprovedRejectedTrainingsComponent {
     { key: 'trainingInstituteName', header: 'Training Institute' },
     { key: 'trainerName', header: 'Trainer Name' },
     { key: 'location', header: 'Location' },
+    { key: 'venueAddress', header: 'Training Venue' },
     { key: 'trainingDate', header: 'Training Date' },
     { key: 'status', header: 'Status' },
     {
@@ -132,6 +134,7 @@ export class ApprovedRejectedTrainingsComponent {
     { key: 'trainerName', header: 'Trainer Name' },
 
     { key: 'location', header: 'Location' },
+    { key: 'venueAddress', header: 'Training Venue' },
     { key: 'trainingDate', header: 'Training Date' },
     { key: 'status', header: 'Status' },
   ];
