@@ -18,6 +18,10 @@
   border-radius: 8px;
   height: 46px;
 }
+textarea {
+  text-align: left !important;
+  direction: ltr !important;
+}
 
 .filter-controls {
   display: flex;

@@ -107,7 +107,7 @@
           </th>
           <th scope="col">{{ "Sr.No." | translate }}</th>
           <ng-container *ngFor="let col of columns">
-            <th *ngIf="!col.showColumn || col.showColumn()" scope="col">
+            <th *ngIf="!col.showColumn" scope="col">
               {{ col.header | translate }}
             </th>
           </ng-container>

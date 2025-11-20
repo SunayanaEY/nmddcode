@@ -5,6 +5,7 @@ import jsPDF from 'jspdf';
 import html2canvas from 'html2canvas';
 import { TrainingService } from '../training/services/training.service';
 import { ToastrService } from 'ngx-toastr';
+import { environment } from '../../../environments/environment';
 
 @Component({
   selector: 'app-certificate-layout',
@@ -16,6 +17,8 @@ import { ToastrService } from 'ngx-toastr';
 export class CertificateLayoutComponent implements OnInit {
   @Input() data: any;
   @Input() uniqueId: string = 'UIN2025345780991';
+  apiUrl = environment.apiUrl;
+  
 
   @ViewChild('certificateContent', { static: false })
   certificateContent!: ElementRef;
@@ -56,7 +59,7 @@ export class CertificateLayoutComponent implements OnInit {
   // }
   get qrData(): string {
     // Direct API URL for verification
-    return `http://localhost:4200/verify-certificate?uin=${this.finalUniqueId}`;
+    return `${this.apiUrl}/verify-certificate?uin=${this.finalUniqueId}`;
   }
 
   // To be called from parent or modal controller if needed
