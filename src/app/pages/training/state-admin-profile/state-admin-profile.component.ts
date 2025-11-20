@@ -56,6 +56,12 @@ export class StateAdminProfileComponent implements OnInit {
   isDragOverDoc = false;
   showPassword = false;
   showConfirmPassword = false;
+  // Password policy flags
+  hasMinLength = false;
+  hasUppercase = false;
+  hasLowercase = false;
+  hasNumber = false;
+  hasSpecialChar = false;
   isLoading = false;
   userRole: any;
   instituteData: any;
@@ -223,6 +229,10 @@ export class StateAdminProfileComponent implements OnInit {
     this.loadStates();
     this.initializeForm();
     this.loadStateAdminData();
+    // Subscribe to password field changes for real-time policy feedback
+    this.profileForm.get('password')?.valueChanges.subscribe((password) => {
+      this.validatePassword(password || '');
+    });
   }
 
   getRole() {
@@ -445,6 +455,15 @@ export class StateAdminProfileComponent implements OnInit {
 
   toggleConfirmPassword() {
     this.showConfirmPassword = !this.showConfirmPassword;
+  }
+
+  // Update password policy flags based on current password value
+  validatePassword(password: string) {
+    this.hasMinLength = (password || '').length >= 8;
+    this.hasUppercase = /[A-Z]/.test(password || '');
+    this.hasLowercase = /[a-z]/.test(password || '');
+    this.hasNumber = /\d/.test(password || '');
+    this.hasSpecialChar = /[@$!%*?&]/.test(password || '');
   }
 
   markFormGroupTouched(formGroup: FormGroup) {

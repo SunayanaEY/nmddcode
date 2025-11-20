@@ -25,6 +25,7 @@ import {
   BreadcrumbItem,
 } from '../../../components/breadcrumb/breadcrumb.component';
 import { AdminService } from '../services/training-admin.service';
+import { MultiSelectDropdownComponent } from '../../../components/multi-select-dropdown/multi-select-dropdown.component';
 
 @Component({
   selector: 'app-training-certificate-generation',
@@ -36,6 +37,7 @@ import { AdminService } from '../services/training-admin.service';
     FileUploadComponent,
     BreadcrumbComponent,
     TranslateModule,
+    MultiSelectDropdownComponent
   ],
   templateUrl: './training-certificate-generation.component.html',
   styleUrl: './training-certificate-generation.component.css',
@@ -88,6 +90,7 @@ export class TrainingCertificateGenerationComponent implements OnInit {
   selectedTrainingInstituteName: any;
   selectedTrainingInstituteId: any;
   trainers: any[] = [];
+  selectedTrainers: any[] = [];
   isLoadingTrainers = false;
   showGuestTrainerField = false;
   isSpinner: boolean = false;
@@ -117,11 +120,17 @@ export class TrainingCertificateGenerationComponent implements OnInit {
     }
 
     const selectedDate = new Date(control.value);
+    selectedDate.setHours(0, 0, 0, 0);
+
     const today = new Date();
     today.setHours(0, 0, 0, 0); // Reset time to start of day
 
-    if (selectedDate < today) {
-      return { pastDate: true };
+    // Allow dates from past 45 days up to any future date
+    const pastLimit = new Date(today);
+    pastLimit.setDate(pastLimit.getDate() - 45);
+
+    if (selectedDate < pastLimit) {
+      return { invalidDateRange: true };
     }
 
     return null;
@@ -160,6 +169,7 @@ export class TrainingCertificateGenerationComponent implements OnInit {
       venueState: ['', Validators.required],
       venueDistrict: ['', Validators.required],
       venueBlock: ['', Validators.required],
+      venueAddress: ['', Validators.required],
       trainingDate: [
         '',
         [Validators.required, this.futureDateValidator.bind(this)],
@@ -193,6 +203,30 @@ export class TrainingCertificateGenerationComponent implements OnInit {
       this.mySelectedLogo.push('');
     }
   }
+
+  onTrainerSelectionChange(selectedTrainers: any[]) {
+    this.selectedTrainers = selectedTrainers;
+    // Trainer names are now written by the dropdown via ControlValueAccessor
+    const guestTrainerControl = this.trainingForm.get('guestTrainerName');
+    // Detect if "Other" is among selected trainers
+    const hasOther = Array.isArray(selectedTrainers) && selectedTrainers.some((t: any) => {
+      if (t && typeof t === 'object') {
+        return t.name === 'Other' || t.trainerName === 'Other';
+      }
+      return t === 'Other';
+    });
+
+    this.showGuestTrainerField = !!hasOther;
+
+    if (this.showGuestTrainerField) {
+      guestTrainerControl?.setValidators([Validators.required]);
+    } else {
+      guestTrainerControl?.clearValidators();
+      guestTrainerControl?.setValue('');
+    }
+    guestTrainerControl?.updateValueAndValidity();
+  }
+
   getTrainingDetails(trainingId: number) {
     // alert('Training Upload : ' + trainingId);
     this.isSpinner = true;
@@ -445,7 +479,9 @@ export class TrainingCertificateGenerationComponent implements OnInit {
     this.isLoadingTrainers = true;
     this.adminService.getTrainersByTrainingHead(trainingHeadId).subscribe({
       next: (response) => {
-        this.trainers = response.data || [];
+        console.log('API Response:', response);
+        this.trainers = response.data.map((trainer: any) => ({ id: trainer.id, name: trainer.trainerName })) || [];
+        console.log('Assigned Trainers:', this.trainers);
         this.isLoadingTrainers = false;
       },
       error: (error) => {
@@ -535,23 +571,14 @@ export class TrainingCertificateGenerationComponent implements OnInit {
       delete data['trainingType'];
     }
 
-    // Handle trainer data based on selection
-    if (data.hasOwnProperty('trainerName')) {
-      if (data['trainerName'] === 'Other') {
-        // When "Other" is selected, use guest trainer name and set trainerId to 0
-        data['trainerName'] = data['guestTrainerName'];
-        data['trainerId'] = 0;
-      } else {
-        // When specific trainer is selected, find trainerId and set trainerName to null
-        const selectedTrainer = this.trainers.find(
-          (trainer) => trainer.trainerName === data['trainerName']
-        );
-        data['trainerId'] = selectedTrainer ? selectedTrainer.id : null;
-        data['trainerName'] = null;
-      }
-      // Remove guestTrainerName from final data
-      delete data['guestTrainerName'];
+    if (this.selectedTrainers.length > 0) {
+      data['trainerId'] = this.selectedTrainers.map(t => t.id).join(',');
+      data['trainerName'] = this.selectedTrainers.map(t => t.name).join(', ');
+    } else {
+      data['trainerId'] = null;
+      data['trainerName'] = null;
     }
+    delete data['guestTrainerName'];
     // alert('coming to : ' + this.populate);
     if (this.populate == 'true') {
       // alert('coming here !!');

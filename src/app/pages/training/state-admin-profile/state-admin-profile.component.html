@@ -223,6 +223,72 @@
                 ></i>
               </button>
             </div>
+
+            <!-- Password Policy Information -->
+            <div class="password-policy">
+              <div class="password-policy-title">
+                {{ "TRAINING.PASSWORD_REQUIREMENTS.TITLE" | translate }}
+              </div>
+              <ul class="password-requirements">
+                <li
+                  [class.valid]="hasMinLength"
+                  [class.invalid]="!hasMinLength && profileForm.get('password')?.value"
+                >
+                  <span
+                    class="icon"
+                    [class.valid]="hasMinLength"
+                    [class.invalid]="!hasMinLength && profileForm.get('password')?.value"
+                  >
+                    <i class="fas fa-check" *ngIf="hasMinLength"></i>
+                    <i class="fas fa-times" *ngIf="!hasMinLength && profileForm.get('password')?.value"></i>
+                  </span>
+                  <span class="text">{{ "TRAINING.PASSWORD_REQUIREMENTS.MIN_LENGTH" | translate }}</span>
+                </li>
+                <li
+                  [class.valid]="hasUppercase"
+                  [class.invalid]="!hasUppercase && profileForm.get('password')?.value"
+                >
+                  <span
+                    class="icon"
+                    [class.valid]="hasUppercase"
+                    [class.invalid]="!hasUppercase && profileForm.get('password')?.value"
+                  >
+                    <i class="fas fa-check" *ngIf="hasUppercase"></i>
+                    <i class="fas fa-times" *ngIf="!hasUppercase && profileForm.get('password')?.value"></i>
+                  </span>
+                  <span class="text">{{ "TRAINING.PASSWORD_REQUIREMENTS.UPPERCASE" | translate }}</span>
+                </li>
+                <li
+                  [class.valid]="hasLowercase"
+                  [class.invalid]="!hasLowercase && profileForm.get('password')?.value"
+                >
+                  <span
+                    class="icon"
+                    [class.valid]="hasLowercase"
+                    [class.invalid]="!hasLowercase && profileForm.get('password')?.value"
+                  >
+                    <i class="fas fa-check" *ngIf="hasLowercase"></i>
+                    <i class="fas fa-times" *ngIf="!hasLowercase && profileForm.get('password')?.value"></i>
+                  </span>
+                  <span class="text">{{ "TRAINING.PASSWORD_REQUIREMENTS.LOWERCASE" | translate }}</span>
+                </li>
+                <li
+                  [class.valid]="hasNumber && hasSpecialChar"
+                  [class.invalid]="(!hasNumber || !hasSpecialChar) && profileForm.get('password')?.value"
+                >
+                  <span
+                    class="icon"
+                    [class.valid]="hasNumber && hasSpecialChar"
+                    [class.invalid]="(!hasNumber || !hasSpecialChar) && profileForm.get('password')?.value"
+                  >
+                    <i class="fas fa-check" *ngIf="hasNumber && hasSpecialChar"></i>
+                    <i class="fas fa-times" *ngIf="(!hasNumber || !hasSpecialChar) && profileForm.get('password')?.value"></i>
+                  </span>
+                  <span class="text">{{ "TRAINING.PASSWORD_REQUIREMENTS.NUMBER_SYMBOL" | translate }}</span>
+                </li>
+              </ul>
+            </div>
+
             <div
               class="invalid-feedback"
               *ngIf="

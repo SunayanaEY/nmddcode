@@ -232,6 +232,53 @@
               </div>
             </div>
           </div>
+          <!-- New fields row inserted above Email -->
+          <div class="row">
+            <div class="col-md-4">
+              <div class="mb-3">
+                <label for="category" class="form-label">Category</label>
+                <select 
+                  class="form-select"
+                  id="category" 
+                  formControlName="category">
+                  <option value="" disabled>Select Category</option>
+                  <option value="GN">GN</option>
+                  <option value="OBC">OBC</option>
+                  <option value="SC">SC</option>
+                  <option value="ST">ST</option>
+                </select>
+                <div *ngIf="participantForm.get('category')?.invalid && participantForm.get('category')?.touched" class="text-danger">
+                  Category is required.
+                </div>
+              </div>
+            </div>
+            <div class="col-md-4">
+              <div class="mb-3">
+                <label for="educationQualification" class="form-label">Educational Qualification</label>
+                <input
+                  type="text"
+                  class="form-control"
+                  id="educationQualification"
+                  formControlName="educationQualification"
+                  placeholder="Enter Educational Qualification"
+                />
+              </div>
+            </div>
+            <div class="col-md-4">
+              <div class="mb-3">
+                <label for="recommendedByOrganization" class="form-label">Recommended by (Organization)</label>
+                <input
+                  type="text"
+                  class="form-control"
+                  id="recommendedByOrganization"
+                  formControlName="recommendedByOrganization"
+                  placeholder="Enter Organization"
+                />
+              </div>
+            </div>
+          </div>
+
+          <!-- Existing Email and DOB row -->
           <div class="row">
             <div class="col-6">
               <div class="mb-3">

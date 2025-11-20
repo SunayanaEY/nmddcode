@@ -94,31 +94,11 @@
                 {{ "Trainer Name(s)" | translate }}
                 <span style="color: red">*</span>
               </label>
-              <select
-                id="trainerName"
+              <app-multi-select-dropdown
+                [items]="trainers"
                 formControlName="trainerName"
-                class="form-control"
-                [class.is-invalid]="
-                  trainingForm.get('trainerName')?.invalid &&
-                  trainingForm.get('trainerName')?.touched
-                "
-                [disabled]="isLoadingTrainers"
-                (change)="onTrainerChange()"
-              >
-                <option value="" disabled>
-                  {{
-                    isLoadingTrainers
-                      ? ("Loading trainers..." | translate)
-                      : ("Select Trainer" | translate)
-                  }}
-                </option>
-                <option
-                  *ngFor="let trainer of trainers"
-                  [value]="trainer.trainerName"
-                >
-                  {{ trainer.trainerName }}
-                </option>
-              </select>
+                (selectionChange)="onTrainerSelectionChange($event)"
+              ></app-multi-select-dropdown>
               <div
                 *ngIf="
                   trainingForm.get('trainerName')?.invalid &&
@@ -318,6 +298,41 @@
             </div>
           </div>
 
+          <!-- Address -->
+          <div class="form-row">
+            <div class="form-group two-thirds-width">
+              <label for="venueAddress">
+                {{ "Address" | translate }}
+                <span style="color: red">*</span>
+              </label>
+              <textarea
+                id="venueAddress"
+                formControlName="venueAddress"
+                [placeholder]="'Enter Address' | translate"
+                class="form-control textarea"
+                rows="3"
+                [class.is-invalid]="
+                  trainingForm.get('venueAddress')?.invalid &&
+                  trainingForm.get('venueAddress')?.touched
+                "
+              ></textarea>
+              <div
+                *ngIf="
+                  trainingForm.get('venueAddress')?.invalid &&
+                  trainingForm.get('venueAddress')?.touched
+                "
+                class="invalid-feedback"
+              >
+                <small
+                  *ngIf="trainingForm.get('venueAddress')?.errors?.['required']"
+                  class="text-danger"
+                >
+                  {{ "This field is required" | translate }}
+                </small>
+              </div>
+            </div>
+          </div>
+
           <!-- Dates -->
           <div class="form-row">
             <div class="form-group third-width">
@@ -350,12 +365,10 @@
                   {{ "This field is required" | translate }}
                 </small>
                 <small
-                  *ngIf="trainingForm.get('trainingDate')?.errors?.['pastDate']"
+                  *ngIf="trainingForm.get('trainingDate')?.errors?.['invalidDateRange']"
                   class="text-danger"
                 >
-                  {{
-                    "Please select today's date or a future date" | translate
-                  }}
+                  {{ "Please select a date within the past 45 days or a future date" | translate }}
                 </small>
               </div>
             </div>
