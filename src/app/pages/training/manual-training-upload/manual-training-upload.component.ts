@@ -79,7 +79,7 @@ export class ManualTrainingUploadComponent implements OnInit {
   tableActions: TableAction[] = [
     { name: 'edit', icon: 'bi-pencil', class: 'btn-edit', title: 'Edit' },
     { name: 'delete', icon: 'bi-trash', class: 'btn-delete', title: 'Delete' },
-    { name: 'view', icon: 'bi-eye', class: 'btn-view', title: 'View' },
+    // { name: 'view', icon: 'bi-eye', class: 'btn-view', title: 'View' },
   ];
 
   constructor(
@@ -164,6 +164,28 @@ export class ManualTrainingUploadComponent implements OnInit {
       email: ['', [Validators.email]],
       dob: ['', [Validators.required, this.dateValidator]],
     });
+
+    // Disable age; auto-populate from DOB
+    const ageControl = this.participantForm.get('age');
+    ageControl?.disable();
+
+    const dobControl = this.participantForm.get('dob');
+    dobControl?.valueChanges.subscribe((value: any) => {
+      if (!value) {
+        ageControl?.setValue('', { emitEvent: false });
+        return;
+      }
+      const dobDate = new Date(value);
+      const today = new Date();
+      let age = today.getFullYear() - dobDate.getFullYear();
+      const monthDiff = today.getMonth() - dobDate.getMonth();
+      if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < dobDate.getDate())) {
+        age--;
+      }
+      if (age < 0) age = 0;
+      if (age > 120) age = 120;
+      ageControl?.setValue(age, { emitEvent: false });
+    });
   }
 
   getTrainingDetails(trainingId: number) {
@@ -196,7 +218,7 @@ export class ManualTrainingUploadComponent implements OnInit {
 
   addParticipant(): void {
     if (this.participantForm.valid) {
-      const formValue = this.participantForm.value;
+      const formValue = this.participantForm.getRawValue();
 
       // Mask sensitive data for display
       const participant: Participant = {
@@ -226,7 +248,7 @@ export class ManualTrainingUploadComponent implements OnInit {
   //update participant
   updateParticipant(): void {
     if (this.participantForm.valid && this.editingIndex >= 0) {
-      const formValue = this.participantForm.value;
+      const formValue = this.participantForm.getRawValue();
 
       const updatedParticipant: Participant = {
         name: formValue.name,
@@ -313,7 +335,10 @@ export class ManualTrainingUploadComponent implements OnInit {
       gender: participant.gender,
       contactNumber: participant.contactNumber, // Original unmasked value
       fatherName: participant.fatherName, // Original unmasked value
-      email: participant.email.includes('xxxx')
+      category: participant.category ?? '',
+      educationQualification: participant.educationQualification ?? '',
+      recommendedByOrganization: participant.recommendedByOrganization ?? '',
+      email: participant.email && participant.email.includes('xxxx')
         ? 'user@example.com'
         : participant.email,
     });

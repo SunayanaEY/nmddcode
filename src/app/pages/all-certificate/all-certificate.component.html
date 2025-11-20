@@ -4,9 +4,9 @@
     <h2>{{'Training Title'|translate}} : {{ trainingTitle }}</h2>
   </div>
 
-  <div class="filter-container">
+  <!-- <div class="filter-container">
     <div class="filter-controls">
-      <!-- Date Filter -->
+      Date Filter 
       <input
         type="date"
         class="form-control"
@@ -14,7 +14,6 @@
         placeholder="Date"
       />
 
-      <!-- Training Title Search -->
       <input
         type="text"
         class="form-control"
@@ -29,19 +28,19 @@
       <option value="IN PROGRESS">Pending</option>
     </select>
 
-    <!-- <div class="action-buttons">
+    <div class="action-buttons">
       <button class="btn btn-primary">
         <i class="bi bi-download"></i> Download Zip
-      </button> -->
-    <!-- </div> -->
-  </div>
+      </button> 
+    </div> 
+  </div> -->
 
-  <div class="trainings-summary">
+  <!-- <div class="trainings-summary">
     <h4>{{'Trainees List'|translate}}</h4>
     <span class="badge bg-secondary"
       >{{'Total trainees'|translate}} : {{ filteredTableData.length }}</span
     >
-  </div>
+  </div> -->
 
   <app-table
     [columns]="tableColumns"
