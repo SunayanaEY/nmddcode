@@ -1,0 +1,24 @@
+<div class="multiselect-dropdown">
+  <button type="button" class="dropdown-header" (click)="toggleDropdown()">
+    <div class="selected-chips" *ngIf="selectedItems.length > 0">
+      <span class="chip" *ngFor="let item of selectedItems" (click)="$event.stopPropagation()">
+        {{ item.name }}
+        <span class="remove" (click)="removeSelected(item); $event.stopPropagation()">×</span>
+      </span>
+    </div>
+    <span *ngIf="selectedItems.length === 0" class="placeholder">Select Trainer(s)</span>
+    <span class="dropdown-arrow">&#9662;</span>
+  </button>
+
+  <div class="dropdown-content" *ngIf="isOpen">
+    <div class="search-container">
+      <input type="text" [(ngModel)]="searchQuery" (input)="onSearchChange()" placeholder="Search trainers..." />
+    </div>
+    <div class="items-container">
+      <div *ngFor="let item of filteredItems" class="item" [class.selected]="isSelected(item)">
+        <input type="checkbox" [checked]="isSelected(item)" (change)="toggleSelection(item)" />
+        <span class="item-name">{{ item.name }}</span>
+      </div>
+    </div>
+  </div>
+</div>

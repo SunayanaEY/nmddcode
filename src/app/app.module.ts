@@ -11,6 +11,7 @@ import { NgSelectModule } from '@ng-select/ng-select';
 import { HttpClient } from '@angular/common/http';
 import {TranslateHttpLoader} from '@ngx-translate/http-loader';
 //import * as highcharts from highcharts;
+import { MultiSelectDropdownComponent } from './components/multi-select-dropdown/multi-select-dropdown.component';
 
 // export function HttpLoaderFactory(http:HttpClient){
 //   return new TranslateHttpLoader(http, './assets/i18n/', '.json');
@@ -28,11 +29,10 @@ import {TranslateHttpLoader} from '@ngx-translate/http-loader';
    RouterOutlet,
    NgSelectModule,
   // NgxPaginationModule
-
-
   ],
 
   declarations: [
+
     //ChartSectionComponent,
    // AppComponent
   //TableSectionComponent

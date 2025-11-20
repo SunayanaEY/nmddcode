@@ -94,31 +94,11 @@
                 {{ "Trainer Name(s)" | translate }}
                 <span style="color: red">*</span>
               </label>
-              <select
-                id="trainerName"
+              <app-multi-select-dropdown
+                [items]="trainers"
                 formControlName="trainerName"
-                class="form-control"
-                [class.is-invalid]="
-                  trainingForm.get('trainerName')?.invalid &&
-                  trainingForm.get('trainerName')?.touched
-                "
-                [disabled]="isLoadingTrainers"
-                (change)="onTrainerChange()"
-              >
-                <option value="" disabled>
-                  {{
-                    isLoadingTrainers
-                      ? ("Loading trainers..." | translate)
-                      : ("Select Trainer" | translate)
-                  }}
-                </option>
-                <option
-                  *ngFor="let trainer of trainers"
-                  [value]="trainer.trainerName"
-                >
-                  {{ trainer.trainerName }}
-                </option>
-              </select>
+                (selectionChange)="onTrainerSelectionChange($event)"
+              ></app-multi-select-dropdown>
               <div
                 *ngIf="
                   trainingForm.get('trainerName')?.invalid &&
