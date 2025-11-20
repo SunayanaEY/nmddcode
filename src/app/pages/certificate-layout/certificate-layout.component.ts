@@ -59,7 +59,7 @@ export class CertificateLayoutComponent implements OnInit {
   // }
   get qrData(): string {
     // Direct API URL for verification
-    return `${this.apiUrl}/verify-certificate?uin=${this.finalUniqueId}`;
+    return `https://dahdtraining.ndlm.co.in/verify-certificate?uin=${this.finalUniqueId}`;
   }
 
   // To be called from parent or modal controller if needed

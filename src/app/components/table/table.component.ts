@@ -53,6 +53,7 @@ export class TableComponent {
   @Input() userRole: number = 0;
   schemesTableString: string = 'schemes';
   tableNamesArray: Array<string> = ['schemes', 'trainingTypes'];
+  
   @Input() addNew: string = '';
   @Input() columns: TableColumn[] = [];
   @Input() enableMultiSelect: boolean = false;
@@ -104,6 +105,11 @@ export class TableComponent {
       this.linkClick.emit({ column, row });
     }
   }
+  get visibleColumns(): TableColumn[] {
+  return this.columns.filter(col => 
+    col.showColumn && col.showColumn()
+  );
+}
   downloadCerts(action: string) {
     this.downloadAllCerts.emit({ action: action });
   }

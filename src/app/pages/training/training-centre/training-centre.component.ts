@@ -112,17 +112,17 @@ export class TrainingCentreComponent implements OnInit {
     {
       key: 'stateHeadContactPerson',
       header: 'TRAINING.STATE_HEAD_NAME',
-      showColumn: () => this.userRole != 5,
+      showColumn: () => this.userRole == 1,
     },
     {
       key: 'stateHeadContact',
       header: 'TRAINING.STATE_HEAD_CONTACT',
-      showColumn: () => this.userRole != 5,
+      showColumn: () => this.userRole == 1,
     },
     {
       key: 'stateHeadEmail',
       header: 'TRAINING.STATE_HEAD_EMAIL',
-      showColumn: () => this.userRole != 5,
+      showColumn: () => this.userRole == 1,
     },
     { key: 'contactPersonName', header: 'TRAINING.INSTITUTE_HEAD' },
     { key: 'contactNumber', header: 'COMMON.CONTACT_NUMBER' },
@@ -219,6 +219,12 @@ export class TrainingCentreComponent implements OnInit {
           row.status === 'ACTIVE' ||
           row.status === 'DEACTIVE',
       });
+      this.tableActions.splice(2, 0, {
+        name: 'edit',
+        icon: 'bi-pencil',
+        class: 'btn-warning',
+        title: 'Edit',
+      });
     }
 
     // Initialize modalConfig for all user roles
@@ -305,7 +311,7 @@ export class TrainingCentreComponent implements OnInit {
           label: 'State Head Name',
           type: 'text',
           placeholder: 'Enter state head name',
-          disabled: this.userRole == 5 || this.userRole == 6,
+          disabled: this.userRole == 5 || this.userRole == 6 || this.userRole === 1,
         },
         {
           id: 'stateHeadContact',
@@ -313,14 +319,14 @@ export class TrainingCentreComponent implements OnInit {
           type: 'tel',
           placeholder: 'Enter state head contact number',
           pattern: '[0-9]{10}',
-          disabled: this.userRole == 5 || this.userRole == 6,
+          disabled: this.userRole == 5 || this.userRole == 6 || this.userRole === 1,
         },
         {
           id: 'stateHeadEmail',
           label: 'State Head Email',
           type: 'email',
           placeholder: 'Enter state head email address',
-          disabled: this.userRole == 5 || this.userRole == 6,
+          disabled: this.userRole == 5 || this.userRole == 6 || this.userRole === 1,
         },
         {
           id: 'designation',
