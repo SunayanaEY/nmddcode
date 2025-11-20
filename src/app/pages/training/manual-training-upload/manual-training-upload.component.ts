@@ -28,6 +28,9 @@ interface Participant {
   fatherName: string;
   email: string;
   dob: Date;
+  category?: string;
+  educationQualification?: string;
+  recommendedByOrganization?: string;
 }
 
 @Component({
@@ -155,6 +158,9 @@ export class ManualTrainingUploadComponent implements OnInit {
           Validators.pattern(/^[a-zA-Z\s]+$/),
         ],
       ],
+      category: ['', Validators.required],
+      educationQualification: ['', [Validators.maxLength(100)]],
+      recommendedByOrganization: ['', [Validators.maxLength(100)]],
       email: ['', [Validators.email]],
       dob: ['', [Validators.required, this.dateValidator]],
     });
@@ -201,6 +207,9 @@ export class ManualTrainingUploadComponent implements OnInit {
         fatherName: formValue.fatherName,
         email: this.maskEmail(formValue.email),
         dob: formValue.dob,
+        category: formValue.category,
+        educationQualification: formValue.educationQualification,
+        recommendedByOrganization: formValue.recommendedByOrganization,
       };
 
       this.participants.push(participant);
@@ -227,6 +236,9 @@ export class ManualTrainingUploadComponent implements OnInit {
         fatherName: formValue.fatherName,
         email: this.maskEmail(formValue.email),
         dob: formValue.dob,
+        category: formValue.category,
+        educationQualification: formValue.educationQualification,
+        recommendedByOrganization: formValue.recommendedByOrganization,
       };
 
       this.participants[this.editingIndex] = updatedParticipant;

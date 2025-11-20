@@ -120,11 +120,17 @@ export class TrainingCertificateGenerationComponent implements OnInit {
     }
 
     const selectedDate = new Date(control.value);
+    selectedDate.setHours(0, 0, 0, 0);
+
     const today = new Date();
     today.setHours(0, 0, 0, 0); // Reset time to start of day
 
-    if (selectedDate < today) {
-      return { pastDate: true };
+    // Allow dates from past 45 days up to any future date
+    const pastLimit = new Date(today);
+    pastLimit.setDate(pastLimit.getDate() - 45);
+
+    if (selectedDate < pastLimit) {
+      return { invalidDateRange: true };
     }
 
     return null;
@@ -163,6 +169,7 @@ export class TrainingCertificateGenerationComponent implements OnInit {
       venueState: ['', Validators.required],
       venueDistrict: ['', Validators.required],
       venueBlock: ['', Validators.required],
+      venueAddress: ['', Validators.required],
       trainingDate: [
         '',
         [Validators.required, this.futureDateValidator.bind(this)],
