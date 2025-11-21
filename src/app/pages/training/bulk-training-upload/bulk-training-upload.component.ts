@@ -110,12 +110,30 @@ export class BulkTrainingUploadComponent implements OnInit {
       if (data.length > 0) {
         this.headers = data[0]; // first row are headers
         this.excelData = data.slice(1).map((row) => {
-          let obj: any = {};
+          const obj: any = {};
           this.headers.forEach((h, i) => {
             obj[h] = row[i] ?? '';
           });
           return obj;
         });
+
+        // Compute Age from DOB and add/update an 'Age' column positioned before 'Gender'
+        const dobHeader = this.headers.find((h) => /dob|date of birth/i.test(h));
+        if (dobHeader) {
+          // Use existing Age header if present (case-insensitive), else insert one
+          let ageHeader = this.headers.find((h) => /^age$/i.test(h)) ?? '';
+          if (!ageHeader) {
+            const genderIdx = this.headers.findIndex((h) => /gender/i.test(h));
+            const insertIdx = genderIdx > -1 ? genderIdx : this.headers.length;
+            ageHeader = 'Age';
+            this.headers.splice(insertIdx, 0, ageHeader);
+          }
+
+          this.excelData = this.excelData.map((row) => {
+            const age = this.computeAgeFromDobString(row[dobHeader]);
+            return { ...row, [ageHeader]: age };
+          });
+        }
       }
 
       this.validateExcelData(this.excelData);
@@ -278,5 +296,34 @@ export class BulkTrainingUploadComponent implements OnInit {
           },
         });
     }
+  }
+
+  private computeAgeFromDobString(dobValue: any): number | '' {
+    if (!dobValue) return '';
+    const normalized: string = String(dobValue).trim().replace(/[\.\/]/g, '-');
+    const parts: string[] = normalized.split('-').map((p: string) => p.trim());
+
+    let dob: Date;
+    if (parts.length === 3) {
+      // Handle dd-mm-yyyy and yyyy-mm-dd
+      if (parts[0].length === 4) {
+        dob = new Date(+parts[0], +parts[1] - 1, +parts[2]);
+      } else {
+        dob = new Date(+parts[2], +parts[1] - 1, +parts[0]);
+      }
+    } else {
+      dob = new Date(dobValue);
+    }
+
+    if (isNaN(dob.getTime())) return '';
+
+    const today = new Date();
+    let age = today.getFullYear() - dob.getFullYear();
+    const monthDiff = today.getMonth() - dob.getMonth();
+    if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < dob.getDate())) {
+      age--;
+    }
+
+    return age >= 0 && age <= 120 ? age : '';
   }
 }
