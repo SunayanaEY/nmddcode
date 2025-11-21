@@ -57,6 +57,7 @@ export class AllTrainingsComponent {
     'Training Institute',
     'Trainer Name',
     'Location',
+    'Training Venue',
     'Training Date',
   ];
   columnKeys: Array<string> = [
@@ -65,6 +66,7 @@ export class AllTrainingsComponent {
     'trainingInstituteName',
     'trainerName',
     'location',
+    'venueAddress',
     'trainingDate',
   ];
   breadcrumbItems: BreadcrumbItem[] = [
@@ -87,6 +89,8 @@ export class AllTrainingsComponent {
     { key: 'trainerName', header: 'Trainer Name' },
 
     { key: 'location', header: 'Location' },
+    { key: 'venueAddress', header: 'Training Venue' },
+
     { key: 'trainingDate', header: 'Training Date' },
   ];
 
