@@ -59,7 +59,7 @@ export class NewCertificateLayoutComponent implements OnInit {
   }
 
   get qrData(): string {
-    return `${this.apiUrl}verify-certificate?uin=${this.finalUniqueId}`;
+    return `https://dahdtraining.ndlm.co.in/verify-certificate?uin=${this.finalUniqueId}`;
   }
 
   closeModal(): void {}
