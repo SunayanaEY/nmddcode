@@ -1,0 +1,93 @@
+<div class="nddb-certificate" role="document">
+  <div class="sheet" #certificateContent aria-label="NDDB Certificate">
+    <!-- Top meta -->
+    <div class="certificate-header" aria-label="Header">
+      <div class="certificate-ref">UIN No- {{ finalUniqueId }}</div>
+      <div class="certificate-date">Date: {{ data?.createDate | date: 'dd.MM.yyyy' }}</div>
+    </div>
+
+    <!-- Logo Row -->
+    <div class="brand-row" aria-label="Branding">
+      <img class="logo-small" [src]="data?.logoPath1" alt="Left logo" crossorigin="anonymous" />
+      <img class="logo-center" [src]="data?.logoPath3 || data?.logoPath1" alt="Center crest" crossorigin="anonymous" />
+      <img class="logo-small" *ngIf="data?.logoPath2" [src]="data?.logoPath2" alt="Right logo" crossorigin="anonymous" />
+    </div>
+
+    <!-- Titles -->
+    <div class="org-block" aria-label="Organization">
+      <h2 class="org-hi">राष्ट्रीय डेयरी विकास बोर्ड</h2>
+      <h2 class="org-en">National Dairy Development Board</h2>
+    </div>
+
+    <!-- Certificate Heading -->
+    <h1 class="certificate-heading">प्रमाणपत्र/Certificate</h1>
+
+    <!-- Body -->
+    <section class="certificate-body" aria-label="Certificate Body">
+      <p>
+        This is to certify that <span class="label">Mr/Mrs/Ms</span>
+        <span class="name"> &nbsp;{{ data?.name }}</span>
+        Participated in a training program
+        <span class="emphasis">{{ data?.trainingTitle }}</span>.
+      </p>
+
+      <p>
+        Total duration of training was for
+        <span class="emphasis">{{ data?.trainingDuration ?? data?.trainingTotalDays }}</span>
+        Days
+        <ng-container *ngIf="data?.trainingStartDate && data?.trainingEndDate">
+          from <span class="date">{{ data?.trainingStartDate | date: 'dd-MM-yyyy' }}</span>
+          to <span class="date">{{ data?.trainingEndDate | date: 'dd-MM-yyyy' }}</span>
+        </ng-container>
+        conducted at
+        <span class="emphasis">{{ data?.trainingInstituteName || data?.organizationName || (data?.location ?? data?.venueState) }}</span>
+      </p>
+    </section>
+
+    <!-- Footer Signatures -->
+    <footer class="certificate-footer" aria-label="Signatures">
+      <div class="signatures">
+        <!-- Left Signature -->
+        <div class="signature" aria-label="Institute Head Signature">
+          <ng-container *ngIf="data?.signatures?.length > 0; else emptyLeft">
+            <p>
+              <img [src]="data.signatures[0].signatorySignaturePath" alt="Institute Head signature image" crossorigin="anonymous" />
+            </p>
+            <p>_____________________</p>
+            <p>{{ data.signatures[0].signatoryName }}</p>
+            <p>{{ data.signatures[0].signatoryDesignation }}</p>
+            <p>{{ data.signatures[0].signatoryOrganization }}</p>
+            <p class="signature-title">Institute Head Signature</p>
+          </ng-container>
+          <ng-template #emptyLeft>
+            <div class="signature-placeholder" aria-hidden="true"></div>
+            <p class="signature-title">Institute Head Signature</p>
+          </ng-template>
+        </div>
+
+        <!-- Right Signature -->
+        <div class="signature" aria-label="State Head Signature">
+          <ng-container *ngIf="data?.signatures?.length > 1; else emptyRight">
+            <p>
+              <img [src]="data.signatures[1].signatorySignaturePath" alt="State Head signature image" crossorigin="anonymous" />
+            </p>
+            <p>_____________________</p>
+            <p>{{ data.signatures[1].signatoryName }}</p>
+            <p>{{ data.signatures[1].signatoryDesignation }}</p>
+            <p>{{ data.signatures[1].signatoryOrganization }}</p>
+            <p class="signature-title">State Head Signature</p>
+          </ng-container>
+          <ng-template #emptyRight>
+            <div class="signature-placeholder" aria-hidden="true"></div>
+            <p class="signature-title">State Head Signature</p>
+          </ng-template>
+        </div>
+      </div>
+    </footer>
+  </div>
+
+  <!-- Actions -->
+  <div class="modal-actions mt-3 mb-4 text-end">
+    <button class="btn btn-primary" (click)="download()" aria-label="Download certificate">Download</button>
+  </div>
+</div>

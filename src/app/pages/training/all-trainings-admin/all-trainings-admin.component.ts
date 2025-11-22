@@ -27,14 +27,14 @@ import { TrainingsList, TraineeDetails } from '../models/training.model';
 import { TrainingService } from '../services/training.service';
 import { AdminService } from '../services/training-admin.service';
 import { NgSelectModule } from '@ng-select/ng-select';
-import jsPDF from 'jspdf';
-import html2canvas from 'html2canvas';
-import JSZip from 'jszip';
-import saveAs from 'file-saver';
+
+
+
+
 import { ToastrService } from 'ngx-toastr';
 import { NgxSpinnerModule, NgxSpinnerService } from 'ngx-spinner';
-import { CertificateLayoutComponent } from '../../certificate-layout/certificate-layout.component';
-import { NewCertificateLayoutComponent } from '../../new-certificate-layout/new-certificate-layout.component';
+
+import { LatestCertificateLayoutComponent } from '../../latest-certificate-layout/latest-certificate-layout.component';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
 
 @Component({
@@ -47,7 +47,7 @@ import { TranslateModule, TranslateService } from '@ngx-translate/core';
     ReactiveFormsModule,
     FormsModule,
     NgxSpinnerModule,
-    NewCertificateLayoutComponent,
+    LatestCertificateLayoutComponent,
     TranslateModule,
   ],
   templateUrl: './all-trainings-admin.component.html',
@@ -55,8 +55,7 @@ import { TranslateModule, TranslateService } from '@ngx-translate/core';
   // encapsulation: ViewEncapsulation.None
 })
 export class AllTrainingsAdminComponent {
-  @ViewChild('certificateContent', { static: false })
-  certificateContent!: ElementRef;
+  
   trainingDetails: any;
   @ViewChild('trainingDetailsModal')
   trainingDetailsModal!: ElementRef;
@@ -67,7 +66,7 @@ export class AllTrainingsAdminComponent {
   @ViewChild('traineeTable')
   traineeTable!: TableComponent;
   submitted: Boolean = false;
-  certificateZip = new JSZip();
+  
   certificateData: any = null;
   selectedTraineeForCertificate: any = null;
   trainingForm!: FormGroup;
@@ -81,7 +80,7 @@ export class AllTrainingsAdminComponent {
   isExportCSV: Boolean = true;
   isExportPdf: Boolean = true;
   isBulkCertDownload: Boolean = true;
-  bulkCertificateDownload: any[] = [];
+  
   trainingInstituteHeadId: any = null;
   userRole: any;
   userId: any;
@@ -174,8 +173,8 @@ export class AllTrainingsAdminComponent {
         }
         // For other roles, show approve button for Trainees details uploaded or Recommended by Institute Head
         return (
-          row.status === 'Trainees details uploaded' ||
-          row.status === 'Recommended by Institute Head'
+          row.status === 'Trainees details uploaded' 
+          // || row.status === 'Recommended by Institute Head'
         );
       },
     },
@@ -191,8 +190,8 @@ export class AllTrainingsAdminComponent {
         }
         // For other roles, show reject button for Trainees details uploaded or Recommended by Institute Head
         return (
-          row.status === 'Trainees details uploaded' ||
-          row.status === 'Recommended by Institute Head'
+          row.status === 'Trainees details uploaded' 
+          // || row.status === 'Recommended by Institute Head'
         );
       },
     },
@@ -293,11 +292,10 @@ export class AllTrainingsAdminComponent {
           icon: 'bi bi-download',
           class: 'btn-info',
           title: 'Download certificate',
-          condition: (row: any) => row.status === 'Approved by State Head',
+          condition: (row: any) => row.status === 'Approved by State Head' || row.status === 'Certificate Issued & downloaded',
         },
       ];
-    }
-    if (this.userRole === 3) {
+    } else if (this.userRole === 3) {
       this.tableActionsTrainee = [
         {
           name: 'approve',
@@ -318,12 +316,10 @@ export class AllTrainingsAdminComponent {
           icon: 'bi bi-download',
           class: 'btn-info',
           title: 'Download certificate',
-          condition: (row: any) => row.status === 'APPROVED',
+          condition: (row: any) => row.status === 'APPROVED' || row.status === 'Certificate Issued & downloaded' || row.status === 'Approved by State Head',
         },
       ];
-    }
-
-    if (this.userRole === 5) {
+    } else if (this.userRole === 5) {
       this.tableActionsTrainee = [
         {
           name: 'approve',
@@ -673,30 +669,7 @@ export class AllTrainingsAdminComponent {
           this.traineeList = res.data;
           this.currentTrainingInstituteId =
             this.traineeList[0].trainingInstituteId || '';
-          this.traineeList.forEach((trainee) => {
-            if (
-              trainee.uin != null &&
-              trainee.uin != '' &&
-              trainee.uin != undefined
-            ) {
-              let certDetail = {
-                id: trainee.id,
-                logoPath1: this.trainingDetails.logoPath1,
-                logoPath2: this.trainingDetails.logoPath2,
-                logoPath3: this.trainingDetails.logoPath3,
-                name: trainee.name,
-                trainingInstituteName:
-                  this.trainingDetails.trainingInstituteName,
-                trainingTitle: this.trainingDetails.trainingTitle,
-                trainingDate: this.trainingDetails.trainingDate,
-                location: this.trainingDetails.location,
-                signatures: this.trainingDetails.signatures,
-                uin: trainee.uin,
-              };
 
-              this.bulkCertificateDownload.push(certDetail);
-            }
-          });
         });
 
       this.modalService.open(this.trainingDetailsModal, {
@@ -721,133 +694,9 @@ export class AllTrainingsAdminComponent {
     }
   }
 
-  async download(event: { action: string }) {
-    this.certificateZip = new JSZip();
-    let promise: any[] = [];
-    let index = 0;
-    this.bulkCertificateDownload.forEach(async (cert) => {
-      const targetDiv = document.getElementById('certificate')!;
-      targetDiv.innerHTML = `<div class="certificate-wrapper" #certificateContent>
-    <div class="certificate-border">
-      <div class="certificate-logos">
-        <img src="${cert.logoPath1}" alt="Logo 1" crossorigin="anonymous" />
-        <img *ngIf="${cert.logoPath2}" src="${cert.logoPath2}" alt="Logo 2" crossorigin="anonymous" />
-        <img *ngIf="${cert.logoPath3}"  src="${cert.logoPath3}" alt="Logo 3" crossorigin="anonymous" />
-      </div>
-      <div class="certificate-header">
-        <h2>Certificate of Completion</h2>
-        <p class="subtitle">This Certificate Is Proudly Presented To</p>
-        <h1 class="trainee-name">${cert?.name}</h1>
-      </div>
 
-      <div class="certificate-body">
-        <p>
-          From <strong>${cert?.trainingInstituteName}</strong> has successfully
-          completed the training program
-          <strong>${cert?.trainingTitle}</strong> on
-          <strong>${cert?.trainingDate}</strong
-          >, conducted at <strong>${cert?.location}</strong
-          >.
-        </p>
-      </div>
 
-      <div class="certificate-footer">
-        <div class="signatures">
-          <div class="signature">
-          <p><img src="${cert.signatures[0].signatorySignaturePath}" alt="Logo 1" crossorigin="anonymous" /></p>
-           <p>_____________________</p>
-            <p>${cert.signatures[0].signatoryName}</p>
-            <p>${cert.signatures[0].signatoryDesignation}</p>
-            <p>${cert.signatures[0].signatoryOrganization}</p>
-          </div>
 
-          <div class="qr-code">
-            <qrcode
-              [qrdata]="qrData"
-              [width]="100"
-              [errorCorrectionLevel]="'M'"
-            ></qrcode>
-            <p class="uid">UIN: ${cert.uin}</p>
-          </div>
-          <div class="signature" [hidden]="${cert.signatures.length}>1">
-            <p><img src="${cert.signatures[1]?.signatorySignaturePath}" alt="Logo 1" crossorigin="anonymous" /></p>
-             <p>_____________________</p>
-            <p>${cert.signatures[1]?.signatoryName}</p>
-            <p>${cert.signatures[1]?.signatoryDesignation}</p>
-            <p>${cert.signatures[1]?.signatoryOrganization}</p>
-          </div>
-        </div>
-      </div>
-    </div>
-
-  </div>
-  `;
-      // const element = document.querySelector('#certificate')!;
-      // html2canvas(this.certificateContent.nativeElement, {
-      //promise.push(await this.createCertificatePDF(cert,index));
-      index++;
-      await this.createCertificatePDF(cert, index);
-    });
-    //     const zipBlob = await zip.generateAsync({ type: 'blob' });
-    // saveAs(zipBlob, 'Certificates.zip');
-
-    //     Promise.all(promise).finally(()=>{
-    //     this.certificateZip.generateAsync({type:"blob"}).then(function(content) {
-    //   console.log("after zip generate");
-    //   saveAs(content, "Certificates.zip");
-    // })
-
-    //   });
-    //    await this.certificateZip.generateAsync({type:"blob"}).then(function(content) {
-    //   console.log("after zip generate");
-    //   saveAs(content, "Certificates.zip");
-    // })
-  }
-
-  createCertificatePDF(cert: any, index: number): Promise<unknown> {
-    return new Promise(async (resolve) => {
-      await html2canvas(document.querySelector('#certificate')!, {
-        useCORS: true, // allow cross-origin images
-        allowTaint: false, // don't allow tainted canvas
-        scale: 2, // better quality
-      }).then((canvas) => {
-        // const canvas = await html2canvas(element as HTMLElement, {
-        //   useCORS: true, // allow cross-origin images
-        //   allowTaint: false, // don't allow tainted canvas
-        //   scale: 2, // better quality
-        // });
-        const imgData = canvas.toDataURL('image/png');
-        const pdf = new jsPDF('landscape', 'mm', 'a4');
-        const imgProps = pdf.getImageProperties(imgData);
-        const pdfWidth = pdf.internal.pageSize.getWidth();
-        const pdfHeight = (imgProps.height * pdfWidth) / imgProps.width;
-
-        pdf.addImage(imgData, 'PNG', 0, 0, pdfWidth, pdfHeight);
-        //pdf.save(`Certificate-${cert?.name || 'Trainee'}.pdf`);
-        const pdfBlob = pdf.output('blob');
-        this.certificateZip.file(
-          `Certificate-${cert?.name + '_' + cert?.uin || 'Trainee'}.pdf`,
-          pdfBlob
-        );
-        //index++;
-      });
-      resolve('');
-      await this.delay(1000);
-    }).finally(() => {
-      if (index === this.bulkCertificateDownload.length) {
-        this.certificateZip
-          .generateAsync({ type: 'blob' })
-          .then(function (content) {
-            saveAs(content, 'Certificates.zip');
-          });
-        const targetDiv = document.getElementById('certificate')!;
-        targetDiv.innerHTML = ``;
-      }
-    });
-  }
-  delay(ms: number) {
-    return new Promise((resolve) => setTimeout(resolve, ms));
-  }
 
   filters = {
     trainingTitle: null,
