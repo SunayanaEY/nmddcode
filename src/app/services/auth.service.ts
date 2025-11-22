@@ -4,6 +4,7 @@ import { Observable, of, interval, Subscription } from 'rxjs';
 import { catchError, map, tap } from 'rxjs/operators';
 import { environment } from '../../environments/environment';
 import { Router } from '@angular/router';
+import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 
 interface LoginResponse {
   data: {
@@ -52,7 +53,7 @@ export class AuthService {
   private lastActivityTime: number = Date.now();
   private isLoggingOut: boolean = false;
 
-  constructor(private http: HttpClient, private router: Router) {
+  constructor(private http: HttpClient, private router: Router, private ngbModal: NgbModal) {
     this.setupActivityListeners();
     // Only start session monitoring if user is already logged in (e.g., page refresh)
     if (this.isLoggedIn()) {
@@ -99,6 +100,8 @@ export class AuthService {
         sessionStorage.removeItem('user');
         sessionStorage.removeItem('loginTime');
         this.stopSessionMonitoring();
+        // Close any open modals from ng-bootstrap or Bootstrap JS
+        this.closeAllOpenModals();
       })
     );
   }
@@ -140,6 +143,8 @@ export class AuthService {
     sessionStorage.removeItem('user');
     sessionStorage.removeItem('loginTime');
     this.stopSessionMonitoring();
+    // Ensure all modals are closed
+    this.closeAllOpenModals();
   }
 
   getUser() {
@@ -360,6 +365,9 @@ export class AuthService {
       return;
     }
 
+    // Close any open modals before navigating to login
+    this.closeAllOpenModals();
+
     this.logoutSync(); // Use synchronous logout for automatic logout
     this.router.navigate(['/login'], {
       queryParams: {
@@ -421,5 +429,47 @@ export class AuthService {
       this.apiUrl + 'api/auth/forgot-password-otp',
       body
     );
+  }
+
+  /**
+   * Close all open modals across the app (ng-bootstrap and native Bootstrap)
+   */
+  private closeAllOpenModals(): void {
+    // Try closing any ng-bootstrap modals
+    try {
+      this.ngbModal.dismissAll();
+    } catch (e) {}
+
+    // Close any native Bootstrap modals currently shown
+    try {
+      const w: any = window as any;
+      const openModals = document.querySelectorAll<HTMLElement>('.modal.show');
+      openModals.forEach((el) => {
+        try {
+          const ModalCtor = w?.bootstrap?.Modal;
+          if (ModalCtor) {
+            let instance = ModalCtor.getInstance(el);
+            if (!instance) {
+              instance = new ModalCtor(el);
+            }
+            instance.hide();
+          } else {
+            // Fallback: force-hide element
+            el.classList.remove('show');
+            el.style.display = 'none';
+            el.setAttribute('aria-hidden', 'true');
+          }
+        } catch (_) {
+          // ignore individual modal errors
+        }
+      });
+
+      // Remove any lingering backdrops and body classes
+      document.querySelectorAll('.modal-backdrop').forEach((bd) => bd.remove());
+      document.body.classList.remove('modal-open');
+      document.body.style.removeProperty('padding-right');
+    } catch (_) {
+      // ignore
+    }
   }
 }
