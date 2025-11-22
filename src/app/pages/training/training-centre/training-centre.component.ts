@@ -112,17 +112,14 @@ export class TrainingCentreComponent implements OnInit {
     {
       key: 'stateHeadContactPerson',
       header: 'TRAINING.STATE_HEAD_NAME',
-      showColumn: () => this.userRole == 1,
     },
     {
       key: 'stateHeadContact',
       header: 'TRAINING.STATE_HEAD_CONTACT',
-      showColumn: () => this.userRole == 1,
     },
     {
       key: 'stateHeadEmail',
       header: 'TRAINING.STATE_HEAD_EMAIL',
-      showColumn: () => this.userRole == 1,
     },
     { key: 'contactPersonName', header: 'TRAINING.INSTITUTE_HEAD' },
     { key: 'contactNumber', header: 'COMMON.CONTACT_NUMBER' },
@@ -486,6 +483,34 @@ export class TrainingCentreComponent implements OnInit {
       this.userRole = user.role;
       this.userId = user.OrganizationId;
     }
+    this.tableColumns = [
+    { key: 'trainingInstituteName', header: 'TRAINING.INSTITUTE_NAME' },
+    { key: 'state', header: 'COMMON.STATE' },
+    { key: 'district', header: 'COMMON.DISTRICT' },
+    {
+      key: 'stateHeadContactPerson',
+      header: 'TRAINING.STATE_HEAD_NAME',
+      showColumn : () => this.userRole != 1
+    },
+    {
+      key: 'stateHeadContact',
+      header: 'TRAINING.STATE_HEAD_CONTACT',
+      showColumn : () => this.userRole != 1
+    },
+    {
+      key: 'stateHeadEmail',
+      header: 'TRAINING.STATE_HEAD_EMAIL',
+      showColumn : () => this.userRole != 1
+    },
+    { key: 'contactPersonName', header: 'TRAINING.INSTITUTE_HEAD' },
+    { key: 'contactNumber', header: 'COMMON.CONTACT_NUMBER' },
+    {
+      key: 'status',
+      header: 'COMMON.STATUS',
+      transform: (value: any, item: any) =>
+        item.active ? 'Active' : 'Inactive',
+    },
+  ];
   }
 
   loadDistrictsByState(stateId: number): void {
