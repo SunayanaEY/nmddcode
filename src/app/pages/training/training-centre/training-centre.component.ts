@@ -566,7 +566,7 @@ export class TrainingCentreComponent implements OnInit {
     if (this.statusFilter) {
       if (this.statusFilter === 'active') {
         filtered = filtered.filter((centre) => centre.active === true);
-      } else if (this.statusFilter === 'inactive') {
+      } else if (this.statusFilter  === 'inactive') {
         filtered = filtered.filter((centre) => centre.active === false);
       }
     }
