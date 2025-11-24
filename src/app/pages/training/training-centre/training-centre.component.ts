@@ -105,31 +105,7 @@ export class TrainingCentreComponent implements OnInit {
     private router: Router
   ) {}
 
-  tableColumns: TableColumn[] = [
-    { key: 'trainingInstituteName', header: 'TRAINING.INSTITUTE_NAME' },
-    { key: 'state', header: 'COMMON.STATE' },
-    { key: 'district', header: 'COMMON.DISTRICT' },
-    {
-      key: 'stateHeadContactPerson',
-      header: 'TRAINING.STATE_HEAD_NAME',
-    },
-    {
-      key: 'stateHeadContact',
-      header: 'TRAINING.STATE_HEAD_CONTACT',
-    },
-    {
-      key: 'stateHeadEmail',
-      header: 'TRAINING.STATE_HEAD_EMAIL',
-    },
-    { key: 'contactPersonName', header: 'TRAINING.INSTITUTE_HEAD' },
-    { key: 'contactNumber', header: 'COMMON.CONTACT_NUMBER' },
-    {
-      key: 'status',
-      header: 'COMMON.STATUS',
-      transform: (value: any, item: any) =>
-        item.active ? 'Active' : 'Inactive',
-    },
-  ];
+  tableColumns: TableColumn[] = [];
 
   tableActions: TableAction[] = [
     {
@@ -194,7 +170,7 @@ export class TrainingCentreComponent implements OnInit {
   isPreviousInstituteHeadsLoading = false;
   previousInstituteHeadsError: string | null = null;
 
-  ngOnInit(): void {
+  ngOnInit(): void {  
     this.getRole();
     if (this.userRole === 5 || this.userRole === 6) {
       this.tableActions.splice(1, 0, {
@@ -484,9 +460,12 @@ export class TrainingCentreComponent implements OnInit {
       this.userId = user.OrganizationId;
     }
     this.tableColumns = [
-    { key: 'trainingInstituteName', header: 'TRAINING.INSTITUTE_NAME' },
-    { key: 'state', header: 'COMMON.STATE' },
-    { key: 'district', header: 'COMMON.DISTRICT' },
+    { key: 'trainingInstituteName', header: 'TRAINING.INSTITUTE_NAME',
+      showColumn : () => true
+
+     },
+    { key: 'state', header: 'COMMON.STATE',showColumn : () => true },
+    { key: 'district', header: 'COMMON.DISTRICT',showColumn : () => true },
     {
       key: 'stateHeadContactPerson',
       header: 'TRAINING.STATE_HEAD_NAME',
@@ -502,13 +481,14 @@ export class TrainingCentreComponent implements OnInit {
       header: 'TRAINING.STATE_HEAD_EMAIL',
       showColumn : () => this.userRole != 1
     },
-    { key: 'contactPersonName', header: 'TRAINING.INSTITUTE_HEAD' },
-    { key: 'contactNumber', header: 'COMMON.CONTACT_NUMBER' },
+    { key: 'contactPersonName', header: 'TRAINING.INSTITUTE_HEAD',showColumn : () => true },
+    { key: 'contactNumber', header: 'COMMON.CONTACT_NUMBER',showColumn : () => true },
     {
       key: 'status',
       header: 'COMMON.STATUS',
       transform: (value: any, item: any) =>
         item.active ? 'Active' : 'Inactive',
+      showColumn : () => true
     },
   ];
   }
@@ -555,12 +535,12 @@ export class TrainingCentreComponent implements OnInit {
   }
 
   get filteredTrainingCentres(): any[] {
-    let filtered = [...this.trainingCentres];
+  let filtered = [...this.trainingCentres];
 
-    // Filter by state
-    if (this.stateFilter) {
-      filtered = filtered.filter((centre) => centre.state === this.stateFilter);
-    }
+  // Filter by state
+  if (this.stateFilter) {
+    filtered = filtered.filter((centre) => centre.state === this.stateFilter);
+  }
 
     // Filter by status
     if (this.statusFilter) {
@@ -571,9 +551,11 @@ export class TrainingCentreComponent implements OnInit {
       }
     }
 
-    return filtered;
-  }
-
+  return filtered.map((centre) => ({
+    ...centre,
+    actions: [...this.tableActions], 
+  }));
+}
   onStateFilterChange(state: string): void {
     this.stateFilter = state;
   }
