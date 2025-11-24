@@ -105,34 +105,7 @@ export class TrainingCentreComponent implements OnInit {
     private router: Router
   ) {}
 
-  tableColumns: TableColumn[] = [
-    { key: 'trainingInstituteName', header: 'TRAINING.INSTITUTE_NAME' },
-    { key: 'state', header: 'COMMON.STATE' },
-    { key: 'district', header: 'COMMON.DISTRICT' },
-    {
-      key: 'stateHeadContactPerson',
-      header: 'TRAINING.STATE_HEAD_NAME',
-      showColumn: () => this.userRole == 1,
-    },
-    {
-      key: 'stateHeadContact',
-      header: 'TRAINING.STATE_HEAD_CONTACT',
-      showColumn: () => this.userRole == 1,
-    },
-    {
-      key: 'stateHeadEmail',
-      header: 'TRAINING.STATE_HEAD_EMAIL',
-      showColumn: () => this.userRole == 1,
-    },
-    { key: 'contactPersonName', header: 'TRAINING.INSTITUTE_HEAD' },
-    { key: 'contactNumber', header: 'COMMON.CONTACT_NUMBER' },
-    {
-      key: 'status',
-      header: 'COMMON.STATUS',
-      transform: (value: any, item: any) =>
-        item.active ? 'Active' : 'Inactive',
-    },
-  ];
+  tableColumns: TableColumn[] = [];
 
   tableActions: TableAction[] = [
     {
@@ -311,7 +284,8 @@ export class TrainingCentreComponent implements OnInit {
           label: 'State Head Name',
           type: 'text',
           placeholder: 'Enter state head name',
-          disabled: this.userRole == 5 || this.userRole == 6 || this.userRole === 1,
+          disabled:
+            this.userRole == 5 || this.userRole == 6 || this.userRole === 1,
         },
         {
           id: 'stateHeadContact',
@@ -319,14 +293,16 @@ export class TrainingCentreComponent implements OnInit {
           type: 'tel',
           placeholder: 'Enter state head contact number',
           pattern: '[0-9]{10}',
-          disabled: this.userRole == 5 || this.userRole == 6 || this.userRole === 1,
+          disabled:
+            this.userRole == 5 || this.userRole == 6 || this.userRole === 1,
         },
         {
           id: 'stateHeadEmail',
           label: 'State Head Email',
           type: 'email',
           placeholder: 'Enter state head email address',
-          disabled: this.userRole == 5 || this.userRole == 6 || this.userRole === 1,
+          disabled:
+            this.userRole == 5 || this.userRole == 6 || this.userRole === 1,
         },
         {
           id: 'designation',
@@ -485,6 +461,47 @@ export class TrainingCentreComponent implements OnInit {
       const user = JSON.parse(userData);
       this.userRole = user.role;
       this.userId = user.OrganizationId;
+    }
+    if (this.userRole == 1) {
+      this.tableColumns = [
+        { key: 'trainingInstituteName', header: 'TRAINING.INSTITUTE_NAME' },
+        { key: 'state', header: 'COMMON.STATE' },
+        { key: 'district', header: 'COMMON.DISTRICT' },
+        { key: 'contactPersonName', header: 'TRAINING.INSTITUTE_HEAD' },
+        { key: 'contactNumber', header: 'COMMON.CONTACT_NUMBER' },
+        {
+          key: 'status',
+          header: 'COMMON.STATUS',
+          transform: (value: any, item: any) =>
+            item.active ? 'Active' : 'Inactive',
+        },
+      ];
+    } else {
+      this.tableColumns = [
+        { key: 'trainingInstituteName', header: 'TRAINING.INSTITUTE_NAME' },
+        { key: 'state', header: 'COMMON.STATE' },
+        { key: 'district', header: 'COMMON.DISTRICT' },
+        {
+          key: 'stateHeadContactPerson',
+          header: 'TRAINING.STATE_HEAD_NAME',
+        },
+        {
+          key: 'stateHeadContact',
+          header: 'TRAINING.STATE_HEAD_CONTACT',
+        },
+        {
+          key: 'stateHeadEmail',
+          header: 'TRAINING.STATE_HEAD_EMAIL',
+        },
+        { key: 'contactPersonName', header: 'TRAINING.INSTITUTE_HEAD' },
+        { key: 'contactNumber', header: 'COMMON.CONTACT_NUMBER' },
+        {
+          key: 'status',
+          header: 'COMMON.STATUS',
+          transform: (value: any, item: any) =>
+            item.active ? 'Active' : 'Inactive',
+        },
+      ];
     }
   }
 
