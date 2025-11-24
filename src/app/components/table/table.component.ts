@@ -52,7 +52,7 @@ export class TableComponent {
   @Input() isLoading: boolean = false;
   @Input() userRole: number = 0;
   schemesTableString: string = 'schemes';
-  tableNamesArray: Array<string> = ['schemes', 'trainingTypes'];
+  tableNamesArray: Array<string> = ['schemes', 'trainingTypes','trainingInstituteTable'];
   
   @Input() addNew: string = '';
   @Input() columns: TableColumn[] = [];
@@ -94,7 +94,9 @@ export class TableComponent {
     private toatsr: ToastrService
   ) {}
 
-  ngOnInit() {}
+  ngOnInit() {
+    console.log('visibleColumns:', this.visibleColumns);
+  }
   onActionClick(action: string, item: any, index: number): void {
     this.actionClick.emit({ action, item, index });
   }
@@ -106,7 +108,7 @@ export class TableComponent {
     }
   }
   get visibleColumns(): TableColumn[] {
-  return this.columns.filter(col => 
+    return this.columns.filter(col => 
     col.showColumn && col.showColumn()
   );
 }

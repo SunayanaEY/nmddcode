@@ -106,7 +106,7 @@
             />
           </th>
           <th scope="col">{{ "Sr.No." | translate }}</th>
-          <ng-container *ngFor="let col of columns">
+          <ng-container *ngFor="let col of visibleColumns">
             <th  scope="col">
               {{ col.header | translate }}
             </th>
@@ -195,6 +195,7 @@
           <ng-container *ngIf="!tableNamesArray.includes(tableName)">
             <td
               *ngFor="let col of columns"
+              [hidden]="!shouldShowColumn(col, item)"
             >
               <ng-container
                 *ngIf="

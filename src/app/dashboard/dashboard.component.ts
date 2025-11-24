@@ -88,16 +88,16 @@ export class DashboardComponent {
   }
 
   dashboardStats: DashboardStats = {
-    totalTrainings: 54,
-    totalFarmers: 3932,
-    totalCertificatesApproved: 2912,
-    totalCertificatesIssued: 1640,
-    trainingGrowth: 8,
-    totalInstitute: 8,
-    farmerGrowth: 24,
-    approvedGrowth: 37,
-    issuedGrowth: 26,
-    instituteGrowth: 21,
+    totalTrainings: 0,
+    totalFarmers: 0,
+    totalCertificatesApproved: 0,
+    totalCertificatesIssued: 0,
+    trainingGrowth: 0,
+    totalInstitute: 0,
+    farmerGrowth: 0,
+    approvedGrowth: 0,
+    issuedGrowth: 0,
+    instituteGrowth: 0,
   };
 
   selectedState: StateData | null = null;
@@ -432,10 +432,7 @@ export class DashboardComponent {
         value: this.formatKpiValue(this.dashboardStats.totalTrainings),
         icon: 'fas fa-chalkboard-teacher',
         colorClass: 'kpi-card-green',
-        growth: {
-          value: `↑ ${this.dashboardStats.trainingGrowth}% from last Quarter`,
-          isPositive: this.dashboardStats.trainingGrowth >= 0,
-        },
+       
       },
       {
         id: 'totalFarmersTrained',
@@ -443,12 +440,7 @@ export class DashboardComponent {
         value: this.formatKpiValue(this.dashboardStats.totalFarmers),
         icon: 'fas fa-users',
         colorClass: 'kpi-card-blue',
-        growth: {
-          value: `${
-            this.dashboardStats.farmerGrowth >= 0 ? '↑' : '↓'
-          } ${Math.abs(this.dashboardStats.farmerGrowth)}% from last Quarter`,
-          isPositive: this.dashboardStats.farmerGrowth >= 0,
-        },
+        
       },
       {
         id: 'totalCertificatesApproved',
@@ -458,12 +450,7 @@ export class DashboardComponent {
         ),
         icon: 'fas fa-certificate',
         colorClass: 'kpi-card-purple',
-        growth: {
-          value: `${
-            this.dashboardStats.approvedGrowth >= 0 ? '↑' : '↓'
-          } ${Math.abs(this.dashboardStats.approvedGrowth)}% from last Quarter`,
-          isPositive: this.dashboardStats.approvedGrowth >= 0,
-        },
+        
       },
       {
         id: 'totalCertificatesIssued',
@@ -471,12 +458,7 @@ export class DashboardComponent {
         value: this.formatKpiValue(this.dashboardStats.totalCertificatesIssued),
         icon: 'fas fa-award',
         colorClass: 'kpi-card-orange',
-        growth: {
-          value: `${
-            this.dashboardStats.issuedGrowth >= 0 ? '↑' : '↓'
-          } ${Math.abs(this.dashboardStats.issuedGrowth)}% from last Quarter`,
-          isPositive: this.dashboardStats.issuedGrowth >= 0,
-        },
+        
       },
       {
         id: 'totalInstitute',
@@ -484,10 +466,7 @@ export class DashboardComponent {
         value: this.formatKpiValue(this.dashboardStats.totalInstitute),
         icon: 'fas fa-university',
         colorClass: 'kpi-card-green',
-        growth: {
-          value: `↑ ${this.dashboardStats.instituteGrowth}% from last Quarter`,
-          isPositive: this.dashboardStats.instituteGrowth >= 0,
-        },
+        
       },
     ];
   }

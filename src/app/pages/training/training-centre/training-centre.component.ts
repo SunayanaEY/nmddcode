@@ -106,6 +106,7 @@ export class TrainingCentreComponent implements OnInit {
   ) {}
 
   tableColumns: TableColumn[] = [];
+  tableColumns: TableColumn[] = [];
 
   tableActions: TableAction[] = [
     {
@@ -170,7 +171,7 @@ export class TrainingCentreComponent implements OnInit {
   isPreviousInstituteHeadsLoading = false;
   previousInstituteHeadsError: string | null = null;
 
-  ngOnInit(): void {
+  ngOnInit(): void {  
     this.getRole();
     if (this.userRole === 5 || this.userRole === 6) {
       this.tableActions.splice(1, 0, {
@@ -547,25 +548,27 @@ export class TrainingCentreComponent implements OnInit {
   }
 
   get filteredTrainingCentres(): any[] {
-    let filtered = [...this.trainingCentres];
+  let filtered = [...this.trainingCentres];
 
-    // Filter by state
-    if (this.stateFilter) {
-      filtered = filtered.filter((centre) => centre.state === this.stateFilter);
-    }
+  // Filter by state
+  if (this.stateFilter) {
+    filtered = filtered.filter((centre) => centre.state === this.stateFilter);
+  }
 
     // Filter by status
     if (this.statusFilter) {
       if (this.statusFilter === 'active') {
         filtered = filtered.filter((centre) => centre.active === true);
-      } else if (this.statusFilter === 'inactive') {
+      } else if (this.statusFilter  === 'inactive') {
         filtered = filtered.filter((centre) => centre.active === false);
       }
     }
 
-    return filtered;
-  }
-
+  return filtered.map((centre) => ({
+    ...centre,
+    actions: [...this.tableActions], 
+  }));
+}
   onStateFilterChange(state: string): void {
     this.stateFilter = state;
   }
