@@ -47,7 +47,8 @@
         <span class="emphasis">{{ data?.duration }}</span>
         <span>&nbsp;{{data?.durationType}}</span>
         <ng-container>
-          from <span class="date">{{ data?.trainingDate | date: 'dd-MM-yyyy' }}</span>
+          from <span class="date">{{ data?.startDate | date: 'dd-MM-yyyy' }}</span>
+          to <span class="date">{{ data?.endDate | date: 'dd-MM-yyyy' }}</span>
         </ng-container>
         conducted at
         <span class="emphasis">{{ data?.trainingInstituteName || data?.organizationName || (data?.location ?? data?.venueState) }}</span>

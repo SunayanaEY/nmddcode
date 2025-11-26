@@ -40,11 +40,11 @@
       </div>
       <div class="detail-item">
         <span class="label">Start Date:</span>
-        <span class="value">{{ trainingDetails?.startDate }}</span>
+        <span class="value">{{ trainingDetails?.startDate | date: 'dd-MM-yyyy' }}</span>
       </div>
       <div class="detail-item">
         <span class="label">End Date:</span>
-        <span class="value">{{ trainingDetails?.endDate }}</span>
+        <span class="value">{{ trainingDetails?.endDate | date: 'dd-MM-yyyy' }}</span>
       </div>
 
       <div class="detail-item">
