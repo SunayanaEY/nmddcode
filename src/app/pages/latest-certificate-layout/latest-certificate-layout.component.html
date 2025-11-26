@@ -13,6 +13,17 @@
       <img class="logo-small logo-small-right" *ngIf="data?.logoPath2" [src]="data?.logoPath2" alt="Right logo" crossorigin="anonymous" />
     </div>
 
+    <!-- QR + Trainee Photo Row -->
+    <div class="qr-photo-row" aria-label="QR and Trainee Photo">
+      <div class="qr-code">
+        <qrcode [qrdata]="qrData" [width]="100" [errorCorrectionLevel]="'M'"></qrcode>
+        <!-- <p class="uid">UIN: {{ finalUniqueId }}</p> -->
+      </div>
+      <div class="trainee-photo" *ngIf="validPhotoUrl">
+        <img [src]="validPhotoUrl" alt="Trainee photo" crossorigin="anonymous" />
+      </div>
+    </div>
+
     <!-- Titles -->
     <div class="org-block" aria-label="Organization">
       <h2 class="org-hi">राष्ट्रीय डेयरी विकास बोर्ड</h2>

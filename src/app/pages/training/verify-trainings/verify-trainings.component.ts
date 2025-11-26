@@ -59,7 +59,8 @@ export class VerifyTrainingsComponent {
     'Training Institute',
     'Trainer Name',
     'Location',
-    'Training Date',
+    'Start Date',
+    'End Date',
     'Status',
   ];
   columnKeys: Array<string> = [
@@ -68,7 +69,8 @@ export class VerifyTrainingsComponent {
     'trainingInstituteName',
     'trainerName',
     'location',
-    'trainingDate',
+    'startDate',
+    'endDate',
     'status',
   ];
   breadcrumbItems: BreadcrumbItem[] = [
@@ -82,7 +84,8 @@ export class VerifyTrainingsComponent {
     { key: 'trainerName', header: 'Trainer Name' },
 
     { key: 'location', header: 'Location' },
-    { key: 'trainingDate', header: 'Training Date' },
+    { key: 'startDate', header: 'Start Date' },
+    { key: 'endDate', header: 'End Date' },
     { key: 'status', header: 'Status' },
   ];
 
@@ -241,8 +244,12 @@ export class VerifyTrainingsComponent {
             ele['venueDistrict'] +
             ',' +
             ele['venueState'];
-          ele['trainingDate'] = datePipe.transform(
-            ele['trainingDate'],
+          ele['startDate'] = datePipe.transform(
+            ele['startDate'],
+            'dd/MM/yyyy'
+          )!;
+          ele['endDate'] = datePipe.transform(
+            ele['endDate'],
             'dd/MM/yyyy'
           )!;
           this.trainingsList[index] = ele;
@@ -300,7 +307,8 @@ export class VerifyTrainingsComponent {
     trainerName: null,
     location: null,
     district: null,
-    trainingDate: null,
+    startDate: null,
+    endDate: null,
     status: null,
   };
 
@@ -317,8 +325,10 @@ export class VerifyTrainingsComponent {
         (!this.filters.location || row.location === this.filters.location) &&
         (!this.filters.district ||
           row.venueDistrict === this.filters.district) &&
-        (!this.filters.trainingDate ||
-          row.trainingDate === this.filters.trainingDate) &&
+        (!this.filters.startDate ||
+          row.startDate === this.filters.startDate) &&
+        (!this.filters.endDate ||
+          row.endDate === this.filters.endDate) &&
         (!this.filters.status || row.status === this.filters.status)
 
         // (!this.filters.sync_status || row.sync_status.toString() === this.filters.sync_status.toString()) &&
@@ -335,8 +345,12 @@ export class VerifyTrainingsComponent {
     ];
   }
 
-  uniqueValuesTrainingDate(): any[] {
-    return [...new Set(this.trainingsList.map((item) => item['trainingDate']))];
+  uniqueValuesStartDate(): any[] {
+    return [...new Set(this.trainingsList.map((item) => item['startDate']))];
+  }
+
+  uniqueValuesEndDate(): any[] {
+    return [...new Set(this.trainingsList.map((item) => item['endDate']))];
   }
 
   uniqueValuesScheme(): any[] {

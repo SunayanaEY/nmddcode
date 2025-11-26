@@ -66,7 +66,8 @@ export class ApprovedRejectedTrainingsComponent {
     'Training Institute',
     'Trainer Name',
     'Location',
-    'Training Date',
+    'Start Date',
+    'End Date',
     'Status',
   ];
   columnKeys: Array<string> = [
@@ -75,7 +76,8 @@ export class ApprovedRejectedTrainingsComponent {
     'trainingInstituteName',
     'trainerName',
     'location',
-    'trainingDate',
+    'startDate',
+    'endDate',
     'status',
   ];
   breadcrumbItems: BreadcrumbItem[] = [
@@ -97,7 +99,8 @@ export class ApprovedRejectedTrainingsComponent {
     { key: 'trainerName', header: 'Trainer Name' },
     { key: 'location', header: 'Location' },
     { key: 'venueAddress', header: 'Training Venue' },
-    { key: 'trainingDate', header: 'Training Date' },
+    { key: 'startDate', header: 'Start Date' },
+    { key: 'endDate', header: 'End Date' },
     { key: 'status', header: 'Status' },
   ];
 
@@ -115,7 +118,8 @@ export class ApprovedRejectedTrainingsComponent {
     { key: 'trainerName', header: 'Trainer Name' },
     { key: 'location', header: 'Location' },
     { key: 'venueAddress', header: 'Training Venue' },
-    { key: 'trainingDate', header: 'Training Date' },
+    { key: 'startDate', header: 'Start Date' },
+    { key: 'endDate', header: 'End Date' },
     { key: 'status', header: 'Status' },
     {
       key: 'rejectionRemark',
@@ -135,7 +139,8 @@ export class ApprovedRejectedTrainingsComponent {
 
     { key: 'location', header: 'Location' },
     { key: 'venueAddress', header: 'Training Venue' },
-    { key: 'trainingDate', header: 'Training Date' },
+    { key: 'startDate', header: 'Start Date' },
+    { key: 'endDate', header: 'End Date' },
     { key: 'status', header: 'Status' },
   ];
   tableActionsPending: TableAction[] = [
@@ -236,8 +241,12 @@ export class ApprovedRejectedTrainingsComponent {
             ele['venueDistrict'] +
             ',' +
             ele['venueState'];
-          ele['trainingDate'] = datePipe.transform(
-            ele['trainingDate'],
+          ele['startDate'] = datePipe.transform(
+            ele['startDate'],
+            'dd/MM/yyyy'
+          )!;
+          ele['endDate'] = datePipe.transform(
+            ele['endDate'],
             'dd/MM/yyyy'
           )!;
           this.trainingsList3[index] = ele;
@@ -262,8 +271,12 @@ export class ApprovedRejectedTrainingsComponent {
             ele['venueDistrict'] +
             ',' +
             ele['venueState'];
-          ele['trainingDate'] = datePipe.transform(
-            ele['trainingDate'],
+          ele['startDate'] = datePipe.transform(
+            ele['startDate'],
+            'dd/MM/yyyy'
+          )!;
+          ele['endDate'] = datePipe.transform(
+            ele['endDate'],
             'dd/MM/yyyy'
           )!;
           this.trainingsList[index] = ele;
@@ -288,8 +301,12 @@ export class ApprovedRejectedTrainingsComponent {
             ele['venueDistrict'] +
             ',' +
             ele['venueState'];
-          ele['trainingDate'] = datePipe.transform(
-            ele['trainingDate'],
+          ele['startDate'] = datePipe.transform(
+            ele['startDate'],
+            'dd/MM/yyyy'
+          )!;
+          ele['endDate'] = datePipe.transform(
+            ele['endDate'],
             'dd/MM/yyyy'
           )!;
           this.trainingsList2[index] = ele;
@@ -353,7 +370,8 @@ export class ApprovedRejectedTrainingsComponent {
     trainingInstituteName: null,
     trainerName: null,
     location: null,
-    trainingDate: null,
+    startDate: null,
+    endDate: null,
     status: null,
   };
 
@@ -368,8 +386,8 @@ export class ApprovedRejectedTrainingsComponent {
         (!this.filters.trainerName ||
           row.trainerName === this.filters.trainerName) &&
         (!this.filters.location || row.location === this.filters.location) &&
-        (!this.filters.trainingDate ||
-          row.trainingDate === this.filters.trainingDate) &&
+        (!this.filters.startDate ||
+          row.startDate === this.filters.startDate) &&
         (!this.filters.status || row.status === this.filters.status)
 
         // (!this.filters.sync_status || row.sync_status.toString() === this.filters.sync_status.toString()) &&
@@ -386,8 +404,11 @@ export class ApprovedRejectedTrainingsComponent {
     ];
   }
 
-  uniqueValuesTrainingDate(): any[] {
-    return [...new Set(this.trainingsList.map((item) => item['trainingDate']))];
+  uniqueValuesStartDate(): any[] {
+    return [...new Set(this.trainingsList.map((item) => item['startDate']))];
+  }
+  uniqueValuesEndDate(): any[] {
+    return [...new Set(this.trainingsList.map((item) => item['endDate']))];
   }
 
   uniqueValuesScheme(): any[] {

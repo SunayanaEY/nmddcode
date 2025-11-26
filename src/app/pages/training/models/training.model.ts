@@ -19,7 +19,8 @@ export interface TrainingsList{
   venueState: string;
   venueDistrict: string;
   venueBlock: string;
-  trainingDate: string;
+  startDate: string;
+  endDate: string;
   duration: string;
   trainingDescription: string;
   modeOfTraining: string;

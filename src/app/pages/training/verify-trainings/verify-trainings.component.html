@@ -98,8 +98,8 @@
       </ng-select>
       <ng-select
         class="custom-ng-select form-control"
-        placeholder="Training Date"
-        [(ngModel)]="filters.trainingDate"
+        placeholder="Start Date"
+        [(ngModel)]="filters.startDate"
         style="
           height: 100%;
           width: 100%;
@@ -114,7 +114,7 @@
       >
         <!-- <ng-option value="" disabled="true">{{'Select Date'}}</ng-option> -->
         <ng-option
-          *ngFor="let name of uniqueValuesTrainingDate()"
+          *ngFor="let name of uniqueValuesStartDate()"
           [value]="name"
           >{{ name }}</ng-option
         >
@@ -233,11 +233,22 @@
       <div class="col-md-6">
         <div class="d-flex mr-4 form-group half-width">
           <h4 class="my-auto mr-2 form-control-label detailsWidth">
-            {{ "Training Date" }} :
+            {{ "Start Date" }} :
           </h4>
           <!-- <p class="my-auto mb-0"> {{complaintDetail.title}}</p> -->
           <p class="my-auto mb-0 form-control">
-            {{ this.trainingDetails.trainingDate }}
+            {{ this.trainingDetails.startDate }}
+          </p>
+        </div>
+      </div>
+      <div class="col-md-6">
+        <div class="d-flex mr-4 form-group half-width">
+          <h4 class="my-auto mr-2 form-control-label detailsWidth">
+            {{ "End Date" }} :
+          </h4>
+          <!-- <p class="my-auto mb-0"> {{complaintDetail.title}}</p> -->
+          <p class="my-auto mb-0 form-control">
+            {{ this.trainingDetails.endDate }}
           </p>
         </div>
       </div>

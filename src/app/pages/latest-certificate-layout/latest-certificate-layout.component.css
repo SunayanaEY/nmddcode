@@ -46,6 +46,30 @@
   object-fit: contain;
 }
 
+/* QR + Photo */
+.qr-photo-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin: 8px 0 12px 0;
+}
+.qr-code {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+.qr-code .uid {
+  font-size: 12px;
+  margin-top: 6px;
+}
+.trainee-photo img {
+  width: 110px;
+  height: 130px;
+  object-fit: cover;
+  border: 1px solid #999;
+  border-radius: 4px;
+}
+
 /* Titles */
 .org-block {
   text-align: center;

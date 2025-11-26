@@ -137,14 +137,50 @@ export class TrainingCertificateGenerationComponent implements OnInit {
   }
 
   positiveDurationValidator(control: AbstractControl): ValidationErrors | null {
-    if (!control.value) {
+    if (control.value === null || control.value === undefined || control.value === '') {
       return null; // Let required validator handle empty values
     }
 
-    const duration = Number(control.value);
-
-    if (duration <= 0) {
+    const value = Number(control.value);
+    if (isNaN(value) || value <= 0) {
       return { invalidDuration: true };
+    }
+
+    return null;
+  }
+
+  endDateAfterStartValidator(group: AbstractControl): ValidationErrors | null {
+    const start = group.get('startDate')?.value;
+    const end = group.get('endDate')?.value;
+
+    // If either date is missing, don't flag this validator
+    if (!start || !end) {
+      // Clear any previous endBeforeStart error
+      const endCtrl = group.get('endDate');
+      const currentErrors = endCtrl?.errors || null;
+      if (currentErrors && currentErrors['endBeforeStart']) {
+        delete currentErrors['endBeforeStart'];
+        endCtrl?.setErrors(Object.keys(currentErrors).length ? currentErrors : null);
+      }
+      return null;
+    }
+
+    const startDate = new Date(start);
+    const endDate = new Date(end);
+
+    if (endDate < startDate) {
+      const endCtrl = group.get('endDate');
+      const currentErrors = endCtrl?.errors || {};
+      endCtrl?.setErrors({ ...currentErrors, endBeforeStart: true });
+      return { endBeforeStart: true };
+    }
+
+    // Clear the error if dates are valid
+    const endCtrl = group.get('endDate');
+    const currentErrors = endCtrl?.errors || null;
+    if (currentErrors && currentErrors['endBeforeStart']) {
+      delete currentErrors['endBeforeStart'];
+      endCtrl?.setErrors(Object.keys(currentErrors).length ? currentErrors : null);
     }
 
     return null;
@@ -170,10 +206,11 @@ export class TrainingCertificateGenerationComponent implements OnInit {
       venueDistrict: ['', Validators.required],
       venueBlock: ['', Validators.required],
       venueAddress: ['', Validators.required],
-      trainingDate: [
+      startDate: [
         '',
         [Validators.required, this.futureDateValidator.bind(this)],
       ],
+      endDate: ['', Validators.required],
       duration: [
         '',
         [Validators.required, this.positiveDurationValidator.bind(this)],
@@ -185,7 +222,7 @@ export class TrainingCertificateGenerationComponent implements OnInit {
       ],
       trainingType: ['', Validators.required],
       modeOfTraining: ['', Validators.required],
-    });
+    }, { validators: [this.endDateAfterStartValidator.bind(this)] });
   }
   ngOnInit() {
     this.getSchemes();
@@ -234,7 +271,7 @@ export class TrainingCertificateGenerationComponent implements OnInit {
       next: (response) => {
         this.isSpinner = false;
         this.trainingDetails = response;
-        const formattedDate = this.trainingDetails.trainingDate.split('T')[0];
+        const formattedDate = this.trainingDetails.startDate.split('T')[0];
         // Handle trainer selection based on trainerId
         if (this.trainingDetails.trainerId === 0) {
           // Guest trainer case
@@ -264,7 +301,7 @@ export class TrainingCertificateGenerationComponent implements OnInit {
           scheme: this.trainingDetails.schemeId,
           venueState: this.trainingDetails.venueStateId,
           venueBlock: this.trainingDetails.venueBlock,
-          trainingDate: formattedDate,
+          startDate: formattedDate,
           duration: this.trainingDetails.duration,
           durationType: this.trainingDetails.durationType,
           trainingDescription: this.trainingDetails.trainingDescription,
@@ -569,6 +606,11 @@ export class TrainingCertificateGenerationComponent implements OnInit {
     if (data.hasOwnProperty('trainingType')) {
       data['trainingTypeId'] = data['trainingType'];
       delete data['trainingType'];
+    }
+
+    // Include endDate in payload for API to store end date
+    if (data.hasOwnProperty('endDate')) {
+      data['endDate'] = data['endDate'];
     }
 
     if (this.selectedTrainers.length > 0) {
