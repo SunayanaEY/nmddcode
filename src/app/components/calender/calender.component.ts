@@ -1,7 +1,7 @@
 import { Component, Input } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { TrainingService } from '../../pages/training/services/training.service';
-import { ModalComponent, ModalConfig } from '../modal/modal.component';
+
 
 export interface Meeting {
   id: string;
@@ -12,6 +12,7 @@ export interface Meeting {
   attendees?: number;
   color?: string;
   status?: 'scheduled' | 'cancelled' | 'tentative';
+  raw?: any;
 }
 
 type CalendarView = 'month' | 'week' | 'day';
@@ -19,7 +20,7 @@ type CalendarView = 'month' | 'week' | 'day';
 @Component({
   selector: 'app-calender',
   standalone: true,
-  imports: [CommonModule, ModalComponent],
+  imports: [CommonModule],
   templateUrl: './calender.component.html',
   styleUrls: ['./calender.component.css']
 })
@@ -248,6 +249,20 @@ export class CalenderComponent {
     return `${hh}:${m} ${ampm}`;
   }
 
+  formatDateOnly(d: Date | string | null | undefined): string {
+    if (!d) return '';
+    const date = typeof d === 'string' ? new Date(d) : d;
+    if (!(date instanceof Date) || isNaN(date.getTime())) return '';
+    return date.toLocaleDateString(undefined, { day: '2-digit', month: 'short', year: 'numeric' });
+  }
+
+  normalizeUrl(u: any): string | null {
+    if (!u) return null;
+    const s = String(u).trim();
+    const cleaned = s.replace(/^`+|`+$/g, '').trim();
+    return cleaned || null;
+  }
+
  
   private loadScheduledTrainings(): void {
     this.trainingService.getAllScheduledTrainings().subscribe({
@@ -289,7 +304,8 @@ export class CalenderComponent {
           location: locationParts.length ? locationParts.join(', ') : t.venueAddress ?? undefined,
           attendees: t.traineeCount ?? undefined,
           color: this.colorForStatus(t.status, t.modeOfTraining),
-          status: this.statusToMeetingStatus(t.status)
+          status: this.statusToMeetingStatus(t.status),
+          raw: t
         } as Meeting;
       })
       .filter((m: Meeting | null) => !!m) as Meeting[];
@@ -315,57 +331,22 @@ export class CalenderComponent {
 
 // Modal state for day trainings
 showDayModal: boolean = false;
-dayModalConfig: ModalConfig = { title: 'Trainings', size: 'l', showFooter: true };
 dayModalDate: Date | null = null;
+dayModalTrainings: any[] = [];
 
 
 // Open modal with all trainings for the selected date
 openDayModal(date: Date): void {
   this.dayModalDate = new Date(date);
   const events = this.getDayEvents(this.dayModalDate);
-  const titleStr = this.dayModalDate.toLocaleDateString(undefined, { weekday: 'short', month: 'short', day: 'numeric' });
-  this.dayModalConfig = {
-    title: `Trainings on ${titleStr}`,
-    size: 'l',
-    showFooter: true,
-    content: this.buildDayEventsHtml(events)
-  };
+  this.dayModalTrainings = events.map(e => e.raw ?? null).filter((t: any) => !!t);
   this.showDayModal = true;
 }
 
 onCloseDayModal(): void {
   this.showDayModal = false;
+  this.dayModalTrainings = [];
+  this.dayModalDate = null;
 }
 
-// Build HTML content for modal listing
-private buildDayEventsHtml(events: Meeting[]): string {
-  if (!events || events.length === 0) {
-    return `<div class="empty">No trainings scheduled.</div>`;
-  }
-  const items = events.map(e => {
-    const timeStr = `${this.formatTime(e.start)} - ${this.formatTime(e.end)}`;
-    const color = e.color || '#6366f1';
-    const location = e.location ? `<div class="loc" style="font-size:12px;color:#6b7280;">${this.escapeHtml(e.location)}</div>` : '';
-    return `
-      <div class="cal-modal-item" style="display:flex;gap:8px;align-items:flex-start;padding:10px;border-left:4px solid ${color};background:#ffffff;border-radius:10px;margin-bottom:10px;box-shadow:0 1px 2px rgba(0,0,0,0.06);">
-        <div style="flex:1;">
-          <div class="ttl" style="font-weight:600;color:#111827;">${this.escapeHtml(e.title)}</div>
-          <div class="tm" style="font-size:12px;color:#6b7280;">${timeStr}</div>
-          ${location}
-        </div>
-      </div>
-    `;
-  }).join('');
-  return `<div class="cal-modal-list">${items}</div>`;
-}
-
-private escapeHtml(text: string): string {
-  return (text ?? '').replace(/[&<>"']/g, (c) => ({
-    '&': '&amp;',
-    '<': '&lt;',
-    '>': '&gt;',
-    '"': '&quot;',
-    "'": '&#39;'
-  }[c]!));
-}
 }

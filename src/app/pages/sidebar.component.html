@@ -60,6 +60,17 @@
         <span class="sidebar-label" *ngIf="!collapsed">{{'Dashboard'|translate}}</span>
       </a>
       <!--Training Modules with Dropdown-->
+      <!-- Calendar -->
+      <!-- <a
+        class="sidebar-link d-flex align-items-center mb-2 fw-bold"
+        [routerLink]="['calender']"
+        routerLinkActive="active"
+        [attr.title]="collapsed ? 'Calender' : null"
+         *ngIf="isRole3User() || isRole4User()"
+      >
+        <i class="bi bi-calendar3 me-2"></i>
+        <span class="sidebar-label" *ngIf="!collapsed">{{'Calender'|translate}}</span>
+      </a> -->
       <div class="sidebar-dropdown">
         <a
           class="sidebar-link training-management-link d-flex align-items-center mb-2 fw-bold"
@@ -204,16 +215,7 @@
         </div>
       </div>
 
-      <!-- Calendar -->
-      <a
-        class="sidebar-link d-flex align-items-center mb-2 fw-bold"
-        [routerLink]="['calender']"
-        routerLinkActive="active"
-        [attr.title]="collapsed ? 'Calender' : null"
-      >
-        <i class="bi bi-calendar3 me-2"></i>
-        <span class="sidebar-label" *ngIf="!collapsed">{{'Calender'|translate}}</span>
-      </a>
+      
 
       <!-- Activity Log -->
       <a

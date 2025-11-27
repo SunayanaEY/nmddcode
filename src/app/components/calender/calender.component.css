@@ -190,6 +190,10 @@
   font-size: 0.85rem;
   font-weight: 600;
   color: #111827;
+  display: block;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .month-event .event-time {
@@ -233,6 +237,10 @@
 .event-title {
   font-weight: 700;
   color: #111827;
+  display: block;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .event-time {
@@ -348,11 +356,16 @@
 .details .meta .title {
   font-weight: 700;
   color: #111827;
+  display: block;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .details .empty {
   color: #6b7280;
   font-style: italic;
+  padding-left: 12px;
 }
 
 /* Responsive */
@@ -506,6 +519,10 @@
 
 .details .meta .title {
   color: var(--cal-text);
+  display: block;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 /* Animations */
@@ -546,3 +563,136 @@
     animation: none !important;
   }
 }
+
+/* Calendar-specific inline modal */
+.cal-modal-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(17, 24, 39, 0.45);
+  backdrop-filter: blur(2px);
+  z-index: 900;
+}
+
+.cal-modal {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: min(720px, calc(100vw - 48px));
+  max-height: min(80vh, 700px);
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+  overflow: hidden;
+  z-index: 901;
+  display: flex;
+  flex-direction: column;
+}
+
+.cal-modal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 14px 16px;
+  background: #1939B7; /* match app blue */
+  color: #fff;
+}
+.cal-modal-header .title { font-weight: 600; }
+.cal-modal-header .icon-btn {
+  background: #fff;
+  color: #1939B7;
+  border: none;
+  border-radius: 999px;
+  width: 32px;
+  height: 32px;
+  cursor: pointer;
+}
+
+.cal-modal-body {
+  padding: 16px;
+  overflow: auto;
+}
+.cal-modal-body.empty { padding: 24px; color: #6b7280; }
+
+.training-card {
+  border-left: 4px solid #6366f1;
+  background: #fff;
+  border-radius: 10px;
+  padding: 12px;
+  box-shadow: 0 1px 2px rgba(0,0,0,0.08);
+  margin-bottom: 12px;
+}
+.training-card .card-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.training-card .logo {
+  width: 32px;
+  height: 32px;
+  object-fit: contain;
+}
+.training-card .card-title { font-weight: 600; color: #111827; display: block; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.training-card .card-row {
+  display: flex;
+  gap: 6px;
+  margin-top: 6px;
+  font-size: 13px;
+  color: #1f2937;
+}
+.training-card .card-row .label { color: #6b7280; min-width: 86px; }
+.training-card .card-desc { margin-top: 8px; font-size: 13px; color: #4b5563; }
+
+.cal-modal-footer {
+  display: flex;
+  justify-content: flex-end;
+  padding: 12px 16px;
+  border-top: 1px solid #e5e7eb;
+}
+.cal-modal-footer .btn {
+  padding: 8px 12px;
+  border-radius: 8px;
+  background: #e5e7eb;
+  border: none;
+  cursor: pointer;
+}
+/* Details panel refresh */
+.details {
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.08);
+  border: 1px solid #e5e7eb;
+}
+.details-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 14px;
+  background: linear-gradient(0deg, #f1f5f9, #f8fafc);
+  border-bottom: 1px solid #e5e7eb;
+}
+.details-title { font-weight: 600; color: #0f172a; }
+.details-header .btn {
+  padding: 6px 10px;
+  border-radius: 8px;
+  background: #e5e7eb;
+  border: none;
+  cursor: pointer;
+}
+
+.details-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 10px 16px;
+  padding: 12px 14px;
+}
+.details-grid .item { display: contents; }
+.details-grid .item.full { grid-column: 1 / -1; display: block; }
+.details-grid .label { color: #6b7280; font-size: 13px; }
+.details-grid .value { color: #111827; font-size: 13px; }
+
+.details-body { padding: 12px 14px; }
+.details-item { display: flex; align-items: center; gap: 10px; padding: 8px 0; }
+.details-item .dot { width: 10px; height: 10px; border-radius: 999px; }
+.details-item .meta .title { font-weight: 600; color: #111827; display: block; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.details-item .meta .time { color: #6b7280; font-size: 13px; }

@@ -37,7 +37,7 @@
             <div class="month-events">
               <div class="month-event" *ngFor="let m of day.meetings | slice:0:1; trackBy: trackByMeeting"
                    [style.borderLeftColor]="m.color" (click)="selectMeeting(m)">
-                <div class="event-title">{{ m.title }}</div>
+                <div class="event-title" [attr.title]="m.title">{{ m.title }}</div>
                 <!-- <div class="event-time" *ngIf="m.start">{{ m.start | date:'h:mm a' }}</div> -->
               </div>
               <button class="month-more-btn" *ngIf="day.meetings.length > 1" (click)="$event.stopPropagation(); openDayModal(day.date)">+{{ day.meetings.length - 1 }}</button>
@@ -58,7 +58,7 @@
           <div class="week-day-events">
             <div class="event-card" *ngFor="let m of getDayEvents(d); trackBy: trackByMeeting"
                  [style.borderLeftColor]="m.color" (click)="selectMeeting(m)">
-              <div class="event-title">{{ m.title }}</div>
+              <div class="event-title" [attr.title]="m.title">{{ m.title }}</div>
               <div class="event-time">{{ formatTime(m.start) }} - {{ formatTime(m.end) }}</div>
             </div>
           </div>
@@ -82,7 +82,7 @@
                [style.height.px]="(toMinutes(m.end) - toMinutes(m.start)) * minutePixelRatio"
                [style.background]="m.color"
                (click)="selectMeeting(m)">
-            <div class="event-title">{{ m.title }}</div>
+            <div class="event-title" [attr.title]="m.title">{{ m.title }}</div>
             <div class="event-time">{{ formatTime(m.start) }} - {{ formatTime(m.end) }}</div>
           </div>
         </div>
@@ -96,35 +96,100 @@
       <div class="details-title">{{ sm.title }}</div>
       <button class="btn" (click)="clearSelection()">Close</button>
     </div>
-    <div class="details-body">
-      <div class="row"><strong>Time:</strong> {{ formatTime(sm.start) }} - {{ formatTime(sm.end) }}</div>
-      <div class="row"><strong>Date:</strong> {{ sm.start | date:'EEE, MMM d, y' }}</div>
-      <div class="row" *ngIf="sm.location"><strong>Location:</strong> {{ sm.location }}</div>
-      <div class="row" *ngIf="sm.attendees"><strong>Attendees:</strong> {{ sm.attendees }}</div>
-      <div class="row"><strong>Status:</strong> {{ sm.status }}</div>
+    <div class="details-grid">
+      <div class="item" *ngIf="sm.raw?.trainingInstituteName">
+        <div class="label">Institute</div>
+        <div class="value">{{ sm.raw.trainingInstituteName }}</div>
+      </div>
+      <div class="item" *ngIf="sm.raw?.scheme">
+        <div class="label">Scheme</div>
+        <div class="value">{{ sm.raw.scheme }}</div>
+      </div>
+      <div class="item">
+        <div class="label">Mode</div>
+        <div class="value">{{ sm.raw?.modeOfTraining || '—' }}</div>
+      </div>
+      <div class="item" *ngIf="sm.raw?.duration && sm.raw?.durationType">
+        <div class="label">Duration</div>
+        <div class="value">{{ sm.raw.duration }} {{ sm.raw.durationType }}</div>
+      </div>
+      <div class="item">
+        <div class="label">Dates</div>
+        <div class="value">{{ sm.start | date:'d MMM, y' }} - {{ sm.end | date:'d MMM, y' }}</div>
+      </div>
+      <div class="item" *ngIf="sm.raw?.trainerName">
+        <div class="label">Trainers</div>
+        <div class="value">{{ sm.raw.trainerName }}</div>
+      </div>
+      <div class="item" *ngIf="sm.raw?.venueBlock || sm.raw?.venueDistrict || sm.raw?.venueState">
+        <div class="label">Location</div>
+        <div class="value">{{ sm.raw.venueBlock }}, {{ sm.raw.venueDistrict }}, {{ sm.raw.venueState }}</div>
+      </div>
+      <div class="item" *ngIf="sm.raw?.venueAddress">
+        <div class="label">Address</div>
+        <div class="value">{{ sm.raw.venueAddress }}</div>
+      </div>
+      <div class="item">
+        <div class="label">Status</div>
+        <div class="value">{{ sm.status }}</div>
+      </div>
+      <div class="item full" *ngIf="sm.raw?.trainingDescription">
+        <div class="label">Description</div>
+        <div class="value">{{ sm.raw.trainingDescription }}</div>
+      </div>
     </div>
   </div>
   <ng-template #dayDetails>
     <div class="details">
       <div class="details-header">
-        <div class="details-title">Meetings on {{ selectedDate | date:'EEE, MMM d' }}</div>
+        <div class="details-title">Trainings on {{ selectedDate | date:'EEE, MMM d' }}</div>
         <button class="btn" (click)="clearSelection()">Clear</button>
       </div>
       <div class="details-body" *ngIf="getDayEvents(selectedDate).length; else noMeetings">
         <div class="details-item" *ngFor="let m of getDayEvents(selectedDate); trackBy: trackByMeeting" (click)="selectMeeting(m)">
           <span class="dot" [style.background]="m.color"></span>
           <div class="meta">
-            <div class="title">{{ m.title }}</div>
-            <div class="time">{{ formatTime(m.start) }} - {{ formatTime(m.end) }}</div>
+            <div class="title" [attr.title]="m.title">{{ m.title }}</div>
+            <div class="time">{{ m.start | date:'d MMM, y' }} - {{ m.end | date:'d MMM, y' }}</div>
           </div>
         </div>
       </div>
       <ng-template #noMeetings>
-        <div class="empty">No meetings scheduled.</div>
+        <div class="empty">No trainings scheduled.</div>
       </ng-template>
     </div>
   </ng-template>
 
   <!-- Trainings list modal -->
-  <app-modal [show]="showDayModal" [config]="dayModalConfig" mode="view" (close)="onCloseDayModal()"></app-modal>
+  <div class="cal-modal-backdrop" *ngIf="showDayModal" (click)="onCloseDayModal()"></div>
+  <div class="cal-modal" *ngIf="showDayModal" role="dialog" aria-modal="true">
+    <div class="cal-modal-header">
+      <div class="title">Trainings on {{ dayModalDate | date:'EEE, MMM d' }}</div>
+      <button class="icon-btn" (click)="onCloseDayModal()" aria-label="Close">&#x2715;</button>
+    </div>
+    <div class="cal-modal-body" *ngIf="dayModalTrainings.length; else emptyTrainings">
+      <div class="training-card" *ngFor="let t of dayModalTrainings">
+        <div class="card-header">
+          <img *ngIf="normalizeUrl(t.logoPath1) as logo" [src]="logo" class="logo" alt="logo" />
+          <div class="card-title" [attr.title]="t.trainingTitle">{{ t.trainingTitle }}</div>
+        </div>
+        <div class="card-row" *ngIf="t.trainingInstituteName"><span class="label">Institute:</span> <span>{{ t.trainingInstituteName }}</span></div>
+        <div class="card-row" *ngIf="t.scheme"><span class="label">Scheme:</span> <span>{{ t.scheme }}</span></div>
+        <div class="card-row"><span class="label">Mode:</span> <span>{{ t.modeOfTraining }}</span></div>
+        <div class="card-row" *ngIf="t.duration && t.durationType"><span class="label">Duration:</span> <span>{{ t.duration }} {{ t.durationType }}</span></div>
+        <div class="card-row"><span class="label">Dates:</span> <span>{{ t.startDate | date:'d MMM, y' }} - {{ t.endDate | date:'d MMM, y' }}</span></div>
+        <div class="card-row" *ngIf="t.status"><span class="label">Status:</span> <span>{{ t.status }}</span></div>
+        <div class="card-row" *ngIf="t.trainerName"><span class="label">Trainers:</span> <span>{{ t.trainerName }}</span></div>
+        <div class="card-row" *ngIf="t.venueBlock || t.venueDistrict || t.venueState"><span class="label">Location:</span> <span>{{ t.venueBlock }}, {{ t.venueDistrict }}, {{ t.venueState }}</span></div>
+        <div class="card-row" *ngIf="t.venueAddress"><span class="label">Address:</span> <span>{{ t.venueAddress }}</span></div>
+        <div class="card-desc" *ngIf="t.trainingDescription">{{ t.trainingDescription }}</div>
+      </div>
+    </div>
+    <ng-template #emptyTrainings>
+      <div class="cal-modal-body empty">No trainings scheduled for this date.</div>
+    </ng-template>
+    <div class="cal-modal-footer">
+      <button class="btn" (click)="onCloseDayModal()">Close</button>
+    </div>
+  </div>
 </div>
