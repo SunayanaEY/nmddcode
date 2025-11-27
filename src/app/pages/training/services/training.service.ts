@@ -168,9 +168,11 @@ export class TrainingService {
     return this.http.get<any>(this.url + `training/getAllApprovedTrainings`);
   }
   getAllInitialStageTrainings(): Observable<any> {
-    return this.http.get<any>(
-      this.url + `training/getAllInitialStageTrainings`
-    );
+    return this.http.get<any>(this.url + `training/getAllInitialStageTrainings`);
+  }
+
+  getAllScheduledTrainings(): Observable<any> {
+    return this.http.get<any>(this.url + `training/getAllScheduledTrainings`);
   }
 
   getRejectedTrainings(): Observable<any> {

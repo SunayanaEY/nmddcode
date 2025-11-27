@@ -55,6 +55,9 @@ export const routes: Routes = [
   // Legacy route redirect
   { path: 'dashboard', redirectTo: 'admin', pathMatch: 'full' },
 
+  // Calendar preview route
+  { path: 'calendar', loadComponent: () => import('./components/calender/calender.component').then(m => m.CalenderComponent) },
+
   // Wildcard route - should be last
   { path: '**', redirectTo: '', pathMatch: 'full' },
 ];

@@ -34,11 +34,13 @@
                role="button"
                [attr.aria-label]="day.date | date:'EEEE, MMMM d'">
             <div class="date-label">{{ day.date | date:'d' }}</div>
-            <div class="indicators">
-              <span class="dot" *ngFor="let m of day.meetings | slice:0:3; trackBy: trackByMeeting"
-                    [style.background]="m.color"
-                    (click)="selectMeeting(m)"></span>
-              <span class="more" *ngIf="day.meetings.length > 3">+{{ day.meetings.length - 3 }}</span>
+            <div class="month-events">
+              <div class="month-event" *ngFor="let m of day.meetings | slice:0:1; trackBy: trackByMeeting"
+                   [style.borderLeftColor]="m.color" (click)="selectMeeting(m)">
+                <div class="event-title">{{ m.title }}</div>
+                <!-- <div class="event-time" *ngIf="m.start">{{ m.start | date:'h:mm a' }}</div> -->
+              </div>
+              <button class="month-more-btn" *ngIf="day.meetings.length > 1" (click)="$event.stopPropagation(); openDayModal(day.date)">+{{ day.meetings.length - 1 }}</button>
             </div>
           </div>
         </ng-container>
@@ -122,4 +124,7 @@
       </ng-template>
     </div>
   </ng-template>
+
+  <!-- Trainings list modal -->
+  <app-modal [show]="showDayModal" [config]="dayModalConfig" mode="view" (close)="onCloseDayModal()"></app-modal>
 </div>
