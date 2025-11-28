@@ -9,6 +9,7 @@ import {
   Validators,
   AbstractControl,
   ValidationErrors,
+  FormArray
 } from '@angular/forms';
 import { SchemeService } from '../../training/services/scheme.service';
 import { TrainingService } from '../../../pages/training/services/training.service';
@@ -206,11 +207,6 @@ export class TrainingCertificateGenerationComponent implements OnInit {
       venueDistrict: ['', Validators.required],
       venueBlock: ['', Validators.required],
       venueAddress: ['', Validators.required],
-      startDate: [
-        '',
-        [Validators.required, this.futureDateValidator.bind(this)],
-      ],
-      endDate: ['', Validators.required],
       duration: [
         '',
         [Validators.required, this.positiveDurationValidator.bind(this)],
@@ -222,9 +218,11 @@ export class TrainingCertificateGenerationComponent implements OnInit {
       ],
       trainingType: ['', Validators.required],
       modeOfTraining: ['', Validators.required],
-    }, { validators: [this.endDateAfterStartValidator.bind(this)] });
+      dateRanges: this.fb.array([], [Validators.required, Validators.minLength(1)])
+    }, { validators: [this.noOverlapValidator.bind(this)] });
   }
   ngOnInit() {
+    this.addDateRange();
     this.getSchemes();
     this.getInstituteNames();
     this.loadStates();
@@ -271,7 +269,7 @@ export class TrainingCertificateGenerationComponent implements OnInit {
       next: (response) => {
         this.isSpinner = false;
         this.trainingDetails = response;
-        const formattedDate = this.trainingDetails.startDate.split('T')[0];
+        // const formattedDate = this.trainingDetails.startDate.split('T')[0];
         // Handle trainer selection based on trainerId
         if (this.trainingDetails.trainerId === 0) {
           // Guest trainer case
@@ -301,13 +299,24 @@ export class TrainingCertificateGenerationComponent implements OnInit {
           scheme: this.trainingDetails.schemeId,
           venueState: this.trainingDetails.venueStateId,
           venueBlock: this.trainingDetails.venueBlock,
-          startDate: formattedDate,
+          // startDate: formattedDate,
           duration: this.trainingDetails.duration,
           durationType: this.trainingDetails.durationType,
           trainingDescription: this.trainingDetails.trainingDescription,
           trainingType: this.trainingDetails.trainingTypeId,
           modeOfTraining: this.trainingDetails.modeOfTraining,
         });
+
+        // Clear existing date ranges and repopulate
+        this.dateRanges.clear();
+        if (this.trainingDetails.dateRanges && this.trainingDetails.dateRanges.length > 0) {
+          this.trainingDetails.dateRanges.forEach((range: any) => {
+            this.addDateRange(range.startDate, range.endDate);
+          });
+        } else {
+          // If no date ranges are provided, add a default empty one
+          this.addDateRange();
+        }
 
         // Set training institute after institutes are loaded
         this.setTrainingInstitute();
@@ -873,5 +882,99 @@ export class TrainingCertificateGenerationComponent implements OnInit {
     }
 
     return true;
+  }
+
+
+  get dateRanges(): FormArray {
+    return this.trainingForm.get('dateRanges') as FormArray;
+  }
+
+  private createDateRangeGroup(startDate?: string, endDate?: string): FormGroup {
+    return this.fb.group(
+      {
+        startDate: [
+          startDate || '',
+          [Validators.required, this.futureDateValidator.bind(this)],
+        ],
+        endDate: [endDate || '', Validators.required],
+      },
+      { validators: [this.endDateAfterStartValidator.bind(this)] }
+    );
+  }
+
+  // Validator to ensure no date ranges overlap (including the top-level range)
+  private noOverlapValidator(group: AbstractControl): ValidationErrors | null {
+    const form = group as FormGroup;
+    if (!form) return null;
+
+    const ranges: Array<{
+      start: number;
+      end: number;
+      startCtrl: AbstractControl | null;
+      endCtrl: AbstractControl | null;
+    }> = [];
+
+    const arr = form.get('dateRanges') as FormArray;
+    if (arr && Array.isArray(arr.controls)) {
+      arr.controls.forEach((ctrl: AbstractControl) => {
+        const sCtrl = ctrl.get('startDate');
+        const eCtrl = ctrl.get('endDate');
+        const s = sCtrl?.value ? new Date(sCtrl.value).getTime() : NaN;
+        const e = eCtrl?.value ? new Date(eCtrl.value).getTime() : NaN;
+        if (!isNaN(s) && !isNaN(e)) {
+          ranges.push({ start: s, end: e, startCtrl: sCtrl, endCtrl: eCtrl });
+        }
+      });
+    }
+
+    if (arr && Array.isArray(arr.controls)) {
+      arr.controls.forEach((ctrl: AbstractControl) => {
+        this.clearControlError(ctrl.get('startDate'), 'rangeOverlap');
+        this.clearControlError(ctrl.get('endDate'), 'rangeOverlap');
+      });
+    }
+
+    // Compute pairwise overlaps (inclusive)
+    let hasOverlap = false;
+    for (let i = 0; i < ranges.length; i++) {
+      for (let j = i + 1; j < ranges.length; j++) {
+        const a = ranges[i];
+        const b = ranges[j];
+        const overlaps = a.start <= b.end && b.start <= a.end; // inclusive
+        if (overlaps) {
+          hasOverlap = true;
+          this.setControlError(a.startCtrl, 'rangeOverlap');
+          this.setControlError(a.endCtrl, 'rangeOverlap');
+          this.setControlError(b.startCtrl, 'rangeOverlap');
+          this.setControlError(b.endCtrl, 'rangeOverlap');
+        }
+      }
+    }
+
+    return hasOverlap ? { rangesOverlap: true } : null;
+  }
+
+  private setControlError(control: AbstractControl | null, key: string): void {
+    if (!control) return;
+    const current = control.errors || {};
+    if (!current[key]) {
+      control.setErrors({ ...current, [key]: true });
+    }
+  }
+
+  private clearControlError(control: AbstractControl | null, key: string): void {
+    if (!control || !control.errors) return;
+    const { [key]: removed, ...rest } = control.errors;
+    control.setErrors(Object.keys(rest).length ? rest : null);
+  }
+
+  addDateRange(startDate?: string, endDate?: string): void {
+    this.dateRanges.push(this.createDateRangeGroup(startDate, endDate));
+  }
+
+  removeDateRange(index: number): void {
+    if (index > -1 && index < this.dateRanges.length) {
+      this.dateRanges.removeAt(index);
+    }
   }
 }
