@@ -31,14 +31,43 @@
   align-items: center;
 }
 .logo-small {
-  height: 72px;
+  height: 90px;
   width: auto;
   object-fit: contain;
 }
+.logo-small-right{
+  position: absolute;
+  right: 5%;
+}
+
 .logo-center {
   height: 140px;
   width: auto;
   object-fit: contain;
+}
+
+/* QR + Photo */
+.qr-photo-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin: 8px 0 12px 0;
+}
+.qr-code {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+.qr-code .uid {
+  font-size: 12px;
+  margin-top: 6px;
+}
+.trainee-photo img {
+  width: 110px;
+  height: 130px;
+  object-fit: cover;
+  border: 1px solid #999;
+  border-radius: 4px;
 }
 
 /* Titles */
@@ -72,6 +101,7 @@
   line-height: 1.75;
   color: #1a1a1a;
   margin: 0 10px 24px 10px;
+  text-align: center;
 }
 .certificate-body p {
   margin: 10px 0;

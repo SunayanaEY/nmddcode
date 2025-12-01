@@ -407,3 +407,17 @@ select.form-control {
     font-size: 2rem;
   }
 }
+
+/* Date ranges container highlight */
+.date-ranges-container {
+  background-color: #f8f9fa; /* subtle grey */
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  padding: 16px;
+  margin-bottom: 16px;
+}
+
+.date-range-actions {
+  display: flex;
+  justify-content: flex-start;
+}

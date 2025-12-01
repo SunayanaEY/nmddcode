@@ -44,6 +44,31 @@ export class LatestCertificateLayoutComponent implements OnInit {
     return `https://dahdtraining.ndlm.co.in/verify-certificate?uin=${this.finalUniqueId}`;
   }
 
+  // Determine a valid trainee photo URL from possible API fields
+  get validPhotoUrl(): string | null {
+    const candidates: Array<string | undefined> = [
+      this.data?.imageUrl,
+    ];
+
+    for (const raw of candidates) {
+      const url = (raw || '').toString().trim();
+      if (!url) continue;
+      if (this.isValidHttpUrl(url)) return url;
+      // Accept absolute paths relative to API base
+      if (url.startsWith('/')) return `${this.apiUrl}${url.replace(/^\/+/, '')}`;
+    }
+    return null;
+  }
+
+  private isValidHttpUrl(url: string): boolean {
+    try {
+      const u = new URL(url);
+      return u.protocol === 'http:' || u.protocol === 'https:';
+    } catch {
+      return false;
+    }
+  }
+
   download(): void {
     const element = this.certificateContent?.nativeElement;
     if (!element) return;

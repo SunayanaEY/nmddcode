@@ -227,6 +227,7 @@
     [pdfHeaders]="pdfHeaders"
     [columnKeys]="columnKeys"
     [fileName]="fileName"
+    [isLoading]="isLoading"
   >
   </app-table>
 </div>
@@ -279,8 +280,14 @@
 
       <div class="col-md-6">
         <div class="detail-row">
-          <label class="detail-label">{{ "Training Date" | translate }}:</label>
-          <div class="detail-value">{{ trainingDetails?.trainingDate }}</div>
+          <label class="detail-label">{{ "Start Date" | translate }}:</label>
+          <div class="detail-value">{{ trainingDetails?.startDate }}</div>
+        </div>
+      </div>
+      <div class="col-md-6">
+        <div class="detail-row">
+          <label class="detail-label">{{ "End Date" | translate }}:</label>
+          <div class="detail-value">{{ trainingDetails?.endDate }}</div>
         </div>
       </div>
       <div class="col-md-6">

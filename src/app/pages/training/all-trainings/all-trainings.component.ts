@@ -38,6 +38,7 @@ import { TranslateModule } from '@ngx-translate/core';
   styleUrl: './all-trainings.component.css',
 })
 export class AllTrainingsComponent {
+  isLoading: boolean = false;
   private bootstrap: any;
   trainingDetails: any;
   @ViewChild('trainingDetailsModal')
@@ -58,7 +59,8 @@ export class AllTrainingsComponent {
     'Trainer Name',
     'Location',
     'Training Venue',
-    'Training Date',
+    'Start Date',
+    'End Date',
   ];
   columnKeys: Array<string> = [
     'trainingTitle',
@@ -67,7 +69,8 @@ export class AllTrainingsComponent {
     'trainerName',
     'location',
     'venueAddress',
-    'trainingDate',
+    'startDate',
+    'endDate',
   ];
   breadcrumbItems: BreadcrumbItem[] = [
     { label: 'Training Module', url: '/admin/training-module' },
@@ -90,8 +93,8 @@ export class AllTrainingsComponent {
 
     { key: 'location', header: 'Location' },
     { key: 'venueAddress', header: 'Training Venue' },
-
-    { key: 'trainingDate', header: 'Training Date' },
+    { key: 'startDate', header: 'Start Date' },
+    { key: 'endDate', header: 'End Date' },
   ];
 
   tableActions: TableAction[] = [
@@ -162,6 +165,7 @@ export class AllTrainingsComponent {
       const user = JSON.parse(this.userData);
       this.trainingInstituteId = user.trainingHeadId;
     }
+    this.isLoading = true;
     this.trainingsService
       .getAllTrainings(this.trainingInstituteId)
       .subscribe((res) => {
@@ -176,13 +180,18 @@ export class AllTrainingsComponent {
             ele['venueDistrict'] +
             ',' +
             ele['venueState'];
-          ele['trainingDate'] = datePipe.transform(
-            ele['trainingDate'],
+          ele['startDate'] = datePipe.transform(
+            ele['startDate'],
+            'dd/MM/yyyy'
+          )!;
+          ele['endDate'] = datePipe.transform(
+            ele['endDate'],
             'dd/MM/yyyy'
           )!;
           this.trainingsList[index] = ele;
           index++;
         });
+        this.isLoading = false;
       });
     this.filteredData = [...this.trainingsList];
     let index = 0;
@@ -194,8 +203,12 @@ export class AllTrainingsComponent {
         ele['venueDistrict'] +
         ',' +
         ele['venueState'];
-      ele['trainingDate'] = datePipe.transform(
-        ele['trainingDate'],
+      ele['startDate'] = datePipe.transform(
+        ele['startDate'],
+        'dd/MM/yyyy'
+      )!;
+      ele['endDate'] = datePipe.transform(
+        ele['endDate'],
         'dd/MM/yyyy'
       )!;
       this.trainingsList[index] = ele;
@@ -258,7 +271,8 @@ export class AllTrainingsComponent {
     trainingInstituteName: null,
     trainerName: null,
     location: null,
-    trainingDate: null,
+    startDate: null,
+    endDate: null,
   };
 
   applyFilters(): void {
@@ -272,8 +286,10 @@ export class AllTrainingsComponent {
         (!this.filters.trainerName ||
           row.trainerName === this.filters.trainerName) &&
         (!this.filters.location || row.location === this.filters.location) &&
-        (!this.filters.trainingDate ||
-          row.trainingDate === this.filters.trainingDate)
+        (!this.filters.startDate ||
+          row.startDate === this.filters.startDate) &&
+        (!this.filters.endDate ||
+          row.endDate === this.filters.endDate)
 
         // (!this.filters.sync_status || row.sync_status.toString() === this.filters.sync_status.toString()) &&
       );
@@ -289,8 +305,12 @@ export class AllTrainingsComponent {
     ];
   }
 
-  uniqueValuesTrainingDate(): any[] {
-    return [...new Set(this.trainingsList.map((item) => item['trainingDate']))];
+  uniqueValuesStartDate(): any[] {
+    return [...new Set(this.trainingsList.map((item) => item['startDate']))];
+  }
+
+  uniqueValuesEndDate(): any[] {
+    return [...new Set(this.trainingsList.map((item) => item['endDate']))];
   }
 
   uniqueValuesScheme(): any[] {

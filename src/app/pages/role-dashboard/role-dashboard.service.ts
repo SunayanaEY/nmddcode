@@ -41,7 +41,8 @@ export interface TrainingData {
   venueStateId: number;
   venueDistrictId: number;
   venueBlock: string;
-  trainingDate: string;
+  startDate: string;
+  endDate: string;
   duration: number;
   durationType: string;
   trainingDescription: string;

@@ -9,6 +9,7 @@ import {
   Validators,
   AbstractControl,
   ValidationErrors,
+  FormArray
 } from '@angular/forms';
 import { SchemeService } from '../../training/services/scheme.service';
 import { TrainingService } from '../../../pages/training/services/training.service';
@@ -137,14 +138,50 @@ export class TrainingCertificateGenerationComponent implements OnInit {
   }
 
   positiveDurationValidator(control: AbstractControl): ValidationErrors | null {
-    if (!control.value) {
+    if (control.value === null || control.value === undefined || control.value === '') {
       return null; // Let required validator handle empty values
     }
 
-    const duration = Number(control.value);
-
-    if (duration <= 0) {
+    const value = Number(control.value);
+    if (isNaN(value) || value <= 0) {
       return { invalidDuration: true };
+    }
+
+    return null;
+  }
+
+  endDateAfterStartValidator(group: AbstractControl): ValidationErrors | null {
+    const start = group.get('startDate')?.value;
+    const end = group.get('endDate')?.value;
+
+    // If either date is missing, don't flag this validator
+    if (!start || !end) {
+      // Clear any previous endBeforeStart error
+      const endCtrl = group.get('endDate');
+      const currentErrors = endCtrl?.errors || null;
+      if (currentErrors && currentErrors['endBeforeStart']) {
+        delete currentErrors['endBeforeStart'];
+        endCtrl?.setErrors(Object.keys(currentErrors).length ? currentErrors : null);
+      }
+      return null;
+    }
+
+    const startDate = new Date(start);
+    const endDate = new Date(end);
+
+    if (endDate < startDate) {
+      const endCtrl = group.get('endDate');
+      const currentErrors = endCtrl?.errors || {};
+      endCtrl?.setErrors({ ...currentErrors, endBeforeStart: true });
+      return { endBeforeStart: true };
+    }
+
+    // Clear the error if dates are valid
+    const endCtrl = group.get('endDate');
+    const currentErrors = endCtrl?.errors || null;
+    if (currentErrors && currentErrors['endBeforeStart']) {
+      delete currentErrors['endBeforeStart'];
+      endCtrl?.setErrors(Object.keys(currentErrors).length ? currentErrors : null);
     }
 
     return null;
@@ -170,24 +207,22 @@ export class TrainingCertificateGenerationComponent implements OnInit {
       venueDistrict: ['', Validators.required],
       venueBlock: ['', Validators.required],
       venueAddress: ['', Validators.required],
-      trainingDate: [
-        '',
-        [Validators.required, this.futureDateValidator.bind(this)],
-      ],
       duration: [
         '',
         [Validators.required, this.positiveDurationValidator.bind(this)],
       ],
-      durationType: ['Days', Validators.required],
+      durationType: ['Hours', Validators.required],
       trainingDescription: [
         '',
         [Validators.required, Validators.maxLength(100)],
       ],
       trainingType: ['', Validators.required],
       modeOfTraining: ['', Validators.required],
-    });
+      dateRanges: this.fb.array([], [Validators.required, Validators.minLength(1)])
+    }, { validators: [this.noOverlapValidator.bind(this)] });
   }
   ngOnInit() {
+    this.addDateRange();
     this.getSchemes();
     this.getInstituteNames();
     this.loadStates();
@@ -234,7 +269,7 @@ export class TrainingCertificateGenerationComponent implements OnInit {
       next: (response) => {
         this.isSpinner = false;
         this.trainingDetails = response;
-        const formattedDate = this.trainingDetails.trainingDate.split('T')[0];
+        // const formattedDate = this.trainingDetails.startDate.split('T')[0];
         // Handle trainer selection based on trainerId
         if (this.trainingDetails.trainerId === 0) {
           // Guest trainer case
@@ -264,13 +299,23 @@ export class TrainingCertificateGenerationComponent implements OnInit {
           scheme: this.trainingDetails.schemeId,
           venueState: this.trainingDetails.venueStateId,
           venueBlock: this.trainingDetails.venueBlock,
-          trainingDate: formattedDate,
+          venueAddress: this.trainingDetails.venueAddress,
           duration: this.trainingDetails.duration,
           durationType: this.trainingDetails.durationType,
           trainingDescription: this.trainingDetails.trainingDescription,
           trainingType: this.trainingDetails.trainingTypeId,
           modeOfTraining: this.trainingDetails.modeOfTraining,
         });
+
+        // Clear existing date ranges and repopulate with top-level dates from API
+        this.dateRanges.clear();
+        const startDateStr = this.trainingDetails.startDate
+          ? String(this.trainingDetails.startDate).split('T')[0]
+          : '';
+        const endDateStr = this.trainingDetails.endDate
+          ? String(this.trainingDetails.endDate).split('T')[0]
+          : '';
+        this.addDateRange(startDateStr, endDateStr);
 
         // Set training institute after institutes are loaded
         this.setTrainingInstitute();
@@ -571,6 +616,11 @@ export class TrainingCertificateGenerationComponent implements OnInit {
       delete data['trainingType'];
     }
 
+    // Include endDate in payload for API to store end date
+    if (data.hasOwnProperty('endDate')) {
+      data['endDate'] = data['endDate'];
+    }
+
     if (this.selectedTrainers.length > 0) {
       data['trainerId'] = this.selectedTrainers.map(t => t.id).join(',');
       data['trainerName'] = this.selectedTrainers.map(t => t.name).join(', ');
@@ -629,7 +679,8 @@ export class TrainingCertificateGenerationComponent implements OnInit {
         },
         error: (error) => {
           this.isSpinner = false;
-          this.toastr.error('Failed to update training', 'Error');
+          // this.toastr.error('Failed to update training', 'Error');
+          this.toastr.error(error.error.data);
         },
       });
     } else {
@@ -831,5 +882,99 @@ export class TrainingCertificateGenerationComponent implements OnInit {
     }
 
     return true;
+  }
+
+
+  get dateRanges(): FormArray {
+    return this.trainingForm.get('dateRanges') as FormArray;
+  }
+
+  private createDateRangeGroup(startDate?: string, endDate?: string): FormGroup {
+    return this.fb.group(
+      {
+        startDate: [
+          startDate || '',
+          [Validators.required, this.futureDateValidator.bind(this)],
+        ],
+        endDate: [endDate || '', Validators.required],
+      },
+      { validators: [this.endDateAfterStartValidator.bind(this)] }
+    );
+  }
+
+  // Validator to ensure no date ranges overlap (including the top-level range)
+  private noOverlapValidator(group: AbstractControl): ValidationErrors | null {
+    const form = group as FormGroup;
+    if (!form) return null;
+
+    const ranges: Array<{
+      start: number;
+      end: number;
+      startCtrl: AbstractControl | null;
+      endCtrl: AbstractControl | null;
+    }> = [];
+
+    const arr = form.get('dateRanges') as FormArray;
+    if (arr && Array.isArray(arr.controls)) {
+      arr.controls.forEach((ctrl: AbstractControl) => {
+        const sCtrl = ctrl.get('startDate');
+        const eCtrl = ctrl.get('endDate');
+        const s = sCtrl?.value ? new Date(sCtrl.value).getTime() : NaN;
+        const e = eCtrl?.value ? new Date(eCtrl.value).getTime() : NaN;
+        if (!isNaN(s) && !isNaN(e)) {
+          ranges.push({ start: s, end: e, startCtrl: sCtrl, endCtrl: eCtrl });
+        }
+      });
+    }
+
+    if (arr && Array.isArray(arr.controls)) {
+      arr.controls.forEach((ctrl: AbstractControl) => {
+        this.clearControlError(ctrl.get('startDate'), 'rangeOverlap');
+        this.clearControlError(ctrl.get('endDate'), 'rangeOverlap');
+      });
+    }
+
+    // Compute pairwise overlaps (inclusive)
+    let hasOverlap = false;
+    for (let i = 0; i < ranges.length; i++) {
+      for (let j = i + 1; j < ranges.length; j++) {
+        const a = ranges[i];
+        const b = ranges[j];
+        const overlaps = a.start <= b.end && b.start <= a.end; // inclusive
+        if (overlaps) {
+          hasOverlap = true;
+          this.setControlError(a.startCtrl, 'rangeOverlap');
+          this.setControlError(a.endCtrl, 'rangeOverlap');
+          this.setControlError(b.startCtrl, 'rangeOverlap');
+          this.setControlError(b.endCtrl, 'rangeOverlap');
+        }
+      }
+    }
+
+    return hasOverlap ? { rangesOverlap: true } : null;
+  }
+
+  private setControlError(control: AbstractControl | null, key: string): void {
+    if (!control) return;
+    const current = control.errors || {};
+    if (!current[key]) {
+      control.setErrors({ ...current, [key]: true });
+    }
+  }
+
+  private clearControlError(control: AbstractControl | null, key: string): void {
+    if (!control || !control.errors) return;
+    const { [key]: removed, ...rest } = control.errors;
+    control.setErrors(Object.keys(rest).length ? rest : null);
+  }
+
+  addDateRange(startDate?: string, endDate?: string): void {
+    this.dateRanges.push(this.createDateRangeGroup(startDate, endDate));
+  }
+
+  removeDateRange(index: number): void {
+    if (index > -1 && index < this.dateRanges.length) {
+      this.dateRanges.removeAt(index);
+    }
   }
 }

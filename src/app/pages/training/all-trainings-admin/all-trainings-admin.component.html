@@ -100,13 +100,13 @@
           <ng-select
             class="modern-select"
             placeholder="Select Training Date"
-            [(ngModel)]="filters.trainingDate"
+            [(ngModel)]="filters.startDate"
             (change)="applyFilters()"
             clearable="true"
             [searchable]="true"
           >
             <ng-option
-              *ngFor="let name of uniqueValuesTrainingDate()"
+              *ngFor="let name of uniqueValuesStartDate()"
               [value]="name"
             >
               {{ name }}
@@ -159,12 +159,12 @@
               <i class="bi bi-x"></i>
             </button>
           </span>
-          <span class="filter-tag" *ngIf="filters.trainingDate">
+          <span class="filter-tag" *ngIf="filters.startDate">
             <i class="bi bi-calendar-event"></i>
-            Date: {{ filters.trainingDate }}
+            Date: {{ filters.startDate }}
             <button
               class="remove-filter"
-              (click)="removeFilter('trainingDate')"
+              (click)="removeFilter('startDate')"
             >
               <i class="bi bi-x"></i>
             </button>
@@ -247,7 +247,8 @@
               value: trainingDetails.trainingInstituteName
             },
             { label: 'Trainer Name', value: trainingDetails.trainerName },
-            { label: 'Training Date', value: trainingDetails.trainingDate },
+            { label: 'Start Date', value: trainingDetails.startDate },
+            { label: 'End Date', value: trainingDetails.endDate },
             { label: 'Training Duration', value: trainingDetails.duration },
             {
               label: 'Mode of Training',

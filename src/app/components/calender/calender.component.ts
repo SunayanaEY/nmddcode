@@ -1,5 +1,8 @@
 import { Component, Input } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { TrainingService } from '../../pages/training/services/training.service';
+import { Router } from '@angular/router';
+
 
 export interface Meeting {
   id: string;
@@ -10,6 +13,7 @@ export interface Meeting {
   attendees?: number;
   color?: string;
   status?: 'scheduled' | 'cancelled' | 'tentative';
+  raw?: any;
 }
 
 type CalendarView = 'month' | 'week' | 'day';
@@ -38,11 +42,13 @@ export class CalenderComponent {
   hours: number[] = Array.from({ length: 24 }, (_, i) => i);
   minutePixelRatio = 0.6667; // 40px per hour => 0.6667px per minute
 
+  constructor(private trainingService: TrainingService, private router: Router) {}
   ngOnInit(): void {
-    if (this.meetings.length === 0) {
-      this.seedMeetings();
+    if (this.meetings.length > 0) {
+      this.buildMonth();
+      return;
     }
-    this.buildMonth();
+    this.loadScheduledTrainings();
   }
 
   // ----- Navigation -----
@@ -195,6 +201,9 @@ export class CalenderComponent {
   clearSelection(): void {
     this.selectedMeeting = null;
   }
+  createNewTraining(): void {
+    this.router.navigate(['/admin/training-certificate-generation']);
+  }
 
   // ----- Data helpers -----
   sameDay(a: Date, b: Date): boolean {
@@ -206,11 +215,20 @@ export class CalenderComponent {
   }
 
   getMeetingsOnDate(date: Date): Meeting[] {
-    return this.meetings.filter(m => this.sameDay(m.start, date));
+    return this.meetings
+      .filter((m) => this.occursOnDate(m, date))
+      .sort((a, b) => a.start.getTime() - b.start.getTime());
   }
 
   getDayEvents(date: Date): Meeting[] {
     return this.getMeetingsOnDate(date);
+  }
+
+  private occursOnDate(m: Meeting, date: Date): boolean {
+    const day = new Date(date.getFullYear(), date.getMonth(), date.getDate());
+    const start = new Date(m.start.getFullYear(), m.start.getMonth(), m.start.getDate());
+    const end = new Date(m.end.getFullYear(), m.end.getMonth(), m.end.getDate());
+    return day.getTime() >= start.getTime() && day.getTime() <= end.getTime();
   }
 
   toMinutes(date: Date): number {
@@ -235,53 +253,104 @@ export class CalenderComponent {
     return `${hh}:${m} ${ampm}`;
   }
 
-  // ----- Sample data -----
-  private seedMeetings(): void {
-    const base = new Date();
-    const y = base.getFullYear();
-    const m = base.getMonth();
-
-    this.meetings = [
-      {
-        id: 'mtg-1',
-        title: 'Project Kickoff',
-        start: new Date(y, m, base.getDate(), 10, 0),
-        end: new Date(y, m, base.getDate(), 11, 0),
-        location: 'Teams',
-        attendees: 8,
-        color: '#4f46e5',
-        status: 'scheduled'
-      },
-      {
-        id: 'mtg-2',
-        title: 'Design Review',
-        start: new Date(y, m, base.getDate() + 1, 14, 30),
-        end: new Date(y, m, base.getDate() + 1, 15, 30),
-        location: 'Teams',
-        attendees: 5,
-        color: '#06b6d4',
-        status: 'scheduled'
-      },
-      {
-        id: 'mtg-3',
-        title: 'Sprint Planning',
-        start: new Date(y, m, base.getDate() + 2, 9, 0),
-        end: new Date(y, m, base.getDate() + 2, 10, 30),
-        location: 'Teams',
-        attendees: 10,
-        color: '#16a34a',
-        status: 'scheduled'
-      },
-      {
-        id: 'mtg-4',
-        title: '1:1 Sync',
-        start: new Date(y, m, base.getDate() - 1, 16, 0),
-        end: new Date(y, m, base.getDate() - 1, 16, 45),
-        location: 'Teams',
-        attendees: 2,
-        color: '#f59e0b',
-        status: 'tentative'
-      }
-    ];
+  formatDateOnly(d: Date | string | null | undefined): string {
+    if (!d) return '';
+    const date = typeof d === 'string' ? new Date(d) : d;
+    if (!(date instanceof Date) || isNaN(date.getTime())) return '';
+    return date.toLocaleDateString(undefined, { day: '2-digit', month: 'short', year: 'numeric' });
   }
+
+  normalizeUrl(u: any): string | null {
+    if (!u) return null;
+    const s = String(u).trim();
+    const cleaned = s.replace(/^`+|`+$/g, '').trim();
+    return cleaned || null;
+  }
+
+ 
+  private loadScheduledTrainings(): void {
+    this.trainingService.getAllScheduledTrainings().subscribe({
+      next: (res: any) => {
+        const items = Array.isArray(res) ? res : res?.data ?? [];
+        this.meetings = this.mapTrainingsToMeetings(items);
+        this.buildMonth();
+      },
+      error: () => {
+        // Fallback to sample data if API fails
+        this.buildMonth();
+      }
+    });
+  }
+
+  private mapTrainingsToMeetings(trainings: any[]): Meeting[] {
+    return trainings
+      .map((t: any) => {
+        const start = t.startDate ? new Date(t.startDate) : (t.createDate ? new Date(t.createDate) : null);
+        if (!start || isNaN(start.getTime())) {
+          return null;
+        }
+        let end: Date | null = t.endDate ? new Date(t.endDate) : null;
+        if (!end || isNaN(end.getTime())) {
+          if (t.duration && typeof t.duration === 'number' && (t.durationType || '').toLowerCase() === 'days') {
+            end = new Date(start);
+            end.setDate(end.getDate() + t.duration);
+          } else {
+            end = new Date(start);
+            end.setHours(end.getHours() + 1);
+          }
+        }
+        const locationParts = [t.venueBlock, t.venueDistrict, t.venueState].filter(Boolean);
+        return {
+          id: String(t.id ?? Math.random()),
+          title: t.trainingTitle ?? 'Training',
+          start,
+          end: end!,
+          location: locationParts.length ? locationParts.join(', ') : t.venueAddress ?? undefined,
+          attendees: t.traineeCount ?? undefined,
+          color: this.colorForStatus(t.status, t.modeOfTraining),
+          status: this.statusToMeetingStatus(t.status),
+          raw: t
+        } as Meeting;
+      })
+      .filter((m: Meeting | null) => !!m) as Meeting[];
+  }
+
+  private colorForStatus(status?: string, mode?: string): string {
+    const s = (status || '').toLowerCase();
+    if (s.includes('approved')) return '#16a34a';
+    if (s.includes('reject')) return '#ef4444';
+    // Mode hint
+    const m = (mode || '').toLowerCase();
+    if (m === 'online') return '#06b6d4';
+    if (m === 'offline') return '#4f46e5';
+    return '#6366f1';
+  }
+
+  private statusToMeetingStatus(status?: string): 'scheduled' | 'cancelled' | 'tentative' {
+    const s = (status || '').toLowerCase();
+    if (s.includes('reject')) return 'cancelled';
+    if (s.includes('approved')) return 'scheduled';
+    return 'tentative';
+  }
+
+// Modal state for day trainings
+showDayModal: boolean = false;
+dayModalDate: Date | null = null;
+dayModalTrainings: any[] = [];
+
+
+// Open modal with all trainings for the selected date
+openDayModal(date: Date): void {
+  this.dayModalDate = new Date(date);
+  const events = this.getDayEvents(this.dayModalDate);
+  this.dayModalTrainings = events.map(e => e.raw ?? null).filter((t: any) => !!t);
+  this.showDayModal = true;
+}
+
+onCloseDayModal(): void {
+  this.showDayModal = false;
+  this.dayModalTrainings = [];
+  this.dayModalDate = null;
+}
+
 }

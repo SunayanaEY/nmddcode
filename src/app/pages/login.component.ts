@@ -22,8 +22,7 @@ import {
   ModalComponent,
 } from '../components/modal/modal.component';
 import { TrainingService } from './training/services/training.service';
-import { CertificateLayoutComponent } from './certificate-layout/certificate-layout.component';
-import { NewCertificateLayoutComponent } from './new-certificate-layout/new-certificate-layout.component';
+import { LatestCertificateLayoutComponent } from './latest-certificate-layout/latest-certificate-layout.component';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { HeartbeatService } from './training/services/heartbeat-service.service';
 
@@ -36,7 +35,7 @@ import { HeartbeatService } from './training/services/heartbeat-service.service'
     RouterModule,
     IndiaMapComponent,
     ModalComponent,
-    NewCertificateLayoutComponent,
+    LatestCertificateLayoutComponent,
     TranslateModule,
   ],
   templateUrl: './login.component.html',
@@ -111,9 +110,7 @@ export class LoginComponent implements OnInit {
             const modifiedData = {
               ...res.data,
               location: `${res.data.venueBlock}, ${res.data.venueDistrict}, ${res.data.venueState}`,
-              trainingDate: new Date(res.data.trainingDate).toLocaleDateString(
-                'en-GB'
-              ), // dd/mm/yyyy
+              trainingDate: `${res.data.trainingDate}`, // dd/mm/yyyy
             };
 
             this.selectedItem = modifiedData;

@@ -10,7 +10,18 @@
     <div class="brand-row" aria-label="Branding">
       <img class="logo-small" [src]="data?.logoPath1" alt="Left logo" crossorigin="anonymous" />
       <img class="logo-center" [src]="data?.logoPath3 || data?.logoPath1" alt="Center crest" crossorigin="anonymous" />
-      <img class="logo-small" *ngIf="data?.logoPath2" [src]="data?.logoPath2" alt="Right logo" crossorigin="anonymous" />
+      <img class="logo-small logo-small-right" *ngIf="data?.logoPath2" [src]="data?.logoPath2" alt="Right logo" crossorigin="anonymous" />
+    </div>
+
+    <!-- QR + Trainee Photo Row -->
+    <div class="qr-photo-row" aria-label="QR and Trainee Photo">
+      <div class="qr-code">
+        <qrcode [qrdata]="qrData" [width]="100" [errorCorrectionLevel]="'M'"></qrcode>
+        <!-- <p class="uid">UIN: {{ finalUniqueId }}</p> -->
+      </div>
+      <div class="trainee-photo" *ngIf="validPhotoUrl">
+        <img [src]="validPhotoUrl" alt="Trainee photo" crossorigin="anonymous" />
+      </div>
     </div>
 
     <!-- Titles -->
@@ -33,11 +44,11 @@
 
       <p>
         Total duration of training was for
-        <span class="emphasis">{{ data?.trainingDuration ?? data?.trainingTotalDays }}</span>
-        Days
-        <ng-container *ngIf="data?.trainingStartDate && data?.trainingEndDate">
-          from <span class="date">{{ data?.trainingStartDate | date: 'dd-MM-yyyy' }}</span>
-          to <span class="date">{{ data?.trainingEndDate | date: 'dd-MM-yyyy' }}</span>
+        <span class="emphasis">{{ data?.duration }}</span>
+        <span>&nbsp;{{data?.durationType}}</span>
+        <ng-container>
+          from <span class="date">{{ data?.startDate | date: 'dd-MM-yyyy' }}</span>
+          to <span class="date">{{ data?.endDate | date: 'dd-MM-yyyy' }}</span>
         </ng-container>
         conducted at
         <span class="emphasis">{{ data?.trainingInstituteName || data?.organizationName || (data?.location ?? data?.venueState) }}</span>
