@@ -39,7 +39,7 @@
             <div class="month-events">
               <div class="month-event" *ngFor="let m of day.meetings | slice:0:1; trackBy: trackByMeeting"
                    [style.borderLeftColor]="m.color" (click)="selectMeeting(m)">
-                <div class="event-title" [attr.title]="m.title">{{ m.title }}</div>
+                <div class="event-title" (click)="$event.stopPropagation(); openDayModal(day.date)" [attr.title]="m.title">{{ m.title }}</div>
                 <!-- <div class="event-time" *ngIf="m.start">{{ m.start | date:'h:mm a' }}</div> -->
               </div>
               <button class="month-more-btn" *ngIf="day.meetings.length > 1" (click)="$event.stopPropagation(); openDayModal(day.date)">+{{ day.meetings.length - 1 }}</button>
