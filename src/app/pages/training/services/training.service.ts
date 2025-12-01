@@ -1,8 +1,8 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { map, Observable } from 'rxjs';
 import { environment } from '../../../../environments/environment';
-import { LoginResponse } from '../models/training.model';
+import { LoginResponse,PhotoUploadResponse } from '../models/training.model';
 
 @Injectable({
   providedIn: 'root',
@@ -44,6 +44,34 @@ export class TrainingService {
     const url = `${this.apiUrl}/trainees/manual-upload`;
     return this.http.post(url, participants, { responseType: 'text' });
   }
+  uploadTraineeImage(file: File, photoType?: string): Observable<PhotoUploadResponse> {
+    const formData = new FormData();
+    formData.append('file', file);
+
+    if (photoType) {
+      formData.append('photoType', photoType);
+    }
+
+    const token = localStorage.getItem('token'); // or from AuthService
+
+    const headers = new HttpHeaders({
+      Authorization: `Bearer ${token}`
+    });
+
+    return this.http.post<PhotoUploadResponse>(
+      `${this.url}photos/upload`,
+      formData,
+      { headers }
+    );
+  }
+  downloadTraineeImage(photoId: number) {
+  return this.http.get(
+    `${this.url}photos/download/${photoId}`,
+    {
+      responseType: 'blob'
+    }
+  );
+}
 
   // getAllTraining() {
   //   return this.http.get<any>(this.url + `training/getAllTraining`).pipe(

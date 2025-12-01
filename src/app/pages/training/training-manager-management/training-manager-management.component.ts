@@ -13,15 +13,18 @@ import { TranslateModule } from '@ngx-translate/core';
     BreadcrumbComponent,
     UserProfileCreationComponent,
     RegisteredDataEntryOperatorsComponent,
-    TranslateModule
+    TranslateModule,
   ],
   templateUrl: './training-manager-management.component.html',
-  styleUrls: ['./training-manager-management.component.css']
+  styleUrls: ['./training-manager-management.component.css'],
 })
 export class TrainingManagerManagementComponent implements OnInit {
+  @ViewChild(UserProfileCreationComponent)
+  formComponent!: UserProfileCreationComponent;
 
   // ViewChild to access the table component
-  @ViewChild(RegisteredDataEntryOperatorsComponent) tableComponent!: RegisteredDataEntryOperatorsComponent;
+  @ViewChild(RegisteredDataEntryOperatorsComponent)
+  tableComponent!: RegisteredDataEntryOperatorsComponent;
 
   // Form visibility control
   showRegistrationForm = false;
@@ -29,10 +32,10 @@ export class TrainingManagerManagementComponent implements OnInit {
   // Breadcrumb configuration
   breadcrumbItems = [
     { label: 'Dashboard', url: '/admin/role-dashboard' },
-    { label: 'Training Manager Management', url: '' }
+    { label: 'Training Manager Management', url: '' },
   ];
 
-  constructor() { }
+  constructor() {}
 
   ngOnInit(): void {
     console.log('Training Manager Management component initialized');
@@ -43,6 +46,20 @@ export class TrainingManagerManagementComponent implements OnInit {
    */
   toggleRegistrationForm(): void {
     this.showRegistrationForm = !this.showRegistrationForm;
+  }
+  onEditFromTable(rowData: any): void {
+    this.showRegistrationForm = true;
+
+    setTimeout(() => {
+      if (this.formComponent) {
+        this.formComponent.setEditData(rowData);
+      }
+
+      const formElement = document.getElementById('formSection');
+      if (formElement) {
+        formElement.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }
+    }, 100);
   }
 
   /**

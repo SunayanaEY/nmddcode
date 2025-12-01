@@ -305,6 +305,27 @@ export class TrainingCentreAdminProfileComponent implements OnInit {
     this.profileForm.get('latitude')?.disable();
     this.profileForm.get('longitude')?.disable();
     this.profileForm.get('district')?.disable();
+
+    if (this.instituteData.contactPersonName != null) {
+      this.profileForm.patchValue({
+        contactPersonName: this.instituteData.contactPersonName,
+      });
+    }
+    if (this.instituteData.designation != null) {
+      this.profileForm.patchValue({
+        designation: this.instituteData.designation,
+      });
+    }
+    if (this.instituteData.contactNumber != null) {
+      this.profileForm.patchValue({
+        contactNumber: this.instituteData.contactNumber,
+      });
+    }
+    if (this.instituteData.emailId != null) {
+      this.profileForm.patchValue({
+        emailId: this.instituteData.emailId,
+      });
+    }
   }
   /**
    * Handle form submission

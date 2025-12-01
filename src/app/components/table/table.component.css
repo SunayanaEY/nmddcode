@@ -4,16 +4,14 @@
   border-radius: 8px;
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
   overflow: hidden;
-  /* margin-bottom: 20px; */
   width: 100%;
   padding: 0 2rem;
 }
-
 /* Responsive wrapper */
 .table-responsive {
   overflow-x: auto;
   max-width: 100%;
-  -webkit-overflow-scrolling: touch; /* smooth scrolling on mobile */
+  -webkit-overflow-scrolling: touch;
 }
 
 /* Table */
@@ -21,11 +19,10 @@
   margin: 0;
   border-collapse: separate;
   border-spacing: 0;
-  width: 100%;
-  min-width: 1500px; /* adjusted to fit optimized column widths */
-  table-layout: fixed; /* fixed layout for consistent column widths */
+  table-layout: auto !important; /* Let column width auto-adjust */
+  width: max-content;            /* Expand based on content */
+  min-width: 100%;               /* Fill container */
 }
-
 /* Table Header */
 .table thead th {
   background-color: #f8f9fa;
@@ -36,13 +33,10 @@
   text-align: center;
   font-size: 14px;
   border-top: none;
-  white-space: nowrap; /* prevent header text wrapping */
-  vertical-align: middle;
-  min-width: 120px; /* minimum width for each column */
-  overflow: hidden;
-  text-overflow: ellipsis;
+  white-space: nowrap;       /* No wrapping */
+  overflow: visible;         /* Prevent cutting */
+  width: auto;               /* Let column grow */
 }
-
 /* Table Body - Allow text wrapping for better content display */
 .table tbody td {
   padding: 10px 8px;
@@ -51,11 +45,10 @@
   border-bottom: 1px solid #dee2e6;
   font-size: 14px;
   color: #495057;
-  white-space: normal; /* allow text wrapping in data cells */
+  white-space: normal;
   word-wrap: break-word;
   overflow-wrap: break-word;
-  min-width: 120px; /* consistent with header width */
-  line-height: 1.4; /* better readability for wrapped text */
+  line-height: 1.4;
 }
 
 /* Specific column width adjustments optimized for header content */
@@ -149,7 +142,7 @@
 /* Hover effect */
 .table tbody tr:hover {
   background-color: #f8f9fa;
-}
+} 
 
 /* Remove last row border */
 .table tbody tr:last-child td {

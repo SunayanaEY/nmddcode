@@ -31,6 +31,7 @@ interface Participant {
   category?: string;
   educationQualification?: string;
   recommendedByOrganization?: string;
+  photoId?:number | null;
 }
 
 @Component({
@@ -58,6 +59,11 @@ export class ManualTrainingUploadComponent implements OnInit {
   trainingId: any;
   trainingManagerId: any;
   trainingInstituteId: any;
+
+  photoPreview: string | null = null;
+  photoId : number | null = null;
+  photoError: string = '';
+  selectedFile: File | null = null;
 
   breadcrumbItems: BreadcrumbItem[] = [
     { label: 'Dashboard', url: '/admin/role-dashboard' },
@@ -179,7 +185,10 @@ export class ManualTrainingUploadComponent implements OnInit {
       const today = new Date();
       let age = today.getFullYear() - dobDate.getFullYear();
       const monthDiff = today.getMonth() - dobDate.getMonth();
-      if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < dobDate.getDate())) {
+      if (
+        monthDiff < 0 ||
+        (monthDiff === 0 && today.getDate() < dobDate.getDate())
+      ) {
         age--;
       }
       if (age < 0) age = 0;
@@ -187,6 +196,44 @@ export class ManualTrainingUploadComponent implements OnInit {
       ageControl?.setValue(age, { emitEvent: false });
     });
   }
+  onPhotoSelect(event: any) {
+  const file = event.target.files[0];
+  
+  if (file) {
+    // Validate file type
+    if (!file.type.startsWith('image/')) {
+      this.photoError = 'Please select a valid image file.';
+      return;
+    }
+    
+    // Validate file size (e.g., max 2MB)
+    if (file.size > 2 * 1024 * 1024) {
+      this.photoError = 'Image size should not exceed 2MB.';
+      return;
+    }
+    
+    this.photoError = '';
+    this.selectedFile = file;
+    
+    // Preview the image
+    const reader = new FileReader();
+    reader.onload = (e: any) => {
+      this.photoPreview = e.target.result;
+    };
+    reader.readAsDataURL(file);
+    this.trainingService.uploadTraineeImage(file,'trainee').subscribe({
+      next: (response) => {
+        this.isSpinning = false;
+        this.toastr.success('Image uploaded successfully!', 'Success');
+        this.photoId = response.data.photoId;
+      },
+      error: (error) => {
+        this.isSpinning = false;
+        this.toastr.error('Failed to upload trainee image. Try again !', 'Error');
+      },
+    });
+  }
+}
 
   getTrainingDetails(trainingId: number) {
     // alert('Training Upload : ' + trainingId);
@@ -232,9 +279,11 @@ export class ManualTrainingUploadComponent implements OnInit {
         category: formValue.category,
         educationQualification: formValue.educationQualification,
         recommendedByOrganization: formValue.recommendedByOrganization,
+        photoId: this.photoId ?? null
       };
 
       this.participants.push(participant);
+      this.photoId = null;
 
       this.closeModal();
       this.participantForm.reset();
@@ -338,9 +387,10 @@ export class ManualTrainingUploadComponent implements OnInit {
       category: participant.category ?? '',
       educationQualification: participant.educationQualification ?? '',
       recommendedByOrganization: participant.recommendedByOrganization ?? '',
-      email: participant.email && participant.email.includes('xxxx')
-        ? 'user@example.com'
-        : participant.email,
+      email:
+        participant.email && participant.email.includes('xxxx')
+          ? 'user@example.com'
+          : participant.email,
     });
   }
 
@@ -365,6 +415,7 @@ export class ManualTrainingUploadComponent implements OnInit {
       ...participant,
       trainingId: trainingId,
       trainingInstituteId: trainingInstituteId,
+      photoId : participant.photoId ?? null
     }));
 
     this.isSpinning = true;

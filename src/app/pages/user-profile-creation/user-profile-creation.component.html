@@ -3,7 +3,9 @@
     <!-- Header Section -->
     <div class="form-header">
       <!-- <app-breadcrumb [items]="breadcrumbItems"></app-breadcrumb> -->
-      <h1 class="page-title">{{ 'USER_PROFILE_CREATION.PAGE_TITLE' | translate }}</h1>
+      <h1 class="page-title">
+        {{ "USER_PROFILE_CREATION.PAGE_TITLE" | translate }}
+      </h1>
     </div>
 
     <!-- Form Content -->
@@ -11,18 +13,23 @@
       <form [formGroup]="profileForm" (ngSubmit)="onSubmit()">
         <!-- Operator Details Section -->
         <div class="form-section">
-          <h3 class="section-title">{{ 'USER_PROFILE_CREATION.SECTION_TITLE' | translate }}</h3>
+          <h3 class="section-title">
+            {{ "USER_PROFILE_CREATION.SECTION_TITLE" | translate }}
+          </h3>
 
           <div class="form-row">
             <div class="form-group half-width">
               <label for="operatorName"
-                >{{ 'USER_PROFILE_CREATION.MANAGER_NAME' | translate }} <span class="required">*</span></label
+                >{{ "USER_PROFILE_CREATION.MANAGER_NAME" | translate }}
+                <span class="required">*</span></label
               >
               <input
                 type="text"
                 id="operatorName"
                 formControlName="operatorName"
-                [placeholder]="'USER_PROFILE_CREATION.MANAGER_NAME_PLACEHOLDER' | translate"
+                [placeholder]="
+                  'USER_PROFILE_CREATION.MANAGER_NAME_PLACEHOLDER' | translate
+                "
                 class="form-control"
                 [class.is-invalid]="
                   profileForm.get('operatorName')?.invalid &&
@@ -36,18 +43,21 @@
                 "
                 class="invalid-feedback"
               >
-                {{ 'USER_PROFILE_CREATION.MANAGER_NAME_REQUIRED' | translate }}
+                {{ "USER_PROFILE_CREATION.MANAGER_NAME_REQUIRED" | translate }}
               </div>
             </div>
             <div class="form-group half-width">
               <label for="designation"
-                >{{ 'USER_PROFILE_CREATION.DESIGNATION' | translate }} <span class="required">*</span></label
+                >{{ "USER_PROFILE_CREATION.DESIGNATION" | translate }}
+                <span class="required">*</span></label
               >
               <input
                 type="text"
                 id="designation"
                 formControlName="designation"
-                [placeholder]="'USER_PROFILE_CREATION.DESIGNATION_PLACEHOLDER' | translate"
+                [placeholder]="
+                  'USER_PROFILE_CREATION.DESIGNATION_PLACEHOLDER' | translate
+                "
                 class="form-control"
                 [class.is-invalid]="
                   profileForm.get('designation')?.invalid &&
@@ -61,7 +71,7 @@
                 "
                 class="invalid-feedback"
               >
-                {{ 'USER_PROFILE_CREATION.DESIGNATION_REQUIRED' | translate }}
+                {{ "USER_PROFILE_CREATION.DESIGNATION_REQUIRED" | translate }}
               </div>
             </div>
           </div>
@@ -69,13 +79,16 @@
           <div class="form-row">
             <div class="form-group half-width">
               <label for="contactNumber"
-                >{{ 'USER_PROFILE_CREATION.CONTACT_NUMBER' | translate }} <span class="required">*</span></label
+                >{{ "USER_PROFILE_CREATION.CONTACT_NUMBER" | translate }}
+                <span class="required">*</span></label
               >
               <input
                 type="tel"
                 id="contactNumber"
                 formControlName="contactNumber"
-                [placeholder]="'USER_PROFILE_CREATION.CONTACT_NUMBER_PLACEHOLDER' | translate"
+                [placeholder]="
+                  'USER_PROFILE_CREATION.CONTACT_NUMBER_PLACEHOLDER' | translate
+                "
                 class="form-control"
                 [class.is-invalid]="
                   profileForm.get('contactNumber')?.invalid &&
@@ -92,24 +105,31 @@
                 <div
                   *ngIf="profileForm.get('contactNumber')?.errors?.['required']"
                 >
-                  {{ 'USER_PROFILE_CREATION.CONTACT_NUMBER_REQUIRED' | translate }}
+                  {{
+                    "USER_PROFILE_CREATION.CONTACT_NUMBER_REQUIRED" | translate
+                  }}
                 </div>
                 <div
                   *ngIf="profileForm.get('contactNumber')?.errors?.['pattern']"
                 >
-                  {{ 'USER_PROFILE_CREATION.CONTACT_NUMBER_PATTERN' | translate }}
+                  {{
+                    "USER_PROFILE_CREATION.CONTACT_NUMBER_PATTERN" | translate
+                  }}
                 </div>
               </div>
             </div>
             <div class="form-group half-width">
               <label for="emailId"
-                >{{ 'USER_PROFILE_CREATION.EMAIL_ID' | translate }} <span class="required">*</span></label
+                >{{ "USER_PROFILE_CREATION.EMAIL_ID" | translate }}
+                <span class="required">*</span></label
               >
               <input
                 type="email"
                 id="emailId"
                 formControlName="emailId"
-                [placeholder]="'USER_PROFILE_CREATION.EMAIL_ID_PLACEHOLDER' | translate"
+                [placeholder]="
+                  'USER_PROFILE_CREATION.EMAIL_ID_PLACEHOLDER' | translate
+                "
                 class="form-control"
                 [class.is-invalid]="
                   profileForm.get('emailId')?.invalid &&
@@ -124,10 +144,10 @@
                 class="invalid-feedback"
               >
                 <div *ngIf="profileForm.get('emailId')?.errors?.['required']">
-                  {{ 'USER_PROFILE_CREATION.EMAIL_ID_REQUIRED' | translate }}
+                  {{ "USER_PROFILE_CREATION.EMAIL_ID_REQUIRED" | translate }}
                 </div>
                 <div *ngIf="profileForm.get('emailId')?.errors?.['email']">
-                  {{ 'USER_PROFILE_CREATION.EMAIL_ID_INVALID' | translate }}
+                  {{ "USER_PROFILE_CREATION.EMAIL_ID_INVALID" | translate }}
                 </div>
               </div>
             </div>
@@ -136,51 +156,103 @@
           <div class="form-row">
             <div class="form-group half-width">
               <label for="password"
-                >{{ 'USER_PROFILE_CREATION.PASSWORD' | translate }} <span class="required">*</span></label
+                >{{ "USER_PROFILE_CREATION.PASSWORD" | translate }}
+                <span class="required">*</span></label
               >
               <input
                 type="password"
                 id="password"
                 formControlName="password"
-                [placeholder]="'USER_PROFILE_CREATION.PASSWORD_PLACEHOLDER' | translate"
+                [placeholder]="
+                  'USER_PROFILE_CREATION.PASSWORD_PLACEHOLDER' | translate
+                "
                 class="form-control"
                 [class.is-invalid]="
                   profileForm.get('password')?.invalid &&
                   profileForm.get('password')?.touched
                 "
               />
-              
+
               <!-- Password Policy Requirements -->
               <div class="password-requirements">
-                <p class="requirements-title">{{ 'USER_PROFILE_CREATION.PASSWORD_REQUIREMENTS_TITLE' | translate }}</p>
+                <p class="requirements-title">
+                  {{
+                    "USER_PROFILE_CREATION.PASSWORD_REQUIREMENTS_TITLE"
+                      | translate
+                  }}
+                </p>
                 <ul class="requirements-list">
-                  <li [class.valid]="hasMinLength" [class.invalid]="!hasMinLength">
-                    <span class="icon" [class.valid]="hasMinLength" [class.invalid]="!hasMinLength">
+                  <li
+                    [class.valid]="hasMinLength"
+                    [class.invalid]="!hasMinLength"
+                  >
+                    <span
+                      class="icon"
+                      [class.valid]="hasMinLength"
+                      [class.invalid]="!hasMinLength"
+                    >
                       <i class="fas fa-check" *ngIf="hasMinLength"></i>
                       <i class="fas fa-times" *ngIf="!hasMinLength"></i>
                     </span>
-                    <span class="text">{{ 'USER_PROFILE_CREATION.PASSWORD_MIN_LENGTH_REQ' | translate }}</span>
+                    <span class="text">{{
+                      "USER_PROFILE_CREATION.PASSWORD_MIN_LENGTH_REQ"
+                        | translate
+                    }}</span>
                   </li>
-                  <li [class.valid]="hasUppercase" [class.invalid]="!hasUppercase">
-                    <span class="icon" [class.valid]="hasUppercase" [class.invalid]="!hasUppercase">
+                  <li
+                    [class.valid]="hasUppercase"
+                    [class.invalid]="!hasUppercase"
+                  >
+                    <span
+                      class="icon"
+                      [class.valid]="hasUppercase"
+                      [class.invalid]="!hasUppercase"
+                    >
                       <i class="fas fa-check" *ngIf="hasUppercase"></i>
                       <i class="fas fa-times" *ngIf="!hasUppercase"></i>
                     </span>
-                    <span class="text">{{ 'USER_PROFILE_CREATION.PASSWORD_UPPERCASE_REQ' | translate }}</span>
+                    <span class="text">{{
+                      "USER_PROFILE_CREATION.PASSWORD_UPPERCASE_REQ" | translate
+                    }}</span>
                   </li>
-                  <li [class.valid]="hasLowercase" [class.invalid]="!hasLowercase">
-                    <span class="icon" [class.valid]="hasLowercase" [class.invalid]="!hasLowercase">
+                  <li
+                    [class.valid]="hasLowercase"
+                    [class.invalid]="!hasLowercase"
+                  >
+                    <span
+                      class="icon"
+                      [class.valid]="hasLowercase"
+                      [class.invalid]="!hasLowercase"
+                    >
                       <i class="fas fa-check" *ngIf="hasLowercase"></i>
                       <i class="fas fa-times" *ngIf="!hasLowercase"></i>
                     </span>
-                    <span class="text">{{ 'USER_PROFILE_CREATION.PASSWORD_LOWERCASE_REQ' | translate }}</span>
+                    <span class="text">{{
+                      "USER_PROFILE_CREATION.PASSWORD_LOWERCASE_REQ" | translate
+                    }}</span>
                   </li>
-                  <li [class.valid]="hasNumber && hasSpecialChar" [class.invalid]="!hasNumber || !hasSpecialChar">
-                    <span class="icon" [class.valid]="hasNumber && hasSpecialChar" [class.invalid]="!hasNumber || !hasSpecialChar">
-                      <i class="fas fa-check" *ngIf="hasNumber && hasSpecialChar"></i>
-                      <i class="fas fa-times" *ngIf="!hasNumber || !hasSpecialChar"></i>
+                  <li
+                    [class.valid]="hasNumber && hasSpecialChar"
+                    [class.invalid]="!hasNumber || !hasSpecialChar"
+                  >
+                    <span
+                      class="icon"
+                      [class.valid]="hasNumber && hasSpecialChar"
+                      [class.invalid]="!hasNumber || !hasSpecialChar"
+                    >
+                      <i
+                        class="fas fa-check"
+                        *ngIf="hasNumber && hasSpecialChar"
+                      ></i>
+                      <i
+                        class="fas fa-times"
+                        *ngIf="!hasNumber || !hasSpecialChar"
+                      ></i>
                     </span>
-                    <span class="text">{{ 'USER_PROFILE_CREATION.PASSWORD_NUMBER_SYMBOL_REQ' | translate }}</span>
+                    <span class="text">{{
+                      "USER_PROFILE_CREATION.PASSWORD_NUMBER_SYMBOL_REQ"
+                        | translate
+                    }}</span>
                   </li>
                 </ul>
               </div>
@@ -193,22 +265,26 @@
                 class="invalid-feedback"
               >
                 <div *ngIf="profileForm.get('password')?.errors?.['required']">
-                  {{ 'USER_PROFILE_CREATION.PASSWORD_REQUIRED' | translate }}
+                  {{ "USER_PROFILE_CREATION.PASSWORD_REQUIRED" | translate }}
                 </div>
                 <div *ngIf="profileForm.get('password')?.errors?.['minlength']">
-                  {{ 'USER_PROFILE_CREATION.PASSWORD_MIN_LENGTH' | translate }}
+                  {{ "USER_PROFILE_CREATION.PASSWORD_MIN_LENGTH" | translate }}
                 </div>
               </div>
             </div>
             <div class="form-group half-width">
               <label for="confirmPassword"
-                >{{ 'USER_PROFILE_CREATION.CONFIRM_PASSWORD' | translate }} <span class="required">*</span></label
+                >{{ "USER_PROFILE_CREATION.CONFIRM_PASSWORD" | translate }}
+                <span class="required">*</span></label
               >
               <input
                 type="password"
                 id="confirmPassword"
                 formControlName="confirmPassword"
-                [placeholder]="'USER_PROFILE_CREATION.CONFIRM_PASSWORD_PLACEHOLDER' | translate"
+                [placeholder]="
+                  'USER_PROFILE_CREATION.CONFIRM_PASSWORD_PLACEHOLDER'
+                    | translate
+                "
                 class="form-control"
                 [class.is-invalid]="
                   (profileForm.get('confirmPassword')?.invalid &&
@@ -223,10 +299,12 @@
                 "
                 class="invalid-feedback"
               >
-                {{ 'USER_PROFILE_CREATION.CONFIRM_PASSWORD_REQUIRED' | translate }}
+                {{
+                  "USER_PROFILE_CREATION.CONFIRM_PASSWORD_REQUIRED" | translate
+                }}
               </div>
               <div *ngIf="passwordMismatch" class="invalid-feedback">
-                {{ 'USER_PROFILE_CREATION.PASSWORD_MISMATCH' | translate }}
+                {{ "USER_PROFILE_CREATION.PASSWORD_MISMATCH" | translate }}
               </div>
             </div>
           </div>
@@ -235,7 +313,8 @@
         <div class="form-actions">
           <button
             type="submit"
-            class="btn btn-primary btn-lg"
+            class="btn btn-lg"
+            [ngClass]="isEditMode ? 'btn-warning' : 'btn-primary'"
             [disabled]="isLoading || profileForm.invalid"
           >
             <span
@@ -244,7 +323,22 @@
               role="status"
               aria-hidden="true"
             ></span>
-            {{ isLoading ? ('USER_PROFILE_CREATION.CREATING_PROFILE' | translate) : ('USER_PROFILE_CREATION.CREATE_PROFILE' | translate) }}
+
+            <span *ngIf="!isEditMode">
+              {{
+                isLoading
+                  ? ("USER_PROFILE_CREATION.CREATING_PROFILE" | translate)
+                  : ("USER_PROFILE_CREATION.CREATE_PROFILE" | translate)
+              }}
+            </span>
+
+            <span *ngIf="isEditMode">
+              {{
+                isLoading
+                  ? ("USER_PROFILE_CREATION.UPDATING_PROFILE" | translate)
+                  : ("USER_PROFILE_CREATION.UPDATE_PROFILE" | translate)
+              }}
+            </span>
           </button>
         </div>
       </form>

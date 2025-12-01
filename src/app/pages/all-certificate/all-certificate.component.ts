@@ -96,6 +96,7 @@ export class AllCertificateComponent {
         });
     }
   }
+  photoPreviewUrl: string | null = null;
   isExportCSV: Boolean = true;
   isExportPdf: Boolean = true;
   pdfHeaders: Array<string> = [
@@ -196,7 +197,21 @@ export class AllCertificateComponent {
       queryParams: { trainingId: this.trainingId },
     });
   }
-
+  showPhoto(photoId: number) {
+  alert(photoId);
+  this.trainingsService.downloadTraineeImage(photoId).subscribe({
+    next: (blob: Blob) => {
+      const imageUrl = URL.createObjectURL(blob);
+      this.photoPreviewUrl = imageUrl;
+      alert(this.photoPreviewUrl);
+      // this.isLoadingPhoto = false;
+    },
+    error: (err) => {
+      console.error('Failed to load photo', err);
+      // this.isLoadingPhoto = false;
+    }
+  });
+}
   onBulkUpload() {
     this.router.navigate(['/admin/bulk-training-upload'], {
       queryParams: { trainingId: this.trainingId },
@@ -228,6 +243,7 @@ export class AllCertificateComponent {
   handleTableAction(event: { action: string; item: any; index: number }): void {
     this.selectedItem = event.item;
     if (event.action === 'view') {
+      this.showPhoto(this.selectedItem.photoId);
       document.getElementById('modalBtn')?.click();
     } else if (event.action === 'download') {
       const modalElement = document.getElementById('viewCertificateModal');
