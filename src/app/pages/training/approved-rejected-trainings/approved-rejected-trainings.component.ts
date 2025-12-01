@@ -78,6 +78,7 @@ export class ApprovedRejectedTrainingsComponent {
     'location',
     'startDate',
     'endDate',
+    'rejectionRemark',
     'status',
   ];
   breadcrumbItems: BreadcrumbItem[] = [
@@ -105,14 +106,8 @@ export class ApprovedRejectedTrainingsComponent {
   ];
 
   // Table columns for Rejected Trainings (with remark column)
-  tableColumnsRejected: TableColumn[] = [
-    {
-      key: 'trainingTitle',
-      header: 'Training Title',
-      isLink: true,
-      linkHandler: (row) => this.openTrainingDetails(row),
-      linkCondition: (row) => row.status !== 'Certificate Approved / Rejected',
-    },
+    tableColumnsRejected: TableColumn[] = [
+    {key: 'trainingTitle', header: 'Training Title'},
     { key: 'scheme', header: 'Scheme' },
     { key: 'trainingInstituteName', header: 'Training Institute' },
     { key: 'trainerName', header: 'Trainer Name' },
@@ -121,11 +116,7 @@ export class ApprovedRejectedTrainingsComponent {
     { key: 'startDate', header: 'Start Date' },
     { key: 'endDate', header: 'End Date' },
     { key: 'status', header: 'Status' },
-    {
-      key: 'rejectionRemark',
-      header: 'Remarks',
-      showColumn: (row) => row.status === 'Rejected by Institute Head',
-    },
+    { key: 'rejectionRemark', header: 'Remarks'},
   ];
 
   tableColumnsPending: TableColumn[] = [

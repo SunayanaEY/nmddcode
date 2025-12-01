@@ -114,6 +114,13 @@
   min-width: 120px;
 }
 
+/* Ensure second-to-last column (e.g., Remarks) has adequate width */
+.table thead th:nth-last-child(2),
+.table tbody td:nth-last-child(2) {
+  width: 180px;
+  min-width: 150px;
+}
+
 /* No Data Message */
 .no-data-message {
   padding: 2rem;
