@@ -1,7 +1,7 @@
 <div class="approved-certificate-container">
   <app-breadcrumb [items]="breadcrumbItems"></app-breadcrumb>
   <div class="page-header">
-    <h2>{{'Training Title'|translate}} : {{ trainingTitle }}</h2>
+    <h2>{{ "Training Title" | translate }} : {{ trainingTitle }}</h2>
   </div>
 
   <!-- <div class="filter-container">
@@ -57,13 +57,14 @@
   <div
     class="mt-4 p-4 bg-white rounded-3 shadow-sm d-flex justify-content-between align-items-center"
   >
-    <h2 class="mb-0 fw-semibold">{{'Add More Records'|translate}}</h2>
+    <h2 class="mb-0 fw-semibold">{{ "Add More Records" | translate }}</h2>
     <div>
       <button class="btn btn-success me-2" (click)="onManualUpload()">
-        <i class="bi bi-pencil-square me-1"></i> {{"Manual Upload"|translate}}
+        <i class="bi bi-pencil-square me-1"></i>
+        {{ "Manual Upload" | translate }}
       </button>
       <button class="btn btn-primary" (click)="onBulkUpload()">
-        <i class="bi bi-upload me-1"></i> {{'Bulk Upload'|translate}}
+        <i class="bi bi-upload me-1"></i> {{ "Bulk Upload" | translate }}
       </button>
     </div>
   </div>
@@ -81,7 +82,7 @@
       <div class="modal-content p-4">
         <div class="modal-header">
           <h2 class="modal-title" id="viewCertificateModalLabel">
-            {{'Approved Certificate'|translate}}
+            {{ "Approved Certificate" | translate }}
           </h2>
           <button
             type="button"
@@ -124,7 +125,9 @@
   <div class="modal-dialog modal-xl">
     <div class="modal-content">
       <div class="modal-header">
-        <h1 class="modal-title fs-5" id="exampleModalLabel">{{'Trainee Details'|translate}}</h1>
+        <h1 class="modal-title fs-5" id="exampleModalLabel">
+          {{ "Trainee Details" | translate }}
+        </h1>
         <button
           type="button"
           class="btn-close"
@@ -140,23 +143,33 @@
               style="font-size: 3rem"
             ></i>
           </div>
+
           <div>
             <h5 class="mb-0">{{ selectedItem?.name }}</h5>
             <small class="text-muted">{{ selectedItem?.course }}</small>
+          </div>
+
+          <div class="ms-auto me-5">
+            <img
+              *ngIf="photoPreviewUrl"
+              [src]="photoPreviewUrl"
+              width="120"
+              height="130"
+            />
           </div>
         </div>
 
         <div class="row g-3 mb-3">
           <div class="col-md-6">
             <div class="p-3 bg-white rounded-3 shadow-sm h-100">
-              <strong>{{'Email'|translate}}:</strong>
+              <strong>{{ "Email" | translate }}:</strong>
               <span class="text-muted ms-3">{{ selectedItem?.email }}</span>
             </div>
           </div>
 
           <div class="col-md-6">
             <div class="p-3 bg-white rounded-3 shadow-sm h-100">
-              <strong>{{'Phone'|translate}}:</strong>
+              <strong>{{ "Phone" | translate }}:</strong>
               <span class="text-muted ms-3">{{
                 selectedItem?.contactNumber
               }}</span>
@@ -166,14 +179,14 @@
         <div class="row g-3 mb-3">
           <div class="col-md-6">
             <div class="p-3 bg-white rounded-3 shadow-sm h-100">
-              <strong>{{'Gender'|translate}}:</strong>
+              <strong>{{ "Gender" | translate }}:</strong>
               <span class="text-muted ms-3">{{ selectedItem?.gender }}</span>
             </div>
           </div>
 
           <div class="col-md-6">
             <div class="p-3 bg-white rounded-3 shadow-sm h-100">
-              <strong>{{'Age'|translate}}:</strong>
+              <strong>{{ "Age" | translate }}:</strong>
               <span style="margin-left: 10px" class="text-muted">{{
                 selectedItem?.age
               }}</span>
@@ -183,14 +196,14 @@
         <div class="row g-3 mb-3">
           <div class="col-md-6">
             <div class="p-3 bg-white rounded-3 shadow-sm h-100">
-              <strong>{{'UIN'|translate}}:</strong>
+              <strong>{{ "UIN" | translate }}:</strong>
               <span class="text-muted ms-3">{{ selectedItem?.uin }}</span>
             </div>
           </div>
 
           <div class="col-md-6">
             <div class="p-3 bg-white rounded-3 shadow-sm h-100">
-              <strong>{{"Father's Name"|translate}}:</strong>
+              <strong>{{ "Father's Name" | translate }}:</strong>
               <span class="text-muted ms-3">{{
                 selectedItem?.fatherName
               }}</span>
@@ -201,7 +214,7 @@
 
       <div class="modal-footer">
         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
-          {{'Close'|translate}}
+          {{ "Close" | translate }}
         </button>
       </div>
     </div>

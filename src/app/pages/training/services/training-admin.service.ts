@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { HttpClient, HttpHeaders, HttpResponse } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { environment } from '../../../../environments/environment';
@@ -539,6 +539,24 @@ export class AdminService {
     return this.http.get<any>(
       `${this.apiUrl}trainingInstitutes/getInstituteHead/${instituteId}`,
       this.getHttpOptions()
+    );
+  }
+  
+  updateTrainer(
+    editRowId: string,
+    data: any
+  ): Observable<HttpResponse<any>> {
+    return this.http.put<any>(
+      `${this.apiUrl}trainers/update/${editRowId}`,
+      data,
+      { observe: 'response' }
+    );
+  }
+
+  deleteTrainer(editRowId: string): Observable<HttpResponse<any>> {
+    return this.http.get<any>(
+      `${this.apiUrl}trainers/delete/${editRowId}`,
+      { observe: 'response' }
     );
   }
 }

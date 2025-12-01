@@ -1,20 +1,30 @@
 <div class="main-content-wrapper">
   <div class="certificate-form-container">
+
     <!-- Header Section -->
     <div class="form-header">
       <app-breadcrumb [items]="breadcrumbItems"></app-breadcrumb>
+
       <div class="page-header-content">
         <div class="header-left">
           <h1 class="page-title">{{'Trainer Management'|translate}}</h1>
-          <p class="page-description">{{'Manage trainer registrations and view existing trainers'|translate}}</p>
+          <p class="page-description">
+            {{'Manage trainer registrations and view existing trainers'|translate}}
+          </p>
         </div>
+
         <div class="header-right">
           <button 
             type="button" 
             class="btn btn-primary register-btn"
             [class.btn-danger]="showRegistrationForm"
             (click)="toggleRegistrationForm()">
-            <i class="bi" [class.bi-plus-circle]="!showRegistrationForm" [class.bi-x-circle]="showRegistrationForm"></i>
+
+            <i class="bi"
+              [class.bi-plus-circle]="!showRegistrationForm"
+              [class.bi-x-circle]="showRegistrationForm">
+            </i>
+
             {{ showRegistrationForm ? ('Hide Form'|translate) : ('Register New Trainers'|translate) }}
           </button>
         </div>
@@ -24,163 +34,76 @@
     <!-- Registration Form Section -->
     <div class="registration-form-section" *ngIf="showRegistrationForm">
       <div class="form-content">
-      <form [formGroup]="profileForm" (ngSubmit)="onSubmit()">
-        <!-- Operator Details Section -->
-        <div class="form-section">
-          <h3 class="section-title">{{'Trainer Details'|translate}}</h3>
 
-          <div class="form-row">
-            <div class="form-group half-width">
-              <label for="trainerName"
-                >{{'Trainer Name'|translate}} <span class="required">*</span></label
-              >
-              <input
-                type="text"
-                id="trainerName"
-                formControlName="trainerName"
-                placeholder="Enter the Manager Name here"
-                class="form-control"
-                [class.is-invalid]="
-                  profileForm.get('trainerName')?.invalid &&
-                  profileForm.get('trainerName')?.touched
-                "
-              />
-              <div
-                *ngIf="
-                  profileForm.get('trainerName')?.invalid &&
-                  profileForm.get('trainerName')?.touched
-                "
-                class="invalid-feedback"
-              >
-                {{'Trainer name is required'|translate}}
+        <form [formGroup]="profileForm" (ngSubmit)="onSubmit()">
+
+          <div class="form-section">
+            <h3 class="section-title">
+              {{ isEditMode ? ('Update Trainer'|translate) : ('Trainer Details'|translate) }}
+            </h3>
+
+            <div class="form-row">
+
+              <div class="form-group half-width">
+                <label>Trainer Name <span class="required">*</span></label>
+                <input type="text" formControlName="trainerName" class="form-control">
+              </div>
+
+              <div class="form-group half-width">
+                <label>Expertise In <span class="required">*</span></label>
+                <input type="text" formControlName="expertiseIn" class="form-control">
               </div>
             </div>
-            <div class="form-group half-width">
-              <label for="expertiseIn"
-                >{{'Expertise In'|translate}} <span class="required">*</span></label
-              >
-              <input
-                type="text"
-                id="expertiseIn"
-                formControlName="expertiseIn"
-                placeholder="Enter the expertise here"
-                class="form-control"
-                [class.is-invalid]="
-                  profileForm.get('expertiseIn')?.invalid &&
-                  profileForm.get('expertiseIn')?.touched
-                "
-              />
-              <div
-                *ngIf="
-                  profileForm.get('expertiseIn')?.invalid &&
-                  profileForm.get('expertiseIn')?.touched
-                "
-                class="invalid-feedback"
-              >
-                {{'Expertise Field is required'|translate}}
+
+            <div class="form-row">
+
+              <div class="form-group half-width">
+                <label>Contact Number <span class="required">*</span></label>
+                <input type="tel" formControlName="mobile" class="form-control">
               </div>
+
+              <div class="form-group half-width">
+                <label>Email ID <span class="required">*</span></label>
+                <input type="email" formControlName="email" class="form-control">
+              </div>
+
             </div>
           </div>
 
-          <div class="form-row">
-            <div class="form-group half-width">
-              <label for="mobile"
-                >{{'Contact Number' | translate}} <span class="required">*</span></label
-              >
-              <input
-                type="tel"
-                id="mobile"
-                formControlName="mobile"
-                placeholder="Enter 10-digit Contact Number"
-                class="form-control"
-                [class.is-invalid]="
-                  profileForm.get('mobile')?.invalid &&
-                  profileForm.get('mobile')?.touched
-                "
-              />
-              <div
-                *ngIf="
-                  profileForm.get('mobile')?.invalid &&
-                  profileForm.get('mobile')?.touched
-                "
-                class="invalid-feedback"
-              >
-                <div
-                  *ngIf="profileForm.get('mobile')?.errors?.['required']"
-                >
-                  {{'Contact number is required'|translate}}
-                </div>
-                <div
-                  *ngIf="profileForm.get('mobile')?.errors?.['pattern']"
-                >
-                  {{'Please enter a valid 10-digit contact number'|translate}}
-                </div>
-              </div>
-            </div>
-            <div class="form-group half-width">
-              <label for="email"
-                >{{'Email ID'|translate}} <span class="required">*</span></label
-              >
-              <input
-                type="email"
-                id="email"
-                formControlName="email"
-                placeholder="Enter the Email ID here"
-                class="form-control"
-                [class.is-invalid]="
-                  profileForm.get('email')?.invalid &&
-                  profileForm.get('email')?.touched
-                "
-              />
-              <div
-                *ngIf="
-                  profileForm.get('email')?.invalid &&
-                  profileForm.get('email')?.touched
-                "
-                class="invalid-feedback"
-              >
-                <div *ngIf="profileForm.get('email')?.errors?.['required']">
-                  {{'Email ID is required'|translate}}
-                </div>
-                <div *ngIf="profileForm.get('email')?.errors?.['email']">
-                  {{'Please enter a valid email address'|translate}}
-                </div>
-              </div>
-            </div>
+          <div class="form-actions">
+            <button
+              type="submit"
+              class="btn btn-primary btn-lg"
+              [disabled]="isLoading || profileForm.invalid">
+
+              <span *ngIf="isLoading" class="spinner-border spinner-border-sm me-2"></span>
+
+              {{ isEditMode ? ('Update Trainer'|translate) : ('Create Profile'|translate) }}
+            </button>
           </div>
 
-        </div>
-
-        <div class="form-actions">
-          <button
-            type="submit"
-            class="btn btn-primary btn-lg"
-            [disabled]="isLoading || profileForm.invalid"
-          >
-            <span
-              *ngIf="isLoading"
-              class="spinner-border spinner-border-sm me-2"
-              role="status"
-              aria-hidden="true"
-            ></span>
-            {{ isLoading ? "Creating Profile..." : "Create Profile" |translate}}
-          </button>
-        </div>
-      </form>
-       </div>
+        </form>
+      </div>
     </div>
 
-    <!-- Trainers Table Section -->
+    <!-- Trainers Table -->
     <div class="form-content mt-4">
       <div class="form-section">
         <h3 class="section-title">{{'Registered Trainers'|translate}}</h3>
+
         <app-table
           [data]="trainersData"
           [columns]="tableColumns"
           [isLoading]="isTableLoading"
-          tableName="trainers">
+          [actions]="tableActions"
+          (actionClick)="onActionClick($event)"
+          tableName="trainers"
+          (edit)="onEditTrainer($event)"
+          (delete)="onDeleteTrainer($event)">
         </app-table>
+
       </div>
     </div>
+
   </div>
 </div>

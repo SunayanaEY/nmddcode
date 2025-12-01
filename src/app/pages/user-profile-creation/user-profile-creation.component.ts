@@ -1,5 +1,6 @@
 import { Component, Output, EventEmitter, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { Input } from '@angular/core';
 import {
   FormBuilder,
   FormGroup,
@@ -28,8 +29,12 @@ import { TranslateModule } from '@ngx-translate/core';
   styleUrls: ['./user-profile-creation.component.css'],
 })
 export class UserProfileCreationComponent implements OnInit {
+  @Input() isEditMode: boolean = false;
+
+  editRowId: string | null = null;
+
   @Output() formSubmissionSuccess = new EventEmitter<void>();
-  
+
   profileForm: FormGroup;
   isLoading = false;
   breadcrumbItems: BreadcrumbItem[] = [
@@ -48,7 +53,7 @@ export class UserProfileCreationComponent implements OnInit {
     private router: Router,
     private fb: FormBuilder,
     private userProfileService: UserProfileService,
-    private toastr: ToastrService
+    private toastr: ToastrService,
   ) {
     this.profileForm = this.fb.group(
       {
@@ -74,6 +79,20 @@ export class UserProfileCreationComponent implements OnInit {
       });
     }, 0);
   }
+  setEditData(data: any): void {
+    this.isEditMode = true;
+    this.editRowId = data.id;
+
+    this.profileForm.patchValue({
+      operatorName: data.operatorName,
+      designation: data.designation,
+      contactNumber: data.contactNumber,
+      emailId: data.emailId,
+      password: '',
+      confirmPassword: '',
+    });
+  }
+  
 
   onSubmit() {
     if (this.profileForm.valid) {
@@ -113,32 +132,35 @@ export class UserProfileCreationComponent implements OnInit {
         trainingHeadId: trainingHeadId,
       };
 
-      this.userProfileService.registerDataEntryOperator(formData).subscribe({
-        next: (response) => {
-          this.isLoading = false;
-          if (response.success) {
-            this.toastr.success(
-              response.message ||
-                'Data Entry Operator registered successfully!',
-              'Success'
-            );
-            this.profileForm.reset();
-            this.formSubmissionSuccess.emit();
-          } else {
-            this.toastr.error(
-              response.message || 'Registration failed. Please try again.',
-              'Error'
-            );
-          }
-        },
-        error: (error) => {
-          this.isLoading = false;
-          const errorMessage =
-            error.error?.message || 'An error occurred. Please try again.';
-          this.toastr.error(errorMessage, 'Error');
-          console.error('Registration error:', error);
-        },
-      });
+      if (this.isEditMode && this.editRowId) {
+        this.userProfileService
+          .updateDataEntryOperator(this.editRowId, formData)
+          .subscribe({
+            next: (response) => {
+              this.isLoading = false;
+              if (response.status === 200) {
+                this.toastr.success('Updated Successfully');
+                this.profileForm.reset();
+                this.isEditMode = false;
+                this.editRowId = null;
+                this.formSubmissionSuccess.emit();
+              }
+            },
+            error: () => (this.isLoading = false),
+          });
+      } else {
+        this.userProfileService.registerDataEntryOperator(formData).subscribe({
+          next: (response) => {
+            this.isLoading = false;
+            if (response.success) {
+              this.toastr.success('Registered Successfully');
+              this.profileForm.reset();
+              this.formSubmissionSuccess.emit();
+            }
+          },
+          error: () => (this.isLoading = false),
+        });
+      }
     } else {
       this.markFormGroupTouched();
     }
@@ -181,6 +203,8 @@ export class UserProfileCreationComponent implements OnInit {
     this.hasUppercase = /[A-Z]/.test(password);
     this.hasLowercase = /[a-z]/.test(password);
     this.hasNumber = /[0-9]/.test(password);
-    this.hasSpecialChar = /[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]/.test(password);
+    this.hasSpecialChar = /[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]/.test(
+      password
+    );
   }
 }

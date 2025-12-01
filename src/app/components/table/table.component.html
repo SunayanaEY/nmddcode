@@ -167,7 +167,7 @@
             *ngIf="tableNamesArray.includes(tableName) && !item.editable"
           >
             <!-- <ng-container > -->
-              <td *ngFor="let col of visibleColumns">
+              <td *ngFor="let col of columns">
                 {{ item[col.key] }}
               </td>
             <!-- </ng-container> -->

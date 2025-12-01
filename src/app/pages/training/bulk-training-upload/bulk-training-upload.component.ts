@@ -101,30 +101,40 @@ export class BulkTrainingUploadComponent implements OnInit {
       const sheetName: string = workbook.SheetNames[0];
       const worksheet: XLSX.WorkSheet = workbook.Sheets[sheetName];
 
-      // ✅ get raw data including headers
       const data: any[] = XLSX.utils.sheet_to_json(worksheet, {
         defval: '',
         header: 1,
       });
 
       if (data.length > 0) {
-        this.headers = data[0]; // first row are headers
+        this.headers = data[0]; // ✅ ONLY EXCEL HEADERS — DO NOT PUSH PHOTO HERE
+
         this.excelData = data.slice(1).map((row) => {
           const obj: any = {};
+
           this.headers.forEach((h, i) => {
             obj[h] = row[i] ?? '';
           });
+
+          // ✅ Add photo fields safely
+          obj.photoPreview = null;
+          obj.photoId = null;
+
           return obj;
         });
 
-        // Compute Age from DOB and add/update an 'Age' column positioned before 'Gender'
-        const dobHeader = this.headers.find((h) => /dob|date of birth/i.test(h));
+        // ✅ AUTO AGE CALCULATION
+        const dobHeader = this.headers.find((h) =>
+          /dob|date of birth/i.test(h)
+        );
+
         if (dobHeader) {
-          // Use existing Age header if present (case-insensitive), else insert one
-          let ageHeader = this.headers.find((h) => /^age$/i.test(h)) ?? '';
+          let ageHeader = this.headers.find((h) => /^age$/i.test(h));
+
           if (!ageHeader) {
             const genderIdx = this.headers.findIndex((h) => /gender/i.test(h));
-            const insertIdx = genderIdx > -1 ? genderIdx : this.headers.length;
+            const insertIdx =
+              genderIdx > -1 ? genderIdx : this.excelData.length;
             ageHeader = 'Age';
             this.headers.splice(insertIdx, 0, ageHeader);
           }
@@ -142,6 +152,33 @@ export class BulkTrainingUploadComponent implements OnInit {
     reader.readAsBinaryString(file);
     this.selectedFile = file;
   }
+
+  onRowPhotoSelected(event: any, row: any) {
+    const file: File = event.target.files[0];
+    if (!file) return;
+
+    // ✅ Preview
+    const reader = new FileReader();
+    reader.onload = () => {
+      row.photoPreview = reader.result;
+    };
+    reader.readAsDataURL(file);
+
+    // ✅ Upload
+    const formData = new FormData();
+    formData.append('file', file);
+    formData.append('photoType', 'TRAINEE');
+
+    this.trainingService.uploadTraineeImage(file, 'Trainee').subscribe({
+      next: (res: any) => {
+        row.photoId = res?.data?.photoId;
+      },
+      error: () => {
+        alert('Photo upload failed');
+      },
+    });
+  }
+
   setPage(page: number): void {
     this.currentPage = page;
     const startIndex = (page - 1) * this.pageSize;
@@ -222,9 +259,44 @@ export class BulkTrainingUploadComponent implements OnInit {
       .map((row, index) => ({ rowNumber: index + 2, ...row }))
       .filter((row) => invalidRowNumbers.has(row.rowNumber));
   }
+  convertDateFormat(dateStr: string): string {
+    if (!dateStr) return '';
+
+    const [dd, mm, yyyy] = dateStr.split('-');
+    return `${yyyy}-${mm}-${dd}`;
+  }
   submitData() {
     if (this.errorCount === 0) {
-      this.uploadExcelFile();
+      // this.uploadExcelFile();
+      const trainingId = this.trainingId;
+      const trainingInstituteId = this.trainingInstituteId;
+      console.log(this.paginatedData);
+      const convertedData = this.paginatedData.map((row: any) => ({
+        name: row['Name'] || '',
+        age: row['Age'] || 0,
+        gender: row['Gender'] || '',
+        contactNumber: row['Contact Number'] || '',
+        fatherName: row["Father's Name"] || '',
+        email: row['Email'] || '',
+        dob: this.convertDateFormat(row['Date of Birth (dd-MM-yyyy)']),
+        category: row['Category (GN, OBC, SC, ST )'] || '',
+        educationQualification: row['Educational Qualification'] || '',
+        recommendedByOrganization: row['Recommended by(organization)'] || '',
+        photoId: row['photoId'] || null,
+        trainingId: trainingId,
+        trainingInstituteId: trainingInstituteId,
+      }));
+      this.trainingService.submitTrainees(convertedData).subscribe({
+      next: (response) => {
+        this.isSpinning = false;
+        this.toastr.success('Participants submitted successfully!', 'Success');
+        this.router.navigate(['/admin/approvedrejectedTrainings']);
+      },
+      error: (error) => {
+        this.isSpinning = false;
+        this.toastr.error('Failed to submit participants.', 'Error');
+      },
+    });
     }
   }
 
@@ -300,7 +372,9 @@ export class BulkTrainingUploadComponent implements OnInit {
 
   private computeAgeFromDobString(dobValue: any): number | '' {
     if (!dobValue) return '';
-    const normalized: string = String(dobValue).trim().replace(/[\.\/]/g, '-');
+    const normalized: string = String(dobValue)
+      .trim()
+      .replace(/[\.\/]/g, '-');
     const parts: string[] = normalized.split('-').map((p: string) => p.trim());
 
     let dob: Date;

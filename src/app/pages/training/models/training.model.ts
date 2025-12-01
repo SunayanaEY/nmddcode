@@ -41,4 +41,12 @@ export interface TraineeDetails{
   uin: string;
   trainingInstituteId:string;
 }
+export interface PhotoUploadResponse {
+  success: boolean;
+  message: string;
+  data: {
+    photoId: number;
+  };
+}
+
 

@@ -12,7 +12,7 @@
     <span class="badge bg-secondary">{{'Total'|translate}} - {{ trainingTypeListProcessed.length }} {{'Training Types'|translate}}</span>
   </div>
 
-  <app-table [columns]="tableColumns" [data]="trainingTypeListProcessed" (actionClick)="handleTableAction($event)"
+  <app-table [columns]="tableColumns" [data]="trainingTypeListProcessed" (actionClick)="handleTableAction($event)" [actions]="tableActions"
     [isExportCSV]="isExportCSV" [isExportPDF]="isExportPdf" [pdfHeaders]="pdfHeaders" [columnKeys]="columnKeys"
     [fileName]="fileName" [tableName]="table" [addNew]="addNew" [isLoading]="isLoading">
   </app-table>

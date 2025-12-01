@@ -68,6 +68,7 @@ export class ApprovedRejectedTrainingsComponent {
     'Location',
     'Training Date',
     'Status',
+    'Address'
   ];
   columnKeys: Array<string> = [
     'trainingTitle',
@@ -77,6 +78,7 @@ export class ApprovedRejectedTrainingsComponent {
     'location',
     'trainingDate',
     'status',
+    'Address'
   ];
   breadcrumbItems: BreadcrumbItem[] = [
     { label: 'Dashboard', url: '/admin/role-dashboard' },

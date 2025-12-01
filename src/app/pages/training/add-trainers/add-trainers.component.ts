@@ -11,11 +11,7 @@ import {
   BreadcrumbComponent,
   BreadcrumbItem,
 } from '../../../components/breadcrumb/breadcrumb.component';
-import {
-  AddTrainerData,
-  RegisterDataEntryOperatorRequest,
-} from '../../user-profile-creation/models/user-profile.model';
-import { UserProfileService } from '../../user-profile-creation/services/user-profile.service';
+import { AddTrainerData } from '../../user-profile-creation/models/user-profile.model';
 import { CommonModule } from '@angular/common';
 import { AdminService } from '../services/training-admin.service';
 import {
@@ -39,15 +35,15 @@ import { TranslateModule } from '@ngx-translate/core';
 export class AddTrainersComponent implements OnInit {
   profileForm: FormGroup;
   isLoading = false;
-  showRegistrationForm = false;
-  breadcrumbItems: BreadcrumbItem[] = [
-    { label: 'Dashboard', url: '/admin/role-dashboard' },
-    { label: 'Add Trainers', url: '' },
-  ];
 
-  // Table properties
+  isEditMode = false;
+  editingTrainerId: string | null = null;
+
+  showRegistrationForm = false;
+
   trainersData: any[] = [];
   isTableLoading = false;
+
   tableColumns: TableColumn[] = [
     { key: 'trainerName', header: 'Trainer Name' },
     { key: 'mobile', header: 'Contact Number' },
@@ -55,9 +51,18 @@ export class AddTrainersComponent implements OnInit {
     { key: 'expertiseIn', header: 'Expertise In' },
   ];
 
+  tableActions = [
+    { name: 'edit', icon: 'bi bi-pencil', class: 'btn-info', title: 'Edit' },
+    { name: 'delete', icon: 'bi bi-trash', class: 'btn-danger', title: 'Delete' },
+  ];
+
+  breadcrumbItems: BreadcrumbItem[] = [
+    { label: 'Dashboard', url: '/admin/role-dashboard' },
+    { label: 'Add Trainers', url: '' },
+  ];
+
   constructor(
     private fb: FormBuilder,
-    private userProfileService: UserProfileService,
     private toastr: ToastrService,
     private adminService: AdminService
   ) {
@@ -66,9 +71,6 @@ export class AddTrainersComponent implements OnInit {
       expertiseIn: ['', Validators.required],
       mobile: ['', [Validators.required, Validators.pattern(/^[0-9]{10}$/)]],
       email: ['', [Validators.required, Validators.email]],
-      // password: ['', [Validators.required, Validators.minLength(8)]],
-      // confirmPassword: ['', Validators.required]
-      // }, { validators: this.passwordMatchValidator
     });
   }
 
@@ -76,144 +78,139 @@ export class AddTrainersComponent implements OnInit {
     this.loadTrainers();
   }
 
+  // ✅ LOAD TABLE
   loadTrainers() {
     const userData = JSON.parse(sessionStorage.getItem('user') || '{}');
-    const currentTrainingHeadId = userData.trainingHeadId;
+    const trainingHeadId = userData.trainingHeadId;
+    if (!trainingHeadId) return;
 
-    if (currentTrainingHeadId) {
-      this.isTableLoading = true;
-      this.adminService
-        .getTrainersByTrainingHead(currentTrainingHeadId)
-        .subscribe({
-          next: (response) => {
-            this.isTableLoading = false;
-            if (response.success) {
-              this.trainersData = response.data;
-            } else {
-              this.toastr.error(
-                response.message || 'Failed to load trainers',
-                'Error'
-              );
-            }
-          },
-          error: (error) => {
-            this.isTableLoading = false;
-            const errorMessage =
-              error.error?.message ||
-              'An error occurred while loading trainers';
-            this.toastr.error(errorMessage, 'Error');
-            console.error('Load trainers error:', error);
-          },
-        });
+    this.isTableLoading = true;
+
+    this.adminService.getTrainersByTrainingHead(trainingHeadId).subscribe({
+      next: (response) => {
+        this.isTableLoading = false;
+        if (response.success) {
+          this.trainersData = response.data;
+        } else {
+          this.toastr.error('Failed to load trainers');
+        }
+      },
+      error: () => {
+        this.isTableLoading = false;
+        this.toastr.error('Server error');
+      },
+    });
+  }
+
+  onActionClick(event: { action: string; item: any; index: number }) {
+    if (event.action === 'edit') {
+      this.onEditTrainer(event.item);
+    }
+
+    if (event.action === 'delete') {
+      this.onDeleteTrainer(event.item);
     }
   }
 
   onSubmit() {
-    if (this.profileForm.valid) {
-      this.isLoading = true;
+    if (this.profileForm.invalid) return;
 
-      // Get trainingHeadId from session storage
-      const sessionData = sessionStorage.getItem('user');
-      let trainingHeadId = '';
+    this.isLoading = true;
 
-      // if (sessionData) {
-      //   try {
-      //     const userData = JSON.parse(sessionData);
-      //     trainingHeadId = userData.trainingHeadId || '';
-      //   } catch (error) {
-      //     console.error('Error parsing session data:', error);
-      //     this.toastr.error('Session data error. Please login again.', 'Error');
-      //     this.isLoading = false;
-      //     return;
-      //   }
-      // }
+    const userData = JSON.parse(sessionStorage.getItem('user') || '{}');
+    const trainingHeadId = userData.trainingHeadId;
 
-      // if (!trainingHeadId) {
-      //   this.toastr.error('Training Head ID not found. Please login again.', 'Error');
-      //   this.isLoading = false;
-      //   return;
-      // }
-      const userData = JSON.parse(sessionStorage.getItem('user') || '{}');
-      const currentTrainingHeadId = userData.trainingHeadId;
+    const formData: AddTrainerData = {
+      trainerName: this.profileForm.value.trainerName,
+      mobile: this.profileForm.value.mobile,
+      email: this.profileForm.value.email,
+      expertiseIn: this.profileForm.value.expertiseIn,
+      trainingHeadId,
+    };
 
-      const formData: AddTrainerData = {
-        trainerName: this.profileForm.value.trainerName,
-        mobile: this.profileForm.value.mobile,
-        email: this.profileForm.value.email,
-        expertiseIn: this.profileForm.value.expertiseIn,
-        trainingHeadId: currentTrainingHeadId,
-      };
+    if (this.isEditMode && this.editingTrainerId) {
+      this.adminService
+        .updateTrainer(this.editingTrainerId, formData)
+        .subscribe({
+          next: (response) => {
+            this.isLoading = false;
+            if (response.status === 200) {
+              this.toastr.success('Trainer updated successfully');
+              this.resetForm();
+              this.loadTrainers();
+            }
+          },
+          error: () => {
+            this.isLoading = false;
+            this.toastr.error('Update failed');
+          },
+        });
+    }
 
+    else {
       this.adminService.addTrainer(formData).subscribe({
         next: (response) => {
           this.isLoading = false;
           if (response.success) {
-            this.toastr.success(
-              response.message || 'Trainer registered successfully!',
-              'Success'
-            );
-            this.profileForm.reset();
-            this.loadTrainers(); // Reload the trainers table
-            this.hideForm(); // Hide the form after successful submission
-          } else {
-            this.toastr.error(
-              response.message || 'Registration failed. Please try again.',
-              'Error'
-            );
+            this.toastr.success('Trainer added successfully');
+            this.resetForm();
+            this.loadTrainers();
           }
         },
-        error: (error) => {
+        error: () => {
           this.isLoading = false;
-          const errorMessage =
-            error.error?.message || 'An error occurred. Please try again.';
-          this.toastr.error(errorMessage, 'Error');
-          console.error('Registration error:', error);
+          this.toastr.error('Creation failed');
         },
       });
-    } else {
-      this.markFormGroupTouched();
     }
   }
 
-  private markFormGroupTouched() {
-    Object.keys(this.profileForm.controls).forEach((key) => {
-      const control = this.profileForm.get(key);
-      control?.markAsTouched();
+  onEditTrainer(rowData: any) {
+    this.isEditMode = true;
+    this.showRegistrationForm = true;
+    this.editingTrainerId = rowData.id;
+
+    this.profileForm.patchValue({
+      trainerName: rowData.trainerName,
+      expertiseIn: rowData.expertiseIn,
+      mobile: rowData.mobile,
+      email: rowData.email,
+    });
+
+    setTimeout(() => {
+      document.querySelector('.registration-form-section')?.scrollIntoView({
+        behavior: 'smooth',
+      });
+    }, 100);
+  }
+
+  onDeleteTrainer(rowData: any) {
+    if (!confirm(`Delete ${rowData.trainerName}?`)) return;
+
+    this.adminService.deleteTrainer(rowData.id).subscribe({
+      next: (response) => {
+        if (response.status === 200) {
+          this.toastr.success('Trainer deleted');
+          this.loadTrainers();
+        }
+      },
+      error: () => {
+        this.toastr.error('Delete failed');
+      },
     });
   }
 
-  private passwordMatchValidator(
-    control: AbstractControl
-  ): { [key: string]: boolean } | null {
-    const password = control.get('password');
-    const confirmPassword = control.get('confirmPassword');
-
-    if (!password || !confirmPassword) {
-      return null;
-    }
-
-    return password.value === confirmPassword.value
-      ? null
-      : { passwordMismatch: true };
+  resetForm() {
+    this.profileForm.reset();
+    this.showRegistrationForm = false;
+    this.isEditMode = false;
+    this.editingTrainerId = null;
   }
 
-  get passwordMismatch() {
-    return (
-      this.profileForm.hasError('passwordMismatch') &&
-      this.profileForm.get('confirmPassword')?.touched
-    );
-  }
-
-  // Form visibility control methods
   toggleRegistrationForm() {
     this.showRegistrationForm = !this.showRegistrationForm;
-  }
-
-  showForm() {
-    this.showRegistrationForm = true;
-  }
-
-  hideForm() {
-    this.showRegistrationForm = false;
+    if (!this.showRegistrationForm) {
+      this.resetForm();
+    }
   }
 }

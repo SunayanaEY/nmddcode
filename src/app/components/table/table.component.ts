@@ -105,11 +105,7 @@ export class TableComponent {
       this.linkClick.emit({ column, row });
     }
   }
-  get visibleColumns(): TableColumn[] {
-  return this.columns.filter(col => 
-    col.showColumn && col.showColumn()
-  );
-}
+ 
   downloadCerts(action: string) {
     this.downloadAllCerts.emit({ action: action });
   }
