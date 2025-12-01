@@ -133,7 +133,7 @@
       </div>
       <div class="item">
         <div class="label">Status</div>
-        <div class="value">{{ sm.status }}</div>
+        <div class="value" [style.color]="sm.color">{{ sm.status }}</div>
       </div>
       <div class="item full" *ngIf="sm.raw?.trainingDescription">
         <div class="label">Description</div>
@@ -171,7 +171,9 @@
       <button class="icon-btn" (click)="onCloseDayModal()" aria-label="Close">&#x2715;</button>
     </div>
     <div class="cal-modal-body" *ngIf="dayModalTrainings.length; else emptyTrainings">
-      <div class="training-card" *ngFor="let t of dayModalTrainings">
+      <div class="training-card" *ngFor="let t of dayModalTrainings"
+           [style.borderLeftColor]="colorForStatus(t.status, t.modeOfTraining)"
+           [style.background]="overlayBackgroundForStatus(t.status, t.modeOfTraining)">
         <div class="card-header">
           <img *ngIf="normalizeUrl(t.logoPath1) as logo" [src]="logo" class="logo" alt="logo" />
           <div class="card-title" [attr.title]="t.trainingTitle">{{ t.trainingTitle }}</div>
@@ -181,7 +183,7 @@
         <div class="card-row"><span class="label">Mode:</span> <span>{{ t.modeOfTraining }}</span></div>
         <div class="card-row" *ngIf="t.duration && t.durationType"><span class="label">Duration:</span> <span>{{ t.duration }} {{ t.durationType }}</span></div>
         <div class="card-row"><span class="label">Dates:</span> <span>{{ t.startDate | date:'d MMM, y' }} - {{ t.endDate | date:'d MMM, y' }}</span></div>
-        <div class="card-row" *ngIf="t.status"><span class="label">Status:</span> <span>{{ t.status }}</span></div>
+        <div class="card-row" *ngIf="t.status"><span class="label">Status:</span> <span [style.color]="colorForStatus(t.status, t.modeOfTraining)">{{ t.status }}</span></div>
         <div class="card-row" *ngIf="t.trainerName"><span class="label">Trainers:</span> <span>{{ t.trainerName }}</span></div>
         <div class="card-row" *ngIf="t.venueBlock || t.venueDistrict || t.venueState"><span class="label">Location:</span> <span>{{ t.venueBlock }}, {{ t.venueDistrict }}, {{ t.venueState }}</span></div>
         <div class="card-row" *ngIf="t.venueAddress"><span class="label">Address:</span> <span>{{ t.venueAddress }}</span></div>

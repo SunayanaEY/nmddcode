@@ -12,7 +12,7 @@ export interface Meeting {
   location?: string;
   attendees?: number;
   color?: string;
-  status?: 'scheduled' | 'cancelled' | 'tentative';
+  status?: string;
   raw?: any;
 }
 
@@ -308,17 +308,38 @@ export class CalenderComponent {
           location: locationParts.length ? locationParts.join(', ') : t.venueAddress ?? undefined,
           attendees: t.traineeCount ?? undefined,
           color: this.colorForStatus(t.status, t.modeOfTraining),
-          status: this.statusToMeetingStatus(t.status),
+          status: t.status ?? undefined,
           raw: t
         } as Meeting;
       })
       .filter((m: Meeting | null) => !!m) as Meeting[];
   }
 
-  private colorForStatus(status?: string, mode?: string): string {
-    const s = (status || '').toLowerCase();
+  // Explicit colors for provided statuses + sensible fallbacks
+  private readonly STATUS_COLOR_MAP: Record<string, string> = {
+    'new': '#3b82f6',
+    'recommended by institute head': '#06b6d4',
+    'rejected by institute head': '#ef4444',
+    'approved by state head': '#16a34a',
+    'rejected by state head': '#ef4444',
+    'approved by organization': '#16a34a',
+    'rejected by organization': '#ef4444',
+    'trainees details uploaded': '#f59e0b',
+    'pending for state head approval': '#a855f7',
+    'certificate approved / rejected': '#6366f1'
+  };
+
+  public colorForStatus(status?: string, mode?: string): string {
+    const s = (status || '').trim().toLowerCase();
+    const mapped = this.STATUS_COLOR_MAP[s];
+    if (mapped) return mapped;
+
+    // Generic fallbacks if API adds new statuses
     if (s.includes('approved')) return '#16a34a';
     if (s.includes('reject')) return '#ef4444';
+    if (s.includes('pending')) return '#a855f7';
+    if (s.includes('upload')) return '#f59e0b';
+
     // Mode hint
     const m = (mode || '').toLowerCase();
     if (m === 'online') return '#06b6d4';
@@ -326,11 +347,48 @@ export class CalenderComponent {
     return '#6366f1';
   }
 
-  private statusToMeetingStatus(status?: string): 'scheduled' | 'cancelled' | 'tentative' {
-    const s = (status || '').toLowerCase();
-    if (s.includes('reject')) return 'cancelled';
-    if (s.includes('approved')) return 'scheduled';
-    return 'tentative';
+  // Convert a hex/rgb color to an rgba string with provided alpha
+  private toRgba(color: string, alpha: number): string {
+    if (!color) return `rgba(99,102,241,${alpha})`; // indigo fallback
+    const c = color.trim();
+    // rgb(...) -> rgba(..., alpha)
+    const rgbMatch = c.match(/rgb\s*\(\s*(\d+)\s*,\s*(\d+)\s*,\s*(\d+)\s*\)/i);
+    if (rgbMatch) {
+      const r = Number(rgbMatch[1]);
+      const g = Number(rgbMatch[2]);
+      const b = Number(rgbMatch[3]);
+      return `rgba(${r},${g},${b},${alpha})`;
+    }
+    // rgba(...) -> normalize last component to alpha provided
+    const rgbaMatch = c.match(/rgba\s*\(\s*(\d+)\s*,\s*(\d+)\s*,\s*(\d+)\s*,\s*([\d\.]+)\s*\)/i);
+    if (rgbaMatch) {
+      const r = Number(rgbaMatch[1]);
+      const g = Number(rgbaMatch[2]);
+      const b = Number(rgbaMatch[3]);
+      return `rgba(${r},${g},${b},${alpha})`;
+    }
+    // #rgb or #rrggbb
+    if (c.startsWith('#')) {
+      let hex = c.slice(1);
+      if (hex.length === 3) {
+        hex = hex.split('').map((ch) => ch + ch).join('');
+      }
+      if (hex.length === 6) {
+        const r = parseInt(hex.slice(0, 2), 16);
+        const g = parseInt(hex.slice(2, 4), 16);
+        const b = parseInt(hex.slice(4, 6), 16);
+        return `rgba(${r},${g},${b},${alpha})`;
+      }
+    }
+    // fallback
+    return `rgba(99,102,241,${alpha})`;
+  }
+
+  // Build a subtle overlay background using the status color
+  public overlayBackgroundForStatus(status?: string, mode?: string, alpha: number = 0.08): string {
+    const base = this.colorForStatus(status, mode);
+    const tint = this.toRgba(base, alpha);
+    return `linear-gradient(0deg, ${tint}, ${tint}), #fff`;
   }
 
 // Modal state for day trainings
