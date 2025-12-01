@@ -2,13 +2,15 @@
   <!-- Header / Controls -->
   <div class="calendar-header">
     <div class="nav">
-      <button class="btn icon" (click)="previous()" aria-label="Previous">&#x2039;</button>
+      <!-- <button class="btn icon" (click)="previous()" aria-label="Previous">&#x2039;</button> -->
       <button class="btn" (click)="gotoToday()">Today</button>
-      <button class="btn icon" (click)="next()" aria-label="Next">&#x203A;</button>
+      <!-- <button class="btn icon" (click)="next()" aria-label="Next">&#x203A;</button> -->
     </div>
 
     <div class="current-label">
-      <span>{{ currentDate | date: 'MMMM y' }}</span>
+      <button class="btn icon" (click)="previous()" aria-label="Previous">&#x2039;</button>
+      <span>&nbsp;{{ currentDate | date: 'MMMM y' }}&nbsp;&nbsp;</span>
+      <button class="btn icon" (click)="next()" aria-label="Next">&#x203A;</button>
     </div>
 
     <div class="actions">
@@ -143,7 +145,8 @@
     <div class="details">
       <div class="details-header">
         <div class="details-title">Trainings on {{ selectedDate | date:'EEE, MMM d' }}</div>
-        <button class="btn" (click)="clearSelection()">Clear</button>
+        <button class="btn btn-success" (click)="createNewTraining()">Create New Training</button>
+        <!-- <button class="btn" (click)="clearSelection()">Clear</button> -->
       </div>
       <div class="details-body" *ngIf="getDayEvents(selectedDate).length; else noMeetings">
         <div class="details-item" *ngFor="let m of getDayEvents(selectedDate); trackBy: trackByMeeting" (click)="selectMeeting(m)">

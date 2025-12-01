@@ -38,6 +38,7 @@ import { TranslateModule } from '@ngx-translate/core';
   styleUrl: './all-trainings.component.css',
 })
 export class AllTrainingsComponent {
+  isLoading: boolean = false;
   private bootstrap: any;
   trainingDetails: any;
   @ViewChild('trainingDetailsModal')
@@ -164,6 +165,7 @@ export class AllTrainingsComponent {
       const user = JSON.parse(this.userData);
       this.trainingInstituteId = user.trainingHeadId;
     }
+    this.isLoading = true;
     this.trainingsService
       .getAllTrainings(this.trainingInstituteId)
       .subscribe((res) => {
@@ -189,6 +191,7 @@ export class AllTrainingsComponent {
           this.trainingsList[index] = ele;
           index++;
         });
+        this.isLoading = false;
       });
     this.filteredData = [...this.trainingsList];
     let index = 0;

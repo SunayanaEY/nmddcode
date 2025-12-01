@@ -1,6 +1,7 @@
 import { Component, Input } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { TrainingService } from '../../pages/training/services/training.service';
+import { Router } from '@angular/router';
 
 
 export interface Meeting {
@@ -41,7 +42,7 @@ export class CalenderComponent {
   hours: number[] = Array.from({ length: 24 }, (_, i) => i);
   minutePixelRatio = 0.6667; // 40px per hour => 0.6667px per minute
 
-  constructor(private trainingService: TrainingService) {}
+  constructor(private trainingService: TrainingService, private router: Router) {}
   ngOnInit(): void {
     if (this.meetings.length > 0) {
       this.buildMonth();
@@ -199,6 +200,9 @@ export class CalenderComponent {
 
   clearSelection(): void {
     this.selectedMeeting = null;
+  }
+  createNewTraining(): void {
+    this.router.navigate(['/admin/training-certificate-generation']);
   }
 
   // ----- Data helpers -----

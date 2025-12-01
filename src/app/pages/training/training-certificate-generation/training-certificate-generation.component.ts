@@ -211,7 +211,7 @@ export class TrainingCertificateGenerationComponent implements OnInit {
         '',
         [Validators.required, this.positiveDurationValidator.bind(this)],
       ],
-      durationType: ['Days', Validators.required],
+      durationType: ['Hours', Validators.required],
       trainingDescription: [
         '',
         [Validators.required, Validators.maxLength(100)],
@@ -299,7 +299,7 @@ export class TrainingCertificateGenerationComponent implements OnInit {
           scheme: this.trainingDetails.schemeId,
           venueState: this.trainingDetails.venueStateId,
           venueBlock: this.trainingDetails.venueBlock,
-          // startDate: formattedDate,
+          venueAddress: this.trainingDetails.venueAddress,
           duration: this.trainingDetails.duration,
           durationType: this.trainingDetails.durationType,
           trainingDescription: this.trainingDetails.trainingDescription,
@@ -307,16 +307,15 @@ export class TrainingCertificateGenerationComponent implements OnInit {
           modeOfTraining: this.trainingDetails.modeOfTraining,
         });
 
-        // Clear existing date ranges and repopulate
+        // Clear existing date ranges and repopulate with top-level dates from API
         this.dateRanges.clear();
-        if (this.trainingDetails.dateRanges && this.trainingDetails.dateRanges.length > 0) {
-          this.trainingDetails.dateRanges.forEach((range: any) => {
-            this.addDateRange(range.startDate, range.endDate);
-          });
-        } else {
-          // If no date ranges are provided, add a default empty one
-          this.addDateRange();
-        }
+        const startDateStr = this.trainingDetails.startDate
+          ? String(this.trainingDetails.startDate).split('T')[0]
+          : '';
+        const endDateStr = this.trainingDetails.endDate
+          ? String(this.trainingDetails.endDate).split('T')[0]
+          : '';
+        this.addDateRange(startDateStr, endDateStr);
 
         // Set training institute after institutes are loaded
         this.setTrainingInstitute();
@@ -680,7 +679,8 @@ export class TrainingCertificateGenerationComponent implements OnInit {
         },
         error: (error) => {
           this.isSpinner = false;
-          this.toastr.error('Failed to update training', 'Error');
+          // this.toastr.error('Failed to update training', 'Error');
+          this.toastr.error(error.error.data);
         },
       });
     } else {

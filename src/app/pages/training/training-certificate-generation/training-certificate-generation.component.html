@@ -453,6 +453,7 @@
               style="margin-top: 8px"
             >
               <button
+                *ngIf="!populate"
                 type="button"
                 class="btn btn-outline-primary btn-sm"
                 (click)="addDateRange()"
@@ -513,8 +514,8 @@
                 formControlName="durationType"
                 class="form-control h-auto"
               >
-                <option value="Days">{{ "Days" | translate }}</option>
-                <option value="Hours">{{ "Hours" | translate }}</option>
+                <!-- <option value="Days">{{ "Days" | translate }}</option> -->
+                <option selected value="Hours">{{ "Hours" | translate }}</option>
                 <!-- <option value="Weeks">{{ "Weeks" | translate }}</option> -->
               </select>
             </div>
