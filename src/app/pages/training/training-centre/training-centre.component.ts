@@ -30,6 +30,7 @@ import {
 } from '../../../services/location.service';
 import { TranslateModule } from '@ngx-translate/core';
 import { ToastrService } from 'ngx-toastr';
+import { environment } from '../../../../environments/environment';
 
 @Component({
   selector: 'app-training-centre',
@@ -96,7 +97,7 @@ export class TrainingCentreComponent implements OnInit {
   selectedStateId: number | null = null;
   selectedImageFile: File | null = null;
   currentImageUrl: string | null = null;
-
+  url: string = environment.apiUrl;
   constructor(
     private adminService: AdminService,
     private authService: AuthService,
@@ -610,11 +611,24 @@ export class TrainingCentreComponent implements OnInit {
     this.modalConfig.title = 'Training Institute Admin Details';
     this.modalConfig.primaryButtonText = 'Close';
 
-    // Set current image URL if available
-    if (centre.instituteImage) {
-      this.currentImageUrl = centre.instituteImage;
-      // Ensure the image URL is available in the data object for the modal
-      this.selectedCentre.instituteImage = centre.instituteImage;
+    // Set current image via authenticated blob URL if available
+    if (centre.instituteImageUrl) {
+      const fileName = centre.instituteImageUrl;
+      this.adminService.downloadInstituteImage(fileName).subscribe({
+        next: (blob: Blob) => {
+          const imageUrl = URL.createObjectURL(blob);
+          this.currentImageUrl = imageUrl;
+          this.selectedCentre.instituteImage = imageUrl; // for view mode
+          this.selectedCentre.instituteImageUrl = imageUrl; // for edit preview consistency
+        },
+        error: () => {
+          // Fallback to direct URL if blob fails
+          const directUrl = `${this.url}api/photo/download/${fileName}`;
+          this.currentImageUrl = directUrl;
+          this.selectedCentre.instituteImage = directUrl;
+          this.selectedCentre.instituteImageUrl = directUrl;
+        },
+      });
     }
 
     // Filter out state and district change fields for view mode
@@ -626,15 +640,30 @@ export class TrainingCentreComponent implements OnInit {
   }
 
   editTrainingCentre(centre: any) {
-    this.selectedCentre = centre;
+    // Work on a shallow copy to avoid mutating table data
+    this.selectedCentre = { ...centre };
     this.modalMode = 'edit';
     this.modalConfig.title = 'Edit Training Institute Admin Details';
     this.modalConfig.primaryButtonText = 'Update';
     this.selectedImageFile = null;
 
-    // Set current image URL if available
-    if (centre.instituteImage) {
-      this.currentImageUrl = centre.instituteImage;
+    // Set current image via authenticated blob URL if available
+    if (centre.instituteImageUrl) {
+      const fileName = centre.instituteImageUrl;
+      this.adminService.downloadInstituteImage(fileName).subscribe({
+        next: (blob: Blob) => {
+          const imageUrl = URL.createObjectURL(blob);
+          this.currentImageUrl = imageUrl;
+          this.selectedCentre.instituteImageUrl = imageUrl;
+          this.selectedCentre.instituteImage = imageUrl;
+        },
+        error: () => {
+          const directUrl = `${this.url}api/photo/download/${fileName}`;
+          this.currentImageUrl = directUrl;
+          this.selectedCentre.instituteImageUrl = directUrl;
+          this.selectedCentre.instituteImage = directUrl;
+        },
+      });
     }
 
     // Ensure state and district change fields are available for edit mode
@@ -884,6 +913,9 @@ export class TrainingCentreComponent implements OnInit {
       newStateField.value = null;
     }
     this.selectedImageFile = null;
+    if (this.currentImageUrl?.startsWith('blob:')) {
+      URL.revokeObjectURL(this.currentImageUrl);
+    }
     this.currentImageUrl = null;
   }
 
@@ -905,8 +937,15 @@ export class TrainingCentreComponent implements OnInit {
       event.value instanceof File
     ) {
       this.selectedImageFile = event.value;
+      // Revoke previous blob URL if any
+      if (this.currentImageUrl?.startsWith('blob:')) {
+        URL.revokeObjectURL(this.currentImageUrl);
+      }
       // Create a preview URL for the selected image
-      this.currentImageUrl = URL.createObjectURL(event.value);
+      const previewUrl = URL.createObjectURL(event.value);
+      this.currentImageUrl = previewUrl;
+      this.selectedCentre.instituteImageUrl = previewUrl;
+      this.selectedCentre.instituteImage = previewUrl;
     }
   }
 
