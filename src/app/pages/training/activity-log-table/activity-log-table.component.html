@@ -25,11 +25,11 @@
       <div class="date-filter-controls">
         <div class="date-input-group">
           <label for="startDate">{{ "Start Date" | translate }}:</label>
-          <input type="date" id="startDate" class="date-input" [(ngModel)]="startDate" />
+          <input type="date" id="startDate" class="date-input" [(ngModel)]="startDate" inputmode="none" (keydown)="blockKeyboard($event)" (keypress)="blockKeyboard($event)" (paste)="$event.preventDefault()" />
         </div>
         <div class="date-input-group">
           <label for="endDate">{{ "End Date" | translate }}:</label>
-          <input type="date" id="endDate" class="date-input" [(ngModel)]="endDate" />
+          <input type="date" id="endDate" class="date-input" [(ngModel)]="endDate" inputmode="none" (keydown)="blockKeyboard($event)" (keypress)="blockKeyboard($event)" (paste)="$event.preventDefault()" />
         </div>
         <div class="date-filter-actions">
           <button class="show-logs-btn" (click)="filterByDateRange()">{{ "Show Logs" | translate }}</button>
