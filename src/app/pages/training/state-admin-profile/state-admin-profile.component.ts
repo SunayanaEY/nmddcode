@@ -196,7 +196,7 @@ export class StateAdminProfileComponent implements OnInit {
     this.profileForm = this.fb.group(
       {
         state: ['', Validators.required],
-        adminName: ['', [Validators.required, Validators.minLength(2)]],
+        adminName: ['', [Validators.required, Validators.minLength(2),Validators.pattern('^[a-zA-Z ]*$')]],
         designation: ['', Validators.required],
         phone: [
           '',
@@ -241,6 +241,16 @@ export class StateAdminProfileComponent implements OnInit {
       this.userRole = user.role;
     }
   }
+  allowOnlyAlphabets(event: KeyboardEvent) {
+  const charCode = event.which ? event.which : event.keyCode;
+  if (
+    !(charCode >= 65 && charCode <= 90) &&   // A-Z
+    !(charCode >= 97 && charCode <= 122) &&  // a-z
+    charCode !== 32                         // Space
+  ) {
+    event.preventDefault();
+  }
+}
 
   // Load states from location service
   loadStates() {

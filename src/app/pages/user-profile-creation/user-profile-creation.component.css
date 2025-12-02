@@ -11,6 +11,10 @@
 .form-header {
   margin-bottom: 2rem;
 }
+.required{
+  color:red;
+  font-weight:500;
+}
 
 .breadcrumb {
   display: flex;

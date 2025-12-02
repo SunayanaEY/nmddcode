@@ -506,6 +506,7 @@
   "TRAINING.LOADING.DISTRICTS": "Loading districts...",
   "TRAINING.SELECT_STATE_FIRST": "Select State First",
   "TRAINING.VALIDATION.INSTITUTE_NAME_REQUIRED": "Training institute name is required",
+  "TRAINING.VALIDATION.ONLY_ALPHABETS_ALLOWED" : "Only alphabets are allowed",
   "TRAINING.VALIDATION.INSTITUTE_NAME_MIN_LENGTH": "Training institute name must be at least 3 characters",
   "TRAINING.VALIDATION.REGISTRATION_REQUIRED": "Registration number is required",
   "TRAINING.VALIDATION.REGISTRATION_MIN_LENGTH": "Registration number must be at least 3 characters",

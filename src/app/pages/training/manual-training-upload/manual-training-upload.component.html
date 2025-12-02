@@ -40,11 +40,15 @@
       </div>
       <div class="detail-item">
         <span class="label">Start Date:</span>
-        <span class="value">{{ trainingDetails?.startDate | date: 'dd-MM-yyyy' }}</span>
+        <span class="value">{{
+          trainingDetails?.startDate | date : "dd-MM-yyyy"
+        }}</span>
       </div>
       <div class="detail-item">
         <span class="label">End Date:</span>
-        <span class="value">{{ trainingDetails?.endDate | date: 'dd-MM-yyyy' }}</span>
+        <span class="value">{{
+          trainingDetails?.endDate | date : "dd-MM-yyyy"
+        }}</span>
       </div>
 
       <div class="detail-item">
@@ -219,14 +223,14 @@
             </div>
 
             <div class="col-md-3">
-              <div class="mb-3 ">
+              <div class="mb-3">
                 <label for="photo" class="form-label"
-                  >Photo <span class="text-danger">*</span></label
+                  >Photo</label
                 >
                 <div class="photo-upload-container">
                   <div class="photo-preview" (click)="fileInput.click()">
                     <img
-                      [src]="photoPreview || 'assets/images/default-avatar.png'"
+                      [src]="photoPreview || 'assets/imgs/default-avatar.png'"
                       alt="Trainee Photo"
                       class="uploaded-photo"
                     />
@@ -342,7 +346,7 @@
                 </div>
               </div>
             </div>
-            
+
             <div class="col-md-3">
               <div class="mb-3">
                 <label for="age" class="form-label"
@@ -476,13 +480,15 @@
                 <input
                   type="date"
                   class="form-control"
+                  id="dob"
+                  formControlName="dob"
+                  placeholder="dd-mm-yyyy"
                   [class.is-invalid]="
                     participantForm.get('dob')?.invalid &&
                     participantForm.get('dob')?.touched
                   "
-                  id="dob"
-                  formControlName="dob"
                 />
+
                 <div
                   class="invalid-feedback"
                   *ngIf="

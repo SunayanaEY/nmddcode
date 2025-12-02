@@ -25,7 +25,7 @@ import { TranslateModule } from '@ngx-translate/core';
     BreadcrumbComponent,
     TableComponent,
     NewCertificateLayoutComponent,
-    TranslateModule
+    TranslateModule,
   ],
   templateUrl: './all-certificate.component.html',
   styleUrl: './all-certificate.component.css',
@@ -133,7 +133,10 @@ export class AllCertificateComponent {
   selectedSignatureFile: File | null = null;
   breadcrumbItems: BreadcrumbItem[] = [
     { label: 'Dashboard', url: '/admin/role-dashboard' },
-    { label: 'Approved/Rejected Trainings', url: '/admin/approvedrejectedTrainings' },
+    {
+      label: 'Approved/Rejected Trainings',
+      url: '/admin/approvedrejectedTrainings',
+    },
     { label: 'Approved Certificate' },
   ];
 
@@ -198,18 +201,18 @@ export class AllCertificateComponent {
     });
   }
   showPhoto(photoId: number) {
-  this.trainingsService.downloadTraineeImage(photoId).subscribe({
-    next: (blob: Blob) => {
-      const imageUrl = URL.createObjectURL(blob);
-      this.photoPreviewUrl = imageUrl;
-      // this.isLoadingPhoto = false;
-    },
-    error: (err) => {
-      console.error('Failed to load photo', err);
-      // this.isLoadingPhoto = false;
-    }
-  });
-}
+    this.trainingsService.downloadTraineeImage(photoId).subscribe({
+      next: (blob: Blob) => {
+        const imageUrl = URL.createObjectURL(blob);
+        this.photoPreviewUrl = imageUrl;
+        // this.isLoadingPhoto = false;
+      },
+      error: (err) => {
+        console.error('Failed to load photo', err);
+        // this.isLoadingPhoto = false;
+      },
+    });
+  }
   onBulkUpload() {
     this.router.navigate(['/admin/bulk-training-upload'], {
       queryParams: { trainingId: this.trainingId },
@@ -240,10 +243,11 @@ export class AllCertificateComponent {
 
   handleTableAction(event: { action: string; item: any; index: number }): void {
     this.selectedItem = event.item;
-    debugger;
     if (event.action === 'view') {
-      this.showPhoto(this.selectedItem.photoId);
-      // document.getElementById('modalBtn')?.click();
+      if (event.item.photoId != null) {
+        this.showPhoto(this.selectedItem.photoId);
+      }
+      document.getElementById('modalBtn')?.click();
     } else if (event.action === 'download') {
       const modalElement = document.getElementById('viewCertificateModal');
       if (modalElement) {

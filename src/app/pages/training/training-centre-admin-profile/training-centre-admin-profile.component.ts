@@ -116,7 +116,11 @@ export class TrainingCentreAdminProfileComponent implements OnInit {
       this.profileForm = this.fb.group({
         trainingInstituteName: [
           '',
-          [Validators.required, Validators.minLength(3)],
+          [
+            Validators.required,
+            Validators.minLength(3),
+            Validators.pattern('^[a-zA-Z ]*$'),
+          ],
         ],
         instituteType: ['', [Validators.required]],
         trainingInstituteRegistration: [
@@ -148,48 +152,58 @@ export class TrainingCentreAdminProfileComponent implements OnInit {
         }
       });
     } else {
-      this.profileForm = this.fb.group({
-        trainingInstituteName: [
-          '',
-          [Validators.required, Validators.minLength(3)],
-        ],
-        instituteType: ['', [Validators.required]],
-        trainingInstituteRegistration: [
-          '',
-          [Validators.required, Validators.minLength(3)],
-        ],
-        trainingInstituteExpiry: ['', []],
-        state: ['', [Validators.required]],
-        district: ['', [Validators.required]],
-
-        address: ['', [Validators.required, Validators.minLength(10)]],
-        latitude: [
-          '',
-          [Validators.required, Validators.min(-90), Validators.max(90)],
-        ],
-        longitude: [
-          '',
-          [Validators.required, Validators.min(-180), Validators.max(180)],
-        ],
-        contactPersonName: ['', [Validators.required, Validators.minLength(2)]],
-        designation: ['', [Validators.required]],
-        contactNumber: [
-          '',
-          [Validators.required, Validators.pattern(/^[0-9]{10}$/)],
-        ],
-        emailId: ['', [Validators.required, Validators.email]],
-        password: [
-          '',
-          [
-            Validators.required,
-            Validators.minLength(8),
-            Validators.pattern(
-              /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]/
-            ),
+      this.profileForm = this.fb.group(
+        {
+          trainingInstituteName: [
+            '',
+            [
+              Validators.required,
+              Validators.minLength(3),
+              Validators.pattern('^[a-zA-Z ]*$'),
+            ],
           ],
-        ],
-        confirmPassword: ['', [Validators.required]],
-      });
+          instituteType: ['', [Validators.required]],
+          trainingInstituteRegistration: [
+            '',
+            [Validators.required, Validators.minLength(3)],
+          ],
+          trainingInstituteExpiry: ['', []],
+          state: ['', [Validators.required]],
+          district: ['', [Validators.required]],
+
+          address: ['', [Validators.required, Validators.minLength(10)]],
+          latitude: [
+            '',
+            [Validators.required, Validators.min(-90), Validators.max(90)],
+          ],
+          longitude: [
+            '',
+            [Validators.required, Validators.min(-180), Validators.max(180)],
+          ],
+          contactPersonName: [
+            '',
+            [Validators.required, Validators.minLength(2)],
+          ],
+          designation: ['', [Validators.required]],
+          contactNumber: [
+            '',
+            [Validators.required, Validators.pattern(/^[0-9]{10}$/)],
+          ],
+          emailId: ['', [Validators.required, Validators.email]],
+          password: [
+            '',
+            [
+              Validators.required,
+              Validators.minLength(8),
+              Validators.pattern(
+                /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]/
+              ),
+            ],
+          ],
+          confirmPassword: ['', [Validators.required]],
+        },
+        { validators: this.passwordMatchValidator.bind(this) }
+      );
       // this.profileForm.get('state')?.valueChanges.subscribe((stateId) => {
       //   if (stateId) {
       //     this.loadDistricts(stateId);
@@ -327,6 +341,29 @@ export class TrainingCentreAdminProfileComponent implements OnInit {
       });
     }
   }
+  allowOnlyAlphabetsAndDigits(event: KeyboardEvent) {
+    const charCode = event.which ? event.which : event.keyCode;
+
+    if (
+      !(charCode >= 65 && charCode <= 90) && // A-Z
+      !(charCode >= 97 && charCode <= 122) && // a-z
+      !(charCode >= 48 && charCode <= 57) // 0-9
+    ) {
+      event.preventDefault();
+    }
+  }
+  allowOnlyAlphabets(event: KeyboardEvent) {
+    const charCode = event.which ? event.which : event.keyCode;
+
+    if (
+      !(charCode >= 65 && charCode <= 90) && // A-Z
+      !(charCode >= 97 && charCode <= 122) && // a-z
+      charCode !== 32 // space
+    ) {
+      event.preventDefault();
+    }
+  }
+
   /**
    * Handle form submission
    */

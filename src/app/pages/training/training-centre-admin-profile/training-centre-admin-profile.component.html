@@ -37,7 +37,9 @@
                     profileForm.get('trainingInstituteName')?.invalid &&
                     profileForm.get('trainingInstituteName')?.touched
                   "
+                  (keypress)="allowOnlyAlphabets($event)"
                 />
+
                 <div
                   class="invalid-feedback"
                   *ngIf="
@@ -51,6 +53,13 @@
                       "TRAINING.VALIDATION.INSTITUTE_NAME_REQUIRED" | translate
                     }}</span
                   >
+                  <span
+                    *ngIf="profileForm.get('trainingInstituteName')?.errors?.['pattern']"
+                  >
+                    {{
+                      "TRAINING.VALIDATION.ONLY_ALPHABETS_ALLOWED" | translate
+                    }}
+                  </span>
                   <span
                     *ngIf="profileForm.get('trainingInstituteName')?.errors?.['minlength']"
                     >{{
@@ -77,7 +86,9 @@
                     profileForm.get('trainingInstituteRegistration')?.invalid &&
                     profileForm.get('trainingInstituteRegistration')?.touched
                   "
+                  (keypress)="allowOnlyAlphabetsAndDigits($event)"
                 />
+
                 <div
                   class="invalid-feedback"
                   *ngIf="
@@ -401,7 +412,9 @@
                     profileForm.get('contactPersonName')?.invalid &&
                     profileForm.get('contactPersonName')?.touched
                   "
+                  (keypress)="allowOnlyAlphabets($event)"
                 />
+
                 <div
                   class="invalid-feedback"
                   *ngIf="
@@ -441,6 +454,7 @@
                     profileForm.get('designation')?.invalid &&
                     profileForm.get('designation')?.touched
                   "
+                  (keypress)="allowOnlyAlphabets($event)"
                 />
                 <div
                   class="invalid-feedback"
@@ -737,6 +751,16 @@
                     profileForm.get('confirmPassword')?.touched)
                   "
                   />
+                  <small
+                    class="text-danger"
+                    *ngIf="
+                        profileForm.errors?.['passwordMismatch'] &&
+                        profileForm.get('confirmPassword')?.touched
+                           "
+                  >
+                    Password and Confirm Password do not match
+                  </small>
+
                   <button
                     type="button"
                     class="password-toggle"
