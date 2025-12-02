@@ -31,7 +31,7 @@ interface Participant {
   category?: string;
   educationQualification?: string;
   recommendedByOrganization?: string;
-  photoId?:number | null;
+  photoId?: number | null;
 }
 
 @Component({
@@ -61,7 +61,7 @@ export class ManualTrainingUploadComponent implements OnInit {
   trainingInstituteId: any;
 
   photoPreview: string | null = null;
-  photoId : number | null = null;
+  photoId: number | null = null;
   photoError: string = '';
   selectedFile: File | null = null;
 
@@ -130,6 +130,7 @@ export class ManualTrainingUploadComponent implements OnInit {
   //   this.getTrainingDetails(this.trainingId);
   // }
 
+
   initializeForm(): void {
     this.participantForm = this.fb.group({
       name: [
@@ -197,43 +198,46 @@ export class ManualTrainingUploadComponent implements OnInit {
     });
   }
   onPhotoSelect(event: any) {
-  const file = event.target.files[0];
-  
-  if (file) {
-    // Validate file type
-    if (!file.type.startsWith('image/')) {
-      this.photoError = 'Please select a valid image file.';
-      return;
+    const file = event.target.files[0];
+
+    if (file) {
+      // Validate file type
+      if (!file.type.startsWith('image/')) {
+        this.photoError = 'Please select a valid image file.';
+        return;
+      }
+
+      // Validate file size (e.g., max 2MB)
+      if (file.size > 2 * 1024 * 1024) {
+        this.photoError = 'Image size should not exceed 2MB.';
+        return;
+      }
+
+      this.photoError = '';
+      this.selectedFile = file;
+
+      // Preview the image
+      const reader = new FileReader();
+      reader.onload = (e: any) => {
+        this.photoPreview = e.target.result;
+      };
+      reader.readAsDataURL(file);
+      this.trainingService.uploadTraineeImage(file, 'trainee').subscribe({
+        next: (response) => {
+          this.isSpinning = false;
+          this.toastr.success('Image uploaded successfully!', 'Success');
+          this.photoId = response.data.photoId;
+        },
+        error: (error) => {
+          this.isSpinning = false;
+          this.toastr.error(
+            'Failed to upload trainee image. Try again !',
+            'Error'
+          );
+        },
+      });
     }
-    
-    // Validate file size (e.g., max 2MB)
-    if (file.size > 2 * 1024 * 1024) {
-      this.photoError = 'Image size should not exceed 2MB.';
-      return;
-    }
-    
-    this.photoError = '';
-    this.selectedFile = file;
-    
-    // Preview the image
-    const reader = new FileReader();
-    reader.onload = (e: any) => {
-      this.photoPreview = e.target.result;
-    };
-    reader.readAsDataURL(file);
-    this.trainingService.uploadTraineeImage(file,'trainee').subscribe({
-      next: (response) => {
-        this.isSpinning = false;
-        this.toastr.success('Image uploaded successfully!', 'Success');
-        this.photoId = response.data.photoId;
-      },
-      error: (error) => {
-        this.isSpinning = false;
-        this.toastr.error('Failed to upload trainee image. Try again !', 'Error');
-      },
-    });
   }
-}
 
   getTrainingDetails(trainingId: number) {
     // alert('Training Upload : ' + trainingId);
@@ -262,6 +266,21 @@ export class ManualTrainingUploadComponent implements OnInit {
       modal.show();
     }
   }
+  showPhoto(photoId: number) {
+    // alert(photoId);
+    this.trainingService.downloadTraineeImage(photoId).subscribe({
+      next: (blob: Blob) => {
+        const imageUrl = URL.createObjectURL(blob);
+        this.photoPreview = imageUrl;
+        // alert(this.photoPreviewUrl);
+        // this.isLoadingPhoto = false;
+      },
+      error: (err) => {
+        console.error('Failed to load photo', err);
+        // this.isLoadingPhoto = false;
+      },
+    });
+  }
 
   addParticipant(): void {
     if (this.participantForm.valid) {
@@ -279,13 +298,14 @@ export class ManualTrainingUploadComponent implements OnInit {
         category: formValue.category,
         educationQualification: formValue.educationQualification,
         recommendedByOrganization: formValue.recommendedByOrganization,
-        photoId: this.photoId ?? null
+        photoId: this.photoId ?? null,
       };
 
       this.participants.push(participant);
       this.photoId = null;
 
       this.closeModal();
+      this.photoPreview = null;
       this.participantForm.reset();
       this.toastr.success('Participant added successfully!');
     } else {
@@ -316,6 +336,7 @@ export class ManualTrainingUploadComponent implements OnInit {
       this.editingIndex = -1;
 
       this.closeModal();
+      this.photoPreview = null;
       this.participantForm.reset();
       this.toastr.success('Participant updated successfully!');
     } else {
@@ -392,6 +413,10 @@ export class ManualTrainingUploadComponent implements OnInit {
           ? 'user@example.com'
           : participant.email,
     });
+    this.photoId = participant.photoId ?? null;
+    if (this.photoId != null) {
+      this.showPhoto(this.photoId);
+    }
   }
 
   deleteParticipant(index: number): void {
@@ -415,7 +440,7 @@ export class ManualTrainingUploadComponent implements OnInit {
       ...participant,
       trainingId: trainingId,
       trainingInstituteId: trainingInstituteId,
-      photoId : participant.photoId ?? null
+      photoId: participant.photoId ?? null,
     }));
 
     this.isSpinning = true;
@@ -434,6 +459,7 @@ export class ManualTrainingUploadComponent implements OnInit {
   }
 
   private closeModal(): void {
+    this.photoPreview = null;
     const modalElement = document.getElementById('addParticipantModal');
     if (modalElement) {
       const modal = (window as any).bootstrap.Modal.getInstance(modalElement);

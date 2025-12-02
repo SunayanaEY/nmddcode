@@ -198,12 +198,12 @@ export class AllCertificateComponent {
     });
   }
   showPhoto(photoId: number) {
-  alert(photoId);
+  // alert(photoId);
   this.trainingsService.downloadTraineeImage(photoId).subscribe({
     next: (blob: Blob) => {
       const imageUrl = URL.createObjectURL(blob);
       this.photoPreviewUrl = imageUrl;
-      alert(this.photoPreviewUrl);
+      // alert(this.photoPreviewUrl);
       // this.isLoadingPhoto = false;
     },
     error: (err) => {

@@ -611,6 +611,7 @@
   "TRAINING.LOADING.DISTRICTS": "जिले लोड हो रहे हैं...",
   "TRAINING.SELECT_STATE_FIRST": "पहले राज्य चुनें",
   "TRAINING.VALIDATION.INSTITUTE_NAME_REQUIRED": "प्रशिक्षण संस्थान का नाम आवश्यक है",
+  "TRAINING.VALIDATION.ONLY_ALPHABETS_ALLOWED" : "केवल अक्षरों की अनुमति है",
   "TRAINING.VALIDATION.INSTITUTE_NAME_MIN_LENGTH": "प्रशिक्षण संस्थान का नाम कम से कम 3 अक्षर का होना चाहिए",
   "TRAINING.VALIDATION.REGISTRATION_REQUIRED": "पंजीकरण संख्या आवश्यक है",
   "TRAINING.VALIDATION.REGISTRATION_MIN_LENGTH": "पंजीकरण संख्या कम से कम 3 अक्षर की होनी चाहिए",

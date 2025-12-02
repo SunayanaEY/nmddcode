@@ -1,31 +1,39 @@
 <div class="main-content-wrapper">
   <div class="certificate-form-container">
-
     <!-- Header Section -->
     <div class="form-header">
       <app-breadcrumb [items]="breadcrumbItems"></app-breadcrumb>
 
       <div class="page-header-content">
         <div class="header-left">
-          <h1 class="page-title">{{'Trainer Management'|translate}}</h1>
+          <h1 class="page-title">{{ "Trainer Management" | translate }}</h1>
           <p class="page-description">
-            {{'Manage trainer registrations and view existing trainers'|translate}}
+            {{
+              "Manage trainer registrations and view existing trainers"
+                | translate
+            }}
           </p>
         </div>
 
         <div class="header-right">
-          <button 
-            type="button" 
+          <button
+            type="button"
             class="btn btn-primary register-btn"
             [class.btn-danger]="showRegistrationForm"
-            (click)="toggleRegistrationForm()">
-
-            <i class="bi"
+            (click)="toggleRegistrationForm()"
+          >
+            <i
+              class="bi"
               [class.bi-plus-circle]="!showRegistrationForm"
-              [class.bi-x-circle]="showRegistrationForm">
+              [class.bi-x-circle]="showRegistrationForm"
+            >
             </i>
 
-            {{ showRegistrationForm ? ('Hide Form'|translate) : ('Register New Trainers'|translate) }}
+            {{
+              showRegistrationForm
+                ? ("Hide Form" | translate)
+                : ("Register New Trainers" | translate)
+            }}
           </button>
         </div>
       </div>
@@ -34,39 +42,79 @@
     <!-- Registration Form Section -->
     <div class="registration-form-section" *ngIf="showRegistrationForm">
       <div class="form-content">
-
         <form [formGroup]="profileForm" (ngSubmit)="onSubmit()">
-
           <div class="form-section">
             <h3 class="section-title">
-              {{ isEditMode ? ('Update Trainer'|translate) : ('Trainer Details'|translate) }}
+              {{
+                isEditMode
+                  ? ("Update Trainer" | translate)
+                  : ("Trainer Details" | translate)
+              }}
             </h3>
 
             <div class="form-row">
-
               <div class="form-group half-width">
                 <label>Trainer Name <span class="required">*</span></label>
-                <input type="text" formControlName="trainerName" class="form-control">
+                <input
+                  type="text"
+                  formControlName="trainerName"
+                  class="form-control"
+                  (keypress)="allowOnlyAlphabets($event)"
+                />
               </div>
 
               <div class="form-group half-width">
                 <label>Expertise In <span class="required">*</span></label>
-                <input type="text" formControlName="expertiseIn" class="form-control">
+                <input
+                  type="text"
+                  formControlName="expertiseIn"
+                  class="form-control"
+                  (keypress)="allowOnlyAlphabets($event)"
+                />
               </div>
             </div>
 
             <div class="form-row">
-
               <div class="form-group half-width">
                 <label>Contact Number <span class="required">*</span></label>
-                <input type="tel" formControlName="mobile" class="form-control">
+                <input
+                  type="tel"
+                  formControlName="mobile"
+                  class="form-control"
+                  [class.is-invalid]="
+                    profileForm.get('mobile')?.invalid &&
+                    profileForm.get('mobile')?.touched
+                  "
+                />
+
+                <small
+                  *ngIf="profileForm.get('mobile')?.errors?.['required'] && profileForm.get('mobile')?.touched"
+                  class="text-danger"
+                >
+                  Contact number is required
+                </small>
+                <small
+                  *ngIf="profileForm.get('mobile')?.errors?.['pattern'] && profileForm.get('mobile')?.touched"
+                  class="text-danger"
+                >
+                  Contact number should be of 10 digits
+                </small>
+                <small
+                  *ngIf="profileForm.get('mobile')?.errors?.['maxlength'] && profileForm.get('mobile')?.touched"
+                  class="text-danger"
+                >
+                  Contact number cannot be more than 10 digits
+                </small>
               </div>
 
               <div class="form-group half-width">
                 <label>Email ID <span class="required">*</span></label>
-                <input type="email" formControlName="email" class="form-control">
+                <input
+                  type="email"
+                  formControlName="email"
+                  class="form-control"
+                />
               </div>
-
             </div>
           </div>
 
@@ -74,14 +122,20 @@
             <button
               type="submit"
               class="btn btn-primary btn-lg"
-              [disabled]="isLoading || profileForm.invalid">
+              [disabled]="isLoading || profileForm.invalid"
+            >
+              <span
+                *ngIf="isLoading"
+                class="spinner-border spinner-border-sm me-2"
+              ></span>
 
-              <span *ngIf="isLoading" class="spinner-border spinner-border-sm me-2"></span>
-
-              {{ isEditMode ? ('Update Trainer'|translate) : ('Create Profile'|translate) }}
+              {{
+                isEditMode
+                  ? ("Update Trainer" | translate)
+                  : ("Create Profile" | translate)
+              }}
             </button>
           </div>
-
         </form>
       </div>
     </div>
@@ -89,7 +143,7 @@
     <!-- Trainers Table -->
     <div class="form-content mt-4">
       <div class="form-section">
-        <h3 class="section-title">{{'Registered Trainers'|translate}}</h3>
+        <h3 class="section-title">{{ "Registered Trainers" | translate }}</h3>
 
         <app-table
           [data]="trainersData"
@@ -99,11 +153,10 @@
           (actionClick)="onActionClick($event)"
           tableName="trainers"
           (edit)="onEditTrainer($event)"
-          (delete)="onDeleteTrainer($event)">
+          (delete)="onDeleteTrainer($event)"
+        >
         </app-table>
-
       </div>
     </div>
-
   </div>
 </div>

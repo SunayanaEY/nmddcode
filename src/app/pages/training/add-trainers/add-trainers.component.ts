@@ -53,7 +53,12 @@ export class AddTrainersComponent implements OnInit {
 
   tableActions = [
     { name: 'edit', icon: 'bi bi-pencil', class: 'btn-info', title: 'Edit' },
-    { name: 'delete', icon: 'bi bi-trash', class: 'btn-danger', title: 'Delete' },
+    {
+      name: 'delete',
+      icon: 'bi bi-trash',
+      class: 'btn-danger',
+      title: 'Delete',
+    },
   ];
 
   breadcrumbItems: BreadcrumbItem[] = [
@@ -145,9 +150,7 @@ export class AddTrainersComponent implements OnInit {
             this.toastr.error('Update failed');
           },
         });
-    }
-
-    else {
+    } else {
       this.adminService.addTrainer(formData).subscribe({
         next: (response) => {
           this.isLoading = false;
@@ -198,6 +201,17 @@ export class AddTrainersComponent implements OnInit {
         this.toastr.error('Delete failed');
       },
     });
+  }
+  allowOnlyAlphabets(event: KeyboardEvent) {
+    const charCode = event.which ? event.which : event.keyCode;
+
+    if (
+      !(charCode >= 65 && charCode <= 90) && // A-Z
+      !(charCode >= 97 && charCode <= 122) && // a-z
+      charCode !== 32 // space
+    ) {
+      event.preventDefault();
+    }
   }
 
   resetForm() {

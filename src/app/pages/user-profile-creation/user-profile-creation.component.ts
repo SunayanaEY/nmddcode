@@ -53,7 +53,7 @@ export class UserProfileCreationComponent implements OnInit {
     private router: Router,
     private fb: FormBuilder,
     private userProfileService: UserProfileService,
-    private toastr: ToastrService,
+    private toastr: ToastrService
   ) {
     this.profileForm = this.fb.group(
       {
@@ -92,7 +92,6 @@ export class UserProfileCreationComponent implements OnInit {
       confirmPassword: '',
     });
   }
-  
 
   onSubmit() {
     if (this.profileForm.valid) {
@@ -165,7 +164,17 @@ export class UserProfileCreationComponent implements OnInit {
       this.markFormGroupTouched();
     }
   }
+  allowOnlyAlphabets(event: KeyboardEvent) {
+    const charCode = event.which ? event.which : event.keyCode;
 
+    if (
+      !(charCode >= 65 && charCode <= 90) && // A-Z
+      !(charCode >= 97 && charCode <= 122) && // a-z
+      charCode !== 32 // space
+    ) {
+      event.preventDefault();
+    }
+  }
   private markFormGroupTouched() {
     Object.keys(this.profileForm.controls).forEach((key) => {
       const control = this.profileForm.get(key);

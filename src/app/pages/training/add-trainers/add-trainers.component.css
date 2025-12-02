@@ -11,6 +11,10 @@
 .form-header {
   margin-bottom: 2rem;
 }
+.required {
+  color: red;       /* Make the star red */
+  font-weight: bold; /* Optional: make it bold */
+}
 
 .page-header-content {
   display: flex;
