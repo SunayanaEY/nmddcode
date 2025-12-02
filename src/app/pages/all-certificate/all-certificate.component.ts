@@ -198,12 +198,10 @@ export class AllCertificateComponent {
     });
   }
   showPhoto(photoId: number) {
-  alert(photoId);
   this.trainingsService.downloadTraineeImage(photoId).subscribe({
     next: (blob: Blob) => {
       const imageUrl = URL.createObjectURL(blob);
       this.photoPreviewUrl = imageUrl;
-      alert(this.photoPreviewUrl);
       // this.isLoadingPhoto = false;
     },
     error: (err) => {
@@ -242,9 +240,10 @@ export class AllCertificateComponent {
 
   handleTableAction(event: { action: string; item: any; index: number }): void {
     this.selectedItem = event.item;
+    debugger;
     if (event.action === 'view') {
       this.showPhoto(this.selectedItem.photoId);
-      document.getElementById('modalBtn')?.click();
+      // document.getElementById('modalBtn')?.click();
     } else if (event.action === 'download') {
       const modalElement = document.getElementById('viewCertificateModal');
       if (modalElement) {
