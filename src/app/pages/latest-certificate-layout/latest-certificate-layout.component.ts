@@ -6,6 +6,7 @@ import html2canvas from 'html2canvas';
 import { environment } from '../../../environments/environment';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { firstValueFrom } from 'rxjs';
+import { TrainingService } from '../training/services/training.service';
 
 @Component({
   selector: 'app-latest-certificate-layout',
@@ -28,8 +29,9 @@ export class LatestCertificateLayoutComponent implements OnInit {
   logo3Url: string | null = null;
   signatureUrls: (string | null)[] = [];
   private createdBlobUrls: string[] = [];
+  traineePhotoUrl: string | null = null;
 
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient, private trainingService: TrainingService) {}
 
   ngOnInit() {
     if (this.data?.trainingDate) {
@@ -47,6 +49,7 @@ export class LatestCertificateLayoutComponent implements OnInit {
     }
     // Build blob-based display URLs for logos and signatures
     this.prepareAssetUrls();
+    this.loadTraineePhoto();
   }
 
   get finalUniqueId(): string {
@@ -189,4 +192,21 @@ export class LatestCertificateLayoutComponent implements OnInit {
     this.revokeUrls();
   }
 
+  private async loadTraineePhoto(): Promise<void> {
+    const photoId = this.data?.traineePhotoId;
+    if (typeof photoId === 'number' && photoId > 0) {
+      try {
+        const blob = await firstValueFrom(this.trainingService.downloadTraineeImage(photoId));
+        const url = URL.createObjectURL(blob);
+        this.traineePhotoUrl = url;
+        this.createdBlobUrls.push(url);
+        return;
+      } catch (err) {
+        // fall through to URL fallback
+      }
+    }
+    // Fallback to any direct URL provided
+    this.traineePhotoUrl = this.validPhotoUrl;
+  }
 }
+

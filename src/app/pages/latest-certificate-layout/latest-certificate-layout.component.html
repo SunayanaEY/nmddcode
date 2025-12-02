@@ -19,8 +19,9 @@
         <qrcode [qrdata]="qrData" [width]="100" [errorCorrectionLevel]="'M'"></qrcode>
         <!-- <p class="uid">UIN: {{ finalUniqueId }}</p> -->
       </div>
-      <div class="trainee-photo" *ngIf="validPhotoUrl">
-        <img [src]="validPhotoUrl" alt="Trainee photo" crossorigin="anonymous" />
+      <div class="trainee-photo" *ngIf="traineePhotoUrl || validPhotoUrl">
+<!-- -        <img [src]="validPhotoUrl" crossorigin="anonymous" /> -->
+        <img [src]="traineePhotoUrl"  crossorigin="anonymous" />
       </div>
     </div>
 
