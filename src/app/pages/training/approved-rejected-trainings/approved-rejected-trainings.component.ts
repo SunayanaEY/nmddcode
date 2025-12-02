@@ -25,8 +25,7 @@ import { NgSelectModule } from '@ng-select/ng-select';
 import { error } from 'console';
 import { ToastrService } from 'ngx-toastr';
 import { Router } from '@angular/router';
-import { CertificateLayoutComponent } from '../../certificate-layout/certificate-layout.component';
-import { NewCertificateLayoutComponent } from '../../new-certificate-layout/new-certificate-layout.component';
+import { LatestCertificateLayoutComponent } from '../../latest-certificate-layout/latest-certificate-layout.component';
 
 @Component({
   selector: 'app-approved-rejected-trainings',
@@ -38,7 +37,7 @@ import { NewCertificateLayoutComponent } from '../../new-certificate-layout/new-
     ReactiveFormsModule,
     FormsModule,
     TranslateModule,
-    NewCertificateLayoutComponent,
+    LatestCertificateLayoutComponent,
   ],
   templateUrl: './approved-rejected-trainings.component.html',
   styleUrl: './approved-rejected-trainings.component.css',

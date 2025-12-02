@@ -82,6 +82,21 @@ export class AdminService {
 
   constructor(private http: HttpClient) {}
 
+  // Download institute image as blob (uses auth token if present)
+  downloadInstituteImage(fileName: string): Observable<Blob> {
+    const token = localStorage.getItem('token');
+    const headers = token
+      ? new HttpHeaders({ Authorization: `Bearer ${token}` })
+      : new HttpHeaders();
+
+    return this.http.get(`${this.apiUrl}api/photo/download/${fileName}`,
+      {
+        headers,
+        responseType: 'blob'
+      }
+    );
+  }
+
   private getHttpOptions() {
     return {
       headers: new HttpHeaders({
