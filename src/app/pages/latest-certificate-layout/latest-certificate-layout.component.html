@@ -8,9 +8,9 @@
 
     <!-- Logo Row -->
     <div class="brand-row" aria-label="Branding">
-      <img class="logo-small" [src]="logo1Url || data?.logoPath1" alt="Left logo" crossorigin="anonymous" />
-      <img class="logo-center" [src]="logo3Url || logo1Url || data?.logoPath3 || data?.logoPath1" alt="Center crest" crossorigin="anonymous" />
-      <img class="logo-small logo-small-right" *ngIf="data?.logoPath2 || logo2Url" [src]="logo2Url || data?.logoPath2" alt="Right logo" crossorigin="anonymous" />
+      <img class="logo-small" [src]="logo1Url || data?.logoPath1" alt="" crossorigin="anonymous" />
+      <img class="logo-center" [src]="logo3Url || logo1Url || data?.logoPath3 || data?.logoPath1" alt="" crossorigin="anonymous" />
+      <img class="logo-small logo-small-right" *ngIf="data?.logoPath2 || logo2Url" [src]="logo2Url || data?.logoPath2" alt="" crossorigin="anonymous" />
     </div>
 
     <!-- QR + Trainee Photo Row -->
@@ -63,7 +63,7 @@
         <div class="signature" aria-label="Institute Head Signature">
           <ng-container *ngIf="data?.signatures?.length > 0; else emptyLeft">
             <p>
-              <img [src]="signatureUrls[0] || data.signatures[0].signatorySignaturePath" alt="Institute Head signature image" crossorigin="anonymous" />
+              <img [src]="signatureUrls[0] || data.signatures[0].signatorySignaturePath" alt="" crossorigin="anonymous" />
             </p>
             <p>_____________________</p>
             <p>{{ data.signatures[0].signatoryName }}</p>
@@ -81,7 +81,7 @@
         <div class="signature" aria-label="State Head Signature">
           <ng-container *ngIf="data?.signatures?.length > 1; else emptyRight">
             <p>
-              <img [src]="signatureUrls[1] || data.signatures[1].signatorySignaturePath" alt="State Head signature image" crossorigin="anonymous" />
+              <img [src]="signatureUrls[1] || data.signatures[1].signatorySignaturePath" alt="" crossorigin="anonymous" />
             </p>
             <p>_____________________</p>
             <p>{{ data.signatures[1].signatoryName }}</p>

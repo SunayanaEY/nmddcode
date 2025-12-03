@@ -2,6 +2,7 @@ import { Component, Input } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { TrainingService } from '../../pages/training/services/training.service';
 import { Router } from '@angular/router';
+import { AuthService } from '../../services/auth.service';
 
 
 export interface Meeting {
@@ -41,9 +42,11 @@ export class CalenderComponent {
   // Day/Week helpers
   hours: number[] = Array.from({ length: 24 }, (_, i) => i);
   minutePixelRatio = 0.6667; // 40px per hour => 0.6667px per minute
-
-  constructor(private trainingService: TrainingService, private router: Router) {}
+  role: string = '';
+  showCreateButton: boolean = false;
+  constructor(private trainingService: TrainingService, private router: Router, private authService: AuthService) {}
   ngOnInit(): void {
+    this.showCreateButton = this.authService.hasRole([4]);
     if (this.meetings.length > 0) {
       this.buildMonth();
       return;

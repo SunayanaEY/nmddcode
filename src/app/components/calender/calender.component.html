@@ -145,7 +145,7 @@
     <div class="details">
       <div class="details-header">
         <div class="details-title">Trainings on {{ selectedDate | date:'EEE, MMM d' }}</div>
-        <button class="btn btn-success" (click)="createNewTraining()">Create New Training</button>
+        <button class="btn btn-success" *ngIf="showCreateButton" (click)="createNewTraining()">Create New Training</button>
         <!-- <button class="btn" (click)="clearSelection()">Clear</button> -->
       </div>
       <div class="details-body" *ngIf="getDayEvents(selectedDate).length; else noMeetings">
@@ -175,7 +175,7 @@
            [style.borderLeftColor]="colorForStatus(t.status, t.modeOfTraining)"
            [style.background]="overlayBackgroundForStatus(t.status, t.modeOfTraining)">
         <div class="card-header">
-          <img *ngIf="normalizeUrl(t.logoPath1) as logo" [src]="logo" class="logo" alt="logo" />
+          <!-- <img *ngIf="normalizeUrl(t.logoPath1) as logo" [src]="logo" class="logo" alt="logo" /> -->
           <div class="card-title" [attr.title]="t.trainingTitle">{{ t.trainingTitle }}</div>
         </div>
         <div class="card-row" *ngIf="t.trainingInstituteName"><span class="label">Institute:</span> <span>{{ t.trainingInstituteName }}</span></div>

@@ -239,4 +239,11 @@ export class ActivityLogTableComponent implements OnInit {
   trackByLogId(index: number, item: ActivityLogItem): string | number {
     return item.id ?? index;
   }
+
+  blockKeyboard(event: KeyboardEvent): void {
+    // Allow tab for navigation; block other keys to prevent typing
+    if (event.key !== 'Tab') {
+      event.preventDefault();
+    }
+  }
 }
