@@ -56,6 +56,7 @@ export class StateAdminProfileComponent implements OnInit {
   isDragOverDoc = false;
   showPassword = false;
   showConfirmPassword = false;
+  showForm = false;
   // Password policy flags
   hasMinLength = false;
   hasUppercase = false;
@@ -182,6 +183,13 @@ export class StateAdminProfileComponent implements OnInit {
       return { passwordMismatch: true };
     }
     return null;
+  }
+
+  toggleForm() {
+    this.showForm = !this.showForm;
+    if (!this.showForm) {
+      this.profileForm.reset();
+    }
   }
 
   constructor(

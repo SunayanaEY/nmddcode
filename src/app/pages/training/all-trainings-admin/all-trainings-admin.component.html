@@ -91,27 +91,32 @@
           </ng-select>
         </div>
 
-        <!-- Training Date Filter -->
+        <!-- Start Date Filter -->
         <div class="filter-item">
           <label class="filter-label">
             <i class="bi bi-calendar-event filter-label-icon"></i>
-            Training Date
+            Start Date
           </label>
-          <ng-select
-            class="modern-select"
-            placeholder="Select Training Date"
+          <input
+            type="date"
+            class="form-control modern-select"
             [(ngModel)]="filters.startDate"
             (change)="applyFilters()"
-            clearable="true"
-            [searchable]="true"
-          >
-            <ng-option
-              *ngFor="let name of uniqueValuesStartDate()"
-              [value]="name"
-            >
-              {{ name }}
-            </ng-option>
-          </ng-select>
+          />
+        </div>
+
+        <!-- End Date Filter -->
+        <div class="filter-item">
+          <label class="filter-label">
+            <i class="bi bi-calendar-event filter-label-icon"></i>
+            End Date
+          </label>
+          <input
+            type="date"
+            class="form-control modern-select"
+            [(ngModel)]="filters.endDate"
+            (change)="applyFilters()"
+          />
         </div>
 
         <!-- Status Filter -->
@@ -161,10 +166,20 @@
           </span>
           <span class="filter-tag" *ngIf="filters.startDate">
             <i class="bi bi-calendar-event"></i>
-            Date: {{ filters.startDate }}
+            Start: {{ filters.startDate | date: 'dd/MM/yyyy' }}
             <button
               class="remove-filter"
               (click)="removeFilter('startDate')"
+            >
+              <i class="bi bi-x"></i>
+            </button>
+          </span>
+          <span class="filter-tag" *ngIf="filters.endDate">
+            <i class="bi bi-calendar-event"></i>
+            End: {{ filters.endDate | date: 'dd/MM/yyyy' }}
+            <button
+              class="remove-filter"
+              (click)="removeFilter('endDate')"
             >
               <i class="bi bi-x"></i>
             </button>

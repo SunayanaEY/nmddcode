@@ -1,98 +1,4 @@
 <div class="calendar">
-  <!-- Header / Controls -->
-  <div class="calendar-header">
-    <div class="nav">
-      <!-- <button class="btn icon" (click)="previous()" aria-label="Previous">&#x2039;</button> -->
-      <button class="btn" (click)="gotoToday()">Today</button>
-      <!-- <button class="btn icon" (click)="next()" aria-label="Next">&#x203A;</button> -->
-    </div>
-
-    <div class="current-label">
-      <button class="btn icon" (click)="previous()" aria-label="Previous">&#x2039;</button>
-      <span>&nbsp;{{ currentDate | date: 'MMMM y' }}&nbsp;&nbsp;</span>
-      <button class="btn icon" (click)="next()" aria-label="Next">&#x203A;</button>
-    </div>
-
-    <div class="actions">
-      <input class="date-input" type="month" [value]="currentDate | date:'yyyy-MM'" (change)="onMonthPicked($event)" />
-    </div>
-  </div>
-
-  <!-- Views -->
-  <div [ngSwitch]="view" class="calendar-body">
-    <!-- Month View -->
-    <div *ngSwitchCase="'month'" class="month-view">
-      <div class="dow-row">
-        <div class="dow" *ngFor="let d of (weekStartsOn === 1 ? ['Mon','Tue','Wed','Thu','Fri','Sat','Sun'] : ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'])">{{ d }}</div>
-      </div>
-      <div class="month-grid">
-        <ng-container *ngFor="let week of weeks">
-          <div class="day" *ngFor="let day of week.days; trackBy: trackByDay"
-               [class.outside]="!day.inCurrentMonth"
-               [class.today]="sameDay(day.date, today)"
-               [class.selected]="sameDay(day.date, selectedDate)"
-               (click)="selectDate(day.date)"
-               tabindex="0"
-               role="button"
-               [attr.aria-label]="day.date | date:'EEEE, MMMM d'">
-            <div class="date-label">{{ day.date | date:'d' }}</div>
-            <div class="month-events">
-              <div class="month-event" *ngFor="let m of day.meetings | slice:0:1; trackBy: trackByMeeting"
-                   [style.borderLeftColor]="m.color" (click)="selectMeeting(m)">
-                <div class="event-title" (click)="$event.stopPropagation(); openDayModal(day.date)" [attr.title]="m.title">{{ m.title }}</div>
-                <!-- <div class="event-time" *ngIf="m.start">{{ m.start | date:'h:mm a' }}</div> -->
-              </div>
-              <button class="month-more-btn" *ngIf="day.meetings.length > 1" (click)="$event.stopPropagation(); openDayModal(day.date)">+{{ day.meetings.length - 1 }}</button>
-            </div>
-          </div>
-        </ng-container>
-      </div>
-    </div>
-
-    <!-- Week View -->
-    <div *ngSwitchCase="'week'" class="week-view">
-      <div class="week-grid">
-        <div class="week-day" *ngFor="let d of getWeekDays(currentDate)">
-          <div class="week-day-header">
-            <span class="wday">{{ d | date:'EEE' }}</span>
-            <span class="wdate">{{ d | date:'d MMM' }}</span>
-          </div>
-          <div class="week-day-events">
-            <div class="event-card" *ngFor="let m of getDayEvents(d); trackBy: trackByMeeting"
-                 [style.borderLeftColor]="m.color" (click)="selectMeeting(m)">
-              <div class="event-title" [attr.title]="m.title">{{ m.title }}</div>
-              <div class="event-time">{{ formatTime(m.start) }} - {{ formatTime(m.end) }}</div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- Day View -->
-    <div *ngSwitchCase="'day'" class="day-view">
-      <div class="day-header">
-        <span class="wday">{{ selectedDate | date:'EEEE' }}</span>
-        <span class="wdate">{{ selectedDate | date:'d MMM, y' }}</span>
-      </div>
-      <div class="timeline">
-        <div class="hour" *ngFor="let h of hours">
-          <span class="hour-label">{{ h }}:00</span>
-        </div>
-        <div class="events-layer">
-          <div class="event-block" *ngFor="let m of getDayEvents(selectedDate); trackBy: trackByMeeting"
-               [style.top.px]="toMinutes(m.start) * minutePixelRatio"
-               [style.height.px]="(toMinutes(m.end) - toMinutes(m.start)) * minutePixelRatio"
-               [style.background]="m.color"
-               (click)="selectMeeting(m)">
-            <div class="event-title" [attr.title]="m.title">{{ m.title }}</div>
-            <div class="event-time">{{ formatTime(m.start) }} - {{ formatTime(m.end) }}</div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <!-- Details Panel -->
   <div class="details" *ngIf="selectedMeeting as sm; else dayDetails">
     <div class="details-header">
       <div class="details-title">{{ sm.title }}</div>
@@ -162,6 +68,111 @@
       </ng-template>
     </div>
   </ng-template>
+  <div style="display:flex; flex-wrap:wrap; gap:8px; align-items:center; justify-content:flex-start; padding:4px 0;">
+    <span style="font-weight:600; color:#111827; margin-right:4px;">Legend:</span>
+    <ng-container *ngFor="let item of legendItems">
+      <span style="display:flex; align-items:center; gap:6px; background:#fff; border:1px solid #e5e7eb; border-radius:999px; padding:4px 8px;">
+        <span class="dot" [style.background]="item.color"></span>
+        <span>{{ item.label | titlecase }}</span>
+      </span>
+    </ng-container>
+  </div>
+  <!-- Header / Controls -->
+  <div class="calendar-header">
+    <div class="nav">
+      <!-- <button class="btn icon" (click)="previous()" aria-label="Previous">&#x2039;</button> -->
+      <button class="btn" (click)="gotoToday()">Today</button>
+      <!-- <button class="btn icon" (click)="next()" aria-label="Next">&#x203A;</button> -->
+    </div>
+
+    <div class="current-label">
+      <button class="btn icon" (click)="previous()" aria-label="Previous">&#x2039;</button>
+      <span>&nbsp;{{ currentDate | date: 'MMMM y' }}&nbsp;&nbsp;</span>
+      <button class="btn icon" (click)="next()" aria-label="Next">&#x203A;</button>
+    </div>
+
+    <div class="actions">
+      <input class="date-input" type="month" [value]="currentDate | date:'yyyy-MM'" (change)="onMonthPicked($event)" />
+    </div>
+  </div>
+
+  
+
+  <!-- Views -->
+  <div [ngSwitch]="view" class="calendar-body">
+    <!-- Month View -->
+    <div *ngSwitchCase="'month'" class="month-view">
+      <div class="dow-row">
+        <div class="dow" *ngFor="let d of (weekStartsOn === 1 ? ['Mon','Tue','Wed','Thu','Fri','Sat','Sun'] : ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'])">{{ d }}</div>
+      </div>
+      <div class="month-grid">
+        <ng-container *ngFor="let week of weeks">
+          <div class="day" *ngFor="let day of week.days; trackBy: trackByDay"
+               [class.outside]="!day.inCurrentMonth"
+               [class.today]="sameDay(day.date, today)"
+               [class.selected]="sameDay(day.date, selectedDate)"
+               (click)="selectDate(day.date)"
+               tabindex="0"
+               role="button"
+               [attr.aria-label]="day.date | date:'EEEE, MMMM d'">
+            <div class="date-label">{{ day.date | date:'d' }}</div>
+            <div class="month-events">
+              <div class="month-event" *ngFor="let m of day.meetings | slice:0:1; trackBy: trackByMeeting"
+                   [style.borderLeftColor]="m.color" [style.borderRightColor]="m.color" (click)="selectMeeting(m)">
+                <div class="event-title" (click)="$event.stopPropagation(); openDayModal(day.date)" [attr.title]="m.title">{{ m.title }}</div>
+                <!-- <div class="event-time" *ngIf="m.start">{{ m.start | date:'h:mm a' }}</div> -->
+              </div>
+              <button class="month-more-btn" *ngIf="day.meetings.length > 1" (click)="$event.stopPropagation(); openDayModal(day.date)">+{{ day.meetings.length - 1 }}</button>
+            </div>
+          </div>
+        </ng-container>
+      </div>
+    </div>
+
+    <!-- Week View -->
+    <div *ngSwitchCase="'week'" class="week-view">
+      <div class="week-grid">
+        <div class="week-day" *ngFor="let d of getWeekDays(currentDate)">
+          <div class="week-day-header">
+            <span class="wday">{{ d | date:'EEE' }}</span>
+            <span class="wdate">{{ d | date:'d MMM' }}</span>
+          </div>
+          <div class="week-day-events">
+            <div class="event-card" *ngFor="let m of getDayEvents(d); trackBy: trackByMeeting"
+                 [style.borderLeftColor]="m.color" (click)="selectMeeting(m)">
+              <div class="event-title" [attr.title]="m.title">{{ m.title }}</div>
+              <div class="event-time">{{ formatTime(m.start) }} - {{ formatTime(m.end) }}</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Day View -->
+    <div *ngSwitchCase="'day'" class="day-view">
+      <div class="day-header">
+        <span class="wday">{{ selectedDate | date:'EEEE' }}</span>
+        <span class="wdate">{{ selectedDate | date:'d MMM, y' }}</span>
+      </div>
+      <div class="timeline">
+        <div class="hour" *ngFor="let h of hours">
+          <span class="hour-label">{{ h }}:00</span>
+        </div>
+        <div class="events-layer">
+          <div class="event-block" *ngFor="let m of getDayEvents(selectedDate); trackBy: trackByMeeting"
+               [style.top.px]="toMinutes(m.start) * minutePixelRatio"
+               [style.height.px]="(toMinutes(m.end) - toMinutes(m.start)) * minutePixelRatio"
+               [style.background]="m.color"
+               (click)="selectMeeting(m)">
+            <div class="event-title" [attr.title]="m.title">{{ m.title }}</div>
+            <div class="event-time">{{ formatTime(m.start) }} - {{ formatTime(m.end) }}</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  
 
   <!-- Trainings list modal -->
   <div class="cal-modal-backdrop" *ngIf="showDayModal" (click)="onCloseDayModal()"></div>

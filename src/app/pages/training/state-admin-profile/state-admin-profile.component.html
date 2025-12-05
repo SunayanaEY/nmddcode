@@ -1,17 +1,23 @@
 <div class="approved-certificate-container">
   <app-breadcrumb [items]="breadcrumbItems"></app-breadcrumb>
 
-  <div class="page-header">
-    <h2>{{ "State Admin Profile" | translate }}</h2>
-    <p class="page-description">
-      {{
-        "Create and manage state administrator profiles for regional oversight"
-          | translate
-      }}
-    </p>
+  <div class="page-header d-flex justify-content-between align-items-center">
+    <div>
+      <h2>{{ "State Admin Profile" | translate }}</h2>
+      <p class="page-description">
+        {{
+          "Create and manage state administrator profiles for regional oversight"
+            | translate
+        }}
+      </p>
+    </div>
+    <button class="btn btn-primary" (click)="toggleForm()">
+      <i class="fas" [ngClass]="showForm ? 'fa-minus' : 'fa-plus'"></i>
+      {{ (showForm ? "Close Form" : "Add New State Admin") | translate }}
+    </button>
   </div>
 
-  <div class="profile-form-container">
+  <div class="profile-form-container" *ngIf="showForm">
     <form
       [formGroup]="profileForm"
       (ngSubmit)="onSubmit()"

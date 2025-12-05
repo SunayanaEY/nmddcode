@@ -721,8 +721,85 @@ export class AllTrainingsAdminComponent {
     district: null,
   };
 
+  parseDateString(dateStr: string): Date | null {
+    if (!dateStr) return null;
+    const parts = dateStr.split('/');
+    if (parts.length === 3) {
+      const day = parseInt(parts[0], 10);
+      const month = parseInt(parts[1], 10) - 1;
+      const year = parseInt(parts[2], 10);
+      return new Date(year, month, day);
+    }
+    return null;
+  }
+
+  parseFilterDate(dateStr: string): Date | null {
+    if (!dateStr) return null;
+    const parts = dateStr.split('-');
+    if (parts.length === 3) {
+      const year = parseInt(parts[0], 10);
+      const month = parseInt(parts[1], 10) - 1;
+      const day = parseInt(parts[2], 10);
+      return new Date(year, month, day);
+    }
+    return null;
+  }
+
   applyFilters(): void {
     this.filteredData = this.trainingsList.filter((row) => {
+      let dateMatch = true;
+      if (this.filters.startDate || this.filters.endDate) {
+        // Parse the training start and end dates
+        // Assuming row.startDate and row.endDate are in "dd/MM/yyyy" format
+        const rowStartDate = this.parseDateString(row.startDate);
+        const rowEndDate = this.parseDateString(row.endDate);
+
+        if (this.filters.startDate) {
+          const filterStartDate = this.parseFilterDate(this.filters.startDate);
+          if (filterStartDate) {
+            // Check if training start date is on or after the filter start date
+            if (rowStartDate) {
+              // Reset time part for date-only comparison
+              rowStartDate.setHours(0, 0, 0, 0);
+              filterStartDate.setHours(0, 0, 0, 0);
+              
+              if (rowStartDate.getTime() < filterStartDate.getTime()) {
+                dateMatch = false;
+              }
+            } else {
+              // If training has no start date but filter requires one, it doesn't match
+              dateMatch = false;
+            }
+          }
+        }
+
+        if (this.filters.endDate && dateMatch) {
+          const filterEndDate = this.parseFilterDate(this.filters.endDate);
+          if (filterEndDate) {
+            // Check if training end date is on or before the filter end date
+            // If row has no end date, we might assume it matches or not depending on requirements.
+            // Here assuming if end date is missing, we can't verify it ends before filter end date, so exclude.
+            if (rowEndDate) {
+              // Reset time part for date-only comparison
+              rowEndDate.setHours(0, 0, 0, 0);
+              filterEndDate.setHours(0, 0, 0, 0);
+
+              if (rowEndDate.getTime() > filterEndDate.getTime()) {
+                dateMatch = false;
+              }
+            } else {
+              // If training has no end date but filter requires one, be safe and exclude? 
+              // Or check if start date is within range?
+              // Let's assume strict filtering: needs to end before filter end date.
+              // If data is clean, endDate should be present.
+              // If not present, maybe we should rely on startDate? 
+              // But user explicitly complained about end dates outside range.
+              dateMatch = false;
+            }
+          }
+        }
+      }
+
       return (
         (!this.filters.trainingTitle ||
           row.trainingTitle === this.filters.trainingTitle) &&
@@ -735,13 +812,8 @@ export class AllTrainingsAdminComponent {
         (!this.filters.state || row.venueState === this.filters.state) &&
         (!this.filters.district ||
           row.venueDistrict === this.filters.district) &&
-        (!this.filters.startDate ||
-          row.startDate === this.filters.startDate) &&
-        (!this.filters.endDate ||
-          row.endDate === this.filters.endDate) &&  
+        dateMatch &&
         (!this.filters.status || row.status === this.filters.status)
-
-        // (!this.filters.sync_status || row.sync_status.toString() === this.filters.sync_status.toString()) &&
       );
     });
 

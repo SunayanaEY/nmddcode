@@ -350,6 +350,10 @@ export class CalenderComponent {
     return '#6366f1';
   }
 
+  public get legendItems(): { label: string; color: string }[] {
+    return Object.entries(this.STATUS_COLOR_MAP).map(([label, color]) => ({ label, color }));
+  }
+
   // Convert a hex/rgb color to an rgba string with provided alpha
   private toRgba(color: string, alpha: number): string {
     if (!color) return `rgba(99,102,241,${alpha})`; // indigo fallback
