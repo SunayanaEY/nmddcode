@@ -190,7 +190,7 @@ export class ApprovedRejectedTrainingsComponent {
       icon: 'bi bi-download',
       class: 'btn-success',
       title: 'Download certificate',
-      condition: (row: any) => row.status === 'Approved by State Head',
+      condition: (row: any) => row.status === 'Approved by State Head' || row.status === 'Certificate Issued & downloaded',
     },
   ];
 

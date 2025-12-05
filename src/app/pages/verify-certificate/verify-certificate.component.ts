@@ -1,15 +1,22 @@
 import { Component, OnInit } from '@angular/core';
+import { CommonModule } from '@angular/common';
 import { ActivatedRoute } from '@angular/router';
 import { TrainingService } from '../training/services/training.service';
 import { ToastrService } from 'ngx-toastr';
+import { LatestCertificateLayoutComponent } from '../latest-certificate-layout/latest-certificate-layout.component';
 
 @Component({
   selector: 'app-verify-certificate',
+  standalone: true,
+  imports: [CommonModule, LatestCertificateLayoutComponent],
   templateUrl: './verify-certificate.component.html',
   styleUrls: ['./verify-certificate.component.css'],
 })
 export class VerifyCertificateComponent implements OnInit {
   uniqueId: string | null = null;
+  certificateData: any | null = null;
+  isLoading = false;
+  error?: string;
 
   constructor(
     private toastr: ToastrService,
@@ -20,34 +27,38 @@ export class VerifyCertificateComponent implements OnInit {
   ngOnInit(): void {
     this.route.queryParams.subscribe((params) => {
       this.uniqueId = params['uin'] || null;
-      console.log('Extracted UIN:', this.uniqueId);
+      if (!this.uniqueId) {
+        this.error = 'No UIN found in URL';
+        this.toastr.error(this.error, 'Error');
+        return;
+      }
+      this.loadCertificate();
     });
-    this.getQrData();
   }
-  ngAfterViewInit() {
-    const modalElement = document.querySelector('.modal') as any;
-    if (modalElement) {
-      // Bootstrap 5 modal initialization
-      const modal = new (window as any).bootstrap.Modal(modalElement);
-      modal.show();
-    }
-  }
-  getQrData() {
-    if (!this.uniqueId) {
-      this.toastr.error('No UIN found in URL', 'Error');
-      return;
-    }
-    this.trainingService.verifyCertificate(this.uniqueId).subscribe({
-      next: (res) => {
-        this.toastr.success('Certificate Verified Successfully!');
-      },
-      error: (err) => {
-        this.toastr.error(
-          'Failed to Verify Certificate. Please try again.',
-          'Error'
-        );
-        console.error('QR API Error:', err);
-      },
-    });
+
+  private loadCertificate(): void {
+    if (!this.uniqueId) return;
+    this.isLoading = true;
+    this.error = undefined;
+    this.trainingService
+      .getCertificateDetails(this.uniqueId, '', '')
+      .subscribe({
+        next: (response) => {
+          const ok = response && (response.success === true || response.status === 'success' || !!response.data);
+          if (ok) {
+            this.certificateData = response.data || response;
+          } else {
+            this.error = response?.message || 'Certificate details not found';
+            this.toastr.error(this.error, 'Error');
+          }
+          this.isLoading = false;
+        },
+        error: (err) => {
+          this.isLoading = false;
+          this.error = err?.error?.message || 'Failed to load certificate details';
+          this.toastr.error(this.error, 'Error');
+          console.error('Load certificate error:', err);
+        },
+      });
   }
 }
