@@ -107,6 +107,12 @@ export class StateAdminProfileComponent implements OnInit {
   ];
   tableActions: TableAction[] = [
     {
+      name: 'edit',
+      icon: 'bi-pencil',
+      class: 'btn-primary',
+      title: 'Edit',
+    },
+    {
       name: 'viewPrevious',
       icon: 'bi-clock-history',
       class: 'btn-info',
@@ -562,22 +568,32 @@ export class StateAdminProfileComponent implements OnInit {
   }
 
   editStateAdmin(item: any) {
-    // Map table data to modal fields using originalData from API
-    const originalData = item.originalData || item;
-    this.selectedStateAdmin = {
-      id: originalData.id,
-      state: originalData.stateName || item.state,
-      contactPersonName: originalData.contactPersonName || item.adminName,
-      designation: originalData.designation || item.designation,
-      contactNumber: originalData.contactNumber || item.phone,
-      email: originalData.emailId || item.email,
-      stateId: originalData.stateId,
-      userId: originalData.userId,
-      // Store original API data for reference
-      originalData: originalData,
-    };
-
-    this.showEditModal = true;
+    // Open the Add New State Admin form as requested
+    this.showForm = true;
+    
+    // Get the original data
+    const data = item.originalData || item;
+    
+    // Wait for the form to be rendered
+    setTimeout(() => {
+      // Scroll to the form
+      const formElement = document.getElementById('stateAdminFormSection');
+      if (formElement) {
+        formElement.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }
+      
+      // Populate the form fields
+      this.profileForm.patchValue({
+        state: data.stateId,
+        adminName: data.contactPersonName,
+        designation: data.designation,
+        phone: data.contactNumber,
+        email: data.emailId
+      });
+      
+      // Since we are editing, we might want to store the ID for update logic later
+      this.selectedStateAdmin = { ...data };
+    }, 100);
   }
 
   deleteStateAdmin(item: any) {

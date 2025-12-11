@@ -17,7 +17,7 @@
     </button>
   </div>
 
-  <div class="profile-form-container" *ngIf="showForm">
+  <div class="profile-form-container" *ngIf="showForm" id="stateAdminFormSection">
     <form
       [formGroup]="profileForm"
       (ngSubmit)="onSubmit()"
