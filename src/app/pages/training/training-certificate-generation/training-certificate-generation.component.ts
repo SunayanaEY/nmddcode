@@ -99,6 +99,8 @@ export class TrainingCertificateGenerationComponent implements OnInit {
   trainingDetails: any = null;
   mySelectedFile: any[] = [];
   mySelectedLogo: any[] = [];
+  trainingScheduleFile: File | null = null;
+  showScheduleError: boolean = false;
 
   signature_1_id: number = 0;
   signature_2_id: number = 0;
@@ -578,6 +580,11 @@ export class TrainingCertificateGenerationComponent implements OnInit {
       return;
     }
 
+    if (!this.trainingScheduleFile && this.populate !== 'true') {
+      this.showScheduleError = true;
+      return;
+    }
+
     const formData = this.trainingForm.value;
     const payload = new FormData();
     const userData = JSON.parse(sessionStorage.getItem('user') || '{}');
@@ -664,6 +671,10 @@ export class TrainingCertificateGenerationComponent implements OnInit {
         }
       });
 
+      if (this.trainingScheduleFile) {
+        payload.append('trainingSchedule', this.trainingScheduleFile);
+      }
+
       this.isSpinner = true;
       this.trainingService.updateTraining(payload).subscribe({
         next: (response) => {
@@ -715,6 +726,11 @@ export class TrainingCertificateGenerationComponent implements OnInit {
           payload.append('signatures', item.file);
         }
       });
+
+      if (this.trainingScheduleFile) {
+        payload.append('trainingSchedule', this.trainingScheduleFile);
+      }
+
       this.isSpinner = true;
       this.trainingService.saveTraining(payload).subscribe({
         next: (response) => {
@@ -750,6 +766,17 @@ export class TrainingCertificateGenerationComponent implements OnInit {
 
   goBack() {
     this.router.navigate(['/admin/training-module']);
+  }
+
+  onTrainingScheduleSelect(file: File) {
+    if (file) {
+      this.trainingScheduleFile = file;
+      this.showScheduleError = false;
+    }
+  }
+
+  onTrainingScheduleRemove() {
+    this.trainingScheduleFile = null;
   }
 
   onSignatureNameChange(event: Event, index: number) {

@@ -640,6 +640,28 @@
               </div>
             </div>
           </div>
+
+          <div class="form-row">
+            <div class="form-group full-width">
+              <label for="trainingSchedule">
+                {{ "Upload Training schedule" | translate }}
+                <span style="color: red">*</span>
+                <small class="text-muted">({{ "pdf/word only" | translate }})</small>
+              </label>
+              <app-file-upload
+                [acceptedFileTypes]="'.pdf,.doc,.docx'"
+                [uploadText]="'Drag and Drop the Training Schedule here'"
+                (fileSelected)="onTrainingScheduleSelect($event)"
+                (fileRemoved)="onTrainingScheduleRemove()"
+              ></app-file-upload>
+              <div
+                *ngIf="showScheduleError"
+                class="text-danger small mt-1"
+              >
+                {{ "Training schedule file is required" | translate }}
+              </div>
+            </div>
+          </div>
         </div>
 
         <!-- Upload Signature Section -->
