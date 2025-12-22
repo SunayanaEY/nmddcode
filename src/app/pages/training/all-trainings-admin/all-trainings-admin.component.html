@@ -275,8 +275,7 @@
             },
             { label: 'Location', value: trainingDetails.location },
             { label: 'Status', value: trainingDetails.status },
-
-            { label: 'Adress', value: trainingDetails.venueAddress },
+            { label: 'Adress', value: trainingDetails.venueAddress }
           ]
         "
       >
@@ -285,6 +284,26 @@
             {{ field.label | translate }} :
           </h4>
           <textarea class="my-auto mb-0 form-control">{{ field.value }}</textarea>
+        </div>
+      </div>
+
+      <!-- Separate Training Schedule Field -->
+      <div class="col-md-6">
+        <div class="d-flex mr-4 form-group half-width">
+          <h4 class="my-auto mr-2 form-control-label detailsWidth">
+            {{ 'Training Schedule' | translate }} :
+          </h4>
+          <ng-container *ngIf="isLoadingSchedule">
+             <span class="my-auto mb-0 form-control d-flex align-items-center" style="height: auto;">Loading...</span>
+          </ng-container>
+          <ng-container *ngIf="!isLoadingSchedule">
+            <a *ngIf="trainingScheduleUrl" [href]="trainingScheduleUrl" target="_blank" class="my-auto mb-0 form-control d-flex align-items-center" style="text-decoration: underline; color: blue; cursor: pointer; height: auto;">
+               View Schedule
+            </a>
+            <span *ngIf="!trainingScheduleUrl" class="my-auto mb-0 form-control d-flex align-items-center" style="height: auto;">
+              {{ trainingDetails.trainingScheduleDetail ? 'Failed to Load' : 'Not Uploaded' }}
+            </span>
+          </ng-container>
         </div>
       </div>
 

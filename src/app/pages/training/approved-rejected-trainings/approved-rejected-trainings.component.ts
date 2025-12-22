@@ -26,6 +26,7 @@ import { error } from 'console';
 import { ToastrService } from 'ngx-toastr';
 import { Router } from '@angular/router';
 import { LatestCertificateLayoutComponent } from '../../latest-certificate-layout/latest-certificate-layout.component';
+import { AdminService } from '../services/training-admin.service';
 
 @Component({
   selector: 'app-approved-rejected-trainings',
@@ -44,6 +45,8 @@ import { LatestCertificateLayoutComponent } from '../../latest-certificate-layou
 })
 export class ApprovedRejectedTrainingsComponent {
   trainingDetails: any;
+  trainingScheduleUrl: string | null = null;
+  isLoadingSchedule: boolean = false;
   @ViewChild('trainingDetailsModal')
   trainingDetailsModal!: ElementRef;
   @ViewChild('certificateModal')
@@ -198,6 +201,7 @@ export class ApprovedRejectedTrainingsComponent {
     private formBuilder: FormBuilder,
     private modalService: NgbModal,
     private trainingsService: TrainingService,
+    private adminService: AdminService,
     private toastr: ToastrService,
     private router: Router,
     private route: ActivatedRoute
@@ -334,6 +338,7 @@ export class ApprovedRejectedTrainingsComponent {
 
       this.traineeList = [];
       this.trainingDetails = event.item;
+      this.prepareTrainingScheduleUrl();
       this.fileNameTrainees = this.traineesFile;
       this.fileNameTrainees =
         this.fileNameTrainees +
@@ -486,5 +491,39 @@ export class ApprovedRejectedTrainingsComponent {
           console.error('Error loading certificate details:', error);
         },
       });
+  }
+
+  async toBlobUrl(fileName: string): Promise<string> {
+    return new Promise((resolve, reject) => {
+      this.adminService.downloadInstituteImage(fileName).subscribe({
+        next: (blob: Blob) => {
+          const url = window.URL.createObjectURL(blob);
+          resolve(url);
+        },
+        error: (err) => {
+          console.error('Error fetching file blob:', err);
+          reject(err);
+        },
+      });
+    });
+  }
+
+  async prepareTrainingScheduleUrl() {
+    this.trainingScheduleUrl = null;
+    this.isLoadingSchedule = false;
+
+    if (this.trainingDetails?.trainingScheduleDetail) {
+      try {
+        this.isLoadingSchedule = true;
+        this.trainingScheduleUrl = await this.toBlobUrl(
+          this.trainingDetails.trainingScheduleDetail
+        );
+      } catch (error) {
+        console.error('Failed to load training schedule:', error);
+        this.trainingScheduleUrl = null;
+      } finally {
+        this.isLoadingSchedule = false;
+      }
+    }
   }
 }

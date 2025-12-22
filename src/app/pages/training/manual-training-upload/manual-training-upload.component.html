@@ -68,6 +68,36 @@
         <span class="label">Type of Training:</span>
         <span class="value">{{ trainingDetails?.trainingType || "-" }}</span>
       </div>
+      <div class="detail-item">
+        <span class="label">Training Schedule:</span>
+        <div class="value">
+          <ng-container *ngIf="isLoadingSchedule">
+            <span class="text-muted">Loading...</span>
+          </ng-container>
+          <ng-container *ngIf="!isLoadingSchedule">
+            <a
+              *ngIf="trainingScheduleUrl"
+              [href]="trainingScheduleUrl"
+              target="_blank"
+              class="text-primary text-decoration-underline"
+            >
+              View Schedule
+            </a>
+            <span
+              *ngIf="!trainingScheduleUrl && trainingDetails?.trainingScheduleDetail"
+              class="text-danger"
+            >
+              Failed to Load
+            </span>
+            <span
+              *ngIf="!trainingDetails?.trainingScheduleDetail"
+              class="text-muted"
+            >
+              Not Uploaded
+            </span>
+          </ng-container>
+        </div>
+      </div>
     </div>
 
     <div class="detail-item full-width">

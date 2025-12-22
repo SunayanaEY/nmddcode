@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { TrainingService } from '../../pages/training/services/training.service';
 import { Router } from '@angular/router';
 import { AuthService } from '../../services/auth.service';
+import { AdminService } from '../../pages/training/services/training-admin.service';
 
 
 export interface Meeting {
@@ -44,7 +45,12 @@ export class CalenderComponent {
   minutePixelRatio = 0.6667; // 40px per hour => 0.6667px per minute
   role: string = '';
   showCreateButton: boolean = false;
-  constructor(private trainingService: TrainingService, private router: Router, private authService: AuthService) {}
+  constructor(
+    private trainingService: TrainingService,
+    private router: Router,
+    private authService: AuthService,
+    private adminService: AdminService
+  ) {}
   ngOnInit(): void {
     this.showCreateButton = this.authService.hasRole([4]);
     if (this.meetings.length > 0) {
@@ -197,8 +203,45 @@ export class CalenderComponent {
     this.selectedMeeting = null;
   }
 
+  async toBlobUrl(fileName: string): Promise<string> {
+    return new Promise((resolve, reject) => {
+      this.adminService.downloadInstituteImage(fileName).subscribe({
+        next: (blob: Blob) => {
+          const url = window.URL.createObjectURL(blob);
+          resolve(url);
+        },
+        error: (err) => {
+          console.error('Error fetching file blob:', err);
+          reject(err);
+        },
+      });
+    });
+  }
+
+  async prepareScheduleForSelectedMeeting() {
+    if (!this.selectedMeeting?.raw) return;
+    
+    // If already loaded or loading, skip
+    if (this.selectedMeeting.raw.scheduleUrl || this.selectedMeeting.raw.isLoadingSchedule) return;
+
+    if (this.selectedMeeting.raw.trainingScheduleDetail) {
+      try {
+        this.selectedMeeting.raw.isLoadingSchedule = true;
+        this.selectedMeeting.raw.scheduleUrl = await this.toBlobUrl(
+          this.selectedMeeting.raw.trainingScheduleDetail
+        );
+      } catch (error) {
+        console.error('Failed to load training schedule:', error);
+        this.selectedMeeting.raw.scheduleUrl = null;
+      } finally {
+        this.selectedMeeting.raw.isLoadingSchedule = false;
+      }
+    }
+  }
+
   selectMeeting(meeting: Meeting): void {
     this.selectedMeeting = meeting;
+    this.prepareScheduleForSelectedMeeting();
   }
 
   clearSelection(): void {
@@ -399,20 +442,36 @@ export class CalenderComponent {
   }
 
 // Modal state for day trainings
-showDayModal: boolean = false;
-dayModalDate: Date | null = null;
-dayModalTrainings: any[] = [];
+  showDayModal: boolean = false;
+  dayModalDate: Date | null = null;
+  dayModalTrainings: any[] = [];
 
+  async prepareScheduleForDayModalItems() {
+    for (const t of this.dayModalTrainings) {
+      if (t.trainingScheduleDetail && !t.scheduleUrl && !t.isLoadingSchedule) {
+        t.isLoadingSchedule = true;
+        try {
+          t.scheduleUrl = await this.toBlobUrl(t.trainingScheduleDetail);
+        } catch (error) {
+          console.error('Failed to load training schedule for item:', error);
+          t.scheduleUrl = null;
+        } finally {
+          t.isLoadingSchedule = false;
+        }
+      }
+    }
+  }
 
-// Open modal with all trainings for the selected date
-openDayModal(date: Date): void {
-  this.dayModalDate = new Date(date);
-  const events = this.getDayEvents(this.dayModalDate);
-  this.dayModalTrainings = events.map(e => e.raw ?? null).filter((t: any) => !!t);
-  this.showDayModal = true;
-}
+  // Open modal with all trainings for the selected date
+  openDayModal(date: Date): void {
+    this.dayModalDate = new Date(date);
+    const events = this.getDayEvents(this.dayModalDate);
+    this.dayModalTrainings = events.map(e => e.raw ?? null).filter((t: any) => !!t);
+    this.showDayModal = true;
+    this.prepareScheduleForDayModalItems();
+  }
 
-onCloseDayModal(): void {
+  onCloseDayModal(): void {
   this.showDayModal = false;
   this.dayModalTrainings = [];
   this.dayModalDate = null;

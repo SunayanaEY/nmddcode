@@ -20,6 +20,7 @@ import {
 } from '@angular/forms';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { TrainingService } from '../services/training.service';
+import { AdminService } from '../services/training-admin.service';
 import { TraineeDetails, TrainingsList } from '../models/training.model';
 import { TranslateModule } from '@ngx-translate/core';
 
@@ -41,6 +42,8 @@ export class AllTrainingsComponent {
   isLoading: boolean = false;
   private bootstrap: any;
   trainingDetails: any;
+  trainingScheduleUrl: string | null = null;
+  isLoadingSchedule: boolean = false;
   @ViewChild('trainingDetailsModal')
   trainingDetailsModal!: ElementRef;
   submitted: Boolean = false;
@@ -150,7 +153,8 @@ export class AllTrainingsComponent {
     private formBuilder: FormBuilder,
     private modalService: NgbModal,
     private trainingsService: TrainingService,
-    private router: Router
+    private router: Router,
+    private adminService: AdminService
   ) {}
   filteredData = [...this.trainingsList];
 
@@ -248,6 +252,7 @@ export class AllTrainingsComponent {
     } else {
       this.traineeList = [];
       this.trainingDetails = event.item;
+      this.prepareTrainingScheduleUrl();
       this.fileNameTrainees = this.traineesFile;
       this.fileNameTrainees =
         this.fileNameTrainees +
@@ -340,6 +345,40 @@ export class AllTrainingsComponent {
   open() {}
   get formControls() {
     return this.trainingForm.controls;
+  }
+
+  async toBlobUrl(fileName: string): Promise<string> {
+    return new Promise((resolve, reject) => {
+      this.adminService.downloadInstituteImage(fileName).subscribe({
+        next: (blob: Blob) => {
+          const url = window.URL.createObjectURL(blob);
+          resolve(url);
+        },
+        error: (err) => {
+          console.error('Error fetching file blob:', err);
+          reject(err);
+        },
+      });
+    });
+  }
+
+  async prepareTrainingScheduleUrl() {
+    this.trainingScheduleUrl = null;
+    this.isLoadingSchedule = false;
+
+    if (this.trainingDetails?.trainingScheduleDetail) {
+      try {
+        this.isLoadingSchedule = true;
+        this.trainingScheduleUrl = await this.toBlobUrl(
+          this.trainingDetails.trainingScheduleDetail
+        );
+      } catch (error) {
+        console.error('Failed to load training schedule:', error);
+        this.trainingScheduleUrl = null;
+      } finally {
+        this.isLoadingSchedule = false;
+      }
+    }
   }
 
   keyFunc() {}

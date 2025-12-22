@@ -1,4 +1,5 @@
 import { CommonModule, DatePipe } from '@angular/common';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import {
   Component,
   ElementRef,
@@ -36,6 +37,8 @@ import { NgxSpinnerModule, NgxSpinnerService } from 'ngx-spinner';
 
 import { LatestCertificateLayoutComponent } from '../../latest-certificate-layout/latest-certificate-layout.component';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
+import { environment } from '../../../../environments/environment';
+import { firstValueFrom } from 'rxjs';
 
 @Component({
   selector: 'app-all-trainings-admin',
@@ -57,6 +60,10 @@ import { TranslateModule, TranslateService } from '@ngx-translate/core';
 export class AllTrainingsAdminComponent {
   
   trainingDetails: any;
+  trainingScheduleUrl: string | null = null;
+  isLoadingSchedule: boolean = false;
+  apiUrl = environment.apiUrl;
+
   @ViewChild('trainingDetailsModal')
   trainingDetailsModal!: ElementRef;
   @ViewChild('rejectModal')
@@ -264,7 +271,8 @@ export class AllTrainingsAdminComponent {
     private adminService: AdminService,
     private toastr: ToastrService,
     private spinner: NgxSpinnerService,
-    private translate: TranslateService
+    private translate: TranslateService,
+    private http: HttpClient,
   ) {}
   filteredData = [...this.trainingsList];
 
@@ -659,10 +667,67 @@ export class AllTrainingsAdminComponent {
     }
   }
 
+  isValidHttpUrl(url: string): boolean {
+    try {
+      const u = new URL(url);
+      return u.protocol === 'http:' || u.protocol === 'https:';
+    } catch {
+      return false;
+    }
+  }
+
+  async toBlobUrl(raw?: string | null): Promise<string | null> {
+    const path = (raw || '').toString().trim();
+    if (!path) return null;
+
+    if (this.isValidHttpUrl(path)) {
+      return path;
+    }
+
+    try {
+      let blob: Blob;
+      if (path.startsWith('/')) {
+        // Handle relative paths manually if needed, or consider adding to service
+        const url = `${this.apiUrl}${path.replace(/^\/+/, '')}`;
+        const token = localStorage.getItem('token');
+        let headers: HttpHeaders | undefined;
+        if (token) {
+          headers = new HttpHeaders({ Authorization: `Bearer ${token}` });
+        }
+        blob = await firstValueFrom(
+          this.http.get(url, { responseType: 'blob', headers })
+        ) as Blob;
+      } else {
+        // Use service for filenames
+        blob = await firstValueFrom(this.adminService.downloadInstituteImage(path));
+      }
+      return URL.createObjectURL(blob);
+    } catch (err) {
+      return this.isValidHttpUrl(path) ? path : null;
+    }
+  }
+
+  async prepareTrainingScheduleUrl() {
+    this.trainingScheduleUrl = null;
+    if (this.trainingDetails?.trainingScheduleDetail) {
+      this.isLoadingSchedule = true;
+      try {
+        this.trainingScheduleUrl = await this.toBlobUrl(
+          this.trainingDetails.trainingScheduleDetail
+        );
+      } catch (error) {
+        console.error('Error loading training schedule:', error);
+      } finally {
+        this.isLoadingSchedule = false;
+      }
+    }
+  }
+
   handleTableAction(event: { action: string; item: any; index: number }): void {
     if (event.action === 'view') {
       this.traineeList = [];
       this.trainingDetails = event.item;
+      this.prepareTrainingScheduleUrl();
       // Set current training details for API calls
       this.currentTrainingId = this.trainingDetails.id;
 

@@ -19,6 +19,7 @@ import {
   TableAction,
 } from '../../../components/table/table.component';
 import { TrainingService } from '../../../pages/training/services/training.service';
+import { AdminService } from '../services/training-admin.service';
 
 interface Participant {
   name: string;
@@ -56,6 +57,8 @@ export class ManualTrainingUploadComponent implements OnInit {
   selectedParticipant: Participant | null = null;
   isSpinning: boolean = false;
   trainingDetails: any = null;
+  trainingScheduleUrl: string | null = null;
+  isLoadingSchedule: boolean = false;
   trainingId: any;
   trainingManagerId: any;
   trainingInstituteId: any;
@@ -92,6 +95,7 @@ export class ManualTrainingUploadComponent implements OnInit {
     private fb: FormBuilder,
     private modalService: NgbModal,
     private trainingService: TrainingService,
+    private adminService: AdminService,
     private toastr: ToastrService,
     private route: ActivatedRoute,
     private router: Router
@@ -252,6 +256,40 @@ export class ManualTrainingUploadComponent implements OnInit {
         this.isSpinning = false;
       },
     });
+  }
+
+  async toBlobUrl(fileName: string): Promise<string> {
+    return new Promise((resolve, reject) => {
+      this.adminService.downloadInstituteImage(fileName).subscribe({
+        next: (blob: Blob) => {
+          const url = window.URL.createObjectURL(blob);
+          resolve(url);
+        },
+        error: (err) => {
+          console.error('Error fetching file blob:', err);
+          reject(err);
+        },
+      });
+    });
+  }
+
+  async prepareTrainingScheduleUrl() {
+    this.trainingScheduleUrl = null;
+    this.isLoadingSchedule = false;
+
+    if (this.trainingDetails?.trainingScheduleDetail) {
+      try {
+        this.isLoadingSchedule = true;
+        this.trainingScheduleUrl = await this.toBlobUrl(
+          this.trainingDetails.trainingScheduleDetail
+        );
+      } catch (error) {
+        console.error('Failed to load training schedule:', error);
+        this.trainingScheduleUrl = null;
+      } finally {
+        this.isLoadingSchedule = false;
+      }
+    }
   }
 
   openAddModal(isEdit: boolean): void {

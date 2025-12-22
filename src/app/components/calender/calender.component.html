@@ -25,6 +25,36 @@
         <div class="label">Dates</div>
         <div class="value">{{ sm.start | date:'d MMM, y' }} - {{ sm.end | date:'d MMM, y' }}</div>
       </div>
+      <div class="item">
+        <div class="label">Training Schedule</div>
+        <div class="value">
+          <ng-container *ngIf="sm.raw?.isLoadingSchedule">
+            <span class="text-muted">Loading...</span>
+          </ng-container>
+          <ng-container *ngIf="!sm.raw?.isLoadingSchedule">
+            <a
+              *ngIf="sm.raw?.scheduleUrl"
+              [href]="sm.raw?.scheduleUrl"
+              target="_blank"
+              class="text-primary text-decoration-underline"
+            >
+              View Schedule
+            </a>
+            <span
+              *ngIf="!sm.raw?.scheduleUrl && sm.raw?.trainingScheduleDetail"
+              class="text-danger"
+            >
+              Failed to Load
+            </span>
+            <span
+              *ngIf="!sm.raw?.trainingScheduleDetail"
+              class="text-muted"
+            >
+              Not Uploaded
+            </span>
+          </ng-container>
+        </div>
+      </div>
       <div class="item" *ngIf="sm.raw?.trainerName">
         <div class="label">Trainers</div>
         <div class="value">{{ sm.raw.trainerName }}</div>
@@ -194,6 +224,36 @@
         <div class="card-row"><span class="label">Mode:</span> <span>{{ t.modeOfTraining }}</span></div>
         <div class="card-row" *ngIf="t.duration && t.durationType"><span class="label">Duration:</span> <span>{{ t.duration }} {{ t.durationType }}</span></div>
         <div class="card-row"><span class="label">Dates:</span> <span>{{ t.startDate | date:'d MMM, y' }} - {{ t.endDate | date:'d MMM, y' }}</span></div>
+        <div class="card-row">
+          <span class="label">Training Schedule:</span>
+          <span>
+            <ng-container *ngIf="t.isLoadingSchedule">
+              <span class="text-muted">Loading...</span>
+            </ng-container>
+            <ng-container *ngIf="!t.isLoadingSchedule">
+              <a
+                *ngIf="t.scheduleUrl"
+                [href]="t.scheduleUrl"
+                target="_blank"
+                class="text-primary text-decoration-underline"
+              >
+                View Schedule
+              </a>
+              <span
+                *ngIf="!t.scheduleUrl && t.trainingScheduleDetail"
+                class="text-danger"
+              >
+                Failed to Load
+              </span>
+              <span
+                *ngIf="!t.trainingScheduleDetail"
+                class="text-muted"
+              >
+                Not Uploaded
+              </span>
+            </ng-container>
+          </span>
+        </div>
         <div class="card-row" *ngIf="t.status"><span class="label">Status:</span> <span [style.color]="colorForStatus(t.status, t.modeOfTraining)">{{ t.status }}</span></div>
         <div class="card-row" *ngIf="t.trainerName"><span class="label">Trainers:</span> <span>{{ t.trainerName }}</span></div>
         <div class="card-row" *ngIf="t.venueBlock || t.venueDistrict || t.venueState"><span class="label">Location:</span> <span>{{ t.venueBlock }}, {{ t.venueDistrict }}, {{ t.venueState }}</span></div>

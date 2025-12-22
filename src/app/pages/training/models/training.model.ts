@@ -26,7 +26,7 @@ export interface TrainingsList{
   modeOfTraining: string;
   status: string;
   location: string;
-
+  trainingScheduleDetail?: string;
 }
 
 export interface TraineeDetails{

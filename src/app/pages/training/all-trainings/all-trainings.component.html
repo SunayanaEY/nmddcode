@@ -320,6 +320,41 @@
 
       <div class="col-md-6">
         <div class="detail-row">
+          <label class="detail-label"
+            >{{ "Training Schedule" | translate }}:</label
+          >
+          <div class="detail-value">
+            <ng-container *ngIf="isLoadingSchedule">
+              <span class="text-muted">Loading...</span>
+            </ng-container>
+            <ng-container *ngIf="!isLoadingSchedule">
+              <a
+                *ngIf="trainingScheduleUrl"
+                [href]="trainingScheduleUrl"
+                target="_blank"
+                class="text-primary text-decoration-underline"
+              >
+                View Schedule
+              </a>
+              <span
+                *ngIf="!trainingScheduleUrl && trainingDetails?.trainingScheduleDetail"
+                class="text-danger"
+              >
+                Failed to Load
+              </span>
+              <span
+                *ngIf="!trainingDetails?.trainingScheduleDetail"
+                class="text-muted"
+              >
+                Not Uploaded
+              </span>
+            </ng-container>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-md-6">
+        <div class="detail-row">
           <label class="detail-label">{{ "Location" | translate }}:</label>
           <div class="detail-value">{{ trainingDetails?.location }}</div>
         </div>
