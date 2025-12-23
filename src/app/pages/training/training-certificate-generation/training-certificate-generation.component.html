@@ -653,6 +653,7 @@
                 [uploadText]="'Drag and Drop the Training Schedule here'"
                 (fileSelected)="onTrainingScheduleSelect($event)"
                 (fileRemoved)="onTrainingScheduleRemove()"
+                [filePath]="existingTrainingSchedulePath"
               ></app-file-upload>
               <div
                 *ngIf="showScheduleError"

@@ -100,6 +100,7 @@ export class TrainingCertificateGenerationComponent implements OnInit {
   mySelectedFile: any[] = [];
   mySelectedLogo: any[] = [];
   trainingScheduleFile: File | null = null;
+  existingTrainingSchedulePath: string = '';
   showScheduleError: boolean = false;
 
   signature_1_id: number = 0;
@@ -346,6 +347,11 @@ export class TrainingCertificateGenerationComponent implements OnInit {
             (s: any) => s.signatorySignaturePath
           );
         }
+        
+        if (this.trainingDetails.trainingScheduleDetail) {
+          this.existingTrainingSchedulePath = this.trainingDetails.trainingScheduleDetail;
+        }
+
         this.mySelectedLogo = [
           this.trainingDetails.logoPath1,
           this.trainingDetails.logoPath2,
@@ -580,7 +586,7 @@ export class TrainingCertificateGenerationComponent implements OnInit {
       return;
     }
 
-    if (!this.trainingScheduleFile && this.populate !== 'true') {
+    if (!this.trainingScheduleFile && !this.existingTrainingSchedulePath) {
       this.showScheduleError = true;
       return;
     }
@@ -777,6 +783,7 @@ export class TrainingCertificateGenerationComponent implements OnInit {
 
   onTrainingScheduleRemove() {
     this.trainingScheduleFile = null;
+    this.existingTrainingSchedulePath = '';
   }
 
   onSignatureNameChange(event: Event, index: number) {

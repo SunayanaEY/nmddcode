@@ -113,7 +113,7 @@ export class FileUploadComponent implements OnChanges {
       if(localStorage.getItem("language")=="en")
       this.errorMessage = `File size exceeds ${this.maxFileSizeMB}MB.`;
 
-      if(localStorage.getItem("language")=="en")
+      if(localStorage.getItem("language")=="hi")
       this.errorMessage = `फ़ाइल का आकार अधिक है ${this.maxFileSizeMB}MB.`;
       return;
     }

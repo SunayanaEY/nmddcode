@@ -364,9 +364,8 @@ export class CalenderComponent {
   // Explicit colors for provided statuses + sensible fallbacks
   private readonly STATUS_COLOR_MAP: Record<string, string> = {
     'new': '#3b82f6',
-    'recommended by institute head': '#06b6d4',
+    'approved by institute head': '#16a34a',
     'rejected by institute head': '#ef4444',
-    'approved by state head': '#16a34a',
     'rejected by state head': '#ef4444',
     'approved by organization': '#16a34a',
     'rejected by organization': '#ef4444',
