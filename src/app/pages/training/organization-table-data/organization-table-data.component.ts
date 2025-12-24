@@ -104,6 +104,7 @@ export class OrganizationTableDataComponent implements OnInit {
     { key: 'registrationNumber', header: 'Reg No.' },
     { key: 'contactName', header: 'Contact Person' },
     { key: 'contactNumber', header: 'Contact Number' },
+    { key: 'designation', header: 'Designation' },
   ];
 
   tableActions: TableAction[] = [

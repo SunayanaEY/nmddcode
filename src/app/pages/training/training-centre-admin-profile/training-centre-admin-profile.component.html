@@ -136,6 +136,7 @@
                   id="instituteType"
                   formControlName="instituteType"
                   class="form-control"
+                  (change)="onInstituteTypeChange($event)"
                   training-centre-admin-profile
                   [class.is-invalid]="
                     profileForm.get('instituteType')?.invalid &&
@@ -164,6 +165,45 @@
                     >{{
                       "TRAINING.VALIDATION.INSTITUTE_TYPE_REQUIRED" | translate
                     }}</span
+                  >
+                </div>
+              </div>
+            </div>
+            <div
+              class="form-row"
+              *ngIf="
+                profileForm.get('instituteType')?.value ===
+                'Other Organizations'
+              "
+            >
+              <div class="form-group">
+                <label for="organization"
+                  >Other Organizations<span class="required">*</span></label
+                >
+                <select
+                  id="organization"
+                  formControlName="organization"
+                  class="form-control"
+                  [class.is-invalid]="
+                    profileForm.get('organization')?.invalid &&
+                    profileForm.get('organization')?.touched
+                  "
+                >
+                  <option value="" disabled>Select Organization</option>
+                  <option *ngFor="let org of organizations" [value]="org.id">
+                    {{ org.organizationName }}
+                  </option>
+                </select>
+                <div
+                  class="invalid-feedback"
+                  *ngIf="
+                    profileForm.get('organization')?.invalid &&
+                    profileForm.get('organization')?.touched
+                  "
+                >
+                  <span
+                    *ngIf="profileForm.get('organization')?.errors?.['required']"
+                    >Organization Name is required</span
                   >
                 </div>
               </div>
@@ -264,7 +304,10 @@
             </div>
           </div>
           <!-- Location Information Section -->
-          <div class="form-section" *ngIf="userRole == 1 || userRole == 5">
+          <div
+            class="form-section"
+            *ngIf="userRole == 1 || userRole == 5 || userRole == 6"
+          >
             <h3 class="section-title">
               {{ "TRAINING.LOCATION_INFORMATION" | translate }}
             </h3>
@@ -389,7 +432,7 @@
           </div>
 
           <!-- Contact Information Section -->
-          <div class="form-section" *ngIf="userRole == 5">
+          <div class="form-section" *ngIf="userRole == 5 || userRole == 6">
             <h3 class="section-title">
               {{ "TRAINING.CONTACT_INFORMATION" | translate }}
             </h3>
@@ -552,7 +595,7 @@
           </div>
 
           <!-- Security Information Section -->
-          <div class="form-section" *ngIf="userRole == 5">
+          <div class="form-section" *ngIf="userRole == 5 || userRole == 6">
             <h3 class="section-title">
               {{ "TRAINING.SECURITY_INFORMATION" | translate }}
             </h3>

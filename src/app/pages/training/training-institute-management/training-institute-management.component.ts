@@ -42,7 +42,8 @@ export class TrainingInstituteManagementComponent implements OnInit {
    * Toggle the visibility of the training institute form
    */
   toggleForm(): void {
-    this.showForm = !this.showForm;
+    // this.showForm = !this.showForm;
+    this.showForm = true;
   }
 
   /**
@@ -68,6 +69,18 @@ export class TrainingInstituteManagementComponent implements OnInit {
       try {
         const userData = JSON.parse(roleId);
         return userData.role === 1; 
+      } catch (e) {
+        return false;
+      }
+    }
+    return false;
+  }
+  isRole6User(): boolean {
+    const roleId = sessionStorage.getItem('user');
+    if (roleId) {
+      try {
+        const userData = JSON.parse(roleId);
+        return userData.role === 6; 
       } catch (e) {
         return false;
       }

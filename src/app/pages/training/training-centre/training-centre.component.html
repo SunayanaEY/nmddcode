@@ -204,10 +204,24 @@
   </div>
 
   <!-- Training Centres Table -->
-  <div *ngIf="!isLoading && !error" class="table-container">
+  <div *ngIf="this.userRole !== 6">
+    <div *ngIf="!isLoading && !error" class="table-container">
+      <h2 class="ms-5 mt-3 mb-3">Government Institutes</h2>
+      <app-table
+        [columns]="tableColumns"
+        [data]="filteredGovtTrainingCentres"
+        [actions]="tableActions"
+        (actionClick)="onTableAction($event)"
+      >
+      </app-table>
+    </div>
+  </div>
+
+  <div *ngIf="!isLoading && !error" class="table-container mt-4">
+    <h2 class="ms-5 mt-3 mb-3">Private Institutes</h2>
     <app-table
-      [columns]="tableColumns"
-      [data]="filteredTrainingCentres"
+      [columns]="tableColumns1"
+      [data]="filteredPrivateTrainingCentres"
       [actions]="tableActions"
       (actionClick)="onTableAction($event)"
     >

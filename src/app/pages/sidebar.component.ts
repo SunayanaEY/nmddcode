@@ -145,6 +145,18 @@ export class SidebarComponent {
     }
     return false;
   }
+  isRole6User(): boolean {
+    const roleId = sessionStorage.getItem('user');
+    if (roleId) {
+      try {
+        const userData = JSON.parse(roleId);
+        return userData.role === 6; 
+      } catch (e) {
+        return false;
+      }
+    }
+    return false;
+  }
 
   isRole4User(): boolean {
     const roleId = sessionStorage.getItem('user');
