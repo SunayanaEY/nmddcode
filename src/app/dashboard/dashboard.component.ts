@@ -88,16 +88,16 @@ export class DashboardComponent {
   }
 
   dashboardStats: DashboardStats = {
-    totalTrainings: 54,
-    totalFarmers: 3932,
-    totalCertificatesApproved: 2912,
-    totalCertificatesIssued: 1640,
-    trainingGrowth: 8,
-    totalInstitute: 8,
-    farmerGrowth: 24,
-    approvedGrowth: 37,
-    issuedGrowth: 26,
-    instituteGrowth: 21,
+    totalTrainings: 0,
+    totalFarmers: 0,
+    totalCertificatesApproved: 0,
+    totalCertificatesIssued: 0,
+    trainingGrowth: 0,
+    totalInstitute: 0,
+    farmerGrowth: 0,
+    approvedGrowth: 0,
+    issuedGrowth: 0,
+    instituteGrowth: 0,
   };
 
   selectedState: StateData | null = null;
@@ -115,6 +115,7 @@ export class DashboardComponent {
   selectedDistrictId: number | null = null;
   selectedTrainingInstituteId: string | null = null;
   userRole: number | null = null;
+  organizationId: number | null = null;
   isStateAdmin: boolean = false;
   stateAdminStateId: string | null = null;
   private isUpdatingFilters = false;
@@ -151,6 +152,7 @@ export class DashboardComponent {
   }
 
   checkUserRole(): void {
+    debugger;
     const userDataString = sessionStorage.getItem('user');
     if (userDataString) {
       try {
@@ -163,6 +165,9 @@ export class DashboardComponent {
           this.stateAdminStateId = userData.stateId;
           this.filterForm.get('stateId')?.setValue(this.stateAdminStateId);
           this.filterForm.get('stateId')?.disable();
+        }
+        if (this.userRole === 6 && userData.OrganizationId) {
+          this.organizationId = userData.OrganizationId;
         }
         this.cdr.detectChanges();
       } catch (error) {
@@ -225,7 +230,7 @@ export class DashboardComponent {
     this.isUpdatingFilters = false;
     this.selectedTrainingInstituteId = null;
 
-    this.dashboardApiService.getTrainingInstitutes(stateId).subscribe({
+    this.dashboardApiService.getTrainingInstitutes(stateId, this.organizationId || undefined).subscribe({
       next: (institutes) => {
         this.trainingInstitutes = institutes;
         this.isLoadingTrainingInstitutes = false;
@@ -293,7 +298,8 @@ export class DashboardComponent {
       .getTrainingSummaryCount(
         this.selectedStateId || undefined,
         this.selectedDistrictId || undefined,
-        this.selectedTrainingInstituteId || undefined
+        this.selectedTrainingInstituteId || undefined,
+        this.organizationId || undefined
       )
       .subscribe({
         next: (response) => {
@@ -408,17 +414,24 @@ export class DashboardComponent {
     this.isLoadingKpiData = true;
     this.kpiDataError = null;
 
-    this.dashboardApiService.getAllKpiData().subscribe({
-      next: (data) => {
-        this.kpiData = data;
-        this.isLoadingKpiData = false;
-      },
-      error: (error) => {
-        console.error('Error loading KPI data:', error);
-        this.kpiDataError = 'Failed to load KPI data';
-        this.isLoadingKpiData = false;
-      },
-    });
+    this.dashboardApiService
+      .getAllKpiData(
+        this.selectedStateId || undefined,
+        this.selectedDistrictId || undefined,
+        this.selectedTrainingInstituteId || undefined,
+        this.organizationId || undefined
+      )
+      .subscribe({
+        next: (data) => {
+          this.kpiData = data;
+          this.isLoadingKpiData = false;
+        },
+        error: (error) => {
+          console.error('Error loading KPI data:', error);
+          this.kpiDataError = 'Failed to load KPI data';
+          this.isLoadingKpiData = false;
+        },
+      });
   }
 
   /**
@@ -541,11 +554,21 @@ export class DashboardComponent {
 
     // Fetch data and export to Excel with current filter values
     if (kpiType == 'totalInstituteDetails') {
-      this.adminService.getTrainingInstitutes().subscribe({
-        next: (response) => {
-          if (response.length > 0) {
+      let instituteObservable;
+      if (this.organizationId) {
+        instituteObservable = this.adminService.getTrainingInstitutesOrganization(
+          this.organizationId
+        );
+      } else {
+        instituteObservable = this.adminService.getTrainingInstitutes();
+      }
+
+      instituteObservable.subscribe({
+        next: (response: any) => {
+          const data = Array.isArray(response) ? response : response.data || [];
+          if (data.length > 0) {
             // Transform data for Excel export
-            const excelData = response.map((item, index) => ({
+            const excelData = data.map((item: any, index: number) => ({
               'S.No.': index + 1,
               State: item.state,
               District: item.district,
@@ -592,7 +615,8 @@ export class DashboardComponent {
           kpiType,
           this.selectedStateId || undefined,
           this.selectedDistrictId || undefined,
-          this.selectedTrainingInstituteId || undefined
+          this.selectedTrainingInstituteId || undefined,
+          this.organizationId || undefined
         )
         .subscribe({
           next: (response) => {
@@ -648,7 +672,8 @@ export class DashboardComponent {
           kpiType,
           this.selectedStateId || undefined,
           this.selectedDistrictId || undefined,
-          this.selectedTrainingInstituteId || undefined
+          this.selectedTrainingInstituteId || undefined,
+          this.organizationId || undefined
         )
         .subscribe({
           next: (response) => {
@@ -707,7 +732,8 @@ export class DashboardComponent {
           kpiType,
           this.selectedStateId || undefined,
           this.selectedDistrictId || undefined,
-          this.selectedTrainingInstituteId || undefined
+          this.selectedTrainingInstituteId || undefined,
+          this.organizationId || undefined
         )
         .subscribe({
           next: (response) => {
@@ -766,6 +792,8 @@ export class DashboardComponent {
       return 'Central Admin Dashboard';
     } else if (this.userRole === 5) {
       return 'State Admin Dashboard';
+    } else if (this.userRole === 6) {
+      return 'Organization Dashboard';
     } else {
       return 'Training Dashboard';
     }

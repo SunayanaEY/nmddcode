@@ -31,6 +31,7 @@ export class ModeOfTrainingChartComponent implements OnInit, OnChanges, OnDestro
   @Input() isLoading: boolean = false;
   @Input() stateId: number | null = null;
   @Input() districtId: number | null = null;
+  @Input() organizationId: number | null = null;
 
   chartOption: EChartsOption = {};
   chartLoading: boolean = false;
@@ -111,7 +112,11 @@ export class ModeOfTrainingChartComponent implements OnInit, OnChanges, OnDestro
       this.dataSubscription.unsubscribe();
     }
 
-    this.dataSubscription = this.dashboardService.getModeOfTrainingDistribution(this.stateId || undefined, this.districtId || undefined).subscribe({
+    this.dataSubscription = this.dashboardService.getModeOfTrainingDistribution(
+      this.stateId || undefined,
+      this.districtId || undefined,
+      this.organizationId || undefined
+    ).subscribe({
       next: (response: ModeOfTrainingDistributionResponse) => {
         if (response.success) {
           // Transform API data to component format
@@ -133,21 +138,25 @@ export class ModeOfTrainingChartComponent implements OnInit, OnChanges, OnDestro
 
   private transformApiData(data: any): InstituteRegistrationData[] {
     const colorMap: { [key: string]: string } = {
-      'Government': '#059669',
-      'Private': '#DC2626'
+      'Online': '#4F46E5',
+      'Offline': '#059669',
+      'Hybrid': '#DC2626',
+      'Field': '#D97706'
     };
 
     const iconMap: { [key: string]: string } = {
-      'Government': 'university',
-      'Private': 'building'
+      'Online': 'laptop',
+      'Offline': 'users',
+      'Hybrid': 'globe',
+      'Field': 'map-marker-alt'
     };
 
-    return Object.entries(data).map(([type, percentage]) => ({
-      type: type === 'Government' ? 'Government Registered' : 'Private Institutes',
-      count: Math.round((percentage as number) * 10), // Approximate count based on percentage
-      percentage: percentage as number,
+    return Object.entries(data).map(([type, value]) => ({
+      type: type,
+      count: value as number,
+      percentage: 0, // Calculate if needed, or if API returns count
       color: colorMap[type] || '#6B7280',
-      icon: iconMap[type] || 'building'
+      icon: iconMap[type] || 'chalkboard-teacher'
     }));
   }
 

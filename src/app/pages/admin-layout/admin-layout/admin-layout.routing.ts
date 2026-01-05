@@ -218,7 +218,7 @@ export const AdminLayoutRoutes: Routes = [
     path: 'organization-table',
     component: OrganizationTableDataComponent,
     canActivate: [RoleGuard],
-    data: { allowedRoles: [1] },
+    data: { allowedRoles: [1, 5] },
   },
   {
     path: 'registered-data-entry-operators',

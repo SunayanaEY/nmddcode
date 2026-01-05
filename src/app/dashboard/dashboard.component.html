@@ -71,7 +71,7 @@
       <!-- Filter Section -->
       <div class="filter-section mb-4" [formGroup]="filterForm">
         <div class="row g-3">
-          <div class="col-md-4">
+          <div class="col-md-4" *ngIf="userRole !== 6">
             <label for="stateSelect" class="form-label fw-semibold">{{
               "State" | translate
             }}</label>
@@ -92,7 +92,7 @@
             </div>
           </div>
 
-          <div class="col-md-4">
+          <div class="col-md-4" *ngIf="userRole !== 6">
             <label for="districtSelect" class="form-label fw-semibold">{{
               "District" | translate
             }}</label>
@@ -417,7 +417,7 @@
 </div>
 
 <!-- Second Row: Training Institutes and Mode of Training -->
-<div class="row g-4">
+<div class="row g-4 mb-4">
   <!-- India Map -->
   <div class="col-lg-6">
     <div class="card">
@@ -433,6 +433,7 @@
         <app-india-map
           [selectedState]="selectedState"
           (stateSelected)="onStateSelected($event)"
+          [organizationId]="organizationId"
         >
         </app-india-map>
       </div>
@@ -440,7 +441,7 @@
   </div>
 
   <!-- Institute Type Chart -->
-  <div class="col-lg-6">
+  <div class="col-lg-6" *ngIf="userRole !== 6">
     <div class="card">
       <div class="card-header">
         <h5 class="card-title mb-0">
@@ -454,14 +455,12 @@
           [isLoading]="isLoading"
           [stateId]="selectedStateId"
           [districtId]="selectedDistrictId"
+          [organizationId]="organizationId"
         >
         </app-institute-type-chart>
       </div>
     </div>
   </div>
-</div>
-<!-- First Row: Monthly Trainings and Age Group -->
-<div class="row g-4 mb-4">
   <!-- Monthly Trainings Chart -->
   <div class="col-lg-6">
     <div class="card h-100">
@@ -478,6 +477,7 @@
           [stateId]="selectedStateId"
           [districtId]="selectedDistrictId"
           [trainingInstituteId]="selectedTrainingInstituteId"
+          [organizationId]="organizationId"
         >
         </app-monthly-chart>
       </div>
@@ -500,6 +500,7 @@
           [stateId]="selectedStateId"
           [districtId]="selectedDistrictId"
           [trainingInstituteId]="selectedTrainingInstituteId"
+          [organizationId]="organizationId"
         >
         </app-age-group-chart>
       </div>
@@ -522,6 +523,7 @@
           [stateId]="selectedStateId"
           [districtId]="selectedDistrictId"
           [trainingInstituteId]="selectedTrainingInstituteId"
+          [organizationId]="organizationId"
         >
         </app-top-training-types-chart>
       </div>

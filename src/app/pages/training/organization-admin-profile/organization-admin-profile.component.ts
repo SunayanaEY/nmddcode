@@ -267,7 +267,7 @@ export class OrganizationAdminProfileComponent implements OnInit {
             );
 
             // Navigate to training centre component after successful registration
-            this.router.navigate(['admin/training-module']);
+            this.router.navigate(['/admin/organization-table']);
           } else {
             this.toastr.error(
               response.message || 'Registration failed',
@@ -323,7 +323,7 @@ export class OrganizationAdminProfileComponent implements OnInit {
               );
 
               // Navigate to training centre component after successful registration
-              this.router.navigate(['/admin/training-module']);
+              this.router.navigate(['/admin/organization-table']);
             } else {
               this.toastr.error(response.message || 'Updation failed', 'Error');
             }

@@ -42,6 +42,7 @@ export class IndiaMapComponent implements OnInit, AfterViewInit, OnDestroy, OnCh
   @ViewChild('mapContainer', { static: false }) mapContainer!: ElementRef;
   @Input() selectedState: StateData | null = null;
   @Input() isLoading = false;
+  @Input() organizationId: number | null = null;
   @Output() stateSelected = new EventEmitter<StateData | null>();
 
   private svg: any;
@@ -127,6 +128,10 @@ export class IndiaMapComponent implements OnInit, AfterViewInit, OnDestroy, OnCh
         this.backToIndia();
       }
     }
+
+    if (changes['organizationId']) {
+      this.loadInstituteData();
+    }
   }
 
   ngOnInit(): void {
@@ -148,7 +153,7 @@ export class IndiaMapComponent implements OnInit, AfterViewInit, OnDestroy, OnCh
   }
 
   private loadInstituteData(): void {
-    this.dashboardService.getInstituteLocations().subscribe({
+    this.dashboardService.getInstituteLocations(this.organizationId || undefined).subscribe({
       next: (data: InstituteLocationData[]) => {
         this.institutes = data.map((institute) => ({
           id: institute.id,

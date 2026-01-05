@@ -20,6 +20,7 @@ export class TopTrainingTypesChartComponent implements OnInit, OnChanges, OnDest
   @Input() stateId: number | null = null;
   @Input() districtId: number | null = null;
   @Input() trainingInstituteId: string | null = null;
+  @Input() organizationId: number | null = null;
 
   chartOption: EChartsOption = {};
   chartLoading = false;
@@ -37,7 +38,7 @@ export class TopTrainingTypesChartComponent implements OnInit, OnChanges, OnDest
   }
 
   ngOnChanges(changes: SimpleChanges): void {
-    if (changes['selectedState'] || changes['stateId'] || changes['districtId'] || changes['trainingInstituteId']) {
+    if (changes['selectedState'] || changes['stateId'] || changes['districtId'] || changes['trainingInstituteId'] || changes['organizationId']) {
       this.loadTopTrainingTypesData();
     }
   }
@@ -197,7 +198,12 @@ export class TopTrainingTypesChartComponent implements OnInit, OnChanges, OnDest
       this.dataSubscription.unsubscribe();
     }
 
-    this.dataSubscription = this.dashboardService.getTopTrainingTypes(this.stateId, this.districtId, this.trainingInstituteId).subscribe({
+    this.dataSubscription = this.dashboardService.getTopTrainingTypes(
+      this.stateId,
+      this.districtId,
+      this.trainingInstituteId,
+      this.organizationId || undefined
+    ).subscribe({
       next: (response) => {
         this.isLoadingData = false;
         if (response.success && response.data) {

@@ -301,7 +301,7 @@
         [routerLink]="['organization-table']"
         routerLinkActive="active"
         [attr.title]="collapsed ? 'Private Organization Data' : null"
-        *ngIf="authService.getUserRole() === 1"
+        *ngIf="isRole1User() || isRole5User()"
       >
         <i class="bi bi-building-check me-2"></i>
 

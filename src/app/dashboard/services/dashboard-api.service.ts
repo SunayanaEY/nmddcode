@@ -103,7 +103,8 @@ export class DashboardApiService {
     type: string,
     stateId?: number,
     districtId?: number,
-    trainingInstituteId?: string
+    trainingInstituteId?: string,
+    organizationId?: number
   ): Observable<TrainingDetailsApiResponse> {
     let params = new HttpParams();
 
@@ -119,6 +120,10 @@ export class DashboardApiService {
       params = params.set('trainingInstituteId', trainingInstituteId);
     }
 
+    if (organizationId) {
+      params = params.set('organizationId', organizationId.toString());
+    }
+
     return this.http.get<TrainingDetailsApiResponse>(
       `${this.apiUrl}public/dashboard/trainingDetails/${type}`,
       { params }
@@ -127,9 +132,18 @@ export class DashboardApiService {
 
   /**
    * Get KPI data for all types
+   * @param stateId - Optional state ID for filtering
+   * @param districtId - Optional district ID for filtering
+   * @param trainingInstituteId - Optional training institute ID for filtering
+   * @param organizationId - Optional organization ID for filtering
    * @returns Observable<KpiData[]>
    */
-  getAllKpiData(): Observable<any[]> {
+  getAllKpiData(
+    stateId?: number,
+    districtId?: number,
+    trainingInstituteId?: string,
+    organizationId?: number
+  ): Observable<any[]> {
     const types = [
       'totalTrainingsConducted',
       'totalFarmersTrained',
@@ -139,7 +153,13 @@ export class DashboardApiService {
 
     // Create an array of observables for all API calls
     const apiCalls = types.map((type) =>
-      this.getTrainingDetailsByType(type).pipe(
+      this.getTrainingDetailsByType(
+        type,
+        stateId,
+        districtId,
+        trainingInstituteId,
+        organizationId
+      ).pipe(
         map((response) => ({
           type,
           count: response.data.length,
@@ -177,11 +197,18 @@ export class DashboardApiService {
    * @param stateId - Optional state ID for filtering institutes by state
    * @returns Observable<TrainingInstitute[]>
    */
-  getTrainingInstitutes(stateId?: number): Observable<TrainingInstitute[]> {
+  getTrainingInstitutes(
+    stateId?: number,
+    organizationId?: number
+  ): Observable<TrainingInstitute[]> {
     let params = new HttpParams();
 
     if (stateId) {
       params = params.set('stateId', stateId.toString());
+    }
+
+    if (organizationId) {
+      params = params.set('organizationId', organizationId.toString());
     }
 
     return this.http.get<TrainingInstitute[]>(
