@@ -109,7 +109,7 @@ export class SidebarComponent {
   }
 
   canAccessAdminFeatures(): boolean {
-    return this.authService.hasRole([1,5]);
+    return this.isRole1User() || this.isRole5User() || this.isRole6User();
   }
 
   canAccessTrainingFeatures(): boolean {

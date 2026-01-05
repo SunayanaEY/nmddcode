@@ -602,6 +602,9 @@ export class LoginComponent implements OnInit {
       case 5: // state Admin
         this.router.navigate(['/admin/dashboard']);
         break;
+      case 6: 
+        this.router.navigate(['/admin/dashboard']);
+        break;
       case 3: // Training Institute Head
         this.router.navigate(['/admin/role-dashboard']);
         break;
