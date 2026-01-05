@@ -20,6 +20,7 @@ import {
   District,
 } from '../../../services/location.service';
 import { AuthService } from '../../../services/auth.service';
+import { AdminService } from '../services/training-admin.service';
 import * as pdfjsLib from 'pdfjs-dist';
 import { TranslateModule } from '@ngx-translate/core';
 
@@ -61,6 +62,7 @@ export class TrainingCentreAdminProfileComponent implements OnInit {
   trainingInstituteId: any;
   userId: any;
   today: string | undefined;
+  organizations: any[] = [];
 
   // Location data
   states: State[] = [];
@@ -99,6 +101,7 @@ export class TrainingCentreAdminProfileComponent implements OnInit {
     private toastr: ToastrService,
     private locationService: LocationService,
     private authService: AuthService,
+    private adminService: AdminService,
     private route: ActivatedRoute
   ) {
     // Configure PDF.js worker to use bundled version
@@ -110,7 +113,6 @@ export class TrainingCentreAdminProfileComponent implements OnInit {
       const passedData = nav?.extras.state?.['data'];
       this.trainingInstituteId = passedData.id;
       this.instituteData = passedData;
-      // alert(JSON.stringify(this.instituteData));
     }
     if (this.userRole == 1) {
       this.profileForm = this.fb.group({
@@ -123,6 +125,7 @@ export class TrainingCentreAdminProfileComponent implements OnInit {
           ],
         ],
         instituteType: ['', [Validators.required]],
+        organization: [''],
         trainingInstituteRegistration: [
           '',
           [Validators.required, Validators.minLength(3)],
@@ -130,7 +133,6 @@ export class TrainingCentreAdminProfileComponent implements OnInit {
         trainingInstituteExpiry: ['', []],
         state: ['', [Validators.required]],
         district: ['', [Validators.required]],
-
         address: ['', [Validators.required, Validators.minLength(10)]],
         latitude: [
           '',
@@ -141,15 +143,33 @@ export class TrainingCentreAdminProfileComponent implements OnInit {
           [Validators.required, Validators.min(-180), Validators.max(180)],
         ],
       });
+
+      // Subscribe to state changes to load districts
       this.profileForm.get('state')?.valueChanges.subscribe((stateId) => {
         if (stateId) {
           this.loadDistricts(stateId);
-          // Reset district selection when state changes
           this.profileForm.get('district')?.setValue('');
         } else {
           this.districts = [];
           this.profileForm.get('district')?.setValue('');
         }
+      });
+
+      // Subscribe to institute type changes to handle organization validation
+      this.profileForm.get('instituteType')?.valueChanges.subscribe((type) => {
+        const orgControl = this.profileForm.get('organization');
+
+        if (type === 'Other Organizations') {
+          // Organization required
+          this.loadOrganizations();
+          orgControl?.setValidators([Validators.required]);
+        } else {
+          // Organization not required
+          orgControl?.clearValidators();
+          orgControl?.setValue('');
+        }
+
+        orgControl?.updateValueAndValidity();
       });
     } else {
       this.profileForm = this.fb.group(
@@ -163,6 +183,7 @@ export class TrainingCentreAdminProfileComponent implements OnInit {
             ],
           ],
           instituteType: ['', [Validators.required]],
+          organization: [''],
           trainingInstituteRegistration: [
             '',
             [Validators.required, Validators.minLength(3)],
@@ -170,7 +191,6 @@ export class TrainingCentreAdminProfileComponent implements OnInit {
           trainingInstituteExpiry: ['', []],
           state: ['', [Validators.required]],
           district: ['', [Validators.required]],
-
           address: ['', [Validators.required, Validators.minLength(10)]],
           latitude: [
             '',
@@ -204,26 +224,14 @@ export class TrainingCentreAdminProfileComponent implements OnInit {
         },
         { validators: this.passwordMatchValidator.bind(this) }
       );
-      // this.profileForm.get('state')?.valueChanges.subscribe((stateId) => {
-      //   if (stateId) {
-      //     this.loadDistricts(stateId);
-      //     // Reset district selection when state changes
-      //     this.profileForm.get('district')?.setValue('');
-      //   } else {
-      //     this.districts = [];
-      //     this.profileForm.get('district')?.setValue('');
-      //   }
-      // });
     }
-
-    // Subscribe to state changes to load districts
   }
 
   ngOnInit() {
     const now = new Date();
     this.today = now.toISOString().split('T')[0];
     this.loadStates();
-    if (this.userRole == 5) {
+    if (this.userRole == 5 || this.userRole == 6) {
       this.initializeForm();
       // Subscribe to password field changes for real-time validation
       this.profileForm.get('password')?.valueChanges.subscribe((password) => {
@@ -231,6 +239,10 @@ export class TrainingCentreAdminProfileComponent implements OnInit {
       });
     }
   }
+  onInstituteTypeChange(event:any){
+    this.loadOrganizations();
+  }
+
   getRole() {
     const userData = sessionStorage.getItem('user');
     if (userData) {
@@ -238,6 +250,24 @@ export class TrainingCentreAdminProfileComponent implements OnInit {
       this.userRole = user.role;
       this.userId = user.id;
     }
+  }
+
+  /**
+   * Load organizations from API
+   */
+  loadOrganizations() {
+    this.isLoadingStates = true;
+    this.adminService.getAllOrganization().subscribe({
+      next: (organizations: any) => {
+        this.organizations = organizations;
+        this.isLoadingStates = false;
+      },
+      error: (error: any) => {
+        console.error('Error loading organizations:', error);
+        this.toastr.error('Failed to load organizations', 'Error');
+        this.isLoadingStates = false;
+      },
+    });
   }
 
   /**
@@ -285,13 +315,13 @@ export class TrainingCentreAdminProfileComponent implements OnInit {
 
     if (stateId) {
       this.loadDistricts(stateId);
-      // Reset district selection when state changes
       this.profileForm.get('district')?.setValue('');
     } else {
       this.districts = [];
       this.profileForm.get('district')?.setValue('');
     }
   }
+
   initializeForm() {
     this.profileForm.patchValue({
       trainingInstituteName: this.instituteData.trainingInstituteName,
@@ -305,10 +335,20 @@ export class TrainingCentreAdminProfileComponent implements OnInit {
       latitude: this.instituteData.latitude,
       longitude: this.instituteData.longitude,
     });
+
     this.loadDistricts(this.instituteData.stateId);
     this.profileForm.patchValue({
       district: this.instituteData.districtId,
     });
+
+    // Load organizations if user role is 6 (or if needed)
+    if (this.userRole == 6 && this.instituteData.organizationId) {
+      this.loadOrganizations();
+      this.profileForm.patchValue({
+        organization: this.instituteData.organizationId,
+      });
+    }
+
     // Disable controls
     this.profileForm.get('trainingInstituteName')?.disable();
     this.profileForm.get('trainingInstituteRegistration')?.disable();
@@ -319,6 +359,7 @@ export class TrainingCentreAdminProfileComponent implements OnInit {
     this.profileForm.get('latitude')?.disable();
     this.profileForm.get('longitude')?.disable();
     this.profileForm.get('district')?.disable();
+    this.profileForm.get('organization')?.disable();
 
     if (this.instituteData.contactPersonName != null) {
       this.profileForm.patchValue({
@@ -341,6 +382,7 @@ export class TrainingCentreAdminProfileComponent implements OnInit {
       });
     }
   }
+
   allowOnlyAlphabetsAndDigits(event: KeyboardEvent) {
     const charCode = event.which ? event.which : event.keyCode;
 
@@ -352,6 +394,7 @@ export class TrainingCentreAdminProfileComponent implements OnInit {
       event.preventDefault();
     }
   }
+
   allowOnlyAlphabets(event: KeyboardEvent) {
     const charCode = event.which ? event.which : event.keyCode;
 
@@ -400,19 +443,40 @@ export class TrainingCentreAdminProfileComponent implements OnInit {
         'trainingInstituteExpiry'
       )?.value;
 
-      const instituteDetails = {
-        instituteName:
-          this.profileForm.get('trainingInstituteName')?.value || '',
-        registrationNumber:
-          this.profileForm.get('trainingInstituteRegistration')?.value || '',
-        registrationValidity: expiryValue ? expiryValue + 'T00:00:00' : '',
-        instituteType: this.profileForm.get('instituteType')?.value || '',
-        stateId: parseInt(this.profileForm.get('state')?.value) || 0,
-        districtId: parseInt(this.profileForm.get('district')?.value) || 0,
-        address: this.profileForm.get('address')?.value || '',
-        latitude: this.profileForm.get('latitude')?.value || null,
-        longitude: this.profileForm.get('longitude')?.value || null,
-      };
+      let instituteDetails = {};
+      
+      if (
+        this.profileForm.get('instituteType')?.value === 'Other Organizations'
+      ) {
+        instituteDetails = {
+          instituteName:
+            this.profileForm.get('trainingInstituteName')?.value || '',
+          registrationNumber:
+            this.profileForm.get('trainingInstituteRegistration')?.value || '',
+          registrationValidity: expiryValue ? expiryValue + 'T00:00:00' : '',
+          instituteType: this.profileForm.get('instituteType')?.value || '',
+          organizationId: this.profileForm.get('organization')?.value || '',
+          stateId: parseInt(this.profileForm.get('state')?.value) || 0,
+          districtId: parseInt(this.profileForm.get('district')?.value) || 0,
+          address: this.profileForm.get('address')?.value || '',
+          latitude: this.profileForm.get('latitude')?.value || null,
+          longitude: this.profileForm.get('longitude')?.value || null,
+        };
+      } else {
+        instituteDetails = {
+          instituteName:
+            this.profileForm.get('trainingInstituteName')?.value || '',
+          registrationNumber:
+            this.profileForm.get('trainingInstituteRegistration')?.value || '',
+          registrationValidity: expiryValue ? expiryValue + 'T00:00:00' : '',
+          instituteType: this.profileForm.get('instituteType')?.value || '',
+          stateId: parseInt(this.profileForm.get('state')?.value) || 0,
+          districtId: parseInt(this.profileForm.get('district')?.value) || 0,
+          address: this.profileForm.get('address')?.value || '',
+          latitude: this.profileForm.get('latitude')?.value || null,
+          longitude: this.profileForm.get('longitude')?.value || null,
+        };
+      }
 
       // Append instituteDetails as JSON string with explicit content type
       const instituteDetailsBlob = new Blob(
@@ -430,12 +494,10 @@ export class TrainingCentreAdminProfileComponent implements OnInit {
         next: (response) => {
           this.isLoading = false;
           if (response.success) {
-            // Show success message with registration details
             const registrationId = response.data?.registrationId || 'N/A';
             const instituteName = response.data?.trainingInstituteName || 'N/A';
             const status = response.data?.status || 'PENDING';
 
-            // Reset form after successful registration
             this.profileForm.reset();
             this.selectedFile = null;
             this.selectedImagePreview = null;
@@ -445,11 +507,7 @@ export class TrainingCentreAdminProfileComponent implements OnInit {
               'Success'
             );
 
-            // Emit event to notify parent component
             this.formSubmitted.emit();
-
-            // Navigate to training centre component after successful registration
-            // this.router.navigate(['/admin/training-centre']);
           } else {
             this.toastr.error(
               response.message || 'Registration failed',
@@ -468,8 +526,6 @@ export class TrainingCentreAdminProfileComponent implements OnInit {
     } else {
       this.isLoading = true;
 
-      // Create FormData for multipart request
-      // Create instituteDetails object matching the API structure
       const instituteDetails = {
         contactPersonName:
           this.profileForm.get('contactPersonName')?.value || '',
@@ -479,21 +535,17 @@ export class TrainingCentreAdminProfileComponent implements OnInit {
         password: this.profileForm.get('password')?.value || '',
       };
 
-      // Append instituteDetails as JSON string with explicit content type
-
       this.authService
         .updateInstitute(this.trainingInstituteId, instituteDetails)
         .subscribe({
           next: (response) => {
             this.isLoading = false;
             if (response.success) {
-              // Show success message with registration details
               const registrationId = response.data?.registrationId || 'N/A';
               const instituteName =
                 response.data?.trainingInstituteName || 'N/A';
               const status = response.data?.status || 'PENDING';
 
-              // Reset form after successful registration
               this.profileForm.reset();
               this.selectedFile = null;
               this.selectedImagePreview = null;
@@ -503,10 +555,7 @@ export class TrainingCentreAdminProfileComponent implements OnInit {
                 'Success'
               );
 
-              // Emit event to notify parent component
               this.formSubmitted.emit();
-
-              // Navigate to training centre component after successful registration
               this.router.navigate(['/admin/training-centre']);
             } else {
               this.toastr.error(response.message || 'Updation failed', 'Error');
@@ -531,13 +580,11 @@ export class TrainingCentreAdminProfileComponent implements OnInit {
     if (input.files && input.files[0]) {
       const file = input.files[0];
 
-      // Validate file size (5MB limit)
       if (file.size > 5 * 1024 * 1024) {
         this.toastr.error('File size must be less than 5MB', 'File Error');
         return;
       }
 
-      // Validate file type
       if (!file.type.startsWith('image/')) {
         this.toastr.error('Please select a valid image file', 'File Error');
         return;
@@ -545,7 +592,6 @@ export class TrainingCentreAdminProfileComponent implements OnInit {
 
       this.selectedFile = file;
 
-      // Create preview
       const reader = new FileReader();
       reader.onload = (e) => {
         this.selectedImagePreview = e.target?.result as string;
@@ -553,18 +599,17 @@ export class TrainingCentreAdminProfileComponent implements OnInit {
       reader.readAsDataURL(file);
     }
   }
+
   onFileSelectedDoc(event: Event) {
     const input = event.target as HTMLInputElement;
     if (input.files && input.files[0]) {
       const file = input.files[0];
 
-      // Validate file size (5MB limit)
       if (file.size > 5 * 1024 * 1024) {
         this.toastr.error('File size must be less than 5MB', 'File Error');
         return;
       }
 
-      // Validate file type
       if (!file.type.startsWith('application/pdf')) {
         this.toastr.error('Please select a valid PDF file', 'File Error');
         return;
@@ -573,19 +618,15 @@ export class TrainingCentreAdminProfileComponent implements OnInit {
       this.selectedFileDoc = file;
       this.selectedDocPreview = file.name;
 
-      // Generate PDF preview
       this.generatePdfPreview(file);
     }
   }
 
-  /**
-   * Generate PDF preview using PDF.js
-   */
   async generatePdfPreview(file: File) {
     try {
       const arrayBuffer = await file.arrayBuffer();
       const pdf = await pdfjsLib.getDocument({ data: arrayBuffer }).promise;
-      const page = await pdf.getPage(1); // Get first page
+      const page = await pdf.getPage(1);
 
       const scale = 1.5;
       const viewport = page.getViewport({ scale });
@@ -609,9 +650,6 @@ export class TrainingCentreAdminProfileComponent implements OnInit {
     }
   }
 
-  /**
-   * Trigger file input click
-   */
   triggerFileInput() {
     const fileInput = document.querySelector(
       'input[type="file"]'
@@ -625,33 +663,26 @@ export class TrainingCentreAdminProfileComponent implements OnInit {
     secondFileInput?.click();
   }
 
-  /**
-   * Handle drag over event
-   */
   onDragOver(event: DragEvent) {
     event.preventDefault();
     this.isDragOver = true;
   }
+
   onDragOverDoc(event: DragEvent) {
     event.preventDefault();
     this.isDragOverDoc = true;
   }
 
-  /**
-   * Handle drag leave event
-   */
   onDragLeave(event: DragEvent) {
     event.preventDefault();
     this.isDragOver = false;
   }
+
   onDragLeaveDoc(event: DragEvent) {
     event.preventDefault();
     this.isDragOverDoc = false;
   }
 
-  /**
-   * Handle drop event
-   */
   onDrop(event: DragEvent) {
     event.preventDefault();
     this.isDragOver = false;
@@ -660,13 +691,11 @@ export class TrainingCentreAdminProfileComponent implements OnInit {
     if (files && files[0]) {
       const file = files[0];
 
-      // Validate file size (5MB limit)
       if (file.size > 5 * 1024 * 1024) {
         this.toastr.error('File size must be less than 5MB', 'File Error');
         return;
       }
 
-      // Validate file type
       if (!file.type.startsWith('image/')) {
         this.toastr.error('Please select a valid image file', 'File Error');
         return;
@@ -674,7 +703,6 @@ export class TrainingCentreAdminProfileComponent implements OnInit {
 
       this.selectedFile = file;
 
-      // Create preview
       const reader = new FileReader();
       reader.onload = (e) => {
         this.selectedImagePreview = e.target?.result as string;
@@ -682,6 +710,7 @@ export class TrainingCentreAdminProfileComponent implements OnInit {
       reader.readAsDataURL(file);
     }
   }
+
   onDropDoc(event: DragEvent) {
     event.preventDefault();
     this.isDragOverDoc = false;
@@ -690,13 +719,11 @@ export class TrainingCentreAdminProfileComponent implements OnInit {
     if (files && files[0]) {
       const file = files[0];
 
-      // Validate file size (5MB limit)
       if (file.size > 5 * 1024 * 1024) {
         this.toastr.error('File size must be less than 5MB', 'File Error');
         return;
       }
 
-      // Validate file type
       if (!file.type.startsWith('application/pdf')) {
         this.toastr.error('Please select a valid document file', 'File Error');
         return;
@@ -705,20 +732,15 @@ export class TrainingCentreAdminProfileComponent implements OnInit {
       this.selectedFileDoc = file;
       this.selectedDocPreview = file.name;
 
-      // Generate PDF preview
       this.generatePdfPreview(file);
     }
   }
 
-  /**
-   * Remove selected image
-   */
   removeImage(event: Event) {
     event.stopPropagation();
     this.selectedFile = null;
     this.selectedImagePreview = null;
 
-    // Reset file input
     const fileInput = document.querySelector(
       'input[type="file"]'
     ) as HTMLInputElement;
@@ -726,13 +748,13 @@ export class TrainingCentreAdminProfileComponent implements OnInit {
       fileInput.value = '';
     }
   }
+
   removeDoc(event: Event) {
     event.stopPropagation();
     this.selectedFileDoc = null;
     this.selectedDocPreview = null;
     this.pdfPreviewUrl = null;
 
-    // Reset file input
     const fileInput = document.querySelector(
       'input[type="file"]'
     ) as HTMLInputElement;
@@ -741,23 +763,14 @@ export class TrainingCentreAdminProfileComponent implements OnInit {
     }
   }
 
-  /**
-   * Toggle password visibility
-   */
   togglePassword() {
     this.showPassword = !this.showPassword;
   }
 
-  /**
-   * Toggle confirm password visibility
-   */
   toggleConfirmPassword() {
     this.showConfirmPassword = !this.showConfirmPassword;
   }
 
-  /**
-   * Mark all form fields as touched
-   */
   markFormGroupTouched(formGroup: FormGroup) {
     Object.keys(formGroup.controls).forEach((key) => {
       const control = formGroup.get(key);
@@ -769,16 +782,10 @@ export class TrainingCentreAdminProfileComponent implements OnInit {
     });
   }
 
-  /**
-   * Handle cancel button click
-   */
   onCancel() {
     this.router.navigate(['/admin/training-institute-management']);
   }
 
-  /**
-   * Validate password and update validation flags
-   */
   validatePassword(password: string) {
     this.hasMinLength = password.length >= 8;
     this.hasUppercase = /[A-Z]/.test(password);

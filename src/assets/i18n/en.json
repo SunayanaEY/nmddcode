@@ -464,6 +464,7 @@
   "COMMON.DISTRICT": "District",
   "COMMON.CONTACT_NUMBER": "Contact Number",
   "COMMON.CONTACT_MAIL" : "Institute Email",
+  "COMMON.DESIGNATION" : "Designation",
   "TRAINING.REGISTRATION_DOCUMENT_LABEL": "Training Registration Document",
   "COMMON.STATUS": "Status",
   "COMMON.ACTIONS": "Actions",
@@ -654,6 +655,9 @@
   "TRAINING.STATE_HEAD_NAME": "State Head Name",
   "TRAINING.STATE_HEAD_CONTACT": "State Head Contact",
   "TRAINING.STATE_HEAD_EMAIL": "State Head Email",
+  "TRAINING.ORGANIZATION_HEAD_NAME": "Organization Head Name",
+  "TRAINING.ORGANIZATION_HEAD_CONTACT": "Organization Head Contact",
+  "TRAINING.ORGANIZATION_HEAD_EMAIL": "Organization Head Email",
   "STATE": "State",
   "SELECT_STATE": "Select State"
 }

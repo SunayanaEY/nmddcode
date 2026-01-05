@@ -1,11 +1,16 @@
 <div class="sidebar-nav" [class.collapsed]="collapsed">
   <!-- Brand Section -->
   <div class="sidebar-brand" *ngIf="!collapsed">
-      <img class="sidebar-brand-logo" src="assets/login/emblem.png" alt="" srcset="">
-      <div class="brand-text">
-        <h6 class="brand-title">भारत सरकार</h6>
-        <small class="brand-subtitle">Government Of India</small>
-      </div>
+    <img
+      class="sidebar-brand-logo"
+      src="assets/login/emblem.png"
+      alt=""
+      srcset=""
+    />
+    <div class="brand-text">
+      <h6 class="brand-title">भारत सरकार</h6>
+      <small class="brand-subtitle">Government Of India</small>
+    </div>
   </div>
 
   <!-- Collapsed Brand -->
@@ -13,7 +18,12 @@
     <div class="brand-logo-small">
       <!-- <i class="bi bi-shield-check"></i>
         -->
-      <img class="sidebar-brand-logo" src="assets/login/emblem.png" alt="" srcset="">
+      <img
+        class="sidebar-brand-logo"
+        src="assets/login/emblem.png"
+        alt=""
+        srcset=""
+      />
     </div>
   </div>
 
@@ -37,7 +47,7 @@
   <div class="nav-container">
     <nav class="flex-grow-1">
       <!-- Common Dashboard -->
-             <a
+      <a
         class="sidebar-link d-flex align-items-center mb-2 fw-bold"
         [routerLink]="['dashboard']"
         routerLinkActive="active"
@@ -45,7 +55,9 @@
         *ngIf="canAccessAdminFeatures()"
       >
         <i class="bi bi-speedometer2 me-2"></i>
-        <span class="sidebar-label" *ngIf="!collapsed">{{'Dashboard'|translate}}</span>
+        <span class="sidebar-label" *ngIf="!collapsed">{{
+          "Dashboard" | translate
+        }}</span>
       </a>
 
       <!-- Role Dashboard for Training Head and Data Entry Operator -->
@@ -57,7 +69,9 @@
         *ngIf="isRole3User() || isRole4User()"
       >
         <i class="bi bi-house-door me-2"></i>
-        <span class="sidebar-label" *ngIf="!collapsed">{{'Dashboard'|translate}}</span>
+        <span class="sidebar-label" *ngIf="!collapsed">{{
+          "Dashboard" | translate
+        }}</span>
       </a>
       <!--Training Modules with Dropdown-->
       <!-- Calendar -->
@@ -66,10 +80,12 @@
         [routerLink]="['calender']"
         routerLinkActive="active"
         [attr.title]="collapsed ? 'Calender' : null"
-         *ngIf="isRole3User() || isRole4User()"
-        >
+        *ngIf="isRole3User() || isRole4User()"
+      >
         <i class="bi bi-calendar3 me-2"></i>
-        <span class="sidebar-label" *ngIf="!collapsed">{{'Calender'|translate}}</span>
+        <span class="sidebar-label" *ngIf="!collapsed">{{
+          "Calender" | translate
+        }}</span>
       </a>
       <div class="sidebar-dropdown">
         <a
@@ -77,17 +93,26 @@
           (click)="toggleTrainingModules()"
           [class.active]="trainingModulesExpanded"
           [attr.title]="collapsed ? 'Training and Institute Management' : null"
-          style="cursor: pointer;"
+          style="cursor: pointer"
         >
           <i class="bi bi-collection me-2"></i>
-          <span class="sidebar-label training-management-label" *ngIf="!collapsed">{{'Training and Institute Management'|translate}}</span>
-          <i class="bi bi-chevron-down ms-auto dropdown-arrow" 
-             *ngIf="!collapsed" 
-             [class.rotated]="trainingModulesExpanded"></i>
+          <span
+            class="sidebar-label training-management-label"
+            *ngIf="!collapsed"
+            >{{ "Training and Institute Management" | translate }}</span
+          >
+          <i
+            class="bi bi-chevron-down ms-auto dropdown-arrow"
+            *ngIf="!collapsed"
+            [class.rotated]="trainingModulesExpanded"
+          ></i>
         </a>
-        
+
         <!-- Submenu -->
-        <div class="submenu" [class.expanded]="trainingModulesExpanded && !collapsed">
+        <div
+          class="submenu"
+          [class.expanded]="trainingModulesExpanded && !collapsed"
+        >
           <!-- <a
             class="sidebar-link submenu-link d-flex align-items-center mb-1"
             [routerLink]="['training-module']"
@@ -97,28 +122,31 @@
             <i class="bi bi-speedometer2 me-2"></i>
             <span class="sidebar-label" *ngIf="!collapsed">{{'Training Dashboard'|translate}}</span>
           </a> -->
-          
+
           <a
             class="sidebar-link submenu-link d-flex align-items-center mb-1"
             [routerLink]="['training-institute-management']"
             routerLinkActive="active"
             [attr.title]="collapsed ? 'Training Institute Management' : null"
-            *ngIf="isRole1User() ||isRole5User()"
-
+            *ngIf="isRole1User() || isRole5User() || isRole6User()"
           >
             <i class="bi bi-building me-2"></i>
-            <span class="sidebar-label" *ngIf="!collapsed">{{'Training Institute Management'|translate}}</span>
+            <span class="sidebar-label" *ngIf="!collapsed">{{
+              "Training Institute Management" | translate
+            }}</span>
           </a>
-          
+
           <a
             class="sidebar-link submenu-link d-flex align-items-center mb-1"
             [routerLink]="['all-trainings-admin']"
             routerLinkActive="active"
             [attr.title]="collapsed ? 'All Training' : null"
-            *ngIf="isRole1User() ||isRole5User()"
+            *ngIf="isRole1User() || isRole5User() || isRole6User()"
           >
             <i class="bi bi-list-ul me-2"></i>
-            <span class="sidebar-label" *ngIf="!collapsed">{{'All Training'|translate}}</span>
+            <span class="sidebar-label" *ngIf="!collapsed">{{
+              "All Training" | translate
+            }}</span>
           </a>
           <a
             class="sidebar-link submenu-link d-flex align-items-center mb-1"
@@ -128,19 +156,22 @@
             *ngIf="isRole1User()"
           >
             <i class="bi bi-gear-wide-connected me-2"></i>
-            <span class="sidebar-label" *ngIf="!collapsed">{{'Scheme & Training Master'|translate}}</span>
+            <span class="sidebar-label" *ngIf="!collapsed">{{
+              "Scheme & Training Master" | translate
+            }}</span>
           </a>
-          
+
           <a
             class="sidebar-link submenu-link d-flex align-items-center mb-1"
             [routerLink]="['state-admin-profile']"
             routerLinkActive="active"
             [attr.title]="collapsed ? 'State Admin Master' : null"
             *ngIf="isRole1User()"
-
           >
             <i class="bi bi-person-badge me-2"></i>
-            <span class="sidebar-label" *ngIf="!collapsed">{{'State Admin Master'|translate}}</span>
+            <span class="sidebar-label" *ngIf="!collapsed">{{
+              "State Admin Master" | translate
+            }}</span>
           </a>
 
           <!-- Role 4 specific submenus -->
@@ -152,7 +183,9 @@
             *ngIf="isRole4User()"
           >
             <i class="bi bi-calendar-event me-2"></i>
-            <span class="sidebar-label" *ngIf="!collapsed">{{'Training Calendar'|translate}}</span>
+            <span class="sidebar-label" *ngIf="!collapsed">{{
+              "Training Calendar" | translate
+            }}</span>
           </a>
 
           <a
@@ -163,7 +196,9 @@
             *ngIf="isRole4User()"
           >
             <i class="bi bi-check-circle me-2"></i>
-            <span class="sidebar-label" *ngIf="!collapsed">{{'Approved Rejected Trainings'|translate}}</span>
+            <span class="sidebar-label" *ngIf="!collapsed">{{
+              "Approved Rejected Trainings" | translate
+            }}</span>
           </a>
 
           <a
@@ -174,7 +209,9 @@
             *ngIf="isRole4User()"
           >
             <i class="bi bi-list-check me-2"></i>
-            <span class="sidebar-label" *ngIf="!collapsed">{{'All Trainings'|translate}}</span>
+            <span class="sidebar-label" *ngIf="!collapsed">{{
+              "All Trainings" | translate
+            }}</span>
           </a>
 
           <!-- Role 3 specific submenus -->
@@ -186,7 +223,9 @@
             *ngIf="isRole3User()"
           >
             <i class="bi bi-check-square me-2"></i>
-            <span class="sidebar-label" *ngIf="!collapsed">{{'Verify Training'|translate}}</span>
+            <span class="sidebar-label" *ngIf="!collapsed">{{
+              "Verify Training" | translate
+            }}</span>
           </a>
 
           <a
@@ -197,7 +236,9 @@
             *ngIf="isRole3User()"
           >
             <i class="bi bi-person-gear me-2"></i>
-            <span class="sidebar-label" *ngIf="!collapsed">{{'Training Manager Management'|translate}}</span>
+            <span class="sidebar-label" *ngIf="!collapsed">{{
+              "Training Manager Management" | translate
+            }}</span>
           </a>
 
           <a
@@ -208,14 +249,66 @@
             *ngIf="isRole3User()"
           >
             <i class="bi bi-people me-2"></i>
-            <span class="sidebar-label" *ngIf="!collapsed">{{'Trainer Management'|translate}}</span>
+            <span class="sidebar-label" *ngIf="!collapsed">{{
+              "Trainer Management" | translate
+            }}</span>
           </a>
-
-          
         </div>
       </div>
+      <!-- Create Organization -->
+      <a
+        class="sidebar-link d-flex align-items-center mb-2 fw-bold"
+        [routerLink]="['create-organization']"
+        routerLinkActive="active"
+        [attr.title]="collapsed ? 'Create Organization' : null"
+        *ngIf="authService.getUserRole() === 1"
+      >
+        <span class="me-2 d-flex align-items-center">
+          <svg
+            width="20"
+            height="20"
+            viewBox="0 0 24 24"
+            fill="currentColor"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              d="M12 2C13.1 2 14 2.9 14 4C14 5.1 13.1 6 12 6C10.9 6 10 5.1 10 4C10 2.9 10.9 2 12 2Z"
+            />
+            <path
+              d="M21 9V7L15 1H5C3.89 1 3 1.89 3 3V21C3 22.11 3.89 23 5 23H19C20.11 23 21 22.11 21 21V9Z"
+            />
+            <path
+              d="M12 14C9.33 14 4 15.34 4 18V20H20V18C20 15.34 14.67 14 12 14Z"
+            />
+            <circle cx="18" cy="6" r="3" fill="#28a745" />
+            <path
+              d="M16.5 5L17.5 6L19.5 4"
+              stroke="white"
+              stroke-width="1"
+              fill="none"
+            />
+          </svg>
+        </span>
 
-      
+        <span class="sidebar-label" *ngIf="!collapsed">
+          {{ "Create Organization" | translate }}
+        </span>
+      </a>
+
+      <!-- Private Organization Data -->
+      <a
+        class="sidebar-link d-flex align-items-center mb-2 fw-bold"
+        [routerLink]="['organization-table']"
+        routerLinkActive="active"
+        [attr.title]="collapsed ? 'Private Organization Data' : null"
+        *ngIf="authService.getUserRole() === 1"
+      >
+        <i class="bi bi-building-check me-2"></i>
+
+        <span class="sidebar-label" *ngIf="!collapsed">
+          {{ "Private Organization Data" | translate }}
+        </span>
+      </a>
 
       <!-- Activity Log -->
       <a
@@ -223,10 +316,14 @@
         [routerLink]="['activity-log']"
         routerLinkActive="active"
         [attr.title]="collapsed ? 'Activity Log' : null"
-        *ngIf="authService.getUserRole() === 5 || authService.getUserRole() === 1"
+        *ngIf="
+          authService.getUserRole() === 5 || authService.getUserRole() === 1
+        "
       >
         <i class="bi bi-clock-history me-2"></i>
-        <span class="sidebar-label" *ngIf="!collapsed">{{'Activity Log'|translate}}</span>
+        <span class="sidebar-label" *ngIf="!collapsed">{{
+          "Activity Log" | translate
+        }}</span>
       </a>
 
       <!-- Change Password -->
@@ -237,10 +334,11 @@
         [attr.title]="collapsed ? 'Change Password' : null"
       >
         <i class="bi bi-key me-2"></i>
-        <span class="sidebar-label" *ngIf="!collapsed">{{'Change Password'|translate}}</span>
+        <span class="sidebar-label" *ngIf="!collapsed">{{
+          "Change Password" | translate
+        }}</span>
       </a>
 
-      
       <!-- Update Profile - Only for Role 3 (Training Institute Admin) -->
       <a
         class="sidebar-link d-flex align-items-center mb-2 fw-bold"
@@ -250,7 +348,9 @@
         *ngIf="authService.getUserRole() === 3"
       >
         <i class="bi bi-person-gear me-2"></i>
-        <span class="sidebar-label" *ngIf="!collapsed">{{'Update Profile'|translate}}</span>
+        <span class="sidebar-label" *ngIf="!collapsed">{{
+          "Update Profile" | translate
+        }}</span>
       </a>
 
       <!-- Central Admin Only Features -->
@@ -340,7 +440,9 @@
           [title]="collapsed ? 'Logout' : ''"
         >
           <i class="bi bi-box-arrow-right"></i>
-          <span *ngIf="!collapsed" class="logout-text">{{'Logout'|translate}}</span>
+          <span *ngIf="!collapsed" class="logout-text">{{
+            "Logout" | translate
+          }}</span>
         </button>
       </div>
       <!-- </div> -->

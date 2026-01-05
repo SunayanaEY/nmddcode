@@ -107,6 +107,8 @@ export class TrainingCentreComponent implements OnInit {
   ) {}
 
   tableColumns: TableColumn[] = [];
+  tableColumns1: TableColumn[] = [];
+
 
   tableActions: TableAction[] = [
     {
@@ -478,6 +480,20 @@ export class TrainingCentreComponent implements OnInit {
             item.active ? 'Active' : 'Inactive',
         },
       ];
+      this.tableColumns1 = [
+        { key: 'trainingInstituteName', header: 'TRAINING.INSTITUTE_NAME' },
+        { key: 'state', header: 'COMMON.STATE' },
+        { key: 'district', header: 'COMMON.DISTRICT' },
+        { key: 'contactPersonName', header: 'TRAINING.INSTITUTE_HEAD' },
+        { key: 'contactNumber', header: 'COMMON.CONTACT_NUMBER' },
+        { key: 'emailId', header: 'COMMON.CONTACT_MAIL' },
+        {
+          key: 'status',
+          header: 'COMMON.STATUS',
+          transform: (value: any, item: any) =>
+            item.active ? 'Active' : 'Inactive',
+        },
+      ];
     } else {
       this.tableColumns = [
         { key: 'trainingInstituteName', header: 'TRAINING.INSTITUTE_NAME' },
@@ -498,6 +514,35 @@ export class TrainingCentreComponent implements OnInit {
         { key: 'contactPersonName', header: 'TRAINING.INSTITUTE_HEAD' },
         { key: 'contactNumber', header: 'COMMON.CONTACT_NUMBER' },
         { key: 'emailId', header: 'COMMON.CONTACT_MAIL' },
+        {
+          key: 'status',
+          header: 'COMMON.STATUS',
+          transform: (value: any, item: any) =>
+            item.active ? 'Active' : 'Inactive',
+        },
+      ];
+
+      this.tableColumns1 = [
+        { key: 'trainingInstituteName', header: 'TRAINING.INSTITUTE_NAME' },
+        { key: 'state', header: 'COMMON.STATE' },
+        { key: 'district', header: 'COMMON.DISTRICT' },
+        {
+          key: 'organizationHeadContactPerson',
+          header: 'TRAINING.ORGANIZATION_HEAD_NAME',
+        },
+        {
+          key: 'organizationHeadContact',
+          header: 'TRAINING.ORGANIZATION_HEAD_CONTACT',
+        },
+        {
+          key: 'organizationHeadEmail',
+          header: 'TRAINING.ORGANIZATION_HEAD_EMAIL',
+        },
+        { key: 'contactPersonName', header: 'TRAINING.INSTITUTE_HEAD' },
+        { key: 'contactNumber', header: 'COMMON.CONTACT_NUMBER' },
+        { key: 'emailId', header: 'COMMON.CONTACT_MAIL' },
+        { key: 'designation', header: 'COMMON.DESIGNATION' },
+
         {
           key: 'status',
           header: 'COMMON.STATUS',
@@ -567,6 +612,17 @@ export class TrainingCentreComponent implements OnInit {
     }
 
     return filtered;
+  }
+  get filteredGovtTrainingCentres(): any[] {
+    return this.filteredTrainingCentres.filter(
+      (centre) => centre.instituteType !== 'Other Organizations'
+    );
+  }
+
+  get filteredPrivateTrainingCentres(): any[] {
+    return this.filteredTrainingCentres.filter(
+      (centre) => centre.instituteType === 'Other Organizations'
+    );
   }
 
   onStateFilterChange(state: string): void {
@@ -639,38 +695,85 @@ export class TrainingCentreComponent implements OnInit {
     this.showModal = true;
   }
 
+  // editTrainingCentre(centre: any) {
+  //   // Work on a shallow copy to avoid mutating table data
+  //   this.selectedCentre = { ...centre };
+  //   this.modalMode = 'edit';
+  //   this.modalConfig.title = 'Edit Training Institute Admin Details';
+  //   this.modalConfig.primaryButtonText = 'Update';
+  //   this.selectedImageFile = null;
+
+  //   // Set current image via authenticated blob URL if available
+  //   if (centre.instituteImageUrl) {
+  //     const fileName = centre.instituteImageUrl;
+  //     this.adminService.downloadInstituteImage(fileName).subscribe({
+  //       next: (blob: Blob) => {
+  //         const imageUrl = URL.createObjectURL(blob);
+  //         this.currentImageUrl = imageUrl;
+  //         this.selectedCentre.instituteImageUrl = imageUrl;
+  //         this.selectedCentre.instituteImage = imageUrl;
+  //       },
+  //       error: () => {
+  //         const directUrl = `${this.url}api/photo/download/${fileName}`;
+  //         this.currentImageUrl = directUrl;
+  //         this.selectedCentre.instituteImageUrl = directUrl;
+  //         this.selectedCentre.instituteImage = directUrl;
+  //       },
+  //     });
+  //   }
+
+  //   // Ensure state and district change fields are available for edit mode
+  //   this.restoreStateDistrictFields();
+
+  //   this.showModal = true;
+  // }
   editTrainingCentre(centre: any) {
-    // Work on a shallow copy to avoid mutating table data
     this.selectedCentre = { ...centre };
     this.modalMode = 'edit';
-    this.modalConfig.title = 'Edit Training Institute Admin Details';
+    this.modalConfig.title = 'Edit Training Institute';
+
+    // enable footer and show update button
+    this.modalConfig.showFooter = true;
     this.modalConfig.primaryButtonText = 'Update';
-    this.selectedImageFile = null;
+    this.modalConfig.secondaryButtonText = 'Cancel';
 
-    // Set current image via authenticated blob URL if available
-    if (centre.instituteImageUrl) {
-      const fileName = centre.instituteImageUrl;
-      this.adminService.downloadInstituteImage(fileName).subscribe({
-        next: (blob: Blob) => {
-          const imageUrl = URL.createObjectURL(blob);
-          this.currentImageUrl = imageUrl;
-          this.selectedCentre.instituteImageUrl = imageUrl;
-          this.selectedCentre.instituteImage = imageUrl;
-        },
-        error: () => {
-          const directUrl = `${this.url}api/photo/download/${fileName}`;
-          this.currentImageUrl = directUrl;
-          this.selectedCentre.instituteImageUrl = directUrl;
-          this.selectedCentre.instituteImage = directUrl;
-        },
-      });
+    const nameField = this.modalConfig.fields?.find(
+      (f) => f.id === 'stateHeadContactPerson'
+    );
+    const contactField = this.modalConfig.fields?.find(
+      (f) => f.id === 'stateHeadContact'
+    );
+    const emailField = this.modalConfig.fields?.find(
+      (f) => f.id === 'stateHeadEmail'
+    );
+
+    if (centre.instituteType === 'Other Organizations') {
+      // Change labels
+      if (nameField) nameField.label = 'Organization Head Name';
+      if (contactField) contactField.label = 'Organization Head Contact';
+      if (emailField) emailField.label = 'Organization Head Email';
+
+      // Prefill org head values
+      this.selectedCentre.stateHeadContactPerson =
+        centre.organizationHeadContactPerson;
+      this.selectedCentre.stateHeadContact = centre.organizationHeadContact;
+      this.selectedCentre.stateHeadEmail = centre.organizationHeadEmail;
+    } else {
+      // Restore original labels for Government
+      if (nameField) nameField.label = 'State Head Name';
+      if (contactField) contactField.label = 'State Head Contact';
+      if (emailField) emailField.label = 'State Head Email';
+
+      // Prefill state head values
+      this.selectedCentre.stateHeadContactPerson =
+        centre.stateHeadContactPerson;
+      this.selectedCentre.stateHeadContact = centre.stateHeadContact;
+      this.selectedCentre.stateHeadEmail = centre.stateHeadEmail;
     }
-
-    // Ensure state and district change fields are available for edit mode
-    this.restoreStateDistrictFields();
 
     this.showModal = true;
   }
+
   fillTrainingCentre(centre: any) {
     this.router.navigate(['/admin/training-centre-admin-profile'], {
       state: { data: centre },
@@ -979,11 +1082,11 @@ export class TrainingCentreComponent implements OnInit {
     const finalDistrictId = newDistrictId || originalDistrictId;
     const instituteDetails = {
       id: this.selectedCentre.id,
-      username: this.selectedCentre.username || 'user1', // Add username field
+      // username: this.selectedCentre.username || 'user1', // Add username field
       trainingInstituteName: updatedData.trainingInstituteName,
       stateId: finalStateId,
       districtId: finalDistrictId,
-      block: updatedData.block || '',
+      // block: updatedData.block || '',
       contactPersonName: updatedData.contactPersonName,
       designation: updatedData.designation || '',
       contactNumber: updatedData.contactNumber,
@@ -991,7 +1094,6 @@ export class TrainingCentreComponent implements OnInit {
       address: updatedData.address || '',
       latitude: updatedData.latitude || 0,
       longitude: updatedData.longitude || 0,
-      password: 'Password@12', // Add password field as required
     };
 
     // Create a Blob for instituteDetails with proper content type
