@@ -1,4 +1,8 @@
-<div class="map-wrapper" style="background: rgba(255, 255, 255, 0.1)">
+<div
+  class="map-wrapper"
+  [class.login-variant]="variant === 'login'"
+  [style.background]="variant === 'login' ? 'transparent' : 'rgba(255, 255, 255, 0.1)'"
+>
   <!-- Loading State -->
   <div *ngIf="isLoading" class="map-loading">
     <div class="spinner-border text-primary" role="status">
@@ -16,8 +20,7 @@
     <!-- Map will be rendered here by D3.js -->
   </div>
 
-  <!-- Map Controls -->
-  <div *ngIf="!isLoading" class="map-controls">
+  <div *ngIf="!isLoading" class="map-controls" [class.login-controls]="variant === 'login'">
     <button
       class="btn btn-sm btn-outline-secondary"
       *ngIf="isStateView && userRole !== 5"
@@ -52,8 +55,7 @@
     </div>
   </div> -->
 
-  <!-- Legend -->
-  <div *ngIf="!isLoading" class="map-legend">
+  <div *ngIf="!isLoading && variant !== 'login'" class="map-legend">
     <div class="legend-item">
       <div class="legend-color" style="background-color: #24a8efde"></div>
       <span class="legend-text">{{ "States" | translate }}</span>

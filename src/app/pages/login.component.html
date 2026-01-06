@@ -1,241 +1,104 @@
-<div class="login-container">
-  <!-- Background Image Section -->
-  <div class="background-section login-background">
-    <div class="background-overlay"></div>
-  </div>
+<div class="login-page">
+  <button class="btn-download-cert" (click)="downloadCertificate()">
+    <i class="fas fa-download me-2"></i> {{ "Download Certificate" | translate }}
+  </button>
 
-  <!-- Government Logo Header -->
-  <div class="government-logo" style="display: flex">
-    <div class="row" style="display: contents">
-      <div class="col-lg-6" style="display: flex; align-content: center">
-        <img
-          src="assets/login/emblem.png"
-          alt="Government Emblem"
-          class="logo-image"
-        />
-        <div class="logo-text" style="align-content: center">
-          भारत सरकार | GOVERNMENT OF INDIA
-          <div class="logo-subtext">
-            पशुपालन और डेयरी विभाग<br />
-            DEPARTMENT OF ANIMAL HUSBANDRY AND DAIRYING
-          </div>
+  <div class="login-card">
+    <div class="card-left">
+      <div class="left-header">
+        <img src="assets/login/emblem.png" alt="Emblem" class="emblem" />
+        <div class="branding-text">
+          <p class="gov-text">भारत सरकार | GOVERNMENT OF INDIA</p>
+          <p class="dept-text">पशुपालन और डेयरी विभाग</p>
+          <p class="dept-text">DEPARTMENT OF ANIMAL HUSBANDRY AND DAIRYING</p>
         </div>
       </div>
-      <div class="col-lg-6" style="align-content: center">
-        <div class="dashboard-actions">
-          <button
-            class="btn btn-primary me-2"
-            (click)="downloadCertificate()"
-            style="
-              background: #1e3a8a;
-              border: 1px solid #1e3a8a;
-              color: #ffffff;
-              border-radius: 12px;
-              font-size: 14px;
-              font-weight: 600;
-              cursor: pointer;
-              letter-spacing: 0.025em;
-              box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-              text-shadow: none;
-            "
-          >
-            <i class="fas fa-download me-2"></i
-            >{{ "Download Certificate" | translate }}
-          </button>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <!-- Form Section -->
-  <div class="row login-row">
-    <!-- India Map -->
-    <div class="col-12 col-lg-5 order-1 order-lg-1">
-      <div class="card map-card">
+      <div class="map-section">
         <app-india-map
           [selectedState]="selectedState"
+          [variant]="'login'"
           (stateSelected)="onStateSelected($event)"
-        >
-        </app-india-map>
+        ></app-india-map>
       </div>
     </div>
-    <div class="col-lg-2 d-none d-lg-block" style="align-content: center">
-      <app-modal
-        [show]="showModal"
-        [config]="modalConfig"
-        mode="create"
-        (close)="onClose()"
-        (primaryAction)="onSubmit($event)"
-        (secondaryAction)="onSecondaryAction()"
-      >
-      </app-modal>
-    </div>
-    <div class="col-12 col-lg-5 order-2 order-lg-2">
-      <!-- Form Container -->
-      <div class="form-wrapper">
-        <div class="form-container">
-          <!-- Sign In Form -->
-          <div *ngIf="!isSignUp" class="form-content">
-            <h1 class="form-title">Sign In</h1>
-            <form [formGroup]="signInForm" (ngSubmit)="onSignIn()">
-              <div class="form-group">
-                <label>{{ "Email Address" | translate }}</label>
-                <input
-                  type="email"
-                  formControlName="email"
-                  [placeholder]="'Enter Email' | translate"
-                  [class.error]="
-                    signInForm.get('email')?.invalid &&
-                    signInForm.get('email')?.touched
-                  "
-                />
-                <div
-                  class="error-message"
-                  *ngIf="
-                    signInForm.get('email')?.invalid &&
-                    signInForm.get('email')?.touched
-                  "
-                >
-                  <span *ngIf="signInForm.get('email')?.errors?.['required']">{{
-                    "Email is required" | translate
-                  }}</span>
-                  <span *ngIf="signInForm.get('email')?.errors?.['email']">{{
-                    "Please enter a valid email" | translate
-                  }}</span>
-                </div>
-              </div>
-              <div class="form-group">
-                <label>{{ "Password" | translate }}</label>
-                <div style="position: relative">
-                  <input
-                    [type]="showPassword ? 'text' : 'password'"
-                    formControlName="password"
-                    [placeholder]="'Password' | translate"
-                    [class.error]="
-                      signInForm.get('password')?.invalid &&
-                      signInForm.get('password')?.touched
-                    "
-                  />
-                  <button
-                    type="button"
-                    class="password-toggle"
-                    (click)="togglePassword()"
-                  >
-                    <div class="eye-icon">
-                      <svg
-                        *ngIf="!showPassword"
-                        fill="none"
-                        stroke="currentColor"
-                        viewBox="0 0 24 24"
-                      >
-                        <path
-                          stroke-linecap="round"
-                          stroke-linejoin="round"
-                          stroke-width="2"
-                          d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
-                        ></path>
-                        <path
-                          stroke-linecap="round"
-                          stroke-linejoin="round"
-                          stroke-width="2"
-                          d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"
-                        ></path>
-                      </svg>
-                      <svg
-                        *ngIf="showPassword"
-                        fill="none"
-                        stroke="currentColor"
-                        viewBox="0 0 24 24"
-                      >
-                        <path
-                          stroke-linecap="round"
-                          stroke-linejoin="round"
-                          stroke-width="2"
-                          d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.878 9.878L3 3m6.878 6.878L21 21"
-                        ></path>
-                      </svg>
-                    </div>
-                  </button>
-                </div>
-                <div
-                  class="error-message"
-                  *ngIf="
-                    signInForm.get('password')?.invalid &&
-                    signInForm.get('password')?.touched
-                  "
-                >
-                  <span
-                    *ngIf="signInForm.get('password')?.errors?.['required']"
-                    >{{ "Password is required" | translate }}</span
-                  >
-                  <span
-                    *ngIf="signInForm.get('password')?.errors?.['minlength']"
-                    >{{
-                      "Password must be at least 6 characters" | translate
-                    }}</span
-                  >
-                </div>
-              </div>
-              <div class="d-flex justify-content-between">
-                <div class="forgot-password">
-                  <a
-                    [routerLink]="['/forget-password']"
-                    [queryParams]="{ type: 'forget' }"
-                    >{{ "Forgot Password?" | translate }}</a
-                  >
-                </div>
-              </div>
-              <!-- Error Message -->
-              <div *ngIf="errorMessage" class="error-message">
-                {{ errorMessage | translate }}
-              </div>
 
-              <button
-                type="submit"
-                class="sign-in-btn"
-                [disabled]="isLoading || signInForm.invalid"
-              >
-                <span *ngIf="!isLoading">Sign in</span>
-                <span *ngIf="isLoading">
-                  <i class="fas fa-spinner fa-spin"></i>
-                  {{ "Signing in..." | translate }}
-                </span>
-              </button>
-            </form>
+    <div class="card-right">
+      <div class="login-form-container">
+        <h2 class="login-title">Sign In</h2>
+
+        <form [formGroup]="signInForm" (ngSubmit)="onSignIn()">
+          <div class="form-group">
+            <label>Email Address</label>
+            <input
+              type="email"
+              formControlName="email"
+              placeholder="Enter Email"
+              [class.is-invalid]="signInForm.get('email')?.invalid && signInForm.get('email')?.touched"
+            />
           </div>
+
+          <div class="form-group">
+            <label>Password</label>
+            <div class="password-input-wrapper">
+              <input
+                [type]="showPassword ? 'text' : 'password'"
+                formControlName="password"
+                placeholder="Password"
+                [class.is-invalid]="signInForm.get('password')?.invalid && signInForm.get('password')?.touched"
+              />
+              <span class="password-toggle" (click)="togglePassword()">
+                <i class="fas" [class.fa-eye]="!showPassword" [class.fa-eye-slash]="showPassword"></i>
+              </span>
+            </div>
+          </div>
+
+          <div class="form-actions">
+            <a
+              [routerLink]="['/forget-password']"
+              [queryParams]="{ type: 'forget' }"
+              class="forgot-password"
+            >
+              Forgot Password?
+            </a>
+          </div>
+
+          <div *ngIf="errorMessage" class="error-message mb-3">
+            {{ errorMessage | translate }}
+          </div>
+
+          <button type="submit" class="btn-submit" [disabled]="isLoading">
+            <span *ngIf="!isLoading">Sign In</span>
+            <span *ngIf="isLoading"><i class="fas fa-spinner fa-spin"></i> Signing In...</span>
+          </button>
+
+        </form>
+
+        <div class="secure-badge">
+          <i class="fas fa-lock"></i> Secure Government Portal 
         </div>
       </div>
-      <!-- </div> -->
     </div>
   </div>
 
-  <!--Certificate-->
-  <div
-    class="modal fade"
-    id="viewCertificateModal"
-    tabindex="-1"
-    aria-labelledby="viewCertificateModalLabel"
-    aria-hidden="true"
+  <app-modal
+    [show]="showModal"
+    [config]="modalConfig"
+    mode="create"
+    (close)="onClose()"
+    (primaryAction)="onSubmit($event)"
+    (secondaryAction)="onSecondaryAction()"
   >
+  </app-modal>
+
+  <div class="modal fade" id="viewCertificateModal" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog modal-xl modal-dialog-centered">
-      <div class="modal-content p-4">
+      <div class="modal-content">
         <div class="modal-header">
-          <h2 class="modal-title" id="viewCertificateModalLabel">
-            Approved Certificate
-          </h2>
-          <button
-            type="button"
-            class="btn-close"
-            data-bs-dismiss="modal"
-            aria-label="Close"
-          ></button>
+          <h5 class="modal-title">Approved Certificate</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
-        <div class="modal-body">
-          <ng-container *ngIf="selectedItem">
-            <app-latest-certificate-layout
-              [data]="selectedItem"
-            ></app-latest-certificate-layout>
-          </ng-container>
+        <div class="modal-body" *ngIf="selectedItem">
+          <app-latest-certificate-layout [data]="selectedItem"></app-latest-certificate-layout>
         </div>
       </div>
     </div>

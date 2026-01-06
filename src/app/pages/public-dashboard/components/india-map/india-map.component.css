@@ -10,6 +10,10 @@
   overflow: hidden;
 }
 
+.map-wrapper.login-variant {
+  height: 100%;
+}
+
 @media (max-width: 768px) {
   .map-wrapper {
   position: relative;
@@ -21,6 +25,10 @@
   border-radius: 8px;
   overflow: hidden;
 }
+
+  .map-wrapper.login-variant {
+    height: 100%;
+  }
 }
 
 /* Map Container */
@@ -69,6 +77,22 @@
 .map-controls .btn:hover {
   background: rgba(255, 255, 255, 1);
   transform: scale(1.05);
+}
+
+.map-controls.login-controls {
+  top: 0;
+  right: 0;
+}
+
+.map-controls.login-controls .btn {
+  background: rgba(255, 255, 255, 0.2);
+  border: 1px solid rgba(255, 255, 255, 0.4);
+  color: white;
+  margin-bottom: 5px;
+}
+
+.map-controls.login-controls .btn:hover {
+  background: rgba(255, 255, 255, 0.4);
 }
 
 /* Selected State Info */

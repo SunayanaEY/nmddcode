@@ -43,6 +43,7 @@ export class IndiaMapComponent implements OnInit, AfterViewInit, OnDestroy, OnCh
   @Input() selectedState: StateData | null = null;
   @Input() isLoading = false;
   @Input() organizationId: number | null = null;
+  @Input() variant: 'default' | 'login' = 'default';
   @Output() stateSelected = new EventEmitter<StateData | null>();
 
   private svg: any;
@@ -231,9 +232,19 @@ export class IndiaMapComponent implements OnInit, AfterViewInit, OnDestroy, OnCh
       .attr('width', '100%')
       .attr('height', '100%')
       .attr('viewBox', `0 0 ${this.width} ${this.height}`)
-      //.style('background', '#f8f9fa');
-      .style('background', 'rgba(255, 255, 255, 0.08)')
-      .style('backdrop-filter', 'blur(25px)');
+      .attr(
+        'preserveAspectRatio',
+        this.variant === 'login' ? 'xMidYMid slice' : 'xMidYMid meet'
+      );
+
+    if (this.variant === 'login') {
+      this.svg
+        .style('background', 'transparent');
+    } else {
+      this.svg
+        .style('background', 'rgba(255, 255, 255, 0.08)')
+        .style('backdrop-filter', 'blur(25px)');
+    }
 
     // Create main group
     this.g = this.svg.append('g');
@@ -287,7 +298,12 @@ export class IndiaMapComponent implements OnInit, AfterViewInit, OnDestroy, OnCh
     // Use fitExtent to match SVG size and preserve aspect
     this.projection = d3
       .geoMercator()
-      .fitExtent([[10, 10], [this.width - 10, this.height - 10]], geoData);
+      .fitExtent(
+        this.variant === 'login'
+          ? [[0, 0], [this.width, this.height]]
+          : [[10, 10], [this.width - 10, this.height - 10]],
+        geoData
+      );
 
     this.path = d3.geoPath().projection(this.projection);
 
@@ -302,21 +318,25 @@ export class IndiaMapComponent implements OnInit, AfterViewInit, OnDestroy, OnCh
       .selectAll('.state')
       .data(geoData.features);
 
+    const baseFill = this.variant === 'login' ? '#dbdee2' : '#24a8efde';
+    const baseStroke = this.variant === 'login' ? '#9a9999a9' : '#211e1ea6';
+    const hoverFill = this.variant === 'login' ? '#c2c2c2ff' : '#6188afff';
+
     stateSelection
       .join('path')
       .attr('class', 'state')
       .attr('d', (d: any) => this.path(d))
-      .attr('fill', '#24a8efde')
-      .attr('stroke', '#211e1ea6')
-      .attr('stroke-width', 1)
+      .attr('fill', baseFill)
+      .attr('stroke', baseStroke)
+      .attr('stroke-width', 0.5)
       .style('cursor', 'pointer')
       .on('mouseover', (event: any, d: any) => {
-        d3.select(event.currentTarget).attr('fill', '#6188afff');
+        d3.select(event.currentTarget).attr('fill', hoverFill);
         const stateName = d.properties.NAME || d.properties.name || 'Unknown State';
         this.showTooltip(event, stateName);
       })
       .on('mouseout', (event: any) => {
-        d3.select(event.currentTarget).attr('fill', '#24a8efde');
+        d3.select(event.currentTarget).attr('fill', baseFill);
         this.hideTooltip();
       })
       .on('click', (event: any, d: any) => {
@@ -358,18 +378,20 @@ export class IndiaMapComponent implements OnInit, AfterViewInit, OnDestroy, OnCh
       .join('path')
       .attr('class', 'state fade-in')
       .attr('d', (d: any) => this.path(d))
-      .attr('fill', '#24a8efde')
-      .attr('stroke', '#211e1ea6')
-      .attr('stroke-width', 1)
+      .attr('fill', this.variant === 'login' ? '#f9fafb' : '#24a8efde')
+      .attr('stroke', this.variant === 'login' ? '#cbd5e1' : '#211e1ea6')
+      .attr('stroke-width', 0.5)
       .style('cursor', 'pointer')
       .style('opacity', 0)
       .on('mouseover', (event: any, d: any) => {
-        d3.select(event.currentTarget).attr('fill', '#6188afff');
+        const hoverFill = this.variant === 'login' ? '#e5e7eb' : '#6188afff';
+        d3.select(event.currentTarget).attr('fill', hoverFill);
         const districtName = d.properties?.district || d.properties?.name || this.currentStateName || '';
         this.showTooltip(event, districtName);
       })
       .on('mouseout', (event: any) => {
-        d3.select(event.currentTarget).attr('fill', '#24a8efde');
+        const baseFill = this.variant === 'login' ? '#f9fafb' : '#24a8efde';
+        d3.select(event.currentTarget).attr('fill', baseFill);
         this.hideTooltip();
       })
       .transition()
@@ -589,8 +611,8 @@ export class IndiaMapComponent implements OnInit, AfterViewInit, OnDestroy, OnCh
       .attr('d', (d: any) => {
         return d.path;
       })
-      .attr('fill', '#ffd54f')
-      .attr('stroke', '#ff8f00')
+      .attr('fill', this.variant === 'login' ? '#f9fafb' : '#ffd54f')
+      .attr('stroke', this.variant === 'login' ? '#cbd5e1' : '#ff8f00')
       .attr('stroke-width', 1)
       .style('cursor', 'pointer')
       .on('mouseover', (event: any, d: any) => {
@@ -611,48 +633,77 @@ export class IndiaMapComponent implements OnInit, AfterViewInit, OnDestroy, OnCh
 
     // Add institute markers to the markers group
     const markerSelection = markersGroup
-      .selectAll('.institute-marker')
+      .selectAll('.institute-marker-group') // Changed selection class
       .data(this.institutes);
 
     const markerEnter = markerSelection
       .enter()
-      .append('circle')
-      .attr('class', 'institute-marker');
-
-    markerEnter
-      .attr('cx', (d: InstituteMarker) => {
-        // Use projection if available (for GeoJSON), otherwise use simplified positioning
-        if (this.projection) {
-          const coords = this.projection([d.longitude, d.latitude]);
-          const x = coords ? coords[0] : this.width / 2;
-          return x;
-        } else {
-          // Fallback to center positioning when projection is not available
-          const x = this.width / 2;
-          return x;
-        }
-      })
-      .attr('cy', (d: InstituteMarker) => {
-        // Use projection if available (for GeoJSON), otherwise use simplified positioning
-        if (this.projection) {
-          const coords = this.projection([d.longitude, d.latitude]);
-          const y = coords ? coords[1] : this.height / 2;
-          return y;
-        } else {
-          // Fallback to center positioning when projection is not available
-          const y = this.height / 2;
-          return y;
-        }
-      })
-      .attr('r', 2)
-      .attr('fill', '#ff5722')
-      .attr('stroke', '#ffffff')
-      .attr('stroke-width', 1)
+      .append('g')
+      .attr('class', 'institute-marker-group')
       .style('cursor', 'pointer')
       .on('mouseover', (event: any, d: InstituteMarker) => {
+        // For login variant, scale up the pin
+        if (this.variant === 'login') {
+           d3.select(event.currentTarget).transition().duration(200).attr('transform', (t: any) => {
+              // Re-calculate position to maintain it, but add scale
+              const coords = this.projection ? this.projection([d.longitude, d.latitude]) : [this.width/2, this.height/2];
+              const x = coords ? coords[0] : this.width/2;
+              const y = coords ? coords[1] : this.height/2;
+              return `translate(${x},${y}) scale(1.2)`;
+           });
+        }
         this.onInstituteHover(event, d);
       })
-      .on('mouseout', () => this.hideTooltip());
+      .on('mouseout', (event: any, d: InstituteMarker) => {
+        if (this.variant === 'login') {
+           d3.select(event.currentTarget).transition().duration(200).attr('transform', (t: any) => {
+              const coords = this.projection ? this.projection([d.longitude, d.latitude]) : [this.width/2, this.height/2];
+              const x = coords ? coords[0] : this.width/2;
+              const y = coords ? coords[1] : this.height/2;
+              return `translate(${x},${y}) scale(1)`;
+           });
+        }
+        this.hideTooltip();
+      });
+
+    // Position the groups
+    markerEnter.attr('transform', (d: InstituteMarker) => {
+      let x = this.width / 2;
+      let y = this.height / 2;
+
+      if (this.projection) {
+        const coords = this.projection([d.longitude, d.latitude]);
+        if (coords) {
+          x = coords[0];
+          y = coords[1];
+        }
+      }
+      return `translate(${x}, ${y})`;
+    });
+
+    if (this.variant === 'login') {
+      // Pin Path (Blue teardrop)
+      // Path centered at bottom tip (0,0)
+      markerEnter.append('path')
+        .attr('d', 'M0,0 C-6,-10 -10,-16 -10,-21 C-10,-26.5 -5.5,-31 0,-31 C5.5,-31 10,-26.5 10,-21 C10,-16 6,-10 0,0 Z')
+        .attr('fill', '#2563eb') // Bootstrap primary blue
+        .attr('stroke', '#ffffff')
+        .attr('stroke-width', 2);
+
+      // Inner White Dot
+      markerEnter.append('circle')
+        .attr('cy', -21) // Position in the head of the pin
+        .attr('r', 3.5)
+        .attr('fill', '#ffffff');
+    } else {
+      // Dashboard variant - existing red circles
+      markerEnter.append('circle')
+        .attr('class', 'institute-marker')
+        .attr('r', 2)
+        .attr('fill', '#ff5722')
+        .attr('stroke', '#ffffff')
+        .attr('stroke-width', 1);
+    }
   }
 
   private createFallbackMap(): void {
