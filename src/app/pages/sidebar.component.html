@@ -316,9 +316,7 @@
         [routerLink]="['activity-log']"
         routerLinkActive="active"
         [attr.title]="collapsed ? 'Activity Log' : null"
-        *ngIf="
-          authService.getUserRole() === 5 || authService.getUserRole() === 1
-        "
+        *ngIf="isRole1User() || isRole5User() || isRole6User()"
       >
         <i class="bi bi-clock-history me-2"></i>
         <span class="sidebar-label" *ngIf="!collapsed">{{
