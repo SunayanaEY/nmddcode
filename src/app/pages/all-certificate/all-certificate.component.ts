@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { Subscription } from 'rxjs';
 import { TrainingService } from '../training/services/training.service';
 import {
   BreadcrumbComponent,
@@ -97,6 +98,7 @@ export class AllCertificateComponent {
     }
   }
   photoPreviewUrl: string | null = null;
+  private imageSubscription: Subscription | null = null;
   isExportCSV: Boolean = true;
   isExportPdf: Boolean = true;
   pdfHeaders: Array<string> = [
@@ -201,7 +203,11 @@ export class AllCertificateComponent {
     });
   }
   showPhoto(photoId: number) {
-    this.trainingsService.downloadTraineeImage(photoId).subscribe({
+    if (this.imageSubscription) {
+      this.imageSubscription.unsubscribe();
+      this.imageSubscription = null;
+    }
+    this.imageSubscription = this.trainingsService.downloadTraineeImage(photoId).subscribe({
       next: (blob: Blob) => {
         const imageUrl = URL.createObjectURL(blob);
         this.photoPreviewUrl = imageUrl;
@@ -209,6 +215,7 @@ export class AllCertificateComponent {
       },
       error: (err) => {
         console.error('Failed to load photo', err);
+        this.photoPreviewUrl = null;
         // this.isLoadingPhoto = false;
       },
     });
@@ -244,6 +251,13 @@ export class AllCertificateComponent {
   handleTableAction(event: { action: string; item: any; index: number }): void {
     this.selectedItem = event.item;
     if (event.action === 'view') {
+      this.photoPreviewUrl = null;
+      
+      if (this.imageSubscription) {
+        this.imageSubscription.unsubscribe();
+        this.imageSubscription = null;
+      }
+
       if (event.item.photoId != null) {
         this.showPhoto(this.selectedItem.photoId);
       }

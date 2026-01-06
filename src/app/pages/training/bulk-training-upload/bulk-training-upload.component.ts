@@ -12,11 +12,12 @@ import { FileUploadComponent } from '../../../components/file-upload/file-upload
 import { TrainingService } from '../../../pages/training/services/training.service';
 import { AdminService } from '../services/training-admin.service';
 import { saveAs } from 'file-saver';
+import { TranslateModule } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-bulk-training-upload',
   standalone: true,
-  imports: [CommonModule, BreadcrumbComponent, FileUploadComponent],
+  imports: [CommonModule, BreadcrumbComponent, FileUploadComponent, TranslateModule],
   templateUrl: './bulk-training-upload.component.html',
   styleUrl: './bulk-training-upload.component.css',
 })
