@@ -28,7 +28,7 @@
   position: absolute;
   width: 60px;
   height: 60px;
-  background: url('/assets/certificate/corner.png') no-repeat center/contain;
+  background: url('../../../assets/certificate/corner.png') no-repeat center/contain;
   z-index: 2;
   
   /* Ensure corners don't overlap with border */
