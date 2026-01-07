@@ -104,7 +104,8 @@ export class DashboardApiService {
     stateId?: number,
     districtId?: number,
     trainingInstituteId?: string,
-    organizationId?: number
+    organizationId?: number,
+    instituteType?: string
   ): Observable<TrainingDetailsApiResponse> {
     let params = new HttpParams();
 
@@ -124,6 +125,10 @@ export class DashboardApiService {
       params = params.set('organizationId', organizationId.toString());
     }
 
+    if (instituteType) {
+      params = params.set('trainingInstituteType', instituteType);
+    }
+
     return this.http.get<TrainingDetailsApiResponse>(
       `${this.apiUrl}public/dashboard/trainingDetails/${type}`,
       { params }
@@ -136,13 +141,15 @@ export class DashboardApiService {
    * @param districtId - Optional district ID for filtering
    * @param trainingInstituteId - Optional training institute ID for filtering
    * @param organizationId - Optional organization ID for filtering
+   * @param instituteType - Optional institute type for filtering
    * @returns Observable<KpiData[]>
    */
   getAllKpiData(
     stateId?: number,
     districtId?: number,
     trainingInstituteId?: string,
-    organizationId?: number
+    organizationId?: number,
+    instituteType?: string
   ): Observable<any[]> {
     const types = [
       'totalTrainingsConducted',
@@ -158,7 +165,8 @@ export class DashboardApiService {
         stateId,
         districtId,
         trainingInstituteId,
-        organizationId
+        organizationId,
+        instituteType
       ).pipe(
         map((response) => ({
           type,

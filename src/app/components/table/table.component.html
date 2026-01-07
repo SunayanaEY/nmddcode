@@ -92,11 +92,11 @@
           <th
             *ngIf="enableMultiSelect && eligibleItemsCount > 0"
             scope="col"
-            style="width: 50px"
+            class="select-cell"
           >
             <input
               type="checkbox"
-              class="form-check-input"
+              class="form-check-input select-checkbox"
               [checked]="selectAll"
               (change)="toggleSelectAll()"
               [indeterminate]="
@@ -129,7 +129,7 @@
         >
           <td
             *ngIf="enableMultiSelect && eligibleItemsCount > 0"
-            style="width: 50px"
+            class="select-cell"
           >
             <input
               *ngIf="
@@ -144,7 +144,7 @@
                   item.status === 'VERIFIED')
               "
               type="checkbox"
-              class="form-check-input"
+              class="form-check-input select-checkbox"
               [checked]="isItemSelected(item)"
               (change)="toggleItemSelection(item)"
             />

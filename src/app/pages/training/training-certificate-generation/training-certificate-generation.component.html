@@ -825,9 +825,19 @@
               <i class="fas fa-spinner fa-spin me-1"></i>Scheduling Training...
             </div>
         <div class="form-actions">
-          <button type="submit" class="btn btn-primary btn-lg">
+          <button
+            type="submit"
+            class="btn btn-primary btn-lg"
+            [disabled]="isSpinner"
+          >
+            <span
+              *ngIf="isSpinner"
+              class="spinner-border spinner-border-sm me-2"
+              role="status"
+              aria-hidden="true"
+            ></span>
             <!-- Manual Training Upload -->
-            {{ "submit details" | translate }}
+            {{ isSpinner ? "Submitting..." : "submit details" | translate }}
           </button>
           <!-- <button
             type="button"

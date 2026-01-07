@@ -334,6 +334,13 @@ export class BulkTrainingUploadComponent implements OnInit {
     const file: File = event.target.files[0];
     if (!file) return;
 
+    // Validate file type (only allow images)
+    if (!file.type.startsWith('image/')) {
+      this.toastr.error('Only image files are allowed!', 'Invalid File');
+      event.target.value = ''; // Clear the input
+      return;
+    }
+
     // ✅ Preview
     const reader = new FileReader();
     reader.onload = () => {

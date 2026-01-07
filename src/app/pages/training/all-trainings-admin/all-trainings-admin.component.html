@@ -351,7 +351,8 @@
       class="card-header col-12 mb-4 mt-4 bg-appColor"
       *ngIf="
         trainingDetails.status !== 'NEW' &&
-        trainingDetails.status !== 'Recommended by Institute Head' &&
+        (trainingDetails.status !== 'Recommended by Institute Head' ||
+          userRole === 6) &&
         trainingDetails.status !== 'Approved by State Head'
       "
     >
@@ -362,7 +363,8 @@
       class="card-body"
       *ngIf="
         trainingDetails.status !== 'NEW' &&
-        trainingDetails.status !== 'Recommended by Institute Head' &&
+        (trainingDetails.status !== 'Recommended by Institute Head' ||
+          userRole === 6) &&
         trainingDetails.status !== 'Approved by State Head'
       "
     >

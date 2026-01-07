@@ -51,6 +51,18 @@
   line-height: 1.4;
 }
 
+.select-cell {
+  width: 40px;
+  min-width: 40px;
+  text-align: center;
+  vertical-align: middle;
+}
+
+.select-cell .select-checkbox {
+  margin: 0 auto;
+  display: block;
+}
+
 /* Specific column width adjustments optimized for header content */
 .table th:nth-child(1), .table td:nth-child(1) { /* Sr.No. */
   width: 75px;

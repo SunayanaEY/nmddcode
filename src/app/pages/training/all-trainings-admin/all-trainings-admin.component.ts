@@ -180,11 +180,15 @@ export class AllTrainingsAdminComponent {
         if (this.userRole === 3) {
           return row.status === 'Trainees details uploaded';
         }
-        // For other roles, show approve button for Trainees details uploaded or Recommended by Institute Head
-        return (
-          row.status === 'Trainees details uploaded' 
-          // || row.status === 'Recommended by Institute Head'
-        );
+        // For user role 6, show approve button for Trainees details uploaded or Recommended by Institute Head
+        if (this.userRole === 6) {
+          return (
+            row.status === 'Trainees details uploaded' ||
+            row.status === 'Recommended by Institute Head'
+          );
+        }
+        // For other roles, show approve button for Trainees details uploaded
+        return row.status === 'Trainees details uploaded';
       },
     },
     {
@@ -197,11 +201,15 @@ export class AllTrainingsAdminComponent {
         if (this.userRole === 3) {
           return row.status === 'Trainees details uploaded';
         }
-        // For other roles, show reject button for Trainees details uploaded or Recommended by Institute Head
-        return (
-          row.status === 'Trainees details uploaded' 
-          // || row.status === 'Recommended by Institute Head'
-        );
+        // For user role 6, show reject button for Trainees details uploaded or Recommended by Institute Head
+        if (this.userRole === 6) {
+          return (
+            row.status === 'Trainees details uploaded' ||
+            row.status === 'Recommended by Institute Head'
+          );
+        }
+        // For other roles, show reject button for Trainees details uploaded
+        return row.status === 'Trainees details uploaded';
       },
     },
     {
@@ -212,6 +220,7 @@ export class AllTrainingsAdminComponent {
       condition: (row: any) =>
         row.status === 'Approved by State Head' ||
         row.status === 'APPROVED BY ORGANIZATION' ||
+        row.status === 'Approved by Organization' ||
         row.status === 'Certificate Issued & downloaded',
     },
   ];
@@ -302,7 +311,11 @@ export class AllTrainingsAdminComponent {
           icon: 'bi bi-download',
           class: 'btn-info',
           title: 'Download certificate',
-          condition: (row: any) => row.status === 'Approved by State Head' || row.status === 'Certificate Issued & downloaded',
+          condition: (row: any) =>
+            row.status === 'Approved by State Head' ||
+            row.status === 'Certificate Issued & downloaded' ||
+            row.status === 'Approved by Organization' ||
+            row.status === 'APPROVED BY ORGANIZATION',
         },
       ];
     } else if (this.userRole === 3) {
@@ -326,7 +339,12 @@ export class AllTrainingsAdminComponent {
           icon: 'bi bi-download',
           class: 'btn-info',
           title: 'Download certificate',
-          condition: (row: any) => row.status === 'APPROVED' || row.status === 'Certificate Issued & downloaded' || row.status === 'Approved by State Head',
+          condition: (row: any) =>
+            row.status === 'APPROVED' ||
+            row.status === 'Certificate Issued & downloaded' ||
+            row.status === 'Approved by State Head' ||
+            row.status === 'Approved by Organization' ||
+            row.status === 'APPROVED BY ORGANIZATION',
         },
       ];
     } else if (this.userRole === 5) {
@@ -352,7 +370,10 @@ export class AllTrainingsAdminComponent {
           icon: 'bi bi-download',
           class: 'btn-info',
           title: 'Download certificate',
-          condition: (row: any) => row.status === 'Approved by State Head',
+          condition: (row: any) =>
+            row.status === 'Approved by State Head' ||
+            row.status === 'Approved by Organization' ||
+            row.status === 'APPROVED BY ORGANIZATION',
         },
       ];
 

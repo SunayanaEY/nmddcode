@@ -441,7 +441,8 @@ export class DashboardComponent {
         this.selectedStateId || undefined,
         this.selectedDistrictId || undefined,
         this.selectedTrainingInstituteId || undefined,
-        this.organizationId || undefined
+        this.organizationId || undefined,
+        this.selectedInstituteType || undefined
       )
       .subscribe({
         next: (data) => {
@@ -638,7 +639,8 @@ export class DashboardComponent {
           this.selectedStateId || undefined,
           this.selectedDistrictId || undefined,
           this.selectedTrainingInstituteId || undefined,
-          this.organizationId || undefined
+          this.organizationId || undefined,
+          this.selectedInstituteType || undefined
         )
         .subscribe({
           next: (response) => {
@@ -695,7 +697,8 @@ export class DashboardComponent {
           this.selectedStateId || undefined,
           this.selectedDistrictId || undefined,
           this.selectedTrainingInstituteId || undefined,
-          this.organizationId || undefined
+          this.organizationId || undefined,
+          this.selectedInstituteType || undefined
         )
         .subscribe({
           next: (response) => {
@@ -755,7 +758,8 @@ export class DashboardComponent {
           this.selectedStateId || undefined,
           this.selectedDistrictId || undefined,
           this.selectedTrainingInstituteId || undefined,
-          this.organizationId || undefined
+          this.organizationId || undefined,
+          this.selectedInstituteType || undefined
         )
         .subscribe({
           next: (response) => {
