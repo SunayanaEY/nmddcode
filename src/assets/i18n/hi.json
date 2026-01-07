@@ -779,5 +779,16 @@
   "Training Course Fee": "प्रशिक्षण कोर्स शुल्क",
   "Training Course Schedule": "प्रशिक्षण कोर्स कार्यक्रम",
   "Training Course Instructor": "प्रशिक्षण कोर्स निरीक्षक",
-  "Training Course Instructor Contact": "प्रशिक्षण कोर्स निरीक्षक संपर्क"
+  "Training Course Instructor Contact": "प्रशिक्षण कोर्स निरीक्षक संपर्क",
+  "Upload Training schedule": "प्रशिक्षण कार्यक्रम अपलोड करें",
+  "Invalid file type. Allowed: .pdf,.doc,.docx": "अवैध फ़ाइल प्रकार। अनुमति: .pdf,.doc,.docx",
+  "Drag and Drop the Training Schedule here": "प्रशिक्षण कार्यक्रम को यहां खींचें",
+  "Enter Address": "पता दर्ज करें",
+  "Add Date Range": "दिनांक श्रेणी जोड़ें",
+  "Enter the Name of Signatory here": "साइनरी का नाम दर्ज करें",
+  "Enter the Designation of Signatory here": "साइनरी का पदनाम दर्ज करें",
+  "Enter the Organization of Signatory here": "साइनरी की संगठन दर्ज करें",
+  "Drag and Drop the Signature here": "साइनरी को यहां खींचें",
+  "Drag and Drop your logo here": "आपका लोगो यहां खींचें",
+  "submit details": "प्रस्तुत करें"
 }

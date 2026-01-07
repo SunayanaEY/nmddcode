@@ -71,7 +71,7 @@
       <!-- Filter Section -->
       <div class="filter-section mb-4" [formGroup]="filterForm">
         <div class="row g-3">
-          <div class="col-md-4" *ngIf="userRole !== 6">
+          <div class="col-md-3" *ngIf="userRole !== 6">
             <label for="stateSelect" class="form-label fw-semibold">{{
               "State" | translate
             }}</label>
@@ -92,7 +92,7 @@
             </div>
           </div>
 
-          <div class="col-md-4" *ngIf="userRole !== 6">
+          <div class="col-md-3" *ngIf="userRole !== 6">
             <label for="districtSelect" class="form-label fw-semibold">{{
               "District" | translate
             }}</label>
@@ -115,7 +115,7 @@
             </div>
           </div>
 
-          <div class="col-md-4">
+          <div class="col-md-3">
             <label
               for="trainingInstituteSelect"
               class="form-label fw-semibold"
@@ -145,6 +145,24 @@
               institutes...
             </div>
           </div>
+
+          <div class="col-md-3" *ngIf="userRole === 1 || userRole === 5">
+            <label for="instituteTypeSelect" class="form-label fw-semibold">{{
+              "Institute Type" | translate
+            }}</label>
+            <select
+              id="instituteTypeSelect"
+              class="form-select"
+              formControlName="instituteType"
+            >
+              <option value="" selected>
+                {{ "All Institute Types" | translate }}
+              </option>
+              <option *ngFor="let type of instituteTypes" [value]="type.value">
+                {{ type.label | translate }}
+              </option>
+            </select>
+          </div>
         </div>
 
         <div class="row mt-3">
@@ -156,7 +174,8 @@
               [disabled]="
                 !selectedStateId &&
                 !selectedDistrictId &&
-                !selectedTrainingInstituteId
+                !selectedTrainingInstituteId &&
+                !selectedInstituteType
               "
             >
               <i class="fas fa-times me-1"></i>{{ "Clear Filters" | translate }}
@@ -434,6 +453,7 @@
           [selectedState]="selectedState"
           (stateSelected)="onStateSelected($event)"
           [organizationId]="organizationId"
+          [instituteType]="selectedInstituteType"
         >
         </app-india-map>
       </div>
@@ -456,6 +476,7 @@
           [stateId]="selectedStateId"
           [districtId]="selectedDistrictId"
           [organizationId]="organizationId"
+          [instituteType]="selectedInstituteType"
         >
         </app-institute-type-chart>
       </div>
@@ -478,6 +499,7 @@
           [districtId]="selectedDistrictId"
           [trainingInstituteId]="selectedTrainingInstituteId"
           [organizationId]="organizationId"
+          [instituteType]="selectedInstituteType"
         >
         </app-monthly-chart>
       </div>
@@ -501,6 +523,7 @@
           [districtId]="selectedDistrictId"
           [trainingInstituteId]="selectedTrainingInstituteId"
           [organizationId]="organizationId"
+          [instituteType]="selectedInstituteType"
         >
         </app-age-group-chart>
       </div>
@@ -524,6 +547,7 @@
           [districtId]="selectedDistrictId"
           [trainingInstituteId]="selectedTrainingInstituteId"
           [organizationId]="organizationId"
+          [instituteType]="selectedInstituteType"
         >
         </app-top-training-types-chart>
       </div>

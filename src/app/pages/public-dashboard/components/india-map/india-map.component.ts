@@ -43,6 +43,7 @@ export class IndiaMapComponent implements OnInit, AfterViewInit, OnDestroy, OnCh
   @Input() selectedState: StateData | null = null;
   @Input() isLoading = false;
   @Input() organizationId: number | null = null;
+  @Input() instituteType: string | null = null;
   @Input() variant: 'default' | 'login' = 'default';
   @Output() stateSelected = new EventEmitter<StateData | null>();
 
@@ -130,7 +131,7 @@ export class IndiaMapComponent implements OnInit, AfterViewInit, OnDestroy, OnCh
       }
     }
 
-    if (changes['organizationId']) {
+    if (changes['organizationId'] || changes['instituteType']) {
       this.loadInstituteData();
     }
   }
@@ -154,7 +155,7 @@ export class IndiaMapComponent implements OnInit, AfterViewInit, OnDestroy, OnCh
   }
 
   private loadInstituteData(): void {
-    this.dashboardService.getInstituteLocations(this.organizationId || undefined).subscribe({
+    this.dashboardService.getInstituteLocations(this.organizationId || undefined, this.instituteType || undefined).subscribe({
       next: (data: InstituteLocationData[]) => {
         this.institutes = data.map((institute) => ({
           id: institute.id,

@@ -114,11 +114,17 @@ export class DashboardComponent {
   selectedStateId: number | null = null;
   selectedDistrictId: number | null = null;
   selectedTrainingInstituteId: string | null = null;
+  selectedInstituteType: string | null = null;
   userRole: number | null = null;
   organizationId: number | null = null;
   isStateAdmin: boolean = false;
   stateAdminStateId: string | null = null;
   private isUpdatingFilters = false;
+
+  instituteTypes = [
+    { value: 'Government Owned', label: 'Government Owned' },
+    { value: 'Other Organizations', label: 'Other Organizations' },
+  ];
 
   // KPI Data properties
   kpiData: any[] = [];
@@ -140,6 +146,7 @@ export class DashboardComponent {
       stateId: [''],
       districtId: [''],
       trainingInstituteId: [''],
+      instituteType: [''],
     });
   }
 
@@ -289,6 +296,14 @@ export class DashboardComponent {
           this.loadDashboardData();
         }
       });
+
+    // Subscribe to institute type changes
+    this.filterForm.get('instituteType')?.valueChanges.subscribe((type) => {
+      this.selectedInstituteType = type;
+      if (!this.isUpdatingFilters) {
+        this.loadDashboardData();
+      }
+    });
   }
 
   loadDashboardData(): void {
@@ -299,7 +314,8 @@ export class DashboardComponent {
         this.selectedStateId || undefined,
         this.selectedDistrictId || undefined,
         this.selectedTrainingInstituteId || undefined,
-        this.organizationId || undefined
+        this.organizationId || undefined,
+        this.selectedInstituteType || undefined
       )
       .subscribe({
         next: (response) => {
@@ -336,10 +352,12 @@ export class DashboardComponent {
       this.filterForm.patchValue({
         districtId: '',
         trainingInstituteId: '',
+        instituteType: '',
       });
 
       this.selectedDistrictId = null;
       this.selectedTrainingInstituteId = null;
+      this.selectedInstituteType = null;
       this.trainingInstitutes = []; // Clear training institutes
 
       // Reload training institutes for the selected state (if any)
@@ -353,11 +371,13 @@ export class DashboardComponent {
         stateId: '',
         districtId: '',
         trainingInstituteId: '',
+        instituteType: '',
       });
 
       this.selectedStateId = null;
       this.selectedDistrictId = null;
       this.selectedTrainingInstituteId = null;
+      this.selectedInstituteType = null;
       this.districts = [];
       this.trainingInstitutes = [];
       this.loadTrainingInstitutes(); // Reload all training institutes
@@ -368,11 +388,13 @@ export class DashboardComponent {
         stateId: '',
         districtId: '',
         trainingInstituteId: '',
+        instituteType: '',
       });
 
       this.selectedStateId = null;
       this.selectedDistrictId = null;
       this.selectedTrainingInstituteId = null;
+      this.selectedInstituteType = null;
       this.districts = [];
       this.trainingInstitutes = [];
       this.loadTrainingInstitutes(); // Reload all training institutes

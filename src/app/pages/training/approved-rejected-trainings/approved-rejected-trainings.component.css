@@ -101,7 +101,6 @@ border: 1px solid whitesmoke;
 
 
 
-
 /* modal css */
 ::ng-deep .modal-backdrop {
   z-index: auto !important; /* Removes the z-index */
@@ -141,3 +140,10 @@ border: 1px solid whitesmoke;
   .detailsWidth{
     width: -webkit-fill-available
   }
+
+.text-wrap-address {
+  white-space: normal !important;
+  word-wrap: break-word !important;
+  height: auto !important;
+  overflow-wrap: break-word !important;
+}

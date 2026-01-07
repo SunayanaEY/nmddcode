@@ -3,7 +3,7 @@
   <app-breadcrumb [items]="breadcrumbItems"></app-breadcrumb>
 
   <!-- Action Button Section -->
-  <div class="action-section" *ngIf="isRole1User() || isRole6User()">
+  <div class="action-section" *ngIf="isRole1User()">
     <button 
       class="btn btn-primary add-institute-btn" 
       (click)="toggleForm()"

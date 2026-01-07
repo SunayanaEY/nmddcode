@@ -477,7 +477,8 @@ export class DashboardDataService {
     stateId?: number,
     districtId?: number,
     trainingInstituteId?: string,
-    organizationId?: number
+    organizationId?: number,
+    instituteType?: string
   ): Observable<TrainingSummaryResponse> {
     let url = `${this.API_BASE_URL}public/dashboard/trainingSummaryCount`;
     const params = new URLSearchParams();
@@ -493,6 +494,9 @@ export class DashboardDataService {
     }
     if (organizationId) {
       params.append('organizationId', organizationId.toString());
+    }
+    if (instituteType) {
+      params.append('trainingInstituteType', instituteType);
     }
 
     if (params.toString()) {
@@ -514,7 +518,8 @@ export class DashboardDataService {
     stateId?: number,
     districtId?: number,
     trainingInstituteId?: string,
-    organizationId?: number
+    organizationId?: number,
+    instituteType?: string
   ): Observable<MonthlyTrainingResponse> {
     let url = `${this.API_BASE_URL}public/dashboard/monthlyTrainingCount`;
     const params = new URLSearchParams();
@@ -531,6 +536,9 @@ export class DashboardDataService {
     if (organizationId) {
       params.append('organizationId', organizationId.toString());
     }
+    if (instituteType) {
+      params.append('trainingInstituteType', instituteType);
+    }
 
     if (params.toString()) {
       url += `?${params.toString()}`;
@@ -542,7 +550,8 @@ export class DashboardDataService {
   getModeOfTrainingDistribution(
     stateId?: number,
     districtId?: number,
-    organizationId?: number
+    organizationId?: number,
+    instituteType?: string
   ): Observable<ModeOfTrainingDistributionResponse> {
     let url = `${this.API_BASE_URL}public/dashboard/modeOfTrainingDistribution`;
     const params = new URLSearchParams();
@@ -556,6 +565,9 @@ export class DashboardDataService {
     if (organizationId) {
       params.append('organizationId', organizationId.toString());
     }
+    if (instituteType) {
+      params.append('trainingInstituteType', instituteType);
+    }
 
     if (params.toString()) {
       url += `?${params.toString()}`;
@@ -568,7 +580,8 @@ export class DashboardDataService {
     stateId?: number,
     districtId?: number,
     trainingInstituteId?: string,
-    organizationId?: number
+    organizationId?: number,
+    instituteType?: string
   ): Observable<AgeWiseDistributionResponse> {
     let url = `${this.API_BASE_URL}public/dashboard/ageWiseDistribution`;
     const params = new URLSearchParams();
@@ -585,6 +598,9 @@ export class DashboardDataService {
     if (organizationId) {
       params.append('organizationId', organizationId.toString());
     }
+    if (instituteType) {
+      params.append('trainingInstituteType', instituteType);
+    }
 
     if (params.toString()) {
       url += `?${params.toString()}`;
@@ -594,12 +610,15 @@ export class DashboardDataService {
   }
 
   // Get institute locations from API
-  getInstituteLocations(organizationId?: number): Observable<InstituteLocationData[]> {
+  getInstituteLocations(organizationId?: number, instituteType?: string): Observable<InstituteLocationData[]> {
     let url = `${this.API_BASE_URL}public/dashboard/institute-locations`;
     const params = new URLSearchParams();
 
     if (organizationId) {
       params.append('organizationId', organizationId.toString());
+    }
+    if (instituteType) {
+      params.append('trainingInstituteType', instituteType);
     }
 
     if (params.toString()) {
@@ -614,7 +633,8 @@ export class DashboardDataService {
   getTrainingInstituteTypeDistribution(
     stateId?: number,
     districtId?: number,
-    organizationId?: number
+    organizationId?: number,
+    instituteType?: string
   ): Observable<TrainingInstituteTypeDistributionResponse> {
     let url = `${this.API_BASE_URL}public/dashboard/trainingInstituteTypeDistribution`;
     const params = new URLSearchParams();
@@ -628,6 +648,9 @@ export class DashboardDataService {
     if (organizationId) {
       params.append('organizationId', organizationId.toString());
     }
+    if (instituteType) {
+      params.append('trainingInstituteType', instituteType);
+    }
 
     if (params.toString()) {
       url += `?${params.toString()}`;
@@ -640,7 +663,8 @@ export class DashboardDataService {
     stateId?: number | null,
     districtId?: number | null,
     trainingInstituteId?: string | null,
-    organizationId?: number
+    organizationId?: number,
+    instituteType?: string
   ): Observable<TopTrainingTypesResponse> {
     let url = `${this.API_BASE_URL}public/dashboard/toptrainingtypes`;
     const params = new URLSearchParams();
@@ -656,6 +680,9 @@ export class DashboardDataService {
     }
     if (organizationId) {
       params.append('organizationId', organizationId.toString());
+    }
+    if (instituteType) {
+      params.append('trainingInstituteType', instituteType);
     }
 
     if (params.toString()) {

@@ -21,6 +21,7 @@ export class MonthlyChartComponent implements OnInit, OnChanges, OnDestroy {
   @Input() districtId: number | null = null;
   @Input() trainingInstituteId: string | null = null;
   @Input() organizationId: number | null = null;
+  @Input() instituteType: string | null = null;
 
   chartOption: EChartsOption = {};
   chartLoading = false;
@@ -103,7 +104,7 @@ export class MonthlyChartComponent implements OnInit, OnChanges, OnDestroy {
   }
 
   ngOnChanges(changes: SimpleChanges): void {
-    if (changes['selectedState'] || changes['isLoading'] || changes['stateId'] || changes['districtId'] || changes['trainingInstituteId'] || changes['organizationId']) {
+    if (changes['selectedState'] || changes['isLoading'] || changes['stateId'] || changes['districtId'] || changes['trainingInstituteId'] || changes['organizationId'] || changes['instituteType']) {
       this.loadMonthlyData();
     }
   }
@@ -263,7 +264,8 @@ export class MonthlyChartComponent implements OnInit, OnChanges, OnDestroy {
       this.stateId || undefined,
       this.districtId || undefined,
       this.trainingInstituteId || undefined,
-      this.organizationId || undefined
+      this.organizationId || undefined,
+      this.instituteType || undefined
     ).subscribe({
       next: (response) => {
         if (response.success) {

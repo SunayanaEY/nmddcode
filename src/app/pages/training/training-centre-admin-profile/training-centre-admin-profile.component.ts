@@ -408,6 +408,18 @@ export class TrainingCentreAdminProfileComponent implements OnInit {
   }
 
   /**
+   * Block manual input for date fields to enforce calendar selection
+   */
+  blockManualInput(event: KeyboardEvent) {
+    // Allow tab for navigation
+    if (event.key === 'Tab') {
+      return;
+    }
+    // Prevent all other keys
+    event.preventDefault();
+  }
+
+  /**
    * Handle form submission
    */
   onSubmit() {

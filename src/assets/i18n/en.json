@@ -675,6 +675,16 @@
   "TRAINING.TRAINING_COURSE_SCHEDULE": "Training Course Schedule",
   "TRAINING.TRAINING_COURSE_INSTRUCTOR": "Training Course Instructor",
   "TRAINING.TRAINING_COURSE_INSTRUCTOR_CONTACT": "Training Course Instructor Contact",
-  "SELECT_STATE": "Select State"
-  
+  "SELECT_STATE": "Select State",
+  "UPLOAD_TRAINING_SCHEDULE": "Upload Training Schedule",
+  "INVALID_FILE_TYPE": "Invalid file type. Allowed: .pdf,.doc,.docx",
+  "DRAG_DROP_TRAINING_SCHEDULE": "Drag and Drop the Training Schedule here",
+  "ENTER_ADDRESS": "Enter Address",
+  "ADD_DATE_RANGE": "Add Date Range",
+  "Enter the Name of Signatory here": "Enter the Name of Signatory here",
+  "Enter the Designation of Signatory here": "Enter the Designation of Signatory here",
+  "Enter the Organization of Signatory here": "Enter the Organization of Signatory here",
+  "Drag and Drop the Signature here": "Drag and Drop the Signature here",  
+  "Drag and Drop your logo here": "Drag and Drop your logo here",
+  "submit details": "submit details"
 }

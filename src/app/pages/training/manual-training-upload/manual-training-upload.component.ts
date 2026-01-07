@@ -251,6 +251,7 @@ export class ManualTrainingUploadComponent implements OnInit {
         this.isSpinning = false;
         console.log(response);
         this.trainingDetails = response;
+        this.prepareTrainingScheduleUrl();
       },
       error: (error) => {
         this.isSpinning = false;

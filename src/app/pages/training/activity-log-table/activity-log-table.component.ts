@@ -207,6 +207,10 @@ export class ActivityLogTableComponent implements OnInit {
   // Date filter methods
   filterByDateRange(): void {
     if (this.startDate && this.endDate) {
+      if (this.startDate > this.endDate) {
+        alert('End Date cannot be before Start Date');
+        return;
+      }
       this.isLoading = true;
       this.errorMessage = '';
 

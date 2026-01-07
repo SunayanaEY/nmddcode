@@ -75,6 +75,14 @@ export class BulkTrainingUploadComponent implements OnInit {
 
   ngOnInit(): void {
     this.trainingId = this.route.snapshot.queryParams['trainingId'];
+    if (this.user) {
+      try {
+        const parsedUser = JSON.parse(this.user);
+        this.trainingInstituteId = parsedUser.trainingHeadId;
+      } catch (error) {
+        console.error('Error parsing user data:', error);
+      }
+    }
     this.getTrainingDetails(this.trainingId);
   }
 
@@ -529,8 +537,8 @@ export class BulkTrainingUploadComponent implements OnInit {
         email: row['Email'] || '',
         dob: this.convertDateFormat(row['Date of Birth (dd-MM-yyyy)']),
         category: row['Category (GN, OBC, SC, ST)'] || '',
-        educationQualification: row['Educational Qualification'] || '',
-        recommendedByOrganization: row['Recommended by (Organization)'] || '',
+        educationalQualification: row['Educational Qualification'] || '',
+        recommendedBy: row['Recommended by (Organization)'] || '',
         photoId: row['photoId'] || null,
         trainingId: trainingId,
         trainingInstituteId: trainingInstituteId,

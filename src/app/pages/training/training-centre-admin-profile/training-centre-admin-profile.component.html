@@ -125,6 +125,10 @@
                   placeholder="Select Registration Validity"
                   class="form-control"
                   [min]="today"
+                  inputmode="none"
+                  (keydown)="blockManualInput($event)"
+                  (keypress)="blockManualInput($event)"
+                  (paste)="$event.preventDefault()"
                 />
               </div>
               <div class="form-group">

@@ -30,6 +30,7 @@ export class InstituteTypeChartComponent implements OnInit, OnChanges, OnDestroy
   @Input() stateId: number | null = null;
   @Input() districtId: number | null = null;
   @Input() organizationId: number | null = null;
+  @Input() instituteType: string | null = null;
 
   chartOption: EChartsOption = {};
   chartLoading: boolean = false;
@@ -51,7 +52,7 @@ export class InstituteTypeChartComponent implements OnInit, OnChanges, OnDestroy
   }
 
   ngOnChanges(changes: SimpleChanges): void {
-    if (changes['selectedState'] || changes['isLoading'] || changes['stateId'] || changes['districtId'] || changes['organizationId']) {
+    if (changes['selectedState'] || changes['isLoading'] || changes['stateId'] || changes['districtId'] || changes['organizationId'] || changes['instituteType']) {
       this.loadInstituteTypeData();
     }
   }
@@ -141,7 +142,8 @@ export class InstituteTypeChartComponent implements OnInit, OnChanges, OnDestroy
     this.dataSubscription = this.dashboardService.getTrainingInstituteTypeDistribution(
       this.stateId || undefined,
       this.districtId || undefined,
-      this.organizationId || undefined
+      this.organizationId || undefined,
+      this.instituteType || undefined
     ).subscribe({
       next: (response: TrainingInstituteTypeDistributionResponse) => {
         if (response.success) {
