@@ -6,7 +6,7 @@
         <span class="remove" (click)="removeSelected(item); $event.stopPropagation()">×</span>
       </span>
     </div>
-    <span *ngIf="selectedItems.length === 0" class="placeholder">Select Trainer(s)</span>
+    <span *ngIf="selectedItems.length === 0" class="placeholder">{{ placeholder }}</span>
     <span class="dropdown-arrow">&#9662;</span>
   </button>
 

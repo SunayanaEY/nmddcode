@@ -18,6 +18,7 @@ import { CommonModule } from '@angular/common';
 })
 export class MultiSelectDropdownComponent implements ControlValueAccessor {
   @Input() items: any[] = [];
+  @Input() placeholder: string = 'Select Items';
   @Output() selectionChange = new EventEmitter<any[]>();
 
   isOpen = false;

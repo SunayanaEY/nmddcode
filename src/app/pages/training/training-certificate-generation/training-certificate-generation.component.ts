@@ -242,6 +242,18 @@ export class TrainingCertificateGenerationComponent implements OnInit {
     }
   }
 
+  validateBlockInput(event: any) {
+    const input = event.target;
+    const value = input.value;
+    // Allow alphabets, numbers, and spaces
+    const sanitizedValue = value.replace(/[^a-zA-Z0-9 ]/g, '');
+    
+    if (value !== sanitizedValue) {
+      input.value = sanitizedValue;
+      this.trainingForm.get('venueBlock')?.setValue(sanitizedValue);
+    }
+  }
+
   onTrainerSelectionChange(selectedTrainers: any[]) {
     this.selectedTrainers = selectedTrainers;
     // Trainer names are now written by the dropdown via ControlValueAccessor

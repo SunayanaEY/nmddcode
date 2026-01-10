@@ -45,8 +45,9 @@
 }
 
 .placeholder {
-  color: #242121fd;
-  background-color: #f0f8ff00;
+  color: #6c757d;
+  background-color: transparent;
+  font-weight: 400;
 }
 
 .dropdown-arrow {

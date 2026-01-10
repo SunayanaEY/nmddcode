@@ -96,6 +96,7 @@
               </label>
               <app-multi-select-dropdown
                 [items]="trainers"
+                [placeholder]="'Select Trainer(s)' | translate"
                 formControlName="trainerName"
                 (selectionChange)="onTrainerSelectionChange($event)"
               ></app-multi-select-dropdown>
@@ -276,6 +277,7 @@
                 formControlName="venueBlock"
                 class="form-control"
                 [placeholder]="'Enter Block' | translate"
+                (input)="validateBlockInput($event)"
                 [class.is-invalid]="
                   trainingForm.get('venueBlock')?.invalid &&
                   trainingForm.get('venueBlock')?.touched
