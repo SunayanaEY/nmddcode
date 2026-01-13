@@ -111,6 +111,10 @@ export class LatestCertificateLayoutComponent implements OnInit {
     const path = (raw || '').toString().trim();
     if (!path) return null;
 
+    if (path.startsWith('blob:') || path.startsWith('data:')) {
+      return path;
+    }
+
     // Construct an absolute URL
     let url = path;
     if (!this.isValidHttpUrl(path)) {

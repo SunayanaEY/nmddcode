@@ -758,6 +758,9 @@
                 (fileSelected)="onFileSelect($event, 'signature', i)"
                 (fileRemoved)="removeSignature(i)"
                 [filePath]="mySelectedFile[i]"
+                [showFileInfo]="false"
+                [enableImagePreview]="true"
+                [showRemoveButton]="populate !== 'true'"
               >
               </app-file-upload>
             </div>
@@ -790,31 +793,71 @@
             {{ "Upload Logo ( Maximum 3)" | translate }}<span class="required">*</span>
           </h3>
 
-          <div class="logo-section" *ngFor="let logo of logos; let i = index">
-            <div class="form-row">
-              <app-file-upload
-                [acceptedFileTypes]="'.png,.jpg,.jpeg'"
-                [maxFileSizeMB]="2"
-                [uploadText]="'Drag and Drop your logo here'"
-                (fileSelected)="onFileSelect($event, 'logo', i)"
-                (fileRemoved)="removeLogo(i)"
-                [filePath]="mySelectedLogo[i]"
-              >
-              </app-file-upload>
+          <div class="logo-upload-container">
+            <div class="logo-slot">
+              <div class="logo-slot-header">
+                <span class="logo-slot-title">Left Logo</span>
+              </div>
+              <div class="logo-slot-body">
+                <app-file-upload
+                  [acceptedFileTypes]="'.png,.jpg,.jpeg'"
+                  [maxFileSizeMB]="2"
+                  [uploadText]="'Drag and Drop your logo here'"
+                  (fileSelected)="onFileSelect($event, 'logo', 0)"
+                  (fileRemoved)="removeLogo(0)"
+                  [filePath]="mySelectedLogo[0]"
+                  [showFileInfo]="false"
+                  [enableImagePreview]="true"
+                  [showRemoveButton]="populate !== 'true'"
+                >
+                </app-file-upload>
+              </div>
+            </div>
+
+            <div class="logo-slot logo-slot-center">
+              <div class="logo-slot-header">
+                <span class="logo-slot-title">
+                  Center Logo
+                  <span class="required">*</span>
+                </span>
+              </div>
+              <div class="logo-slot-body">
+                <app-file-upload
+                  [acceptedFileTypes]="'.png,.jpg,.jpeg'"
+                  [maxFileSizeMB]="2"
+                  [uploadText]="'Drag and Drop your logo here'"
+                  (fileSelected)="onFileSelect($event, 'logo', 1)"
+                  (fileRemoved)="removeLogo(1)"
+                  [filePath]="mySelectedLogo[1]"
+                  [showFileInfo]="false"
+                  [enableImagePreview]="true"
+                  [showRemoveButton]="populate !== 'true'"
+                >
+                </app-file-upload>
+              </div>
+            </div>
+
+            <div class="logo-slot">
+              <div class="logo-slot-header">
+                <span class="logo-slot-title">Right Logo</span>
+              </div>
+              <div class="logo-slot-body">
+                <app-file-upload
+                  [acceptedFileTypes]="'.png,.jpg,.jpeg'"
+                  [maxFileSizeMB]="2"
+                  [uploadText]="'Drag and Drop your logo here'"
+                  (fileSelected)="onFileSelect($event, 'logo', 2)"
+                  (fileRemoved)="removeLogo(2)"
+                  [filePath]="mySelectedLogo[2]"
+                  [showFileInfo]="false"
+                  [enableImagePreview]="true"
+                  [showRemoveButton]="populate !== 'true'"
+                >
+                </app-file-upload>
+              </div>
             </div>
           </div>
 
-          <div class="add-more-section" *ngIf="logos.length < 3">
-            <button
-              type="button"
-              class="btn btn-link add-more-btn"
-              (click)="addMoreLogo()"
-            >
-              <i class="bi bi-plus-circle"></i> Add More
-            </button>
-          </div>
-
-          <!-- Logo Validation Error -->
           <div *ngIf="logoValidationError" class="validation-error-section">
             <small class="text-danger">
               {{ logoValidationError }}
@@ -823,10 +866,17 @@
         </div>
 
         <!-- Action Buttons -->
-         <div *ngIf="isLoadingStates" class="text-muted small mt-1">
-              <i class="fas fa-spinner fa-spin me-1"></i>Scheduling Training...
-            </div>
+        <div *ngIf="isLoadingStates" class="text-muted small mt-1">
+          <i class="fas fa-spinner fa-spin me-1"></i>Scheduling Training...
+        </div>
         <div class="form-actions">
+          <button
+            type="button"
+            class="btn btn-outline-primary btn-lg me-2"
+            (click)="openPreview()"
+          >
+            {{ "Preview Certificate" | translate }}
+          </button>
           <button
             type="submit"
             class="btn btn-primary btn-lg"
@@ -838,18 +888,44 @@
               role="status"
               aria-hidden="true"
             ></span>
-            <!-- Manual Training Upload -->
-            {{ isSpinner ? "Submitting..." : "submit details" | translate }}
+            {{ isSpinner ? "Submitting..." : ("submit details" | translate) }}
           </button>
-          <!-- <button
-            type="button"
-            class="btn btn-secondary btn-lg"
-            (click)="onBulkUpload()"
-          >
-            Bulk Upload
-          </button> -->
         </div>
       </form>
+    </div>
+  </div>
+</div>
+
+<div
+  class="modal-backdrop fade show"
+  *ngIf="showPreview"
+></div>
+
+<div
+  class="modal d-block certificate-preview-modal"
+  tabindex="-1"
+  role="dialog"
+  *ngIf="showPreview"
+>
+  <div class="modal-dialog modal-xl modal-dialog-centered" role="document">
+    <div class="modal-content p-3">
+      <div class="modal-header">
+        <h5 class="modal-title">{{ "Certificate Preview" | translate }}</h5>
+        <button
+          type="button"
+          class="btn-close"
+          aria-label="Close"
+          (click)="closePreview()"
+        ></button>
+      </div>
+      <div class="modal-body">
+        <ng-container *ngIf="previewData">
+          <app-latest-certificate-layout
+            [data]="previewData"
+            [uniqueId]="previewUniqueId"
+          ></app-latest-certificate-layout>
+        </ng-container>
+      </div>
     </div>
   </div>
 </div>

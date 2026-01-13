@@ -9,8 +9,8 @@
     <!-- Logo Row -->
     <div class="brand-row" aria-label="Branding">
       <img class="logo-small" [src]="logo1Url || data?.logoPath1" alt="" crossorigin="anonymous" />
-      <img class="logo-center" *ngIf="logo3Url || data?.logoPath3" [src]="logo3Url || data?.logoPath3" alt="" crossorigin="anonymous" />
-      <img class="logo-small logo-small-right" *ngIf="data?.logoPath2 || logo2Url" [src]="logo2Url || data?.logoPath2" alt="" crossorigin="anonymous" />
+      <img class="logo-center" *ngIf="logo2Url || data?.logoPath2" [src]="logo2Url || data?.logoPath2" alt="" crossorigin="anonymous" />
+      <img class="logo-small logo-small-right" *ngIf="data?.logoPath3 || logo3Url" [src]="logo3Url || data?.logoPath3" alt="" crossorigin="anonymous" />
     </div>
 
     <!-- QR + Trainee Photo Row -->
@@ -27,8 +27,7 @@
 
     <!-- Titles -->
     <div class="org-block" aria-label="Organization">
-      <h2 class="org-hi">राष्ट्रीय डेयरी विकास बोर्ड</h2>
-      <h2 class="org-en">National Dairy Development Board</h2>
+      <h2 class="org-en">{{ data?.trainingTitle }}</h2>
     </div>
 
     <!-- Certificate Heading -->

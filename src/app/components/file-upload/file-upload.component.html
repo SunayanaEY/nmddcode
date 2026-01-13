@@ -1,63 +1,123 @@
-<div class="upload-section">
-  <!--Prepopulated files from backend -->
-  <div class="file-info" *ngIf="filePath">
-    <div class="file-details">
-      <p>
-        <strong>{{'Uploaded file:'| translate}}</strong>
-        <span class="file-name ms-2">{{ getFileName(filePath) }}</span>
-      </p>
+<div class="upload-section" [ngClass]="{ 'image-preview-mode': enableImagePreview }">
+  <ng-container *ngIf="!enableImagePreview; else imagePreview">
+    <div class="file-info" *ngIf="filePath">
+      <div class="file-details">
+        <p>
+          <strong>{{ 'Uploaded file:' | translate }}</strong>
+          <span class="file-name ms-2">{{ getFileName(filePath) }}</span>
+        </p>
+      </div>
+      <button
+        type="button"
+        class="btn-remove ms-4"
+        (click)="removeFile()"
+        *ngIf="showRemoveButton"
+      >
+        <i class="bi bi-trash"></i> {{ 'Remove' | translate }}
+      </button>
     </div>
-    <button type="button" class="btn-remove ms-4" (click)="removeFile()">
-      <i class="bi bi-trash"></i> {{'Remove'|translate}}
-    </button>
-  </div>
 
-  <!-- 2️⃣ Upload area (only show when no selected file and no prepopulated file) -->
-  <div
-    class="upload-box"
-    [class.drag-over]="isDragOver"
-    (drop)="onFileDrop($event)"
-    (dragover)="onDragOver($event)"
-    (dragleave)="onDragLeave($event)"
-    *ngIf="filePath === ''"
-  >
-    <div class="upload-icon">
-      <i class="bi bi-cloud-upload"></i>
+    <div
+      class="upload-box"
+      [class.drag-over]="isDragOver"
+      (drop)="onFileDrop($event)"
+      (dragover)="onDragOver($event)"
+      (dragleave)="onDragLeave($event)"
+      *ngIf="filePath === ''"
+    >
+      <div class="upload-icon">
+        <i class="bi bi-cloud-upload"></i>
+      </div>
+      <p class="upload-text">{{ uploadText | translate }}</p>
+      <p class="upload-subtext">{{ subText | translate }}</p>
+
+      <button type="button" class="btn-upload" (click)="fileInput.click()">
+        {{ buttonText | translate }}
+      </button>
+
+      <input
+        #fileInput
+        type="file"
+        hidden
+        (change)="onFileChange($event)"
+        [accept]="acceptedFileTypes"
+      />
     </div>
-    <p class="upload-text">{{ uploadText |translate }}</p>
-    <p class="upload-subtext">{{ subText |translate}}</p>
 
-    <button type="button" class="btn-upload" (click)="fileInput.click()">
-      {{ buttonText|translate }}
-    </button>
-
-    <input
-      #fileInput
-      type="file"
-      hidden
-      (change)="onFileChange($event)"
-      [accept]="acceptedFileTypes"
-    />
-  </div>
-
-  <!-- 3️⃣ User-selected file -->
-  <div class="file-info" *ngIf="selectedFile && showFileInfo">
-    <div class="file-details">
-      <p><strong>{{'Accepted formats:'|translate}}</strong> {{ acceptedFileTypes }}</p>
-      <p><strong>{{'Max size per file:'|translate}}</strong> {{ maxFileSizeMB }}MB</p>
-      <p>
-        <strong>Selected file:</strong>
-        <span class="file-name ms-2">{{ selectedFile.name }}</span>
-      </p>
-      <p><strong>{{'File size:'|translate}}</strong> {{ getFileSize(selectedFile.size) }}</p>
+    <div class="file-info" *ngIf="selectedFile && showFileInfo">
+      <div class="file-details">
+        <p>
+          <strong>{{ 'Accepted formats:' | translate }}</strong>
+          {{ acceptedFileTypes }}
+        </p>
+        <p>
+          <strong>{{ 'Max size per file:' | translate }}</strong>
+          {{ maxFileSizeMB }}MB
+        </p>
+        <p>
+          <strong>Selected file:</strong>
+          <span class="file-name ms-2">{{ selectedFile.name }}</span>
+        </p>
+        <p>
+          <strong>{{ 'File size:' | translate }}</strong>
+          {{ getFileSize(selectedFile.size) }}
+        </p>
+      </div>
+      <button
+        type="button"
+        class="btn-remove ms-4"
+        (click)="removeFile()"
+        *ngIf="showRemoveButton"
+      >
+        <i class="bi bi-trash"></i> {{ 'Remove' | translate }}
+      </button>
     </div>
-    <button type="button" class="btn-remove ms-4" (click)="removeFile()">
-      <i class="bi bi-trash"></i> {{'Remove'|translate}}
-    </button>
-  </div>
+  </ng-container>
+
+  <ng-template #imagePreview>
+    <div class="image-upload-wrapper">
+      <div class="image-preview-box" *ngIf="previewUrl">
+        <img [src]="previewUrl" alt="" class="image-preview" />
+        <button
+          type="button"
+          class="btn-remove mt-2"
+          (click)="removeFile()"
+          *ngIf="showRemoveButton"
+        >
+          <i class="bi bi-trash"></i> {{ 'Remove' | translate }}
+        </button>
+      </div>
+
+      <div
+        class="upload-box"
+        [class.drag-over]="isDragOver"
+        (drop)="onFileDrop($event)"
+        (dragover)="onDragOver($event)"
+        (dragleave)="onDragLeave($event)"
+        *ngIf="!previewUrl"
+      >
+        <div class="upload-icon">
+          <i class="bi bi-cloud-upload"></i>
+        </div>
+        <p class="upload-text">{{ uploadText | translate }}</p>
+        <p class="upload-subtext">{{ subText | translate }}</p>
+
+        <button type="button" class="btn-upload" (click)="fileInput.click()">
+          {{ buttonText | translate }}
+        </button>
+
+        <input
+          #fileInput
+          type="file"
+          hidden
+          (change)="onFileChange($event)"
+          [accept]="acceptedFileTypes"
+        />
+      </div>
+    </div>
+  </ng-template>
 </div>
 
-<!-- Error -->
 <div class="error-message" *ngIf="errorMessage && filePath.length === 0">
   <i class="bi bi-exclamation-triangle"></i>
   <span>{{ errorMessage }}</span>

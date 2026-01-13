@@ -27,6 +27,9 @@ import {
 } from '../../../components/breadcrumb/breadcrumb.component';
 import { AdminService } from '../services/training-admin.service';
 import { MultiSelectDropdownComponent } from '../../../components/multi-select-dropdown/multi-select-dropdown.component';
+import { LatestCertificateLayoutComponent } from '../../latest-certificate-layout/latest-certificate-layout.component';
+import { environment } from '../../../../environments/environment';
+
 
 @Component({
   selector: 'app-training-certificate-generation',
@@ -38,7 +41,8 @@ import { MultiSelectDropdownComponent } from '../../../components/multi-select-d
     FileUploadComponent,
     BreadcrumbComponent,
     TranslateModule,
-    MultiSelectDropdownComponent
+    MultiSelectDropdownComponent,
+    LatestCertificateLayoutComponent
   ],
   templateUrl: './training-certificate-generation.component.html',
   styleUrl: './training-certificate-generation.component.css',
@@ -50,6 +54,7 @@ export class TrainingCertificateGenerationComponent implements OnInit {
   ];
   trainingForm: FormGroup;
   schemes: any;
+  apiUrl = environment.apiUrl;
   logo1!: File;
   logo2!: File;
   logo3!: File;
@@ -66,6 +71,12 @@ export class TrainingCertificateGenerationComponent implements OnInit {
     {
       file: null,
     },
+    {
+      file: null,
+    },
+    {
+      file: null,
+    },
   ];
   signaturesNew: any[] = [
     {
@@ -76,6 +87,12 @@ export class TrainingCertificateGenerationComponent implements OnInit {
     },
   ];
   logosNew: any[] = [
+    {
+      file: null,
+    },
+    {
+      file: null,
+    },
     {
       file: null,
     },
@@ -97,8 +114,8 @@ export class TrainingCertificateGenerationComponent implements OnInit {
   isSpinner: boolean = false;
   trainingId: any = null;
   trainingDetails: any = null;
-  mySelectedFile: any[] = [];
-  mySelectedLogo: any[] = [];
+  mySelectedFile: any[] = [''];
+  mySelectedLogo: any[] = ['', '', ''];
   trainingScheduleFile: File | null = null;
   existingTrainingSchedulePath: string = '';
   showScheduleError: boolean = false;
@@ -116,6 +133,26 @@ export class TrainingCertificateGenerationComponent implements OnInit {
       organization: boolean;
     };
   } = {};
+
+  previewData: any = null;
+  showPreview: boolean = false;
+  previewUniqueId: string = 'PREVIEW-UIN-000000';
+  private previewBlobUrls: string[] = [];
+
+  private buildLogoUrl(raw?: string | null): string {
+    const path = (raw || '').toString().trim();
+    if (!path) return '';
+    try {
+      const u = new URL(path);
+      if (u.protocol === 'http:' || u.protocol === 'https:') {
+        return path;
+      }
+    } catch {}
+    if (path.startsWith('/')) {
+      return `${this.apiUrl}${path.replace(/^\/+/, '')}`;
+    }
+    return `${this.apiUrl}api/photo/download/${encodeURIComponent(path)}`;
+  }
 
   // Custom validators
   futureDateValidator(control: AbstractControl): ValidationErrors | null {
@@ -237,8 +274,8 @@ export class TrainingCertificateGenerationComponent implements OnInit {
     if (this.trainingId != null || this.trainingId != undefined) {
       this.getTrainingDetails(this.trainingId);
     } else {
-      this.mySelectedFile.push('');
-      this.mySelectedLogo.push('');
+      this.mySelectedFile = [''];
+      this.mySelectedLogo = ['', '', ''];
     }
   }
 
@@ -356,7 +393,7 @@ export class TrainingCertificateGenerationComponent implements OnInit {
           );
 
           this.mySelectedFile = this.trainingDetails.signatures.map(
-            (s: any) => s.signatorySignaturePath
+            (s: any) => this.buildLogoUrl(s.signatorySignaturePath)
           );
         }
         
@@ -365,14 +402,10 @@ export class TrainingCertificateGenerationComponent implements OnInit {
         }
 
         this.mySelectedLogo = [
-          this.trainingDetails.logoPath1,
-          this.trainingDetails.logoPath2,
-          this.trainingDetails.logoPath3,
-        ].filter((logo: string | null) => logo !== null);
-        this.logos = this.mySelectedLogo.map((logo: string, index: number) => ({
-          id: index + 1, // optional: keep track of logo index
-          path: logo,
-        }));
+          this.buildLogoUrl(this.trainingDetails.logoPath1),
+          this.buildLogoUrl(this.trainingDetails.logoPath2),
+          this.buildLogoUrl(this.trainingDetails.logoPath3),
+        ];
       },
       error: (error) => {
         this.isSpinner = false;
@@ -460,19 +493,21 @@ export class TrainingCertificateGenerationComponent implements OnInit {
   }
 
   removeSignature(index: number) {
-    if (this.populate == 'false') {
-      this.signatures[index].file = null;
-    } else {
+    if (this.populate === 'true') {
       this.signaturesNew[index].file = null;
+    } else {
+      this.signatures[index].file = null;
     }
+    this.mySelectedFile[index] = '';
   }
 
   removeLogo(index: number) {
-    if (this.populate == 'false') {
-      this.logos[index].file = null;
-    } else {
+    if (this.populate === 'true') {
       this.logosNew[index].file = null;
+    } else {
+      this.logos[index].file = null;
     }
+    this.mySelectedLogo[index] = '';
   }
 
   addMoreSignature() {
@@ -770,6 +805,131 @@ export class TrainingCertificateGenerationComponent implements OnInit {
     }
   }
 
+  openPreview() {
+    if (this.trainingForm.invalid) {
+      this.trainingForm.markAllAsTouched();
+      this.toastr.error('Please fill all required fields before previewing', 'Error');
+      return;
+    }
+
+    if (!this.validateSignatureUpload()) {
+      return;
+    }
+
+    if (!this.validateSignatureFields()) {
+      return;
+    }
+
+    if (!this.validateLogoUpload()) {
+      return;
+    }
+
+    const formValue = this.trainingForm.value;
+
+    const ranges = this.dateRanges.controls
+      .map((ctrl) => {
+        const start = ctrl.get('startDate')?.value;
+        const end = ctrl.get('endDate')?.value;
+        return { start, end };
+      })
+      .filter((r) => r.start && r.end);
+
+    let startDate: string | null = null;
+    let endDate: string | null = null;
+
+    if (ranges.length > 0) {
+      const sorted = [...ranges].sort(
+        (a, b) => new Date(a.start).getTime() - new Date(b.start).getTime()
+      );
+      startDate = sorted[0].start;
+      endDate = sorted[sorted.length - 1].end;
+    }
+
+    const instituteControl = this.trainingForm.get('trainingInstituteName')?.value;
+    const trainingInstituteName =
+      instituteControl?.trainingInstituteName ||
+      this.selectedTrainingInstituteName ||
+      '';
+
+    const signaturesSource =
+      this.populate === 'true' ? this.signaturesNew : this.signatures;
+
+    this.cleanupPreviewBlobUrls();
+
+    const signatures = signaturesSource
+      .filter(
+        (sig) =>
+          (sig.file || sig.signatorySignaturePath) &&
+          sig.name &&
+          sig.designation &&
+          sig.organization
+      )
+      .slice(0, 2)
+      .map((sig) => {
+        let path = sig.signatorySignaturePath;
+        if (sig.file) {
+          const blob = URL.createObjectURL(sig.file);
+          this.previewBlobUrls.push(blob);
+          path = blob;
+        }
+        return {
+          signatoryName: sig.name,
+          signatoryDesignation: sig.designation,
+          signatoryOrganization: sig.organization,
+          signatorySignaturePath: path,
+        };
+      });
+
+    const logosSource = this.populate === 'true' ? this.logosNew : this.logos;
+    const logoPaths: (string | null)[] = [null, null, null];
+
+    for (let i = 0; i < 3; i++) {
+      const item = logosSource[i];
+      if (item && item.file) {
+        const blob = URL.createObjectURL(item.file);
+        this.previewBlobUrls.push(blob);
+        logoPaths[i] = blob;
+      } else if (this.populate === 'true') {
+        logoPaths[i] = this.mySelectedLogo[i] || null;
+      }
+    }
+
+    const previewPayload: any = {
+      name: 'Trainee Name',
+      trainingTitle: formValue.trainingTitle,
+      duration: formValue.duration,
+      durationType: formValue.durationType,
+      startDate: startDate,
+      endDate: endDate,
+      trainingInstituteName,
+      logoPath1: logoPaths[0],
+      logoPath2: logoPaths[1],
+      logoPath3: logoPaths[2],
+      signatures,
+      createDate: new Date(),
+    };
+
+    this.previewData = previewPayload;
+    this.showPreview = true;
+  }
+
+  closePreview() {
+    this.showPreview = false;
+    this.previewData = null;
+    this.cleanupPreviewBlobUrls();
+  }
+
+  private cleanupPreviewBlobUrls() {
+    if (this.previewBlobUrls && this.previewBlobUrls.length) {
+      this.previewBlobUrls.forEach((url) => {
+        try {
+          URL.revokeObjectURL(url);
+        } catch {}
+      });
+      this.previewBlobUrls = [];
+    }
+  }
+
   onBulkUpload() {
     if (this.trainingForm.invalid) {
       this.trainingForm.markAllAsTouched();
@@ -908,21 +1068,18 @@ export class TrainingCertificateGenerationComponent implements OnInit {
     this.logoValidationError = '';
 
     if (this.populate === 'true') {
-      // For update mode, check logosNew array and mySelectedLogo
-      const hasValidLogo =
-        this.logosNew.some((logo) => logo.file) ||
-        this.mySelectedLogo.some((logo) => logo);
+      const centerHasLogo =
+        (this.logosNew[1] && this.logosNew[1].file) ||
+        !!this.mySelectedLogo[1];
 
-      if (!hasValidLogo) {
-        this.logoValidationError = 'At least 1 logo is required';
+      if (!centerHasLogo) {
+        this.logoValidationError = 'Center logo is required';
         return false;
       }
     } else {
-      // For create mode, check logos array
-      const hasValidLogo = this.logos.some((logo) => logo.file);
-
-      if (!hasValidLogo) {
-        this.logoValidationError = 'At least 1 logo is required';
+      const centerHasLogo = this.logos[1] && this.logos[1].file;
+      if (!centerHasLogo) {
+        this.logoValidationError = 'Center logo is required';
         return false;
       }
     }

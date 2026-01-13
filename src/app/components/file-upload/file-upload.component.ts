@@ -26,6 +26,8 @@ export class FileUploadComponent implements OnChanges {
   @Input() buttonText = 'Select file';
   @Input() showFileInfo = true;
   @Input() resetTrigger: boolean = false;
+  @Input() enableImagePreview: boolean = false;
+  @Input() showRemoveButton: boolean = true;
 
   /** ✅ Now supports multiple prepopulated files */
   @Input() filePath: string = '';
@@ -39,10 +41,21 @@ export class FileUploadComponent implements OnChanges {
   selectedFile: File | null = null;
   isDragOver = false;
   errorMessage: string = '';
+  previewUrl: string | null = null;
 
   ngOnChanges(changes: SimpleChanges): void {
     if (changes['resetTrigger']?.currentValue) {
       this.resetFileInput();
+    }
+    if (changes['filePath'] && this.enableImagePreview) {
+      const current = changes['filePath'].currentValue as string;
+      if (current) {
+        this.previewUrl = current;
+        this.selectedFile = null;
+        this.errorMessage = '';
+      } else if (!this.selectedFile) {
+        this.previewUrl = null;
+      }
     }
   }
 
@@ -51,6 +64,7 @@ export class FileUploadComponent implements OnChanges {
     this.selectedFile = null;
     this.errorMessage = '';
     this.filePath = '';
+     this.previewUrl = null;
     if (this.fileInputRef) {
       this.fileInputRef.nativeElement.value = '';
     }
@@ -119,6 +133,13 @@ export class FileUploadComponent implements OnChanges {
 
     this.selectedFile = file;
     this.filePath = ''; // clear backend paths once replaced
+    if (this.enableImagePreview) {
+      const reader = new FileReader();
+      reader.onload = () => {
+        this.previewUrl = reader.result as string;
+      };
+      reader.readAsDataURL(file);
+    }
     this.fileSelected.emit(this.selectedFile);
   }
 
@@ -136,6 +157,9 @@ export class FileUploadComponent implements OnChanges {
         this.fileInputRef.nativeElement.value = '';
       }
       this.fileRemoved.emit();
+    }
+    if (this.enableImagePreview) {
+      this.previewUrl = null;
     }
   }
 

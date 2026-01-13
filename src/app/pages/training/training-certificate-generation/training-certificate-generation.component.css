@@ -239,7 +239,6 @@ select.form-control {
   color: #475569;
 }
 
-/* Signature and Logo Sections */
 .signature-section,
 .logo-section {
   border: 1px solid #e2e8f0;
@@ -247,6 +246,51 @@ select.form-control {
   padding: 1.5rem;
   margin-bottom: 1rem;
   background: #fafafa;
+}
+
+.logo-upload-container {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 1.5rem;
+  margin-top: 1rem;
+}
+
+.logo-slot {
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+  padding: 1rem;
+  background: #fafafa;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.logo-slot-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: #1f2937;
+}
+
+.logo-slot-title {
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.logo-slot-center .logo-slot-title {
+  color: #dc2626;
+}
+
+.logo-slot-body app-file-upload {
+  width: 100%;
+}
+
+@media (max-width: 992px) {
+  .logo-upload-container {
+    grid-template-columns: 1fr;
+  }
 }
 
 .add-more-section {
@@ -424,4 +468,19 @@ select.form-control {
 .date-range-actions {
   display: flex;
   justify-content: flex-start;
+}
+
+/* Certificate Preview Modal */
+.certificate-preview-modal .modal-dialog {
+  max-width: 95vw;
+}
+
+.certificate-preview-modal .modal-content {
+  max-height: 90vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.certificate-preview-modal .modal-body {
+  overflow-y: auto;
 }
