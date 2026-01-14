@@ -159,7 +159,6 @@ export class DashboardComponent {
   }
 
   checkUserRole(): void {
-    debugger;
     const userDataString = sessionStorage.getItem('user');
     if (userDataString) {
       try {
@@ -648,17 +647,17 @@ export class DashboardComponent {
               // Transform data for Excel export
               const excelData = response.data.map((item, index) => ({
                 'Sl. No.': index + 1,
-                State: item.venueState,
-                District: item.venueDistrict,
+                'State': item.venueState,
+                'District': item.venueDistrict,
                 'Institute Name': item.trainingInstituteName,
                 'Name of the Training': item.trainingTitle,
                 'Training ID': item.trainingId,
-                Scheme: item.scheme,
+                'Scheme': item.scheme,
                 'Trainer Name': item.trainerName,
                 'No of Trainees': item.numberOfTrainees,
                 'From Date': this.formatDate(item.fromDate),
                 'To Date': this.formatDate(item.toDate),
-                Duration: item.duration,
+                'Duration of Training (in hours)': item.duration,
                 'Mode of Training': item.modeOfTraining,
               }));
 
@@ -705,9 +704,11 @@ export class DashboardComponent {
             if (response.success && response.data.length > 0) {
               // Transform data for Excel export
               const excelData = response.data.map((item, index) => ({
-                'Training ID': item.trainingId,
-                'Training Institute ID': item.trainingInstituteId,
-                'Trainees ID': item.id,
+                // 'Training ID': item.trainingId,
+                // 'Training Institute ID': item.trainingInstituteId,
+                // 'Trainees ID': item.id,
+                'Training Name': item.trainingName,
+                'Training Institute Name': item.trainingInstituteName,
                 Name: item.name,
                 Gender: item.gender,
                 Age: item.age,
@@ -766,9 +767,11 @@ export class DashboardComponent {
             if (response.success && response.data.length > 0) {
               // Transform data for Excel export
               const excelData = response.data.map((item, index) => ({
-                'Training ID': item.trainingId,
-                'Training Institute ID': item.trainingInstituteId,
-                'Trainees ID': item.id,
+                // 'Training ID': item.trainingId,
+                // 'Training Institute ID': item.trainingInstituteId,
+                // 'Trainees ID': item.id,
+                'Training Name': item.trainingName,
+                'Training Institute Name': item.trainingInstituteName,
                 Name: item.name,
                 Gender: item.gender,
                 Age: item.age,

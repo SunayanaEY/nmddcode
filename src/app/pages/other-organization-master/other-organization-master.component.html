@@ -1,0 +1,18 @@
+<div class="other-organization-master">
+  <div class="d-flex justify-content-end mb-3">
+    <button
+      type="button"
+      class="btn"
+      [ngClass]="showForm ? 'btn-danger' : 'btn-primary'"
+      (click)="toggleForm()"
+    >
+      {{ (showForm ? 'OTHER_ORG.HIDE_FORM' : 'OTHER_ORG.ADD_NEW_ORGANIZATION') | translate }}
+    </button>
+  </div>
+
+  <div *ngIf="showForm" class="organization-form-wrapper">
+    <app-organization-admin-profile></app-organization-admin-profile>
+  </div>
+
+  <app-organization-table-data></app-organization-table-data>
+</div>

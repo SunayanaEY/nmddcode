@@ -1,20 +1,20 @@
 <div class="profile-creation-container">
-  <div class="container">
+  <div class="container-fluid">
     <app-breadcrumb [items]="breadcrumbItems"></app-breadcrumb>
 
     <div class="profile-card">
       <div class="card-header">
         <h2 *ngIf="userRole == 1" class="card-title">
-          Private Organization Registration
+          {{ 'PRIVATE_ORG.TITLE_CREATE' | translate }}
         </h2>
         <p *ngIf="userRole == 1" class="card-subtitle">
-          Create a new private organization administrator profile
+          {{ 'PRIVATE_ORG.SUBTITLE_CREATE' | translate }}
         </p>
         <h2 *ngIf="userRole == 6" class="card-title">
-          Private Organization Profile Updation
+          {{ 'PRIVATE_ORG.TITLE_UPDATE' | translate }}
         </h2>
         <p *ngIf="userRole == 6" class="card-subtitle">
-          Update the private organization administrator profile
+          {{ 'PRIVATE_ORG.SUBTITLE_UPDATE' | translate }}
         </p>
       </div>
 
@@ -25,20 +25,18 @@
             class="form-section"
             *ngIf="userRole == 1 || userRole == 5 || userRole == 6"
           >
-            <h3 class="section-title">Basic Information</h3>
+            <h3 class="section-title">{{ 'PRIVATE_ORG.SECTION_BASIC_INFO' | translate }}</h3>
 
             <div class="form-row">
               <div class="form-group">
-                <label for="organizationName"
-                  >Private Organization Name<span class="required"
-                    >*</span
-                  ></label
-                >
+                <label for="organizationName">
+                  {{ 'PRIVATE_ORG.LABEL_ORG_NAME' | translate }}<span class="required">*</span>
+                </label>
                 <input
                   type="text"
                   id="organizationName"
                   formControlName="organizationName"
-                  placeholder="Enter Organization Name"
+                  [placeholder]="'PRIVATE_ORG.PLACEHOLDER_ORG_NAME' | translate"
                   class="form-control"
                   [class.is-invalid]="
                     profileForm.get('organizationName')?.invalid &&
@@ -53,24 +51,24 @@
                   "
                 >
                   <span
-                    *ngIf="profileForm.get('organizationName')?.errors?.['required']"
-                    >Organization name is required</span
-                  >
+                    *ngIf="profileForm.get('organizationName')?.errors?.['required']">
+                    {{ 'PRIVATE_ORG.VALIDATION_ORG_NAME_REQUIRED' | translate }}
+                  </span>
                   <span
-                    *ngIf="profileForm.get('organizationName')?.errors?.['minlength']"
-                    >Organization name must be at least 3 characters</span
-                  >
+                    *ngIf="profileForm.get('organizationName')?.errors?.['minlength']">
+                    {{ 'PRIVATE_ORG.VALIDATION_ORG_NAME_MINLENGTH' | translate }}
+                  </span>
                 </div>
               </div>
               <div class="form-group">
-                <label for="trainingInstituteRegistration"
-                  >Registration Number<span class="required">*</span></label
-                >
+                <label for="trainingInstituteRegistration">
+                  {{ 'PRIVATE_ORG.LABEL_REG_NO' | translate }}<span class="required">*</span>
+                </label>
                 <input
                   type="text"
                   id="trainingInstituteRegistration"
                   formControlName="trainingInstituteRegistration"
-                  placeholder="Enter Institute Registration Number"
+                  [placeholder]="'PRIVATE_ORG.PLACEHOLDER_REG_NO' | translate"
                   class="form-control"
                   [class.is-invalid]="
                     profileForm.get('trainingInstituteRegistration')?.invalid &&
@@ -85,20 +83,22 @@
                   "
                 >
                   <span
-                    *ngIf="profileForm.get('trainingInstituteRegistration')?.errors?.['required']"
-                    >Registration number is required</span
-                  >
+                    *ngIf="profileForm.get('trainingInstituteRegistration')?.errors?.['required']">
+                    {{ 'PRIVATE_ORG.VALIDATION_REG_NO_REQUIRED' | translate }}
+                  </span>
                   <span
-                    *ngIf="profileForm.get('trainingInstituteRegistration')?.errors?.['minlength']"
-                    >Registration number must be at least 3 characters</span
-                  >
+                    *ngIf="profileForm.get('trainingInstituteRegistration')?.errors?.['minlength']">
+                    {{ 'PRIVATE_ORG.VALIDATION_REG_NO_MINLENGTH' | translate }}
+                  </span>
                 </div>
               </div>
             </div>
 
             <div class="form-row">
               <div class="form-group">
-                <label for="state">State<span class="required">*</span></label>
+                <label for="state">
+                  {{ 'PRIVATE_ORG.LABEL_STATE' | translate }}<span class="required">*</span>
+                </label>
                 <select
                   id="state"
                   formControlName="state"
@@ -110,7 +110,11 @@
                   [disabled]="isLoadingStates"
                 >
                   <option value="" disabled>
-                    {{ isLoadingStates ? "Loading states..." : "Select State" }}
+                    {{
+                      isLoadingStates
+                        ? ('PRIVATE_ORG.OPTION_LOADING_STATES' | translate)
+                        : ('PRIVATE_ORG.OPTION_SELECT_STATE' | translate)
+                    }}
                   </option>
                   <option *ngFor="let state of states" [value]="state.id">
                     {{ state.stateName }}
@@ -123,16 +127,16 @@
                     profileForm.get('state')?.touched
                   "
                 >
-                  <span *ngIf="profileForm.get('state')?.errors?.['required']"
-                    >State is required</span
-                  >
+                  <span *ngIf="profileForm.get('state')?.errors?.['required']">
+                    {{ 'PRIVATE_ORG.VALIDATION_STATE_REQUIRED' | translate }}
+                  </span>
                 </div>
               </div>
 
               <div class="form-group">
-                <label for="district"
-                  >District<span class="required">*</span></label
-                >
+                <label for="district">
+                  {{ 'PRIVATE_ORG.LABEL_DISTRICT' | translate }}<span class="required">*</span>
+                </label>
                 <select
                   id="district"
                   formControlName="district"
@@ -148,10 +152,10 @@
                   <option value="" disabled>
                     {{
                       isLoadingDistricts
-                        ? "Loading districts..."
+                        ? ('PRIVATE_ORG.OPTION_LOADING_DISTRICTS' | translate)
                         : profileForm.get("state")?.value
-                        ? "Select District"
-                        : "Select State First"
+                        ? ('PRIVATE_ORG.OPTION_SELECT_DISTRICT' | translate)
+                        : ('PRIVATE_ORG.OPTION_SELECT_STATE_FIRST' | translate)
                     }}
                   </option>
                   <option
@@ -169,9 +173,9 @@
                   "
                 >
                   <span
-                    *ngIf="profileForm.get('district')?.errors?.['required']"
-                    >District is required</span
-                  >
+                    *ngIf="profileForm.get('district')?.errors?.['required']">
+                    {{ 'PRIVATE_ORG.VALIDATION_DISTRICT_REQUIRED' | translate }}
+                  </span>
                 </div>
               </div>
             </div>
@@ -181,16 +185,18 @@
             class="form-section"
             *ngIf="userRole == 1 || userRole == 5 || userRole == 6"
           >
-            <h3 class="section-title">Location Information</h3>
+            <h3 class="section-title">
+              {{ 'PRIVATE_ORG.SECTION_LOCATION_INFO' | translate }}
+            </h3>
 
             <div class="form-group full-width">
-              <label for="address"
-                >Address<span class="required">*</span></label
-              >
+              <label for="address">
+                {{ 'PRIVATE_ORG.LABEL_ADDRESS' | translate }}<span class="required">*</span>
+              </label>
               <textarea
                 id="address"
                 formControlName="address"
-                placeholder="Enter complete address"
+                [placeholder]="'PRIVATE_ORG.PLACEHOLDER_ADDRESS' | translate"
                 rows="3"
                 class="form-control"
                 [class.is-invalid]="
@@ -205,30 +211,32 @@
                   profileForm.get('address')?.touched
                 "
               >
-                <span *ngIf="profileForm.get('address')?.errors?.['required']"
-                  >Address is required</span
-                >
-                <span *ngIf="profileForm.get('address')?.errors?.['minlength']"
-                  >Address must be at least 10 characters</span
-                >
+                <span *ngIf="profileForm.get('address')?.errors?.['required']">
+                  {{ 'PRIVATE_ORG.VALIDATION_ADDRESS_REQUIRED' | translate }}
+                </span>
+                <span *ngIf="profileForm.get('address')?.errors?.['minlength']">
+                  {{ 'PRIVATE_ORG.VALIDATION_ADDRESS_MINLENGTH' | translate }}
+                </span>
               </div>
             </div>
           </div>
 
           <!-- Contact Information Section -->
           <div class="form-section">
-            <h3 class="section-title">Contact Information</h3>
+            <h3 class="section-title">
+              {{ 'PRIVATE_ORG.SECTION_CONTACT_INFO' | translate }}
+            </h3>
 
             <div class="form-row">
               <div class="form-group">
-                <label for="contactPersonName"
-                  >Contact Person Name<span class="required">*</span></label
-                >
+                <label for="contactPersonName">
+                  {{ 'PRIVATE_ORG.LABEL_CONTACT_PERSON_NAME' | translate }}<span class="required">*</span>
+                </label>
                 <input
                   type="text"
                   id="contactPersonName"
                   formControlName="contactPersonName"
-                  placeholder="Enter Contact Person Name"
+                  [placeholder]="'PRIVATE_ORG.PLACEHOLDER_CONTACT_PERSON_NAME' | translate"
                   class="form-control"
                   [class.is-invalid]="
                     profileForm.get('contactPersonName')?.invalid &&
@@ -243,25 +251,25 @@
                   "
                 >
                   <span
-                    *ngIf="profileForm.get('contactPersonName')?.errors?.['required']"
-                    >Contact person name is required</span
-                  >
+                    *ngIf="profileForm.get('contactPersonName')?.errors?.['required']">
+                    {{ 'PRIVATE_ORG.VALIDATION_CONTACT_PERSON_NAME_REQUIRED' | translate }}
+                  </span>
                   <span
-                    *ngIf="profileForm.get('contactPersonName')?.errors?.['minlength']"
-                    >Name must be at least 2 characters</span
-                  >
+                    *ngIf="profileForm.get('contactPersonName')?.errors?.['minlength']">
+                    {{ 'PRIVATE_ORG.VALIDATION_CONTACT_PERSON_NAME_MINLENGTH' | translate }}
+                  </span>
                 </div>
               </div>
 
               <div class="form-group">
-                <label for="designation"
-                  >Designation<span class="required">*</span></label
-                >
+                <label for="designation">
+                  {{ 'PRIVATE_ORG.LABEL_DESIGNATION' | translate }}<span class="required">*</span>
+                </label>
                 <input
                   type="text"
                   id="designation"
                   formControlName="designation"
-                  placeholder="Enter Designation"
+                  [placeholder]="'PRIVATE_ORG.PLACEHOLDER_DESIGNATION' | translate"
                   class="form-control"
                   [class.is-invalid]="
                     profileForm.get('designation')?.invalid &&
@@ -276,23 +284,23 @@
                   "
                 >
                   <span
-                    *ngIf="profileForm.get('designation')?.errors?.['required']"
-                    >Designation is required</span
-                  >
+                    *ngIf="profileForm.get('designation')?.errors?.['required']">
+                    {{ 'PRIVATE_ORG.VALIDATION_DESIGNATION_REQUIRED' | translate }}
+                  </span>
                 </div>
               </div>
             </div>
 
             <div class="form-row">
               <div class="form-group">
-                <label for="contactNumber"
-                  >Contact Number<span class="required">*</span></label
-                >
+                <label for="contactNumber">
+                  {{ 'PRIVATE_ORG.LABEL_CONTACT_NUMBER' | translate }}<span class="required">*</span>
+                </label>
                 <input
                   type="tel"
                   id="contactNumber"
                   formControlName="contactNumber"
-                  placeholder="Enter Contact Number"
+                  [placeholder]="'PRIVATE_ORG.PLACEHOLDER_CONTACT_NUMBER' | translate"
                   class="form-control"
                   [class.is-invalid]="
                     profileForm.get('contactNumber')?.invalid &&
@@ -307,25 +315,25 @@
                   "
                 >
                   <span
-                    *ngIf="profileForm.get('contactNumber')?.errors?.['required']"
-                    >Contact number is required</span
-                  >
+                    *ngIf="profileForm.get('contactNumber')?.errors?.['required']">
+                    {{ 'PRIVATE_ORG.VALIDATION_CONTACT_NUMBER_REQUIRED' | translate }}
+                  </span>
                   <span
-                    *ngIf="profileForm.get('contactNumber')?.errors?.['pattern']"
-                    >Please enter a valid 10-digit phone number</span
-                  >
+                    *ngIf="profileForm.get('contactNumber')?.errors?.['pattern']">
+                    {{ 'PRIVATE_ORG.VALIDATION_CONTACT_NUMBER_PATTERN' | translate }}
+                  </span>
                 </div>
               </div>
 
               <div class="form-group">
-                <label for="emailId"
-                  >Email ID<span class="required">*</span></label
-                >
+                <label for="emailId">
+                  {{ 'PRIVATE_ORG.LABEL_EMAIL_ID' | translate }}<span class="required">*</span>
+                </label>
                 <input
                   type="email"
                   id="emailId"
                   formControlName="emailId"
-                  placeholder="Enter Email ID"
+                  [placeholder]="'PRIVATE_ORG.PLACEHOLDER_EMAIL_ID' | translate"
                   class="form-control"
                   [class.is-invalid]="
                     profileForm.get('emailId')?.invalid &&
@@ -339,12 +347,12 @@
                     profileForm.get('emailId')?.touched
                   "
                 >
-                  <span *ngIf="profileForm.get('emailId')?.errors?.['required']"
-                    >Email is required</span
-                  >
-                  <span *ngIf="profileForm.get('emailId')?.errors?.['email']"
-                    >Please enter a valid email</span
-                  >
+                  <span *ngIf="profileForm.get('emailId')?.errors?.['required']">
+                    {{ 'PRIVATE_ORG.VALIDATION_EMAIL_REQUIRED' | translate }}
+                  </span>
+                  <span *ngIf="profileForm.get('emailId')?.errors?.['email']">
+                    {{ 'PRIVATE_ORG.VALIDATION_EMAIL_INVALID' | translate }}
+                  </span>
                 </div>
               </div>
             </div>
@@ -352,19 +360,21 @@
 
           <!-- Security Information Section -->
           <div class="form-section">
-            <h3 class="section-title">Security Information</h3>
+            <h3 class="section-title">
+              {{ 'PRIVATE_ORG.SECTION_SECURITY_INFO' | translate }}
+            </h3>
 
             <div class="form-row">
               <div class="form-group">
-                <label for="password"
-                  >Password<span class="required">*</span></label
-                >
+                <label for="password">
+                  {{ 'PRIVATE_ORG.LABEL_PASSWORD' | translate }}<span class="required">*</span>
+                </label>
                 <div class="password-input-container">
                   <input
                     [type]="showPassword ? 'text' : 'password'"
                     id="password"
                     formControlName="password"
-                    placeholder="Create Password"
+                    [placeholder]="'PRIVATE_ORG.PLACEHOLDER_PASSWORD' | translate"
                     class="form-control"
                     [class.is-invalid]="
                       profileForm.get('password')?.invalid &&
@@ -382,9 +392,10 @@
                   </button>
                 </div>
                 
-                <!-- Password Policy Display -->
                 <div class="password-policy">
-                  <p class="password-policy-title">Password must contain:</p>
+                  <p class="password-policy-title">
+                    {{ 'PRIVATE_ORG.PASSWORD_POLICY_TITLE' | translate }}
+                  </p>
                   <ul class="password-requirements">
                     <li
                       [class.valid]="hasMinLength"
@@ -407,7 +418,9 @@
                           "
                         ></i>
                       </span>
-                      <span class="text">At least 8 characters</span>
+                      <span class="text">
+                        {{ 'PRIVATE_ORG.PASSWORD_POLICY_MIN_LENGTH' | translate }}
+                      </span>
                     </li>
                     <li
                       [class.valid]="hasUppercase"
@@ -430,7 +443,9 @@
                           "
                         ></i>
                       </span>
-                      <span class="text">An uppercase letter</span>
+                      <span class="text">
+                        {{ 'PRIVATE_ORG.PASSWORD_POLICY_UPPERCASE' | translate }}
+                      </span>
                     </li>
                     <li
                       [class.valid]="hasLowercase"
@@ -453,7 +468,9 @@
                           "
                         ></i>
                       </span>
-                      <span class="text">A lowercase letter</span>
+                      <span class="text">
+                        {{ 'PRIVATE_ORG.PASSWORD_POLICY_LOWERCASE' | translate }}
+                      </span>
                     </li>
                     <li
                       [class.valid]="hasNumber && hasSpecialChar"
@@ -482,7 +499,9 @@
                           "
                         ></i>
                       </span>
-                      <span class="text">A number and symbol</span>
+                      <span class="text">
+                        {{ 'PRIVATE_ORG.PASSWORD_POLICY_NUMBER_SYMBOL' | translate }}
+                      </span>
                     </li>
                   </ul>
                 </div>
@@ -495,30 +514,29 @@
                   "
                 >
                   <span
-                    *ngIf="profileForm.get('password')?.errors?.['required']"
-                    >Password is required</span
-                  >
+                    *ngIf="profileForm.get('password')?.errors?.['required']">
+                    {{ 'PRIVATE_ORG.VALIDATION_PASSWORD_REQUIRED' | translate }}
+                  </span>
                   <span
-                    *ngIf="profileForm.get('password')?.errors?.['minlength']"
-                    >Password must be at least 8 characters</span
-                  >
-                  <span *ngIf="profileForm.get('password')?.errors?.['pattern']"
-                    >Password must contain uppercase, lowercase, number and
-                    special character</span
-                  >
+                    *ngIf="profileForm.get('password')?.errors?.['minlength']">
+                    {{ 'PRIVATE_ORG.VALIDATION_PASSWORD_MINLENGTH' | translate }}
+                  </span>
+                  <span *ngIf="profileForm.get('password')?.errors?.['pattern']">
+                    {{ 'PRIVATE_ORG.VALIDATION_PASSWORD_PATTERN' | translate }}
+                  </span>
                 </div>
               </div>
 
               <div class="form-group">
-                <label for="confirmPassword"
-                  >Confirm Password<span class="required">*</span></label
-                >
+                <label for="confirmPassword">
+                  {{ 'PRIVATE_ORG.LABEL_CONFIRM_PASSWORD' | translate }}<span class="required">*</span>
+                </label>
                 <div class="password-input-container">
                   <input
                     [type]="showConfirmPassword ? 'text' : 'password'"
                     id="confirmPassword"
                     formControlName="confirmPassword"
-                    placeholder="Confirm Password"
+                    [placeholder]="'PRIVATE_ORG.PLACEHOLDER_CONFIRM_PASSWORD' | translate"
                     class="form-control"
                     [class.is-invalid]="
                     (profileForm.get('confirmPassword')?.invalid &&
@@ -549,12 +567,12 @@
                 "
                 >
                   <span
-                    *ngIf="profileForm.get('confirmPassword')?.errors?.['required']"
-                    >Confirm password is required</span
-                  >
-                  <span *ngIf="profileForm.errors?.['passwordMismatch']"
-                    >Passwords do not match</span
-                  >
+                    *ngIf="profileForm.get('confirmPassword')?.errors?.['required']">
+                    {{ 'PRIVATE_ORG.VALIDATION_CONFIRM_PASSWORD_REQUIRED' | translate }}
+                  </span>
+                  <span *ngIf="profileForm.errors?.['passwordMismatch']">
+                    {{ 'PRIVATE_ORG.VALIDATION_PASSWORD_MISMATCH' | translate }}
+                  </span>
                 </div>
               </div>
             </div>
@@ -567,7 +585,7 @@
               class="btn btn-secondary"
               (click)="onCancel()"
             >
-              Cancel
+              {{ 'PRIVATE_ORG.BUTTON_CANCEL' | translate }}
             </button>
             <button
               *ngIf="userRole == 1 || userRole == 5"
@@ -576,10 +594,10 @@
               [disabled]="isLoading || profileForm.invalid"
             >
               <span *ngIf="!isLoading">
-                <i class="fas fa-save me-2"></i>Create Profile
+                <i class="fas fa-save me-2"></i>{{ 'PRIVATE_ORG.BUTTON_CREATE_PROFILE' | translate }}
               </span>
               <span *ngIf="isLoading">
-                <i class="fas fa-spinner fa-spin me-2"></i>Creating...
+                <i class="fas fa-spinner fa-spin me-2"></i>{{ 'PRIVATE_ORG.BUTTON_CREATING' | translate }}
               </span>
             </button>
             <button
@@ -589,10 +607,10 @@
               [disabled]="isLoading || profileForm.invalid"
             >
               <span *ngIf="!isLoading">
-                <i class="fas fa-save me-2"></i>Update Profile
+                <i class="fas fa-save me-2"></i>{{ 'PRIVATE_ORG.BUTTON_UPDATE_PROFILE' | translate }}
               </span>
               <span *ngIf="isLoading">
-                <i class="fas fa-spinner fa-spin me-2"></i>Updating...
+                <i class="fas fa-spinner fa-spin me-2"></i>{{ 'PRIVATE_ORG.BUTTON_UPDATING' | translate }}
               </span>
             </button>
           </div>

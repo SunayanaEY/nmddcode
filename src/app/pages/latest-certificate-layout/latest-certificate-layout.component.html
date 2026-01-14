@@ -44,8 +44,12 @@
 
       <p>
         Total duration of training was for
-        <span class="emphasis">{{ data?.duration }}</span>
-        <span>&nbsp;{{data?.durationType}}</span>
+        <span class="emphasis">
+          {{ totalDurationDays !== null ? totalDurationDays : data?.duration }}
+        </span>
+        <span>
+          &nbsp;{{ totalDurationDays !== null ? 'Days' : data?.durationType }}
+        </span>
         <ng-container>
           from <span class="date">{{ data?.startDate | date: 'dd-MM-yyyy' }}</span>
           to <span class="date">{{ data?.endDate | date: 'dd-MM-yyyy' }}</span>

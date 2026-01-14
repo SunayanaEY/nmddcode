@@ -135,6 +135,20 @@
               "Training Institute Management" | translate
             }}</span>
           </a>
+          <!-- Private Organization Data -->
+        <a
+          class="sidebar-link d-flex align-items-center mb-2 fw-bold"
+          [routerLink]="['organization-table']"
+          routerLinkActive="active"
+          [attr.title]="collapsed ? 'Private Organization Data' : null"
+          *ngIf="isRole5User()"
+        >
+          <i class="bi bi-building-check me-2"></i>
+
+          <span class="sidebar-label" *ngIf="!collapsed">
+            {{ "Other Organization Data" | translate }}
+          </span>
+        </a>
 
           <a
             class="sidebar-link submenu-link d-flex align-items-center mb-1"
@@ -171,6 +185,19 @@
             <i class="bi bi-person-badge me-2"></i>
             <span class="sidebar-label" *ngIf="!collapsed">{{
               "State Admin Master" | translate
+            }}</span>
+          </a>
+
+          <a
+            class="sidebar-link submenu-link d-flex align-items-center mb-1"
+            [routerLink]="['other-organization-master']"
+            routerLinkActive="active"
+            [attr.title]="collapsed ? 'Other Organization Master' : null"
+            *ngIf="isRole1User()"
+          >
+            <i class="bi bi-diagram-3 me-2"></i>
+            <span class="sidebar-label" *ngIf="!collapsed">{{
+              "Other Organization Master" | translate
             }}</span>
           </a>
 
@@ -256,12 +283,12 @@
         </div>
       </div>
       <!-- Create Organization -->
-      <a
+      <!-- <a
         class="sidebar-link d-flex align-items-center mb-2 fw-bold"
         [routerLink]="['create-organization']"
         routerLinkActive="active"
         [attr.title]="collapsed ? 'Create Organization' : null"
-        *ngIf="authService.getUserRole() === 1"
+        
       >
         <span class="me-2 d-flex align-items-center">
           <svg
@@ -293,22 +320,9 @@
         <span class="sidebar-label" *ngIf="!collapsed">
           {{ "Create Organization" | translate }}
         </span>
-      </a>
+      </a> -->
 
-      <!-- Private Organization Data -->
-      <a
-        class="sidebar-link d-flex align-items-center mb-2 fw-bold"
-        [routerLink]="['organization-table']"
-        routerLinkActive="active"
-        [attr.title]="collapsed ? 'Private Organization Data' : null"
-        *ngIf="isRole1User() || isRole5User()"
-      >
-        <i class="bi bi-building-check me-2"></i>
-
-        <span class="sidebar-label" *ngIf="!collapsed">
-          {{ "Private Organization Data" | translate }}
-        </span>
-      </a>
+      
 
       <!-- Activity Log -->
       <a

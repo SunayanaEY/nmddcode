@@ -26,6 +26,7 @@ import {
   State,
   District,
 } from '../../../services/location.service';
+import { TranslateModule } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-organization-table-data',
@@ -35,6 +36,7 @@ import {
     TableComponent,
     ModalComponent,
     HttpClientModule,
+    TranslateModule,
   ],
   templateUrl: './organization-table-data.component.html',
   styleUrl: './organization-table-data.component.css',
@@ -43,7 +45,7 @@ export class OrganizationTableDataComponent implements OnInit {
   @ViewChild('editModal') editModal!: ModalComponent;
 
   breadcrumbItems: BreadcrumbItem[] = [
-    { label: 'Training Module', url: '/admin/training-module' },
+    { label: 'Dashboard', url: '/admin/dashboard' },
     { label: 'Private Organization Data' },
   ];
 
@@ -100,7 +102,7 @@ export class OrganizationTableDataComponent implements OnInit {
     { key: 'state', header: 'State' },
     { key: 'district', header: 'District' },
     // { key: 'address', header: 'Address' },
-    { key: 'email', header: 'Mail' },
+    { key: 'email', header: 'Email' },
     { key: 'registrationNumber', header: 'Reg No.' },
     { key: 'contactName', header: 'Contact Person' },
     { key: 'contactNumber', header: 'Contact Number' },
@@ -138,8 +140,8 @@ export class OrganizationTableDataComponent implements OnInit {
     'state',
     'district',
     'email',
-    'regNo',
-    'contactPersonName',
+    'registrationNumber',
+    'contactName',
     'contactNumber',
   ];
 

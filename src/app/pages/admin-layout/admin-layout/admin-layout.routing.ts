@@ -25,6 +25,7 @@ import { TrainingInstituteManagementComponent } from '../../training/training-in
 import { TrainingMasterManagementComponent } from '../../training/training-master-management/training-master-management.component';
 import { TrainingManagerManagementComponent } from '../../training/training-manager-management/training-manager-management.component';
 import { RoleDashboardComponent } from '../../role-dashboard/role-dashboard.component';
+import { OtherOrganizationMasterComponent } from '../../other-organization-master/other-organization-master.component';
 
 export const AdminLayoutRoutes: Routes = [
   // Central Admin Only Routes (Role 1)
@@ -112,6 +113,12 @@ export const AdminLayoutRoutes: Routes = [
     component: TrainingMasterManagementComponent,
     canActivate: [RoleGuard],
     data: { allowedRoles: [1, 3, 5, 6] },
+  },
+  {
+    path: 'other-organization-master',
+    component: OtherOrganizationMasterComponent,
+    canActivate: [RoleGuard],
+    data: { allowedRoles: [1] },
   },
   {
     path: 'registered-data-entry-operators',

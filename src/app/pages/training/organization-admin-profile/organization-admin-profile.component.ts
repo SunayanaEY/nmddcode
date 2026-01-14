@@ -21,10 +21,11 @@ import {
   District,
 } from '../../../services/location.service';
 import { AuthService } from '../../../services/auth.service';
+import { TranslateModule } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-organization-admin-profile',
-  imports: [CommonModule, ReactiveFormsModule, BreadcrumbComponent],
+  imports: [CommonModule, ReactiveFormsModule, BreadcrumbComponent, TranslateModule],
   templateUrl: './organization-admin-profile.component.html',
   styleUrl: './organization-admin-profile.component.css',
 })
@@ -68,7 +69,7 @@ export class OrganizationAdminProfileComponent implements OnInit {
   ];
 
   breadcrumbItems: BreadcrumbItem[] = [
-    { label: 'Training Module', url: '/admin/training-module' },
+    { label: 'Dashboard', url: '/admin/training-module' },
     { label: 'Private Organization Registration' },
   ];
 
@@ -576,7 +577,19 @@ export class OrganizationAdminProfileComponent implements OnInit {
    * Handle cancel button click
    */
   onCancel() {
-    this.router.navigate(['/admin/training-module']);
+    if (this.userRole == 6 && this.organizationData) {
+      this.initializeForm();
+    } else {
+      this.profileForm.reset();
+    }
+
+    this.selectedFile = null;
+    this.selectedFileDoc = null;
+    this.selectedImagePreview = null;
+    this.selectedDocPreview = null;
+
+    this.profileForm.markAsPristine();
+    this.profileForm.markAsUntouched();
   }
 
   validatePassword(password: string) {

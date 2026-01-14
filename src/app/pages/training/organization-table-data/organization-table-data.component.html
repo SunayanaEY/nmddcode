@@ -1,12 +1,12 @@
 <div class="training-centre-container">
   <!-- Breadcrumb -->
-  <app-breadcrumb [items]="breadcrumbItems"></app-breadcrumb>
+  <app-breadcrumb [items]="breadcrumbItems"  *ngIf="userRole != 1" ></app-breadcrumb>
 
   <!-- Page Header -->
   <div class="page-header">
-    <h2>Private Organization Data</h2>
+    <h2>{{'Private Organizations' | translate}}</h2>
     <p class="page-description">
-      Manage and view all private organizations across different locations
+      {{'Private Organization Data.DESCRIPTION' | translate}}
     </p>
   </div>
 
@@ -25,14 +25,14 @@
           fill="currentColor"
         />
       </svg>
-      Export Data
+      {{'Export Data' | translate}}
     </button>
   </div>
 
   <!-- Loading State -->
   <div *ngIf="isLoading" class="loading-container">
     <div class="loading-spinner"></div>
-    <p>Loading training institutes...</p>
+    <p>{{'Loading private organizations...' | translate}}</p>
   </div>
 
   <!-- Error State -->

@@ -52,6 +52,21 @@ export class LatestCertificateLayoutComponent implements OnInit {
     this.loadTraineePhoto();
   }
 
+  get totalDurationDays(): number | null {
+    if (!this.data?.startDate || !this.data?.endDate) {
+      return null;
+    }
+    const start = new Date(this.data.startDate);
+    const end = new Date(this.data.endDate);
+    if (isNaN(start.getTime()) || isNaN(end.getTime())) {
+      return null;
+    }
+    const startUtc = Date.UTC(start.getFullYear(), start.getMonth(), start.getDate());
+    const endUtc = Date.UTC(end.getFullYear(), end.getMonth(), end.getDate());
+    const diffDays = Math.floor((endUtc - startUtc) / (1000 * 60 * 60 * 24)) + 1;
+    return diffDays > 0 ? diffDays : null;
+  }
+
   get finalUniqueId(): string {
     return this.data?.uin ?? this.uniqueId;
   }

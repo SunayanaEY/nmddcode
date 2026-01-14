@@ -55,7 +55,7 @@ export class OrganizationComponentComponent implements OnInit {
   ];
 
   breadcrumbItems: BreadcrumbItem[] = [
-    { label: 'Training Module', url: '/admin/training-module' },
+    { label: 'Training Module', url: '/admin/dashboard' },
     { label: 'Private Organization Registration' },
   ];
 
