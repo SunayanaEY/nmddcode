@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { ActivatedRoute } from '@angular/router';
+import { Router, ActivatedRoute, RouterModule } from '@angular/router';
 import {
   FormBuilder,
   FormGroup,
@@ -9,13 +9,12 @@ import {
 } from '@angular/forms';
 import { ToastrService } from 'ngx-toastr';
 import { AuthService } from '../../services/auth.service';
-import { Router } from '@angular/router';
 import { TranslateModule } from '@ngx-translate/core';
-
+ 
 @Component({
   selector: 'app-forget-password',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule,TranslateModule],
+  imports: [CommonModule, ReactiveFormsModule, TranslateModule, RouterModule],
   templateUrl: './forget-password.component.html',
   styleUrl: './forget-password.component.css',
 })

@@ -5,15 +5,19 @@
 
   <div class="login-card">
     <div class="card-left">
-      <div class="left-header">
+      <div class="emblem-section">
         <img src="assets/login/emblem.png" alt="Emblem" class="emblem" />
-        <div class="branding-text">
-          <p class="gov-text">भारत सरकार | GOVERNMENT OF INDIA</p>
-          <p class="dept-text">पशुपालन और डेयरी विभाग</p>
-          <p class="dept-text">DEPARTMENT OF ANIMAL HUSBANDRY AND DAIRYING</p>
-        </div>
       </div>
-      <div class="map-section">
+      
+      <div class="branding-section">
+        <p class="gov-text">भारत सरकार | GOVERNMENT OF INDIA</p>
+        <p class="dept-text">पशुपालन और डेयरी विभाग</p>
+        <p class="dept-text">DEPARTMENT OF ANIMAL HUSBANDRY AND DAIRYING</p>
+        <p class="vidya-text">विद्यापीठ | VIDYAPEETH</p>
+      </div>
+      
+      <!-- Hidden Map Section -->
+      <div class="map-section" *ngIf="false">
         <app-india-map
           [selectedState]="selectedState"
           [variant]="'login'"
@@ -24,6 +28,7 @@
 
     <div class="card-right">
       <div class="login-form-container">
+        <!-- <h1>विद्यापीठ | VIDYAPITH</h1> -->
         <h2 class="login-title">Sign In</h2>
 
         <form [formGroup]="signInForm" (ngSubmit)="onSignIn()">
