@@ -1,0 +1,395 @@
+/* Simple, Clean Design matching website theme */
+.verify-certificate-container {
+    min-height: 100vh;
+    background: #f5f7fa;
+    padding: 1.5rem;
+}
+
+/* Loading State */
+.loading-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 400px;
+    gap: 1.5rem;
+}
+
+.spinner {
+    width: 50px;
+    height: 50px;
+    border: 3px solid #e5e7eb;
+    border-top-color: #1e40af;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+.loading-container p {
+    font-size: 1rem;
+    color: #6b7280;
+    margin: 0;
+}
+
+/* Error State */
+.error-container {
+    max-width: 500px;
+    margin: 4rem auto;
+    background: white;
+    border-radius: 8px;
+    padding: 3rem 2rem;
+    text-align: center;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    border: 1px solid #e5e7eb;
+}
+
+.error-icon {
+    font-size: 3rem;
+    margin-bottom: 1rem;
+}
+
+.error-container h2 {
+    color: #dc2626;
+    font-size: 1.5rem;
+    font-weight: 600;
+    margin: 0 0 1rem;
+}
+
+.error-container p {
+    color: #6b7280;
+    font-size: 0.875rem;
+    margin: 0;
+}
+
+/* Verification Content */
+.verification-content {
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+/* Verified Badge */
+.verified-badge {
+    background: #10b981;
+    border-radius: 8px;
+    padding: 1rem 1.5rem;
+    margin-bottom: 1.5rem;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.badge-icon {
+    flex-shrink: 0;
+    width: 40px;
+    height: 40px;
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.badge-icon svg {
+    width: 24px;
+    height: 24px;
+    color: white;
+    fill: white;
+}
+
+.badge-text {
+    flex: 1;
+    color: white;
+}
+
+.badge-text h3 {
+    margin: 0;
+    font-size: 1.125rem;
+    font-weight: 600;
+}
+
+.badge-text p {
+    margin: 0;
+    font-size: 0.8125rem;
+    opacity: 0.95;
+}
+
+/* Single Card Container - Centered */
+.single-card-container {
+    margin-bottom: 1.5rem;
+}
+
+/* Detail Card */
+.detail-card {
+    background: white;
+    border-radius: 8px;
+    border: 1px solid #e5e7eb;
+    overflow: hidden;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    padding: 1.5rem;
+}
+
+/* Trainee Section */
+.trainee-section {
+    text-align: center;
+    padding-bottom: 1.25rem;
+}
+
+.profile-photo {
+    width: 100px;
+    height: 100px;
+    border-radius: 8px;
+    overflow: hidden;
+    border: 2px solid #e5e7eb;
+    background: #f9fafb;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 1.5rem;
+}
+
+.profile-photo img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.profile-photo.placeholder span {
+    font-size: 3rem;
+    color: #9ca3af;
+}
+
+.trainee-name {
+    margin: 0 0 0.75rem;
+    font-size: 1.375rem;
+    font-weight: 600;
+    color: #111827;
+}
+
+.uin-display {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.5rem 1rem;
+    background: #f3f4f6;
+    border-radius: 6px;
+    border: 1px solid #e5e7eb;
+}
+
+.uin-display .label {
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: #6b7280;
+}
+
+.uin-display .value {
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: #111827;
+}
+
+/* Section Divider */
+.section-divider {
+    height: 1px;
+    background: #e5e7eb;
+    margin: 1.25rem 0;
+}
+
+/* Training Section */
+.training-section {
+    padding-top: 0.5rem;
+}
+
+.section-title {
+    margin: 0 0 1rem;
+    font-size: 1.0625rem;
+    font-weight: 600;
+    color: #111827;
+    text-align: center;
+}
+
+/* Info Group */
+.info-group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+}
+
+.info-item {
+    display: flex;
+    gap: 0.75rem;
+    align-items: flex-start;
+    padding: 0.75rem;
+    border-radius: 6px;
+    background: #f9fafb;
+    border: 1px solid #e5e7eb;
+}
+
+.info-item .icon {
+    flex-shrink: 0;
+    font-size: 1.125rem;
+    width: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: white;
+    border-radius: 6px;
+    border: 1px solid #e5e7eb;
+}
+
+.info-item>div {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+    min-width: 0;
+}
+
+.info-item .label {
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: #6b7280;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.info-item .value {
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: #111827;
+    word-break: break-word;
+}
+
+/* Action Container */
+.action-container {
+    text-align: center;
+    padding: 1rem 0;
+}
+
+.download-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.875rem 2rem;
+    font-size: 1rem;
+    font-weight: 500;
+    color: white;
+    background: #1e40af;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    transition: all 0.2s ease;
+}
+
+.download-btn:hover {
+    background: #1e3a8a;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.15);
+}
+
+.download-btn:active {
+    transform: translateY(1px);
+}
+
+.download-btn svg {
+    width: 20px;
+    height: 20px;
+}
+
+/* Hidden Certificate */
+.hidden-certificate {
+    position: fixed;
+    left: -9999px;
+    top: -9999px;
+    opacity: 0;
+    pointer-events: none;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .verify-certificate-container {
+        padding: 1rem;
+    }
+
+    .verified-badge {
+        flex-direction: column;
+        align-items: flex-start;
+        padding: 1.25rem;
+    }
+
+    .badge-icon {
+        width: 40px;
+        height: 40px;
+    }
+
+    .badge-icon svg {
+        width: 24px;
+        height: 24px;
+    }
+
+    .badge-text h3 {
+        font-size: 1.125rem;
+    }
+
+    .detail-card {
+        padding: 1.5rem;
+    }
+
+    .profile-photo {
+        width: 100px;
+        height: 100px;
+    }
+
+    .trainee-name {
+        font-size: 1.25rem;
+    }
+
+    .download-btn {
+        width: 100%;
+        padding: 0.75rem 1.5rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .badge-text h3 {
+        font-size: 1rem;
+    }
+
+    .profile-photo {
+        width: 80px;
+        height: 80px;
+    }
+
+    .trainee-name {
+        font-size: 1.125rem;
+    }
+
+    .detail-card {
+        padding: 1.25rem;
+    }
+}
+
+/* Print Styles */
+@media print {
+    .verify-certificate-container {
+        background: white;
+        padding: 0;
+    }
+
+    .verified-badge,
+    .action-container {
+        display: none;
+    }
+
+    .detail-card {
+        break-inside: avoid;
+        box-shadow: none;
+        border: 1px solid #e5e7eb;
+    }
+}
