@@ -5,7 +5,6 @@
   "Email Address": "ईमेल पता",
   "enter email": "ईमेल दर्ज करें",
   "Enter Email": "ईमेल दर्ज करें",
-
   "Password": "पासवर्ड",
   "Password is required": "पासवर्ड जरुरी है",
   "Download Certificate": "प्रमाणपत्र डाउनलोड करें",
@@ -862,6 +861,7 @@
   "Reg No.": "पंजीकरण संख्या",
   "Other Organization Master": "अन्य संगठन मास्टर",
   "Other Organization Data": "अन्य संगठन डेटा",
-  "Calender": "कैलेंडर"
-
+  "Calender": "कैलेंडर",
+  "State Head's Section": "राज्य प्रमुख का अनुभाग",
+  "Institute Head's Section": "संस्थान प्रमुख का अनुभाग"
 }

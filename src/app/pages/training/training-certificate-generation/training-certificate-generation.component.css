@@ -13,9 +13,10 @@
 .form-header {
   margin-bottom: 2rem;
 }
-.required{
-  color : red;
-  font-weight:  600;
+
+.required {
+  color: red;
+  font-weight: 600;
 }
 
 .breadcrumb {
@@ -248,6 +249,21 @@ select.form-control {
   background: #fafafa;
 }
 
+.signature-section-title {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: #787a80;
+  margin: 0 0 1.25rem 0;
+  padding: 0.5rem 1rem;
+  background: linear-gradient(135deg, #f8f8f8 0%, #e7e7e7 100%);
+  border-left: 4px solid #a4a4a4;
+  border-radius: 6px;
+  text-transform: none;
+  letter-spacing: 0.025em;
+  display: inline-block;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+}
+
 .logo-upload-container {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
@@ -403,12 +419,12 @@ select.form-control {
     margin-left: 0 !important;
     padding: 1.5rem;
   }
-  
+
   .form-group.half-width,
   .form-group.third-width {
     flex: 1 1 100%;
   }
-  
+
   .form-group.two-thirds-width {
     flex: 1 1 100%;
   }
@@ -418,23 +434,23 @@ select.form-control {
   .certificate-form-container {
     padding: 1rem;
   }
-  
+
   .form-section {
     padding: 1.5rem;
   }
-  
+
   .form-row {
     gap: 1rem;
   }
-  
+
   .page-title {
     font-size: 1.5rem;
   }
-  
+
   .form-actions {
     flex-direction: column;
   }
-  
+
   .btn-lg {
     width: 100%;
   }
@@ -446,11 +462,11 @@ select.form-control {
     align-items: flex-start;
     gap: 0.25rem;
   }
-  
+
   .upload-box {
     padding: 1.5rem 1rem;
   }
-  
+
   .upload-icon {
     font-size: 2rem;
   }
@@ -458,7 +474,8 @@ select.form-control {
 
 /* Date ranges container highlight */
 .date-ranges-container {
-  background-color: #f8f9fa; /* subtle grey */
+  background-color: #f8f9fa;
+  /* subtle grey */
   border: 1px solid #e5e7eb;
   border-radius: 8px;
   padding: 16px;

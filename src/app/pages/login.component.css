@@ -62,17 +62,17 @@
   flex-direction: column;
   position: relative;
   border-right: 1px solid rgba(255, 255, 255, 0.35);
-  justify-content: space-between;
+  justify-content: center;
   align-items: center;
   padding: 2rem;
 }
 
 .emblem-section {
-  flex: 1;
   display: flex;
   align-items: center;
   justify-content: center;
   width: 100%;
+  margin-bottom: 0.25rem;
 }
 
 .emblem {
@@ -108,9 +108,9 @@
 }
 
 .vidya-text {
-  font-size: 1.25rem;
+  font-size: 1.8rem;
   font-weight: 700;
-  margin: 16px 0 0 0;
+  margin: 48px 0 0 0;
   color: #ffffff;
   text-transform: uppercase;
   letter-spacing: 0.5px;

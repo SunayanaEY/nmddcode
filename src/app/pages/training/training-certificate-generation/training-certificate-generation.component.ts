@@ -66,6 +66,12 @@ export class TrainingCertificateGenerationComponent implements OnInit {
       designation: '',
       organization: '',
     },
+    {
+      file: null,
+      name: '',
+      designation: '',
+      organization: '',
+    },
   ];
   logos: any[] = [
     {
@@ -79,6 +85,12 @@ export class TrainingCertificateGenerationComponent implements OnInit {
     },
   ];
   signaturesNew: any[] = [
+    {
+      file: null,
+      name: '',
+      designation: '',
+      organization: '',
+    },
     {
       file: null,
       name: '',
@@ -114,7 +126,7 @@ export class TrainingCertificateGenerationComponent implements OnInit {
   isSpinner: boolean = false;
   trainingId: any = null;
   trainingDetails: any = null;
-  mySelectedFile: any[] = [''];
+  mySelectedFile: any[] = ['', ''];
   mySelectedLogo: any[] = ['', '', ''];
   trainingScheduleFile: File | null = null;
   existingTrainingSchedulePath: string = '';
@@ -147,7 +159,7 @@ export class TrainingCertificateGenerationComponent implements OnInit {
       if (u.protocol === 'http:' || u.protocol === 'https:') {
         return path;
       }
-    } catch {}
+    } catch { }
     if (path.startsWith('/')) {
       return `${this.apiUrl}${path.replace(/^\/+/, '')}`;
     }
@@ -274,7 +286,7 @@ export class TrainingCertificateGenerationComponent implements OnInit {
     if (this.trainingId != null || this.trainingId != undefined) {
       this.getTrainingDetails(this.trainingId);
     } else {
-      this.mySelectedFile = [''];
+      this.mySelectedFile = ['', ''];
       this.mySelectedLogo = ['', '', ''];
     }
   }
@@ -284,7 +296,7 @@ export class TrainingCertificateGenerationComponent implements OnInit {
     const value = input.value;
     // Allow alphabets, numbers, and spaces
     const sanitizedValue = value.replace(/[^a-zA-Z0-9 ]/g, '');
-    
+
     if (value !== sanitizedValue) {
       input.value = sanitizedValue;
       this.trainingForm.get('venueBlock')?.setValue(sanitizedValue);
@@ -396,7 +408,7 @@ export class TrainingCertificateGenerationComponent implements OnInit {
             (s: any) => this.buildLogoUrl(s.signatorySignaturePath)
           );
         }
-        
+
         if (this.trainingDetails.trainingScheduleDetail) {
           this.existingTrainingSchedulePath = this.trainingDetails.trainingScheduleDetail;
         }
@@ -924,7 +936,7 @@ export class TrainingCertificateGenerationComponent implements OnInit {
       this.previewBlobUrls.forEach((url) => {
         try {
           URL.revokeObjectURL(url);
-        } catch {}
+        } catch { }
       });
       this.previewBlobUrls = [];
     }
@@ -1012,20 +1024,20 @@ export class TrainingCertificateGenerationComponent implements OnInit {
 
     if (this.populate === 'true') {
       // For update mode, check signaturesNew array
-      const hasValidSignature = this.signaturesNew.some(
+      const validSignatures = this.signaturesNew.filter(
         (sig) => sig.file || sig.signatorySignaturePath
       );
 
-      if (!hasValidSignature) {
-        this.signatureValidationError = 'At least 1 signature is required';
+      if (validSignatures.length < 2) {
+        this.signatureValidationError = 'Both signatures are required';
         return false;
       }
     } else {
       // Create mode (populate is 'false', undefined, or null)
-      const hasValidSignature = this.signatures.some((sig) => sig.file);
+      const validSignatures = this.signatures.filter((sig) => sig.file);
 
-      if (!hasValidSignature) {
-        this.signatureValidationError = 'At least 1 signature is required';
+      if (validSignatures.length < 2) {
+        this.signatureValidationError = 'Both signatures are required';
         return false;
       }
     }
