@@ -5,4 +5,5 @@ export const environment = {
   // apiUrl: '/api/', //for prod
   apiUrl: 'http://10.0.0.5:8090/ndlm_preprod/', //for preprod
   // apiUrl:'https://dahdtraining.ndlm.co.in/'
+  certificateUrl: 'https://dahdvidyapeeth.ndlm.co.in/',
 };
