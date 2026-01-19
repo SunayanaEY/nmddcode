@@ -45,6 +45,7 @@ export class CalenderComponent {
   minutePixelRatio = 0.6667; // 40px per hour => 0.6667px per minute
   role: string = '';
   showCreateButton: boolean = false;
+  userRole: number | null = null;
   constructor(
     private trainingService: TrainingService,
     private router: Router,
@@ -52,6 +53,7 @@ export class CalenderComponent {
     private adminService: AdminService
   ) {}
   ngOnInit(): void {
+    this.userRole = this.authService.getUserRole();
     this.showCreateButton = this.authService.hasRole([4]);
     if (this.meetings.length > 0) {
       this.buildMonth();
@@ -475,5 +477,17 @@ export class CalenderComponent {
   this.dayModalTrainings = [];
   this.dayModalDate = null;
 }
+
+  navigateToApprovedRejectedTrainings(): void {
+    if (this.authService.hasRole([4])) {
+      this.router.navigate(['/admin/approvedrejectedTrainings']);
+    }
+  }
+
+  navigateToAllTrainingsAdmin(): void {
+    if (this.authService.hasRole([3])) {
+      this.router.navigate(['/admin/all-trainings-admin']);
+    }
+  }
 
 }

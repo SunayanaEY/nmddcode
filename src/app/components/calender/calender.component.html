@@ -216,7 +216,6 @@
            [style.borderLeftColor]="colorForStatus(t.status, t.modeOfTraining)"
            [style.background]="overlayBackgroundForStatus(t.status, t.modeOfTraining)">
         <div class="card-header">
-          <!-- <img *ngIf="normalizeUrl(t.logoPath1) as logo" [src]="logo" class="logo" alt="logo" /> -->
           <div class="card-title" [attr.title]="t.trainingTitle">{{ t.trainingTitle }}</div>
         </div>
         <div class="card-row" *ngIf="t.trainingInstituteName"><span class="label">Institute:</span> <span>{{ t.trainingInstituteName }}</span></div>
@@ -259,6 +258,12 @@
         <div class="card-row" *ngIf="t.venueBlock || t.venueDistrict || t.venueState"><span class="label">Location:</span> <span>{{ t.venueBlock }}, {{ t.venueDistrict }}, {{ t.venueState }}</span></div>
         <div class="card-row" *ngIf="t.venueAddress"><span class="label">Address:</span> <span>{{ t.venueAddress }}</span></div>
         <div class="card-desc" *ngIf="t.trainingDescription">{{ t.trainingDescription }}</div>
+        <div class="card-row" *ngIf="userRole === 4">
+          <button class="btn btn-primary btn-sm" (click)="navigateToApprovedRejectedTrainings()">View</button>
+        </div>
+        <div class="card-row" *ngIf="userRole === 3">
+          <button class="btn btn-primary btn-sm" (click)="navigateToAllTrainingsAdmin()">View</button>
+        </div>
       </div>
     </div>
     <ng-template #emptyTrainings>
