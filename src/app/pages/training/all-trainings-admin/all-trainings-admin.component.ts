@@ -824,6 +824,7 @@ export class AllTrainingsAdminComponent {
       return;
     }
 
+    this.isTableLoading = true;
     this.spinner.show();
     try {
       const response = await firstValueFrom(
@@ -930,6 +931,7 @@ export class AllTrainingsAdminComponent {
       console.error('Error generating bulk certificates:', error);
       this.toastr.error('Failed to generate certificates');
     } finally {
+      this.isTableLoading = false;
       this.spinner.hide();
       this.certificateDataForBulk = null;
       this.cdr.detectChanges();
