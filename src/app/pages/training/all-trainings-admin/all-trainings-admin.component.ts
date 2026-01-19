@@ -1,10 +1,11 @@
+import { Component, Input, ViewChild, ElementRef, OnInit, OnChanges, SimpleChanges, ChangeDetectorRef } from '@angular/core';
 import { CommonModule, DatePipe } from '@angular/common';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import {
-  Component,
-  ElementRef,
+  Component as AngularComponent,
+  ElementRef as AngularElementRef,
   TemplateRef,
-  ViewChild,
+  ViewChild as AngularViewChild,
   ViewEncapsulation,
 } from '@angular/core';
 import {
@@ -31,7 +32,6 @@ import { NgSelectModule } from '@ng-select/ng-select';
 
 
 
-
 import { ToastrService } from 'ngx-toastr';
 import { NgxSpinnerModule, NgxSpinnerService } from 'ngx-spinner';
 
@@ -39,6 +39,8 @@ import { LatestCertificateLayoutComponent } from '../../latest-certificate-layou
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { environment } from '../../../../environments/environment';
 import { firstValueFrom } from 'rxjs';
+import jsPDF from 'jspdf';
+import html2canvas from 'html2canvas';
 
 @Component({
   selector: 'app-all-trainings-admin',
@@ -64,17 +66,22 @@ export class AllTrainingsAdminComponent {
   isLoadingSchedule: boolean = false;
   apiUrl = environment.apiUrl;
 
-  @ViewChild('trainingDetailsModal')
-  trainingDetailsModal!: ElementRef;
-  @ViewChild('rejectModal')
-  rejectModal!: ElementRef;
-  @ViewChild('certificateModal')
-  certificateModal!: ElementRef;
-  @ViewChild('traineeTable')
+  @AngularViewChild('trainingDetailsModal')
+  trainingDetailsModal!: AngularElementRef;
+  @AngularViewChild('rejectModal')
+  rejectModal!: AngularElementRef;
+  @AngularViewChild('certificateModal')
+  certificateModal!: AngularElementRef;
+  @AngularViewChild('traineeTable')
   traineeTable!: TableComponent;
+  @AngularViewChild('hiddenCertificate')
+  hiddenCertificate!: LatestCertificateLayoutComponent;
+
   submitted: Boolean = false;
   
   certificateData: any = null;
+  certificateDataForBulk: any = null;
+  certificateUinForBulk: string = '';
   selectedTraineeForCertificate: any = null;
   trainingForm!: FormGroup;
   rejectionRemark: string = '';
@@ -135,7 +142,18 @@ export class AllTrainingsAdminComponent {
 
   tableActions: TableAction[] = [
     { name: 'view', icon: 'bi bi-eye', class: 'btn-info', title: 'View' },
-    // { name: 'download', icon: 'bi bi-download', class: 'btn-success', title: 'Download' },
+    {
+      name: 'downloadAllCertificates',
+      icon: 'bi bi-download',
+      class: 'btn-success',
+      title: 'Download all certificates',
+    },
+    {
+      name: 'downloadAllIdCards',
+      icon: 'bi bi-person-badge',
+      class: 'btn-primary',
+      title: 'Download all ID cards',
+    },
   ];
 
   trainingsList: TrainingsList[] = [];
@@ -282,6 +300,7 @@ export class AllTrainingsAdminComponent {
     private spinner: NgxSpinnerService,
     private translate: TranslateService,
     private http: HttpClient,
+    private cdr: ChangeDetectorRef
   ) {}
   filteredData = [...this.trainingsList];
 
@@ -774,6 +793,10 @@ export class AllTrainingsAdminComponent {
         backdrop: 'static',
         keyboard: false,
       });
+    } else if (event.action === 'downloadAllCertificates') {
+      this.downloadAllCertificatesForTraining(event.item);
+    } else if (event.action === 'downloadAllIdCards') {
+      this.downloadAllIdCardsForTraining(event.item);
     } else if (event.action === 'approve') {
       this.spinner.show('modalSpinner');
       this.approveTrainee(event.item);
@@ -788,6 +811,136 @@ export class AllTrainingsAdminComponent {
     } else if (event.action === 'download') {
       this.downloadCertificate(event.item);
     }
+  }
+
+  private async downloadAllCertificatesForTraining(training: any): Promise<void> {
+    const trainingId = training?.id;
+    if (!trainingId) {
+      this.toastr.error('Training ID not available for download');
+      return;
+    }
+
+    this.spinner.show();
+    try {
+      const response = await firstValueFrom(
+        this.trainingsService.getTrainingWithTrainee(trainingId)
+      );
+
+      const trainingData: any =
+        response && (response as any).data ? (response as any).data : response;
+
+      if (!trainingData || !Array.isArray(trainingData.trainees)) {
+        this.toastr.error('Invalid training data received');
+        return;
+      }
+
+      const trainees = trainingData.trainees;
+
+      const approvedTrainees = trainees.filter(
+        (t: any) =>
+          t.status === 'Approved by Organization' ||
+          t.status === 'APPROVED BY ORGANIZATION' ||
+          t.status === 'Approved by State Head' ||
+          t.status === 'Certificate Issued & downloaded'
+      );
+
+      if (approvedTrainees.length === 0) {
+        this.toastr.info('No approved trainees found for this training');
+        return;
+      }
+
+      const signatures =
+        Array.isArray((trainingData as any).signatures) &&
+        (trainingData as any).signatures.length > 0
+          ? (trainingData as any).signatures
+          : Array.isArray((trainingData as any).signatories)
+          ? (trainingData as any).signatories
+          : [];
+
+      const pdf = new jsPDF('portrait', 'mm', 'a4');
+      const pdfWidth = pdf.internal.pageSize.getWidth();
+      const pdfHeight = pdf.internal.pageSize.getHeight();
+
+      for (let i = 0; i < approvedTrainees.length; i++) {
+        const trainee = approvedTrainees[i];
+
+        this.certificateDataForBulk = {
+          ...trainingData,
+          ...trainee,
+          signatures,
+        };
+        this.certificateUinForBulk = trainee.uin || 'UIN2025345780991';
+
+        this.cdr.detectChanges();
+
+        await new Promise((resolve) => setTimeout(resolve, 500));
+
+        if (this.hiddenCertificate && this.hiddenCertificate.certificateContent) {
+          const element = this.hiddenCertificate.certificateContent.nativeElement;
+          const canvas = await html2canvas(element, {
+            useCORS: true,
+            scale: 2,
+            allowTaint: true,
+            backgroundColor: '#ffffff',
+          });
+
+          const imgData = canvas.toDataURL('image/png');
+          const imgProps = pdf.getImageProperties(imgData);
+          const targetWidth = pdfWidth - 20;
+          const targetHeight = (imgProps.height * targetWidth) / imgProps.width;
+          const centerX = (pdfWidth - targetWidth) / 2;
+          let posY = (pdfHeight - targetHeight) / 2;
+
+          if (targetHeight > pdfHeight - 20) {
+            posY = 10;
+            const newHeight = pdfHeight - 20;
+            const newWidth = (imgProps.width * newHeight) / imgProps.height;
+            pdf.addImage(
+              imgData,
+              'PNG',
+              (pdfWidth - newWidth) / 2,
+              posY,
+              newWidth,
+              newHeight
+            );
+          } else {
+            pdf.addImage(
+              imgData,
+              'PNG',
+              centerX,
+              posY,
+              targetWidth,
+              targetHeight
+            );
+          }
+
+          if (i < approvedTrainees.length - 1) {
+            pdf.addPage();
+          }
+        }
+      }
+
+      pdf.save(`Bulk_Certificates_${training.trainingTitle || 'Training'}.pdf`);
+      this.toastr.success('Certificates generated successfully');
+    } catch (error) {
+      console.error('Error generating bulk certificates:', error);
+      this.toastr.error('Failed to generate certificates');
+    } finally {
+      this.spinner.hide();
+      this.certificateDataForBulk = null;
+      this.cdr.detectChanges();
+    }
+  }
+
+  private downloadAllIdCardsForTraining(training: any): void {
+    const trainingId = training?.id;
+    if (!trainingId) {
+      this.toastr.error('Training ID not available for download');
+      return;
+    }
+
+    const url = `${environment.apiUrl}training/downloadAllIdCards/${trainingId}`;
+    window.open(url, '_blank');
   }
 
 

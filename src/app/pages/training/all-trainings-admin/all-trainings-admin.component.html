@@ -465,6 +465,15 @@
   </div>
 </ng-template>
 
+<!-- Hidden Certificate Component for Bulk Generation -->
+<div style="position: absolute; left: -9999px; top: -9999px;">
+  <app-latest-certificate-layout
+    #hiddenCertificate
+    [data]="certificateDataForBulk"
+    [uniqueId]="certificateUinForBulk">
+  </app-latest-certificate-layout>
+</div>
+
 <!-- Reject Modal -->
 <ng-template #rejectModal let-modal>
   <div class="modal-header bg-danger">

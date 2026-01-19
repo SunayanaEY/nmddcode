@@ -1,4 +1,4 @@
-import { Component, Input, ViewChild, ElementRef, OnInit } from '@angular/core';
+import { Component, Input, ViewChild, ElementRef, OnInit, OnChanges, SimpleChanges } from '@angular/core';
 import { CommonModule, DatePipe } from '@angular/common';
 import { QRCodeComponent } from 'angularx-qrcode';
 import jsPDF from 'jspdf';
@@ -15,7 +15,7 @@ import { TrainingService } from '../training/services/training.service';
   templateUrl: './latest-certificate-layout.component.html',
   styleUrls: ['./latest-certificate-layout.component.css']
 })
-export class LatestCertificateLayoutComponent implements OnInit {
+export class LatestCertificateLayoutComponent implements OnInit, OnChanges {
   @Input() data: any;
   @Input() uniqueId: string = 'UIN2025345780991';
   certificateUrl = environment.certificateUrl;
@@ -35,6 +35,17 @@ export class LatestCertificateLayoutComponent implements OnInit {
   constructor(private http: HttpClient, private trainingService: TrainingService) {}
 
   ngOnInit() {
+    this.initData();
+  }
+
+  ngOnChanges(changes: SimpleChanges) {
+    if (changes['data'] && !changes['data'].firstChange) {
+      this.revokeUrls();
+      this.initData();
+    }
+  }
+
+  private initData() {
     if (this.data?.trainingDate) {
       this.data.trainingDate = new Date(this.data.trainingDate);
     }

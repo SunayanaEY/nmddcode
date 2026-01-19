@@ -192,6 +192,14 @@ export class TrainingService {
     );
   }
 
+  getTrainingWithTrainee(trainingId: any) {
+    return this.http.get<any>(this.url + `training/getTrainingwithTrainee/` + trainingId).pipe(
+      map((res: any) => {
+        return res;
+      })
+    );
+  }
+
   getApprovedTrainings(): Observable<any> {
     return this.http.get<any>(this.url + `training/getAllApprovedTrainings`);
   }
