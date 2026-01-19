@@ -534,6 +534,11 @@
                   >
                     Date of birth cannot be in the future.
                   </div>
+                  <div
+                    *ngIf="participantForm.get('dob')?.errors?.['tooYoung']"
+                  >
+                    Age must be at least 18 years.
+                  </div>
                   <div *ngIf="participantForm.get('dob')?.errors?.['tooOld']">
                     Date of birth cannot be more than 120 years ago.
                   </div>

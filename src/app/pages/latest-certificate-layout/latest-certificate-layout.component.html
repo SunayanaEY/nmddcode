@@ -9,25 +9,22 @@
     <!-- Logo Row -->
     <div class="brand-row" aria-label="Branding">
       <img class="logo-small" [src]="logo1Url || data?.logoPath1" alt="" crossorigin="anonymous" />
-      <img class="logo-center" *ngIf="logo2Url || data?.logoPath2" [src]="logo2Url || data?.logoPath2" alt="" crossorigin="anonymous" />
-      <img class="logo-small logo-small-right" *ngIf="data?.logoPath3 || logo3Url" [src]="logo3Url || data?.logoPath3" alt="" crossorigin="anonymous" />
+      <img class="logo-center" *ngIf="logo2Url || data?.logoPath2" [src]="logo2Url || data?.logoPath2" alt=""
+        crossorigin="anonymous" />
+      <img class="logo-small logo-small-right" *ngIf="data?.logoPath3 || logo3Url" [src]="logo3Url || data?.logoPath3"
+        alt="" crossorigin="anonymous" />
     </div>
 
-    <!-- QR + Trainee Photo Row -->
-    <div class="qr-photo-row" aria-label="QR and Trainee Photo">
+    <!-- QR Code (Center) + Trainee Photo (Right) Row -->
+    <div class="qr-photo-row" aria-label="QR Code and Trainee Photo">
       <div class="qr-code">
         <qrcode [qrdata]="qrData" [width]="100" [errorCorrectionLevel]="'M'"></qrcode>
         <!-- <p class="uid">UIN: {{ finalUniqueId }}</p> -->
       </div>
       <div class="trainee-photo" *ngIf="traineePhotoUrl || validPhotoUrl">
-<!-- -        <img [src]="validPhotoUrl" crossorigin="anonymous" /> -->
-        <img [src]="traineePhotoUrl"  crossorigin="anonymous" />
+        <!-- -        <img [src]="validPhotoUrl" crossorigin="anonymous" /> -->
+        <img [src]="traineePhotoUrl" crossorigin="anonymous" />
       </div>
-    </div>
-
-    <!-- Titles -->
-    <div class="org-block" aria-label="Organization">
-      <h2 class="org-en">{{ data?.trainingTitle }}</h2>
     </div>
 
     <!-- Certificate Heading -->
@@ -55,7 +52,8 @@
           to <span class="date">{{ data?.endDate | date: 'dd-MM-yyyy' }}</span>
         </ng-container>
         conducted at
-        <span class="emphasis">{{ data?.trainingInstituteName || data?.organizationName || (data?.location ?? data?.venueState) }}</span>
+        <span class="emphasis">{{ data?.trainingInstituteName || data?.organizationName || (data?.location ??
+          data?.venueState) }}</span>
       </p>
     </section>
 
@@ -66,7 +64,8 @@
         <div class="signature" aria-label="Institute Head Signature">
           <ng-container *ngIf="data?.signatures?.length > 0; else emptyLeft">
             <p>
-              <img [src]="signatureUrls[0] || data.signatures[0].signatorySignaturePath" alt="" crossorigin="anonymous" />
+              <img [src]="signatureUrls[0] || data.signatures[0].signatorySignaturePath" alt=""
+                crossorigin="anonymous" />
             </p>
             <p>_____________________</p>
             <p>{{ data.signatures[0].signatoryName }}</p>
@@ -84,7 +83,8 @@
         <div class="signature" aria-label="State Head Signature">
           <ng-container *ngIf="data?.signatures?.length > 1; else emptyRight">
             <p>
-              <img [src]="signatureUrls[1] || data.signatures[1].signatorySignaturePath" alt="" crossorigin="anonymous" />
+              <img [src]="signatureUrls[1] || data.signatures[1].signatorySignaturePath" alt=""
+                crossorigin="anonymous" />
             </p>
             <p>_____________________</p>
             <p>{{ data.signatures[1].signatoryName }}</p>

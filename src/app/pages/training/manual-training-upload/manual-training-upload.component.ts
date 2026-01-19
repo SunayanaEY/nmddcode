@@ -545,14 +545,21 @@ export class ManualTrainingUploadComponent implements OnInit {
     const today = new Date();
     const minDate = new Date();
     minDate.setFullYear(today.getFullYear() - 120); // 120 years ago
+    const adultThreshold = new Date();
+    adultThreshold.setFullYear(today.getFullYear() - 18); // Minimum 18 years old
 
     // Reset time to compare only dates
     today.setHours(0, 0, 0, 0);
     selectedDate.setHours(0, 0, 0, 0);
     minDate.setHours(0, 0, 0, 0);
+    adultThreshold.setHours(0, 0, 0, 0);
 
     if (selectedDate > today) {
       return { futureDate: true };
+    }
+
+    if (selectedDate > adultThreshold) {
+      return { tooYoung: true };
     }
 
     if (selectedDate < minDate) {

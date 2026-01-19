@@ -1,10 +1,128 @@
-<div class="container py-3">
-  <ng-container *ngIf="certificateData; else stateBlock">
-    <app-latest-certificate-layout [data]="certificateData" [uniqueId]="uniqueId || ''"></app-latest-certificate-layout>
-  </ng-container>
+<div class="verify-certificate-container">
+  <!-- Loading State -->
+  <div *ngIf="isLoading" class="loading-container">
+    <div class="spinner"></div>
+    <p>Verifying certificate...</p>
+  </div>
 
-  <ng-template #stateBlock>
-    <div *ngIf="isLoading" class="alert alert-info">Loading certificate...</div>
-    <div *ngIf="!isLoading && error" class="alert alert-danger">{{ error }}</div>
-  </ng-template>
+  <!-- Error State -->
+  <div *ngIf="!isLoading && error" class="error-container">
+    <div class="error-icon">⚠️</div>
+    <h2>Certificate Not Found</h2>
+    <p>{{ error }}</p>
+  </div>
+
+  <!-- Success State - Certificate Verification Details -->
+  <div *ngIf="!isLoading && certificateData && !error" class="verification-content">
+    <!-- Verified Badge -->
+    <div class="verified-badge">
+      <div class="badge-icon">
+        <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path
+            d="M9 12L11 14L15 10M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z"
+            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+        </svg>
+      </div>
+      <div class="badge-text">
+        <h3>✓ Verified Certificate</h3>
+        <p>This certificate has been verified and is authentic</p>
+      </div>
+    </div>
+
+    <!-- Single Centered Card -->
+    <div class="single-card-container">
+      <div class="detail-card">
+        <!-- Trainee Section -->
+        <div class="trainee-section">
+          <div class="profile-photo" *ngIf="traineePhotoUrl">
+            <img [src]="traineePhotoUrl" alt="Trainee photo" />
+          </div>
+          <div class="profile-photo placeholder" *ngIf="!traineePhotoUrl">
+            <span>👤</span>
+          </div>
+          <h3 class="trainee-name">{{ certificateData?.name || 'N/A' }}</h3>
+          <div class="uin-display">
+            <span class="label">UIN:</span>
+            <span class="value">{{ uniqueId }}</span>
+          </div>
+        </div>
+
+        <!-- Divider -->
+        <div class="section-divider"></div>
+
+        <!-- Training Details Section -->
+        <div class="training-section">
+          <h4 class="section-title">Training Details</h4>
+          <div class="info-group">
+            <div class="info-item">
+              <span class="icon">📚</span>
+              <div>
+                <span class="label">Training Program</span>
+                <span class="value">{{ certificateData?.trainingTitle || 'N/A' }}</span>
+              </div>
+            </div>
+
+            <div class="info-item">
+              <span class="icon">⏱️</span>
+              <div>
+                <span class="label">Duration</span>
+                <span class="value">
+                  {{ totalDurationDays !== null ? totalDurationDays : (certificateData?.duration || 'N/A') }}
+                  {{ totalDurationDays !== null ? 'Days' : (certificateData?.durationType || '') }}
+                </span>
+              </div>
+            </div>
+
+            <div class="info-item">
+              <span class="icon">📅</span>
+              <div>
+                <span class="label">Training Period</span>
+                <span class="value">
+                  {{ certificateData?.startDate | date: 'dd MMM yyyy' }} -
+                  {{ certificateData?.endDate | date: 'dd MMM yyyy' }}
+                </span>
+              </div>
+            </div>
+
+            <div class="info-item">
+              <span class="icon">🏛️</span>
+              <div>
+                <span class="label">Institute</span>
+                <span class="value">
+                  {{ certificateData?.trainingInstituteName || certificateData?.organizationName ||
+                  certificateData?.location || 'N/A' }}
+                </span>
+              </div>
+            </div>
+
+            <div class="info-item">
+              <span class="icon">📄</span>
+              <div>
+                <span class="label">Issue Date</span>
+                <span class="value">{{ certificateData?.createDate | date: 'dd MMM yyyy' }}</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Download Certificate Button -->
+    <div class="action-container">
+      <button class="download-btn" (click)="downloadCertificate()">
+        <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path
+            d="M21 15V19C21 19.5304 20.7893 20.0391 20.4142 20.4142C20.0391 20.7893 19.5304 21 19 21H5C4.46957 21 3.96086 20.7893 3.58579 20.4142C3.21071 20.0391 3 19.5304 3 19V15M7 10L12 15M12 15L17 10M12 15V3"
+            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+        </svg>
+        Download Certificate
+      </button>
+    </div>
+
+    <!-- Hidden Certificate Layout for Download -->
+    <div class="hidden-certificate" #hiddenCertificate>
+      <app-latest-certificate-layout [data]="certificateData" [uniqueId]="uniqueId || ''" #certificateLayout>
+      </app-latest-certificate-layout>
+    </div>
+  </div>
 </div>

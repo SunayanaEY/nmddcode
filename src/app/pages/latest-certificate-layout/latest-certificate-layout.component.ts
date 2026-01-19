@@ -18,6 +18,7 @@ import { TrainingService } from '../training/services/training.service';
 export class LatestCertificateLayoutComponent implements OnInit {
   @Input() data: any;
   @Input() uniqueId: string = 'UIN2025345780991';
+  certificateUrl = environment.certificateUrl;
   apiUrl = environment.apiUrl;
 
   @ViewChild('certificateContent', { static: false })
@@ -72,7 +73,7 @@ export class LatestCertificateLayoutComponent implements OnInit {
   }
 
   get qrData(): string {
-    return `https://dahdtraining.ndlm.co.in/verify-certificate?uin=${this.finalUniqueId}`;
+    return `${this.certificateUrl}verify-certificate?uin=${this.finalUniqueId}`;
   }
 
   // Determine a valid trainee photo URL from possible API fields
