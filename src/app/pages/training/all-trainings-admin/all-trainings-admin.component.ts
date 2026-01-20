@@ -845,7 +845,7 @@ export class AllTrainingsAdminComponent {
       const response = await firstValueFrom(
         this.trainingsService.getTrainingWithTrainee(trainingId)
       );
-
+      debugger;
       const trainingData: any =
         response && (response as any).data ? (response as any).data : response;
 
@@ -888,6 +888,7 @@ export class AllTrainingsAdminComponent {
           ...trainingData,
           ...trainee,
           signatures,
+          traineePhotoId: (trainee as any).photoId,
         };
         this.certificateUinForBulk = trainee.uin || 'UIN2025345780991';
 
@@ -1026,12 +1027,37 @@ export class AllTrainingsAdminComponent {
           ...trainingData,
           ...trainee,
           signatures,
+          traineePhotoId: (trainee as any).photoId,
+          logoPath1: trainingData.logoPath1,
+          logoPath2: trainingData.logoPath2,
+          logoPath3: trainingData.logoPath3,
         };
+
+        console.log('Bulk ID Card: Processing trainee', {
+          name: trainee.name,
+          logoPath1: trainingData.logoPath1,
+          traineePhotoId: (trainee as any).photoId
+        });
 
         this.idCardUinForBulk = trainee.uin || 'UIN2025345780991';
 
         this.cdr.detectChanges();
-        await new Promise((resolve) => setTimeout(resolve, 400));
+        
+        // Wait for component to be ready (images loaded)
+        if (this.hiddenIdCard) {
+          const startTime = Date.now();
+          const maxWait = 5000; // 5 seconds max wait per card
+          while (!this.hiddenIdCard.isReady) {
+             if (Date.now() - startTime > maxWait) {
+               console.warn('Bulk ID Card: Timeout waiting for card ready', trainee.name);
+               break; 
+             }
+             await new Promise(resolve => setTimeout(resolve, 100));
+          }
+        }
+        
+        // Small extra buffer for rendering
+        await new Promise((resolve) => setTimeout(resolve, 100));
 
         if (this.hiddenIdCard?.idCardContent) {
           const element = this.hiddenIdCard.idCardContent.nativeElement;

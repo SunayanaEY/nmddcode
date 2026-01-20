@@ -31,6 +31,7 @@ export class IdCardComponent implements OnInit, OnChanges{
   signatureUrls: (string | null)[] = [];
   private createdBlobUrls: string[] = [];
   traineePhotoUrl: string | null = null;
+  isReady: boolean = false;
 
   constructor(private http: HttpClient, private trainingService: TrainingService) {}
 
@@ -40,12 +41,17 @@ export class IdCardComponent implements OnInit, OnChanges{
 
   ngOnChanges(changes: SimpleChanges) {
     if (changes['data'] && !changes['data'].firstChange) {
+      console.log('IdCardComponent: ngOnChanges data update', {
+        name: this.data?.name,
+        logoPath1: this.data?.logoPath1
+      });
       this.revokeUrls();
       this.initData();
     }
   }
 
-  private initData() {
+  private async initData() {
+    this.isReady = false;
     if (this.data?.trainingDate) {
       this.data.trainingDate = new Date(this.data.trainingDate);
     }
@@ -60,8 +66,17 @@ export class IdCardComponent implements OnInit, OnChanges{
       }));
     }
     // Build blob-based display URLs for logos and signatures
-    this.prepareAssetUrls();
-    this.loadTraineePhoto();
+    try {
+      await Promise.all([
+        this.prepareAssetUrls(),
+        this.loadTraineePhoto()
+      ]);
+    } catch (err) {
+      console.error('IdCardComponent: initData error', err);
+    } finally {
+      this.isReady = true;
+      console.log('IdCardComponent: Ready');
+    }
   }
 
   get totalDurationDays(): number | null {
@@ -115,6 +130,7 @@ export class IdCardComponent implements OnInit, OnChanges{
   // Build blob URLs for logos and signatures
   private async prepareAssetUrls(): Promise<void> {
     try {
+      console.log('IdCardComponent: prepareAssetUrls start');
       const [l1, l2, l3] = await Promise.all([
         this.toBlobUrl(this.data?.logoPath1),
         this.toBlobUrl(this.data?.logoPath2),
@@ -123,13 +139,15 @@ export class IdCardComponent implements OnInit, OnChanges{
       this.logo1Url = l1;
       this.logo2Url = l2;
       this.logo3Url = l3;
+      console.log('IdCardComponent: prepareAssetUrls done', { l1, l2, l3 });
 
       if (Array.isArray(this.data?.signatures)) {
         this.signatureUrls = await Promise.all(
           this.data.signatures.map((s: any) => this.toBlobUrl(s?.signatorySignaturePath))
         );
       }
-    } catch {
+    } catch (err) {
+      console.error('IdCardComponent: prepareAssetUrls error', err);
       // swallow errors; fallbacks are applied in toBlobUrl
     }
   }
@@ -170,6 +188,7 @@ export class IdCardComponent implements OnInit, OnChanges{
       this.createdBlobUrls.push(blobUrl);
       return blobUrl;
     } catch (err) {
+      console.warn('IdCardComponent: toBlobUrl failed for', path, url, err);
       // Fallback to direct URL (either original or constructed)
       return this.isValidHttpUrl(path) ? path : url;
     }
@@ -224,7 +243,7 @@ export class IdCardComponent implements OnInit, OnChanges{
   }
 
   private async loadTraineePhoto(): Promise<void> {
-    const photoId = this.data?.trainees.photoId;
+    const photoId = this.data?.traineePhotoId ?? this.data?.photoId;
     if (typeof photoId === 'number' && photoId > 0) {
       try {
         const blob = await firstValueFrom(this.trainingService.downloadTraineeImage(photoId));
