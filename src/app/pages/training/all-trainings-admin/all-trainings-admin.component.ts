@@ -162,12 +162,16 @@ export class AllTrainingsAdminComponent {
       icon: 'bi bi-download',
       class: 'btn-success',
       title: 'Download all certificates',
+      condition: (row: any) =>
+        (this.userRole === 3 || this.userRole === 4) &&
+        row.status === 'TRAINEE ORGANIZATION DECISIONS COMPLETED',
     },
     {
       name: 'downloadAllIdCards',
       icon: 'bi bi-person-badge',
       class: 'btn-primary',
       title: 'Download all ID cards',
+      condition: () => this.userRole === 3 || this.userRole === 4,
     },
   ];
 
@@ -835,6 +839,7 @@ export class AllTrainingsAdminComponent {
       return;
     }
 
+    this.isTableLoading = true;
     this.spinner.show();
     try {
       const response = await firstValueFrom(
@@ -945,6 +950,7 @@ export class AllTrainingsAdminComponent {
       console.error('Error generating bulk certificates:', error);
       this.toastr.error('Failed to generate certificates');
     } finally {
+      this.isTableLoading = false;
       this.spinner.hide();
       this.certificateDataForBulk = null;
       this.cdr.detectChanges();
