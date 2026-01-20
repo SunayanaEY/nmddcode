@@ -1,0 +1,56 @@
+<div class="nddb-certificate" role="document">
+  <div class="sheet id-card" #idCardContent>
+    <!-- Header : Training Title -->
+    <div class="id-title">
+      {{ data?.trainingTitle }}
+    </div>
+
+    <!-- Logo + Photo Row -->
+    <div class="id-header-row">
+      <!-- Organization Logo -->
+      <div class="id-logo">
+        <img
+          [src]="logo1Url || data?.logoPath1"
+          alt="Organization Logo"
+          crossorigin="anonymous"
+        />
+      </div>
+
+      <!-- Trainee Photo -->
+      <div class="id-photo" *ngIf="traineePhotoUrl">
+        <img [src]="traineePhotoUrl" crossorigin="anonymous" />
+      </div>
+    </div>
+
+    <!-- Name -->
+    <div class="id-name">
+      {{ data?.name }}
+    </div>
+
+    <!-- Details -->
+    <div class="id-details">
+      <div><strong>UIN No:</strong> {{ finalUniqueId }}</div>
+      <div><strong>Ref ID:</strong> REF-001</div>
+      <div>
+        <strong>Completion Date:</strong>
+        {{ data?.endDate | date : "dd-MM-yyyy" }}
+      </div>
+    </div>
+
+    <!-- QR Code -->
+    <div class="id-qr">
+      <qrcode [qrdata]="qrData" [width]="90" [errorCorrectionLevel]="'M'">
+      </qrcode>
+    </div>
+
+    <!-- Signature -->
+    <div class="id-signature" *ngIf="data?.signatures?.length > 0">
+      <img
+        [src]="signatureUrls[0] || data.signatures[0].signatorySignaturePath"
+        crossorigin="anonymous"
+      />
+      <div class="sign-line"></div>
+      <div class="sign-text">Institute Head Signature</div>
+    </div>
+  </div>
+</div>

@@ -473,6 +473,14 @@
     [uniqueId]="certificateUinForBulk">
   </app-latest-certificate-layout>
 </div>
+<!-- Hidden ID Card Component for Bulk Generation -->
+<div style="position: absolute; left: -8999px; top: -8999px;">
+  <app-id-card
+    #hiddenIdCard
+    [data]="idCardDataForBulk"
+    [uniqueId]="idCardUinForBulk">
+  </app-id-card>
+</div>
 
 <!-- Reject Modal -->
 <ng-template #rejectModal let-modal>

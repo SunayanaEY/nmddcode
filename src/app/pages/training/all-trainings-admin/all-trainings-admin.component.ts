@@ -1,4 +1,13 @@
-import { Component, Input, ViewChild, ElementRef, OnInit, OnChanges, SimpleChanges, ChangeDetectorRef } from '@angular/core';
+import {
+  Component,
+  Input,
+  ViewChild,
+  ElementRef,
+  OnInit,
+  OnChanges,
+  SimpleChanges,
+  ChangeDetectorRef,
+} from '@angular/core';
 import { CommonModule, DatePipe } from '@angular/common';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import {
@@ -30,12 +39,12 @@ import { TrainingService } from '../services/training.service';
 import { AdminService } from '../services/training-admin.service';
 import { NgSelectModule } from '@ng-select/ng-select';
 
-
-
 import { ToastrService } from 'ngx-toastr';
 import { NgxSpinnerModule, NgxSpinnerService } from 'ngx-spinner';
 
 import { LatestCertificateLayoutComponent } from '../../latest-certificate-layout/latest-certificate-layout.component';
+import { IdCardComponent } from '../../id-card/id-card.component';
+
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { environment } from '../../../../environments/environment';
 import { firstValueFrom } from 'rxjs';
@@ -54,13 +63,13 @@ import html2canvas from 'html2canvas';
     NgxSpinnerModule,
     LatestCertificateLayoutComponent,
     TranslateModule,
+    IdCardComponent,
   ],
   templateUrl: './all-trainings-admin.component.html',
   styleUrl: './all-trainings-admin.component.css',
   // encapsulation: ViewEncapsulation.None
 })
 export class AllTrainingsAdminComponent {
-  
   trainingDetails: any;
   trainingScheduleUrl: string | null = null;
   isLoadingSchedule: boolean = false;
@@ -76,9 +85,15 @@ export class AllTrainingsAdminComponent {
   traineeTable!: TableComponent;
   @AngularViewChild('hiddenCertificate')
   hiddenCertificate!: LatestCertificateLayoutComponent;
+  @AngularViewChild('hiddenIdCard')
+  hiddenIdCard!: IdCardComponent;
+
+  // @ViewChild('hiddenIdCard') hiddenIdCard: any;
 
   submitted: Boolean = false;
-  
+
+  idCardDataForBulk: any = null;
+  idCardUinForBulk: string = '';
   certificateData: any = null;
   certificateDataForBulk: any = null;
   certificateUinForBulk: string = '';
@@ -94,7 +109,7 @@ export class AllTrainingsAdminComponent {
   isExportCSV: Boolean = true;
   isExportPdf: Boolean = true;
   isBulkCertDownload: Boolean = true;
-  
+
   trainingInstituteHeadId: any = null;
   userRole: any;
   userId: any;
@@ -515,10 +530,7 @@ export class AllTrainingsAdminComponent {
               ele['startDate'],
               'dd/MM/yyyy'
             )!;
-            ele['endDate'] = datePipe.transform(
-              ele['endDate'],
-              'dd/MM/yyyy'
-            )!;
+            ele['endDate'] = datePipe.transform(ele['endDate'], 'dd/MM/yyyy')!;
             this.trainingsList[index] = ele;
             index++;
           });
@@ -734,12 +746,14 @@ export class AllTrainingsAdminComponent {
         if (token) {
           headers = new HttpHeaders({ Authorization: `Bearer ${token}` });
         }
-        blob = await firstValueFrom(
+        blob = (await firstValueFrom(
           this.http.get(url, { responseType: 'blob', headers })
-        ) as Blob;
+        )) as Blob;
       } else {
         // Use service for filenames
-        blob = await firstValueFrom(this.adminService.downloadInstituteImage(path));
+        blob = await firstValueFrom(
+          this.adminService.downloadInstituteImage(path)
+        );
       }
       return URL.createObjectURL(blob);
     } catch (err) {
@@ -784,7 +798,6 @@ export class AllTrainingsAdminComponent {
           this.traineeList = res.data;
           this.currentTrainingInstituteId =
             this.traineeList[0].trainingInstituteId || '';
-
         });
 
       this.modalService.open(this.trainingDetailsModal, {
@@ -813,7 +826,9 @@ export class AllTrainingsAdminComponent {
     }
   }
 
-  private async downloadAllCertificatesForTraining(training: any): Promise<void> {
+  private async downloadAllCertificatesForTraining(
+    training: any
+  ): Promise<void> {
     const trainingId = training?.id;
     if (!trainingId) {
       this.toastr.error('Training ID not available for download');
@@ -875,8 +890,12 @@ export class AllTrainingsAdminComponent {
 
         await new Promise((resolve) => setTimeout(resolve, 500));
 
-        if (this.hiddenCertificate && this.hiddenCertificate.certificateContent) {
-          const element = this.hiddenCertificate.certificateContent.nativeElement;
+        if (
+          this.hiddenCertificate &&
+          this.hiddenCertificate.certificateContent
+        ) {
+          const element =
+            this.hiddenCertificate.certificateContent.nativeElement;
           const canvas = await html2canvas(element, {
             useCORS: true,
             scale: 2,
@@ -932,20 +951,125 @@ export class AllTrainingsAdminComponent {
     }
   }
 
-  private downloadAllIdCardsForTraining(training: any): void {
+  private async downloadAllIdCardsForTraining(training: any): Promise<void> {
     const trainingId = training?.id;
     if (!trainingId) {
       this.toastr.error('Training ID not available for download');
       return;
     }
 
-    const url = `${environment.apiUrl}training/downloadAllIdCards/${trainingId}`;
-    window.open(url, '_blank');
+    this.spinner.show();
+
+    try {
+      const response = await firstValueFrom(
+        this.trainingsService.getTrainingWithTrainee(trainingId)
+      );
+
+      const trainingData =
+        response && (response as any).data ? (response as any).data : response;
+
+      if (!trainingData || !Array.isArray(trainingData.trainees)) {
+        this.toastr.error('Invalid training data received');
+        return;
+      }
+
+      const approvedTrainees = trainingData.trainees.filter(
+        (t: any) =>
+          t.status === 'Approved by Organization' ||
+          t.status === 'APPROVED BY ORGANIZATION' ||
+          t.status === 'Approved by State Head' ||
+          t.status === 'Certificate Issued & downloaded'
+      );
+
+      if (approvedTrainees.length === 0) {
+        this.toastr.info('No approved trainees found for this training');
+        return;
+      }
+
+      const signatures =
+        Array.isArray(trainingData.signatures) && trainingData.signatures.length
+          ? trainingData.signatures
+          : Array.isArray(trainingData.signatories)
+          ? trainingData.signatories
+          : [];
+
+      const pdf = new jsPDF('portrait', 'mm', 'a4');
+      const pdfWidth = pdf.internal.pageSize.getWidth();
+      const pdfHeight = pdf.internal.pageSize.getHeight();
+
+      /* ===== GRID CONFIG ===== */
+      const cols = 2;
+      const rows = 2;
+      const cardsPerPage = cols * rows;
+
+      const margin = 10;
+      const gap = 5;
+
+      const usableWidth = pdfWidth - margin * 2 - gap;
+      const usableHeight = pdfHeight - margin * 2 - gap;
+
+      const cardWidth = usableWidth / cols;
+      const cardHeight = usableHeight / rows;
+
+      let positionIndex = 0;
+
+      for (let i = 0; i < approvedTrainees.length; i++) {
+        const trainee = approvedTrainees[i];
+
+        this.idCardDataForBulk = {
+          ...trainingData,
+          ...trainee,
+          signatures,
+        };
+
+        this.idCardUinForBulk = trainee.uin || 'UIN2025345780991';
+
+        this.cdr.detectChanges();
+        await new Promise((resolve) => setTimeout(resolve, 400));
+
+        if (this.hiddenIdCard?.idCardContent) {
+          const element = this.hiddenIdCard.idCardContent.nativeElement;
+
+          const canvas = await html2canvas(element, {
+            useCORS: true,
+            scale: 2,
+            backgroundColor: '#ffffff',
+          });
+
+          const imgData = canvas.toDataURL('image/png');
+
+          const col = positionIndex % cols;
+          const row = Math.floor(positionIndex / cols);
+
+          const x = margin + col * (cardWidth + gap);
+          const y = margin + row * (cardHeight + gap);
+
+          pdf.addImage(imgData, 'PNG', x, y, cardWidth, cardHeight);
+
+          positionIndex++;
+
+          // Add new page after 4 cards
+          if (
+            positionIndex === cardsPerPage &&
+            i < approvedTrainees.length - 1
+          ) {
+            pdf.addPage();
+            positionIndex = 0;
+          }
+        }
+      }
+
+      pdf.save(`Bulk_IdCards_${training.trainingTitle || 'Training'}.pdf`);
+      this.toastr.success('ID cards generated successfully');
+    } catch (error) {
+      console.error('Error generating bulk ID cards:', error);
+      this.toastr.error('Failed to generate ID cards');
+    } finally {
+      this.spinner.hide();
+      this.idCardDataForBulk = null;
+      this.cdr.detectChanges();
+    }
   }
-
-
-
-
 
   filters = {
     trainingTitle: null,
@@ -1001,7 +1125,7 @@ export class AllTrainingsAdminComponent {
               // Reset time part for date-only comparison
               rowStartDate.setHours(0, 0, 0, 0);
               filterStartDate.setHours(0, 0, 0, 0);
-              
+
               if (rowStartDate.getTime() < filterStartDate.getTime()) {
                 dateMatch = false;
               }
@@ -1027,11 +1151,11 @@ export class AllTrainingsAdminComponent {
                 dateMatch = false;
               }
             } else {
-              // If training has no end date but filter requires one, be safe and exclude? 
+              // If training has no end date but filter requires one, be safe and exclude?
               // Or check if start date is within range?
               // Let's assume strict filtering: needs to end before filter end date.
               // If data is clean, endDate should be present.
-              // If not present, maybe we should rely on startDate? 
+              // If not present, maybe we should rely on startDate?
               // But user explicitly complained about end dates outside range.
               dateMatch = false;
             }
