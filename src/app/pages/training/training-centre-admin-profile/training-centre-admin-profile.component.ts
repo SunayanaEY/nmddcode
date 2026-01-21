@@ -76,6 +76,9 @@ export class TrainingCentreAdminProfileComponent implements OnInit {
     { value: 'Other Organizations', label: 'Other Organizations' },
   ];
 
+  instituteGrades: string[] = ['A', 'B', 'A+'];
+  instituteOwnedByOptions: string[] = ['NDDB', 'Co-operative', 'NGO'];
+
   breadcrumbItems: BreadcrumbItem[] = [
     { label: 'Training Module', url: '/admin/training-module' },
     { label: 'Training Institute Registration' },
@@ -126,6 +129,8 @@ export class TrainingCentreAdminProfileComponent implements OnInit {
         ],
         instituteType: ['', [Validators.required]],
         organization: [''],
+        instituteGrade: ['', [Validators.required]],
+        instituteOwnedBy: [''],
         trainingInstituteRegistration: [
           '',
           [Validators.required, Validators.minLength(3)],
@@ -158,18 +163,23 @@ export class TrainingCentreAdminProfileComponent implements OnInit {
       // Subscribe to institute type changes to handle organization validation
       this.profileForm.get('instituteType')?.valueChanges.subscribe((type) => {
         const orgControl = this.profileForm.get('organization');
+        const instituteOwnedByControl = this.profileForm.get('instituteOwnedBy');
 
         if (type === 'Other Organizations') {
           // Organization required
           this.loadOrganizations();
           orgControl?.setValidators([Validators.required]);
+          instituteOwnedByControl?.setValidators([Validators.required]);
         } else {
           // Organization not required
           orgControl?.clearValidators();
           orgControl?.setValue('');
+          instituteOwnedByControl?.clearValidators();
+          instituteOwnedByControl?.setValue('');
         }
 
         orgControl?.updateValueAndValidity();
+        instituteOwnedByControl?.updateValueAndValidity();
       });
     } else {
       this.profileForm = this.fb.group(
@@ -184,6 +194,8 @@ export class TrainingCentreAdminProfileComponent implements OnInit {
           ],
           instituteType: ['', [Validators.required]],
           organization: [''],
+          instituteGrade: ['', [Validators.required]],
+          instituteOwnedBy: [''],
           trainingInstituteRegistration: [
             '',
             [Validators.required, Validators.minLength(3)],
@@ -330,6 +342,8 @@ export class TrainingCentreAdminProfileComponent implements OnInit {
         ? this.instituteData.expiryDate.split('T')[0]
         : '',
       instituteType: this.instituteData.instituteType,
+      instituteGrade: this.instituteData.instituteGrade,
+      instituteOwnedBy: this.instituteData.instituteOwnedBy,
       state: this.instituteData.stateId,
       address: this.instituteData.address,
       latitude: this.instituteData.latitude,
@@ -354,6 +368,8 @@ export class TrainingCentreAdminProfileComponent implements OnInit {
     this.profileForm.get('trainingInstituteRegistration')?.disable();
     this.profileForm.get('trainingInstituteExpiry')?.disable();
     this.profileForm.get('instituteType')?.disable();
+    this.profileForm.get('instituteGrade')?.disable();
+    this.profileForm.get('instituteOwnedBy')?.disable();
     this.profileForm.get('state')?.disable();
     this.profileForm.get('address')?.disable();
     this.profileForm.get('latitude')?.disable();
@@ -467,6 +483,8 @@ export class TrainingCentreAdminProfileComponent implements OnInit {
             this.profileForm.get('trainingInstituteRegistration')?.value || '',
           registrationValidity: expiryValue ? expiryValue + 'T00:00:00' : '',
           instituteType: this.profileForm.get('instituteType')?.value || '',
+          instituteGrade: this.profileForm.get('instituteGrade')?.value || '',
+          instituteOwnedBy: this.profileForm.get('instituteOwnedBy')?.value || '',
           organizationId: this.profileForm.get('organization')?.value || '',
           stateId: parseInt(this.profileForm.get('state')?.value) || 0,
           districtId: parseInt(this.profileForm.get('district')?.value) || 0,
@@ -482,6 +500,7 @@ export class TrainingCentreAdminProfileComponent implements OnInit {
             this.profileForm.get('trainingInstituteRegistration')?.value || '',
           registrationValidity: expiryValue ? expiryValue + 'T00:00:00' : '',
           instituteType: this.profileForm.get('instituteType')?.value || '',
+          instituteGrade: this.profileForm.get('instituteGrade')?.value || '',
           stateId: parseInt(this.profileForm.get('state')?.value) || 0,
           districtId: parseInt(this.profileForm.get('district')?.value) || 0,
           address: this.profileForm.get('address')?.value || '',

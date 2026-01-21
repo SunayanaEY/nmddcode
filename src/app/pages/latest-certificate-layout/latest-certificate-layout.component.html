@@ -1,5 +1,11 @@
 <div class="nddb-certificate" role="document">
   <div class="sheet" #certificateContent aria-label="NDDB Certificate">
+    <!-- Corners -->
+    <div class="corner top-left"></div>
+    <div class="corner top-right"></div>
+    <div class="corner bottom-left"></div>
+    <div class="corner bottom-right"></div>
+    
     <!-- Top meta -->
     <div class="certificate-header" aria-label="Header">
       <div>
@@ -56,7 +62,7 @@
         </ng-container>
         conducted at
         <span class="emphasis">{{ data?.trainingInstituteName || data?.organizationName || (data?.location ??
-          data?.venueState) }}</span>
+          data?.venueState) }}</span> accredited by Government of India.
       </p>
     </section>
 

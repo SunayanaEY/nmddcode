@@ -163,7 +163,7 @@ export class AllTrainingsAdminComponent {
       class: 'btn-success',
       title: 'Download all certificates',
       condition: (row: any) =>
-        (this.userRole === 3 || this.userRole === 4) &&
+        (this.userRole == 3 || this.userRole == 4) &&
         row.status === 'TRAINEE ORGANIZATION DECISIONS COMPLETED',
     },
     {
@@ -171,7 +171,7 @@ export class AllTrainingsAdminComponent {
       icon: 'bi bi-person-badge',
       class: 'btn-primary',
       title: 'Download all ID cards',
-      condition: () => this.userRole === 3 || this.userRole === 4,
+      condition: () => this.userRole == 3 || this.userRole == 4,
     },
   ];
 

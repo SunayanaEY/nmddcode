@@ -10,11 +10,66 @@
   width: 100%;
   /* max-width: 900px; */
   background: #ffffff;
-  border: 2px solid #373737;
-  /* goldenrod-like border */
-  border-radius: 8px;
-  padding: 28px 32px;
+  position: relative;
+  z-index: 0;
+  /* border: 2px solid #373737; */
+  /* Double border style */
+  border: 2px solid #B8860B;
+  border-radius: 4px;
+  padding: 50px 32px;
 }
+
+.sheet::after {
+  content: '';
+  position: absolute;
+  top: 5px;
+  left: 5px;
+  right: 5px;
+  bottom: 5px;
+  border: 4px solid #B8860B;
+  border-radius: 2px;
+  pointer-events: none;
+  z-index: -1;
+}
+
+/* Corners */
+.corner {
+  position: absolute;
+  width: 60px;
+  height: 60px;
+  background: url('../../../assets/certificate/corner.png') no-repeat center/contain;
+  z-index: -1;
+  background-size: 50px 50px;
+}
+
+/* Top Left */
+.corner.top-left {
+  top: 6px;
+  left: 6px;
+  transform: rotate(180deg);
+}
+
+/* Top Right */
+.corner.top-right {
+  top: 6px;
+  right: 6px;
+  transform: rotate(270deg);
+}
+
+/* Bottom Left */
+.corner.bottom-left {
+  bottom: 6px;
+  left: 6px;
+  transform: rotate(90deg);
+}
+
+/* Bottom Right */
+.corner.bottom-right {
+  bottom: 6px;
+  right: 6px;
+  transform: rotate(0deg);
+}
+
 
 /* Header */
 .certificate-header {
@@ -142,6 +197,7 @@
 /* Footer / Signatures */
 .certificate-footer {
   margin-top: 16px;
+  padding: 0 40px;
 }
 
 .signatures {
