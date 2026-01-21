@@ -454,7 +454,7 @@
                     type="radio"
                     id="trainingRegionDomestic"
                     formControlName="trainingRegion"
-                    value="BH"
+                    value="D"
                   />
                   <label
                     class="form-check-label"
@@ -463,19 +463,34 @@
                     {{ "Domestic" | translate }}
                   </label>
                 </div>
-                <div class="form-check">
+                <div class="form-check me-3">
                   <input
                     class="form-check-input"
                     type="radio"
                     id="trainingRegionInternational"
                     formControlName="trainingRegion"
-                    value="IN"
+                    value="F"
                   />
                   <label
                     class="form-check-label"
                     for="trainingRegionInternational"
                   >
                     {{ "International" | translate }}
+                  </label>
+                </div>
+                <div class="form-check">
+                  <input
+                    class="form-check-input"
+                    type="radio"
+                    id="trainingRegionCombined"
+                    formControlName="trainingRegion"
+                    value="C"
+                  />
+                  <label
+                    class="form-check-label"
+                    for="trainingRegionCombined"
+                  >
+                    {{ "Combined" | translate }}
                   </label>
                 </div>
               </div>

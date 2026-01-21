@@ -271,7 +271,7 @@ export class TrainingCertificateGenerationComponent implements OnInit {
         ],
         trainingType: ['', Validators.required],
         modeOfTraining: ['', Validators.required],
-        trainingRegion: ['BH', Validators.required],
+        trainingRegion: ['D', Validators.required],
         dateRanges: this.fb.array([], [
           Validators.required,
           Validators.minLength(1),
@@ -376,7 +376,12 @@ export class TrainingCertificateGenerationComponent implements OnInit {
           trainingDescription: this.trainingDetails.trainingDescription,
           trainingType: this.trainingDetails.trainingTypeId,
           modeOfTraining: this.trainingDetails.modeOfTraining,
-          trainingRegion: this.trainingDetails.trainingRegion || 'BH',
+          trainingRegion:
+            this.trainingDetails.trainingRegion === 'IN'
+              ? 'F'
+              : this.trainingDetails.trainingRegion === 'BH'
+              ? 'D'
+              : this.trainingDetails.trainingRegion || 'D',
         });
 
         // Clear existing date ranges and repopulate with top-level dates from API
