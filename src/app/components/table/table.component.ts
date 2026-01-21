@@ -98,6 +98,27 @@ export class TableComponent {
   onActionClick(action: string, item: any, index: number): void {
     this.actionClick.emit({ action, item, index });
   }
+  onEditableCellChange(
+    item: any,
+    col: TableColumn,
+    value: any,
+    index: number
+  ): void {
+    if (this.tableName === 'trainingTypes' && col.key === 'typeRefCode') {
+      const sanitized = (value || '')
+        .toString()
+        .replace(/[^A-Za-z]/g, '')
+        .slice(0, 3);
+      item[col.key] = sanitized;
+      return;
+    }
+  }
+  getMaxLength(col: TableColumn): number | null {
+    if (this.tableName === 'trainingTypes' && col.key === 'typeRefCode') {
+      return 3;
+    }
+    return null;
+  }
   onLinkClick(column: TableColumn, row: any) {
     if (column.linkHandler) {
       column.linkHandler(row);
@@ -245,7 +266,8 @@ export class TableComponent {
   }
 
   addNewRow(len: number) {
-    this.actionClick.emit({ action: 'add', item: {}, index: len });
+    this.p = 1;
+    this.actionClick.emit({ action: 'add', item: {}, index: 0 });
   }
 
   // Multi-select methods

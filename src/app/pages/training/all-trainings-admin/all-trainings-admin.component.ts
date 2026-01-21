@@ -965,6 +965,7 @@ export class AllTrainingsAdminComponent {
       return;
     }
 
+    this.isTableLoading = true;
     this.spinner.show();
 
     try {
@@ -1097,6 +1098,7 @@ export class AllTrainingsAdminComponent {
       console.error('Error generating bulk ID cards:', error);
       this.toastr.error('Failed to generate ID cards');
     } finally {
+      this.isTableLoading = false;
       this.spinner.hide();
       this.idCardDataForBulk = null;
       this.cdr.detectChanges();

@@ -99,6 +99,7 @@ export class OrganizationTableDataComponent implements OnInit {
 
   tableColumns: TableColumn[] = [
     { key: 'organizationName', header: 'Name' },
+    { key: 'organizationCode', header: 'Code' },
     { key: 'state', header: 'State' },
     { key: 'district', header: 'District' },
     // { key: 'address', header: 'Address' },
@@ -128,6 +129,7 @@ export class OrganizationTableDataComponent implements OnInit {
 
   exportHeaders = [
     'Organization Name',
+    'Code',
     'State',
     'District',
     'Email',
@@ -137,6 +139,7 @@ export class OrganizationTableDataComponent implements OnInit {
   ];
   exportColumnKeys = [
     'organizationName',
+    'organizationCode',
     'state',
     'district',
     'email',

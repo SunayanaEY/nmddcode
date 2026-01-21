@@ -53,7 +53,10 @@ export class TrainingTypeManagementComponent {
     { label: 'Training Module', url: '/admin/training-module' },
     { label: 'Training Type Management' },
   ];
-  tableColumns: TableColumn[] = [{ key: 'title', header: 'Training Type' }];
+  tableColumns: TableColumn[] = [
+    { key: 'title', header: 'Training Type' },
+    { key: 'typeRefCode', header: 'Training type code' },
+  ];
 
   tableActions: TableAction[] = [
     {
@@ -87,6 +90,7 @@ export class TrainingTypeManagementComponent {
           let data = {
             id: ele['id'],
             title: ele['trainingTypeName'],
+            typeRefCode: ele['typeRefCode'] || '',
             editable: false,
             actions: [...this.tableActions],
           };
@@ -123,29 +127,39 @@ export class TrainingTypeManagementComponent {
         },
       ];
     } else if (this.event.action == 'save') {
-      if (event.item.title == null || event.item.title == '') {
+      if (!event.item.title || event.item.title === '') {
         this.toastr.warning('Please enter training type!');
+      } else if (!event.item.typeRefCode || event.item.typeRefCode === '') {
+        this.toastr.warning('Please enter training type code!');
+      } else if (
+        !/^[A-Za-z]{3}$/.test(String(event.item.typeRefCode || '').trim())
+      ) {
+        this.toastr.warning(
+          'Training type code must be exactly 3 alphabetic characters!'
+        );
       } else {
         this.confirmationMessage = 'Confirm to Save the changes!';
         this.confirmChangeModal();
       }
     } else if (this.event.action == 'delete') {
-      if (event.item.title == null || event.item.title == '') {
+      if (!event.item.id) {
+        this.trainingTypeListProcessed.splice(this.event.index, 1);
+      } else if (event.item.title == null || event.item.title == '') {
         this.trainingTypeListProcessed.splice(this.event.index, 1);
       } else {
-        if(localStorage.getItem('language')=='hi')
-        this.confirmationMessage =
-          'योजना को हटाने की पुष्टि करें - ' + event.item.title;
-
-          else
-        this.confirmationMessage =
-          'Confirm to delete training type - ' + event.item.title;
+        if (localStorage.getItem('language') == 'hi')
+          this.confirmationMessage =
+            'योजना को हटाने की पुष्टि करें - ' + event.item.title;
+        else
+          this.confirmationMessage =
+            'Confirm to delete training type - ' + event.item.title;
         this.confirmChangeModal();
       }
     } else if (this.event.action == 'add') {
-      this.trainingTypeListProcessed.push({
+      this.trainingTypeListProcessed.unshift({
         id: null,
         title: '',
+        typeRefCode: '',
         editable: true,
         actions: [
           {
@@ -181,6 +195,7 @@ export class TrainingTypeManagementComponent {
       let data = {
         id: this.event.item.id,
         trainingTypeName: this.event.item.title,
+        typeRefCode: this.event.item.typeRefCode,
       };
       this.trainingTypeService.saveTrainingType(data).subscribe({
         next: (res: any) => {

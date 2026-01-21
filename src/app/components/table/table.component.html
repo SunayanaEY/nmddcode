@@ -156,11 +156,11 @@
             <td *ngFor="let col of columns">
               <input
                 [(ngModel)]="item[col.key]"
-                (change)="onActionClick('save', item, i)"
+                (ngModelChange)="onEditableCellChange(item, col, $event, i)"
                 class="form-control"
                 required
+                [attr.maxlength]="getMaxLength(col)"
               />
-              <!-- {{ item[col.key] }} -->
             </td>
           </ng-container>
           <ng-container

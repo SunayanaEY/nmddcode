@@ -2,8 +2,11 @@
   <div class="sheet" #certificateContent aria-label="NDDB Certificate">
     <!-- Top meta -->
     <div class="certificate-header" aria-label="Header">
-      <div class="certificate-ref">UIN No- {{ finalUniqueId }}</div>
-      <div class="certificate-date">Date: {{ data?.createDate | date: 'dd.MM.yyyy' }}</div>
+      <div>
+        <div class="certificate-ref">UIN No- {{ finalUniqueId }}</div>
+        <div class="certificate-ref" *ngIf="data?.trainingRefCode">Ref: {{ data?.trainingRefCode }}</div>
+      </div>
+      <div class="certificate-date">Date: {{ data?.certificateDate | date: 'dd.MM.yyyy' }}</div>
     </div>
 
     <!-- Logo Row -->

@@ -111,6 +111,10 @@ export class OrganizationAdminProfileComponent implements OnInit {
           '',
           [Validators.required, Validators.minLength(3)],
         ],
+        organizationCode: [
+          '',
+          [Validators.required, Validators.pattern(/^[A-Za-z]{4}$/)],
+        ],
         state: ['', [Validators.required]],
         district: ['', [Validators.required]],
         address: ['', [Validators.required, Validators.minLength(10)]],
@@ -252,6 +256,7 @@ export class OrganizationAdminProfileComponent implements OnInit {
         organizationName: this.profileForm.get('organizationName')?.value || '',
         registrationNumber:
           this.profileForm.get('trainingInstituteRegistration')?.value || '',
+        organizationCode: this.profileForm.get('organizationCode')?.value || '',
         stateId: parseInt(this.profileForm.get('state')?.value) || 0,
         districtId: parseInt(this.profileForm.get('district')?.value) || 0,
         address: this.profileForm.get('address')?.value || '',

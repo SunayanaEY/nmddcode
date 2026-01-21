@@ -92,6 +92,39 @@
                   </span>
                 </div>
               </div>
+              <div class="form-group">
+                <label for="organizationCode">
+                  {{ 'PRIVATE_ORG.LABEL_ORG_CODE' | translate }}<span class="required">*</span>
+                </label>
+                <input
+                  type="text"
+                  id="organizationCode"
+                  formControlName="organizationCode"
+                  [placeholder]="'PRIVATE_ORG.PLACEHOLDER_ORG_CODE' | translate"
+                  class="form-control"
+                  [class.is-invalid]="
+                    profileForm.get('organizationCode')?.invalid &&
+                    profileForm.get('organizationCode')?.touched
+                  "
+                  maxlength="4"
+                />
+                <div
+                  class="invalid-feedback"
+                  *ngIf="
+                    profileForm.get('organizationCode')?.invalid &&
+                    profileForm.get('organizationCode')?.touched
+                  "
+                >
+                  <span
+                    *ngIf="profileForm.get('organizationCode')?.errors?.['required']">
+                    {{ 'PRIVATE_ORG.VALIDATION_ORG_CODE_REQUIRED' | translate }}
+                  </span>
+                  <span
+                    *ngIf="profileForm.get('organizationCode')?.errors?.['pattern']">
+                    {{ 'PRIVATE_ORG.VALIDATION_ORG_CODE_PATTERN' | translate }}
+                  </span>
+                </div>
+              </div>
             </div>
 
             <div class="form-row">

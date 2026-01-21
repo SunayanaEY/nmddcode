@@ -249,29 +249,36 @@ export class TrainingCertificateGenerationComponent implements OnInit {
     private route: ActivatedRoute,
     private adminService: AdminService
   ) {
-    this.trainingForm = this.fb.group({
-      trainingTitle: ['', Validators.required],
-      scheme: ['', Validators.required],
-      trainerName: ['', Validators.required],
-      guestTrainerName: [''],
-      trainingInstituteName: ['', Validators.required],
-      venueState: ['', Validators.required],
-      venueDistrict: ['', Validators.required],
-      venueBlock: ['', Validators.required],
-      venueAddress: ['', Validators.required],
-      duration: [
-        '',
-        [Validators.required, this.positiveDurationValidator.bind(this)],
-      ],
-      durationType: ['Hours', Validators.required],
-      trainingDescription: [
-        '',
-        [Validators.required, Validators.maxLength(100)],
-      ],
-      trainingType: ['', Validators.required],
-      modeOfTraining: ['', Validators.required],
-      dateRanges: this.fb.array([], [Validators.required, Validators.minLength(1)])
-    }, { validators: [this.noOverlapValidator.bind(this)] });
+    this.trainingForm = this.fb.group(
+      {
+        trainingTitle: ['', Validators.required],
+        scheme: ['', Validators.required],
+        trainerName: ['', Validators.required],
+        guestTrainerName: [''],
+        trainingInstituteName: ['', Validators.required],
+        venueState: ['', Validators.required],
+        venueDistrict: ['', Validators.required],
+        venueBlock: ['', Validators.required],
+        venueAddress: ['', Validators.required],
+        duration: [
+          '',
+          [Validators.required, this.positiveDurationValidator.bind(this)],
+        ],
+        durationType: ['Hours', Validators.required],
+        trainingDescription: [
+          '',
+          [Validators.required, Validators.maxLength(100)],
+        ],
+        trainingType: ['', Validators.required],
+        modeOfTraining: ['', Validators.required],
+        trainingRegion: ['BH', Validators.required],
+        dateRanges: this.fb.array([], [
+          Validators.required,
+          Validators.minLength(1),
+        ]),
+      },
+      { validators: [this.noOverlapValidator.bind(this)] }
+    );
   }
   ngOnInit() {
     this.addDateRange();
@@ -369,6 +376,7 @@ export class TrainingCertificateGenerationComponent implements OnInit {
           trainingDescription: this.trainingDetails.trainingDescription,
           trainingType: this.trainingDetails.trainingTypeId,
           modeOfTraining: this.trainingDetails.modeOfTraining,
+          trainingRegion: this.trainingDetails.trainingRegion || 'BH',
         });
 
         // Clear existing date ranges and repopulate with top-level dates from API
