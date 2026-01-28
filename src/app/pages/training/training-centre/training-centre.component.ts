@@ -319,13 +319,14 @@ export class TrainingCentreComponent implements OnInit {
           label: 'Registration ID',
           type: 'text',
           placeholder: 'Enter registration ID',
-          disabled: this.userRole == 5 || this.userRole == 6,
+          disabled: true,
         },
         {
           id: 'address',
           label: 'Address',
           type: 'textarea',
           placeholder: 'Enter complete address',
+          required: false,
           disabled: this.userRole == 5 || this.userRole == 6,
         },
         {
@@ -725,6 +726,7 @@ export class TrainingCentreComponent implements OnInit {
   //   // Ensure state and district change fields are available for edit mode
   //   this.restoreStateDistrictFields();
 
+  //   // }
   //   this.showModal = true;
   // }
   editTrainingCentre(centre: any) {
@@ -736,6 +738,25 @@ export class TrainingCentreComponent implements OnInit {
     this.modalConfig.showFooter = true;
     this.modalConfig.primaryButtonText = 'Update';
     this.modalConfig.secondaryButtonText = 'Cancel';
+    this.selectedImageFile = null;
+
+    if (centre.instituteImageUrl) {
+      const fileName = centre.instituteImageUrl;
+      this.adminService.downloadInstituteImage(fileName).subscribe({
+        next: (blob: Blob) => {
+          const imageUrl = URL.createObjectURL(blob);
+          this.currentImageUrl = imageUrl;
+          this.selectedCentre.instituteImageUrl = imageUrl;
+          this.selectedCentre.instituteImage = imageUrl;
+        },
+        error: () => {
+          const directUrl = `${this.url}api/photo/download/${fileName}`;
+          this.currentImageUrl = directUrl;
+          this.selectedCentre.instituteImageUrl = directUrl;
+          this.selectedCentre.instituteImage = directUrl;
+        },
+      });
+    }
 
     const nameField = this.modalConfig.fields?.find(
       (f) => f.id === 'stateHeadContactPerson'
@@ -770,6 +791,8 @@ export class TrainingCentreComponent implements OnInit {
       this.selectedCentre.stateHeadContact = centre.stateHeadContact;
       this.selectedCentre.stateHeadEmail = centre.stateHeadEmail;
     }
+
+    this.restoreStateDistrictFields();
 
     this.showModal = true;
   }

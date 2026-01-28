@@ -156,6 +156,18 @@ export interface TrainingInstituteTypeDistributionResponse {
   statusCode: number;
 }
 
+export interface PrivateInstituteTypeDistributionResponse {
+  success: boolean;
+  message: string;
+  data: {
+    NDDB: number;
+    NGO: number;
+    Private: number;
+    'Co-operative': number;
+  };
+  statusCode: number;
+}
+
 export interface TopTrainingTypeData {
   trainingTypeName: string;
   trainingTypeId: number;
@@ -657,6 +669,35 @@ export class DashboardDataService {
     }
 
     return this.http.get<TrainingInstituteTypeDistributionResponse>(url);
+  }
+
+  getPrivateInstituteTypeDistribution(
+    stateId?: number,
+    districtId?: number,
+    organizationId?: number,
+    instituteType?: string
+  ): Observable<PrivateInstituteTypeDistributionResponse> {
+    let url = `${this.API_BASE_URL}public/dashboard/privateInstituteTypeDistribution`;
+    const params = new URLSearchParams();
+
+    if (stateId) {
+      params.append('stateId', stateId.toString());
+    }
+    if (districtId) {
+      params.append('districtId', districtId.toString());
+    }
+    if (organizationId) {
+      params.append('organizationId', organizationId.toString());
+    }
+    if (instituteType) {
+      params.append('trainingInstituteType', instituteType);
+    }
+
+    if (params.toString()) {
+      url += `?${params.toString()}`;
+    }
+
+    return this.http.get<PrivateInstituteTypeDistributionResponse>(url);
   }
 
   getTopTrainingTypes(

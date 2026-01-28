@@ -258,7 +258,7 @@ export class TrainingCertificateGenerationComponent implements OnInit {
         trainingInstituteName: ['', Validators.required],
         venueState: ['', Validators.required],
         venueDistrict: ['', Validators.required],
-        venueBlock: ['', Validators.required],
+        venueBlock: [''],
         venueAddress: ['', Validators.required],
         duration: [
           '',

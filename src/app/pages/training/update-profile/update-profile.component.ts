@@ -6,7 +6,7 @@ import {
   Validators,
   ReactiveFormsModule,
 } from '@angular/forms';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import {
   BreadcrumbComponent,
   BreadcrumbItem,
@@ -45,7 +45,7 @@ export class UpdateProfileComponent implements OnInit {
   selectedStateId: number | null = null;
 
   breadcrumbItems: BreadcrumbItem[] = [
-    { label: 'Training Dashboard', url: '/admin/training-module' },
+    { label: 'Dashboard', url: '/admin/role-dashboard' },
     { label: 'Update Profile' },
   ];
 
@@ -119,7 +119,37 @@ export class UpdateProfileComponent implements OnInit {
 
             // Set current image URL if available
             if (this.profileData.instituteImageUrl) {
-              this.currentImageUrl = this.profileData.instituteImageUrl;
+              const imgPath = this.profileData.instituteImageUrl;
+              if (imgPath.startsWith('http') || imgPath.startsWith('data:')) {
+                this.currentImageUrl = imgPath;
+              } else {
+                let url = imgPath;
+                if (imgPath.startsWith('/')) {
+                  url = `${environment.apiUrl}${imgPath.substring(1)}`;
+                } else {
+                  url = `${environment.apiUrl}api/photo/download/${encodeURIComponent(
+                    imgPath
+                  )}`;
+                }
+
+                const token = localStorage.getItem('token');
+                let headers = new HttpHeaders();
+                if (token) {
+                  headers = headers.set('Authorization', `Bearer ${token}`);
+                }
+
+                this.http
+                  .get(url, { responseType: 'blob', headers })
+                  .subscribe({
+                    next: (blob) => {
+                      this.currentImageUrl = URL.createObjectURL(blob);
+                    },
+                    error: (err) => {
+                      console.error('Error loading institute image:', err);
+                      this.currentImageUrl = url;
+                    },
+                  });
+              }
             }
           } else {
             this.error = 'No profile data available';

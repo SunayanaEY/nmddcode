@@ -24,13 +24,13 @@ export class LatestCertificateLayoutComponent implements OnInit, OnChanges {
   @ViewChild('certificateContent', { static: false })
   certificateContent!: ElementRef;
 
-  // Blob-based display URLs for logos and signatures
   logo1Url: string | null = null;
   logo2Url: string | null = null;
   logo3Url: string | null = null;
   signatureUrls: (string | null)[] = [];
   private createdBlobUrls: string[] = [];
   traineePhotoUrl: string | null = null;
+   isReady: boolean = false;
 
   constructor(private http: HttpClient, private trainingService: TrainingService) {}
 
@@ -45,11 +45,11 @@ export class LatestCertificateLayoutComponent implements OnInit, OnChanges {
     }
   }
 
-  private initData() {
+  private async initData() {
+    this.isReady = false;
     if (this.data?.trainingDate) {
       this.data.trainingDate = new Date(this.data.trainingDate);
     }
-    // Trim whitespace from image URLs
     ['logoPath1','logoPath2','logoPath3'].forEach((k) => {
       if (this.data?.[k]) this.data[k] = (this.data[k] as string).trim();
     });
@@ -59,9 +59,14 @@ export class LatestCertificateLayoutComponent implements OnInit, OnChanges {
         signatorySignaturePath: s?.signatorySignaturePath?.trim()
       }));
     }
-    // Build blob-based display URLs for logos and signatures
-    this.prepareAssetUrls();
-    this.loadTraineePhoto();
+    try {
+      await Promise.all([
+        this.prepareAssetUrls(),
+        this.loadTraineePhoto()
+      ]);
+    } finally {
+      this.isReady = true;
+    }
   }
 
   get totalDurationDays(): number | null {

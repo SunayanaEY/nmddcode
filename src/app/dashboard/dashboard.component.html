@@ -482,6 +482,7 @@
       </div>
     </div>
   </div>
+
   <!-- Monthly Trainings Chart -->
   <div class="col-lg-6">
     <div class="card h-100">
@@ -550,6 +551,29 @@
           [instituteType]="selectedInstituteType"
         >
         </app-top-training-types-chart>
+      </div>
+    </div>
+  </div>
+
+  <!-- Private Institute Type Chart -->
+  <div class="col-lg-6" *ngIf="userRole !== 6 && selectedInstituteType === 'Other Organizations'">
+    <div class="card">
+      <div class="card-header">
+        <h5 class="card-title mb-0">
+          <i class="fas fa-building text-info me-2"></i>
+          {{ "Private Institute Type" | translate }}
+        </h5>
+      </div>
+      <div class="card-body">
+        <app-private-institute-type-chart
+          [selectedState]="selectedState"
+          [isLoading]="isLoading"
+          [stateId]="selectedStateId"
+          [districtId]="selectedDistrictId"
+          [organizationId]="organizationId"
+          [instituteType]="selectedInstituteType"
+        >
+        </app-private-institute-type-chart>
       </div>
     </div>
   </div>

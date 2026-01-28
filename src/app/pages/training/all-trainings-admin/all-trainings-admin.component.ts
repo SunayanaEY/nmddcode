@@ -164,14 +164,16 @@ export class AllTrainingsAdminComponent {
       title: 'Download all certificates',
       condition: (row: any) =>
         (this.userRole == 3 || this.userRole == 4) &&
-        row.status === 'TRAINEE ORGANIZATION DECISIONS COMPLETED',
+        row.status === 'Certificate Approved / Rejected',
     },
     {
       name: 'downloadAllIdCards',
       icon: 'bi bi-person-badge',
       class: 'btn-primary',
       title: 'Download all ID cards',
-      condition: () => this.userRole == 3 || this.userRole == 4,
+      condition: (row: any) =>
+        (this.userRole == 3 || this.userRole == 4) &&
+        row.status === 'Certificate Approved / Rejected',
     },
   ];
 
@@ -893,8 +895,22 @@ export class AllTrainingsAdminComponent {
         this.certificateUinForBulk = trainee.uin || 'UIN2025345780991';
 
         this.cdr.detectChanges();
+        if (this.hiddenCertificate) {
+          const startTime = Date.now();
+          const maxWait = 5000;
+          while (!this.hiddenCertificate.isReady) {
+            if (Date.now() - startTime > maxWait) {
+              console.warn(
+                'Bulk Certificate: Timeout waiting for certificate ready',
+                trainee.name
+              );
+              break;
+            }
+            await new Promise((resolve) => setTimeout(resolve, 100));
+          }
+        }
 
-        await new Promise((resolve) => setTimeout(resolve, 500));
+        await new Promise((resolve) => setTimeout(resolve, 100));
 
         if (
           this.hiddenCertificate &&

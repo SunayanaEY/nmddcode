@@ -69,11 +69,10 @@
                   >
                 </div>
               </div>
-              <div class="form-group">
-                <label for="trainingInstituteRegistration"
-                  >{{ "TRAINING.REGISTRATION_NUMBER" | translate
-                  }}<span class="required">*</span></label
-                >
+              <div class="form-group" *ngIf="userRole !== 1">
+                <label for="trainingInstituteRegistration">{{
+                  "TRAINING.REGISTRATION_NUMBER" | translate
+                }}</label>
                 <input
                   type="text"
                   id="trainingInstituteRegistration"
@@ -82,33 +81,8 @@
                     'TRAINING.PLACEHOLDERS.REGISTRATION_NUMBER' | translate
                   "
                   class="form-control"
-                  [class.is-invalid]="
-                    profileForm.get('trainingInstituteRegistration')?.invalid &&
-                    profileForm.get('trainingInstituteRegistration')?.touched
-                  "
                   (keypress)="allowOnlyAlphabetsAndDigits($event)"
                 />
-
-                <div
-                  class="invalid-feedback"
-                  *ngIf="
-                    profileForm.get('trainingInstituteRegistration')?.invalid &&
-                    profileForm.get('trainingInstituteRegistration')?.touched
-                  "
-                >
-                  <span
-                    *ngIf="profileForm.get('trainingInstituteRegistration')?.errors?.['required']"
-                    >{{
-                      "TRAINING.VALIDATION.REGISTRATION_REQUIRED" | translate
-                    }}</span
-                  >
-                  <span
-                    *ngIf="profileForm.get('trainingInstituteRegistration')?.errors?.['minlength']"
-                    >{{
-                      "TRAINING.VALIDATION.REGISTRATION_MIN_LENGTH" | translate
-                    }}</span
-                  >
-                </div>
               </div>
             </div>
 

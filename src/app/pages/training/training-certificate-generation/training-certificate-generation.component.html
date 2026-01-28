@@ -192,19 +192,13 @@
             </div>
 
             <div class="form-group third-width">
-              <input type="text" formControlName="venueBlock" class="form-control"
-                [placeholder]="'Enter Block' | translate" (input)="validateBlockInput($event)" [class.is-invalid]="
-                  trainingForm.get('venueBlock')?.invalid &&
-                  trainingForm.get('venueBlock')?.touched
-                " />
-              <div *ngIf="
-                  trainingForm.get('venueBlock')?.invalid &&
-                  trainingForm.get('venueBlock')?.touched
-                " class="invalid-feedback">
-                <small *ngIf="trainingForm.get('venueBlock')?.errors?.['required']" class="text-danger">
-                  {{ "This field is required" | translate }}
-                </small>
-              </div>
+              <input
+                type="text"
+                formControlName="venueBlock"
+                class="form-control"
+                [placeholder]="'Enter Block (Optional)' | translate"
+                (input)="validateBlockInput($event)"
+              />
             </div>
           </div>
 

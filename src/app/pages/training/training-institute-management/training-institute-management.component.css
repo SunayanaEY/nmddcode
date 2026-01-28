@@ -123,12 +123,11 @@
 /* Smooth Transitions */
 .form-section,
 .table-section {
-  transition: all 0.3s ease;
+  transition: box-shadow 0.3s ease;
 }
 
 .form-section:hover,
 .table-section:hover {
-  transform: translateY(-2px);
   box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
 }
 

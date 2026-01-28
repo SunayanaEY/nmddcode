@@ -77,7 +77,7 @@ export class TrainingCentreAdminProfileComponent implements OnInit {
   ];
 
   instituteGrades: string[] = ['A', 'B', 'A+'];
-  instituteOwnedByOptions: string[] = ['NDDB', 'Co-operative', 'NGO'];
+  instituteOwnedByOptions: string[] = ['NDDB', 'Co-operative', 'NGO', 'Private'];
 
   breadcrumbItems: BreadcrumbItem[] = [
     { label: 'Training Module', url: '/admin/training-module' },
@@ -132,8 +132,8 @@ export class TrainingCentreAdminProfileComponent implements OnInit {
         instituteGrade: ['', [Validators.required]],
         instituteOwnedBy: [''],
         trainingInstituteRegistration: [
-          '',
-          [Validators.required, Validators.minLength(3)],
+          { value: '', disabled: true },
+          [],
         ],
         trainingInstituteExpiry: ['', []],
         state: ['', [Validators.required]],
@@ -197,8 +197,8 @@ export class TrainingCentreAdminProfileComponent implements OnInit {
           instituteGrade: ['', [Validators.required]],
           instituteOwnedBy: [''],
           trainingInstituteRegistration: [
-            '',
-            [Validators.required, Validators.minLength(3)],
+            { value: '', disabled: true },
+            [],
           ],
           trainingInstituteExpiry: ['', []],
           state: ['', [Validators.required]],
@@ -479,8 +479,8 @@ export class TrainingCentreAdminProfileComponent implements OnInit {
         instituteDetails = {
           instituteName:
             this.profileForm.get('trainingInstituteName')?.value || '',
-          registrationNumber:
-            this.profileForm.get('trainingInstituteRegistration')?.value || '',
+          // registrationNumber:
+          //   this.profileForm.get('trainingInstituteRegistration')?.value || '',
           registrationValidity: expiryValue ? expiryValue + 'T00:00:00' : '',
           instituteType: this.profileForm.get('instituteType')?.value || '',
           instituteGrade: this.profileForm.get('instituteGrade')?.value || '',
@@ -496,8 +496,8 @@ export class TrainingCentreAdminProfileComponent implements OnInit {
         instituteDetails = {
           instituteName:
             this.profileForm.get('trainingInstituteName')?.value || '',
-          registrationNumber:
-            this.profileForm.get('trainingInstituteRegistration')?.value || '',
+          // registrationNumber:
+          //   this.profileForm.get('trainingInstituteRegistration')?.value || '',
           registrationValidity: expiryValue ? expiryValue + 'T00:00:00' : '',
           instituteType: this.profileForm.get('instituteType')?.value || '',
           instituteGrade: this.profileForm.get('instituteGrade')?.value || '',

@@ -2,9 +2,9 @@
   <div class="id-card" #idCardContent>
     <div class="id-card-inner">
       <div class="id-header">
-        <div class="id-header-logo">
+        <div class="id-header-logo" *ngIf="logo2Url || data?.logoPath2">
           <img
-            [src]="logo1Url || data?.logoPath1"
+            [src]="logo2Url || data?.logoPath2"
             alt=""
             crossorigin="anonymous"
           />

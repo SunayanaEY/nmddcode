@@ -15,6 +15,7 @@ import { State, District, LocationService } from '../services/location.service';
 import { MonthlyChartComponent } from '../pages/public-dashboard/components/monthly-chart/monthly-chart.component';
 import { AgeGroupChartComponent } from '../pages/public-dashboard/components/age-group-chart/age-group-chart.component';
 import { InstituteTypeChartComponent } from '../pages/public-dashboard/components/institute-type-chart/institute-type-chart.component';
+import { PrivateInstituteTypeChartComponent } from '../pages/public-dashboard/components/private-institute-type-chart/private-institute-type-chart.component';
 import { IndiaMapComponent } from '../pages/public-dashboard/components/india-map/india-map.component';
 import { TopTrainingTypesChartComponent } from '../pages/public-dashboard/components/top-training-types-chart/top-training-types-chart.component';
 import { CommonModule } from '@angular/common';
@@ -35,6 +36,7 @@ import { AdminService } from '../pages/training/services/training-admin.service'
     MonthlyChartComponent,
     AgeGroupChartComponent,
     InstituteTypeChartComponent,
+    PrivateInstituteTypeChartComponent,
     IndiaMapComponent,
     TopTrainingTypesChartComponent,
     ReactiveFormsModule,
@@ -598,7 +600,6 @@ export class DashboardComponent {
               'Institute Name': item.trainingInstituteName,
               'Institute Type': item.instituteType,
               'Registration No.': item.registrationId,
-              'Institute Id': item.id,
               'Registration Validity': this.formatDate(item.expiryDate),
               Status: item.status,
             }));

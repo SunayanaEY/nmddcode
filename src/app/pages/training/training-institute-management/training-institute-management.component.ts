@@ -42,8 +42,7 @@ export class TrainingInstituteManagementComponent implements OnInit {
    * Toggle the visibility of the training institute form
    */
   toggleForm(): void {
-    // this.showForm = !this.showForm;
-    this.showForm = true;
+    this.showForm = !this.showForm;
   }
 
   /**
