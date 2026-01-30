@@ -35,14 +35,14 @@
     <!-- Chart Statistics -->
     <div class="chart-stats mt-3" *ngIf="!chartLoading">
       <div class="row g-2">
-        <div class="col-6" *ngFor="let item of getChartData()">
+        <div class="col-12 col-md-6" *ngFor="let item of getChartData()">
           <div class="stat-card">
             <div class="stat-icon" [style.background-color]="item.color + '20'">
               <i class="fas fa-building" [style.color]="item.color"></i>
             </div>
             <div class="stat-content">
               <div class="stat-label">{{ item.type }}</div>
-              <div class="stat-value">{{ item.percentage }}%</div>
+              <div class="stat-value">{{ item.percentage }}</div>
             </div>
           </div>
         </div>

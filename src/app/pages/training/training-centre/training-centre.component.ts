@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import {
@@ -11,11 +11,6 @@ import {
   TableColumn,
   TableAction,
 } from '../../../components/table/table.component';
-import {
-  ModalComponent,
-  ModalConfig,
-  ModalField,
-} from '../../../components/modal/modal.component';
 import {
   AdminService,
   TrainingInstitute,
@@ -40,7 +35,6 @@ import { environment } from '../../../../environments/environment';
     FormsModule,
     // BreadcrumbComponent,
     TableComponent,
-    ModalComponent,
     HttpClientModule,
     TranslateModule,
   ],
@@ -48,45 +42,26 @@ import { environment } from '../../../../environments/environment';
   styleUrls: ['./training-centre.component.css'],
 })
 export class TrainingCentreComponent implements OnInit {
-  @ViewChild('editModal') editModal!: ModalComponent;
-
   breadcrumbItems: BreadcrumbItem[] = [
     { label: 'Training Module', url: '/admin/training-module' },
     { label: 'Training Institute Master' },
   ];
 
-  showModal = false;
+  showEditModal = false;
   selectedCentre: any = null;
-  modalMode: 'view' | 'edit' = 'view';
+  editForm: any = {};
+  isEditSaving = false;
 
   showConfirmModal = false;
   confirmationText = '';
+  confirmModalContent = '';
+  isConfirmLoading = false;
   pendingToggleItem: any = null;
   statusFilter: string = '';
   stateFilter: string = '';
+  instituteTypeFilter: string = '';
   userRole: any;
   userId: any;
-  modalConfig!: ModalConfig; // declare only, initialize in ngOnInit
-
-  confirmModalConfig: ModalConfig = {
-    title: 'Confirm Status Change',
-    size: 'm',
-    showCloseButton: true,
-    showFooter: true,
-    primaryButtonText: 'Confirm',
-    secondaryButtonText: 'Cancel',
-    content: '', // Will be dynamically set
-    isLoading: false, // Initialize loading state
-    fields: [
-      {
-        id: 'confirmationText',
-        label: 'Type "confirm" to proceed',
-        type: 'text',
-        required: true,
-        placeholder: 'Type confirm here',
-      },
-    ],
-  };
 
   trainingInstitutes: TrainingInstitute[] = [];
   isLoading = false;
@@ -98,6 +73,13 @@ export class TrainingCentreComponent implements OnInit {
   selectedImageFile: File | null = null;
   currentImageUrl: string | null = null;
   url: string = environment.apiUrl;
+  instituteTypes = [
+    { value: 'Government Owned', label: 'Government Owned' },
+    { value: 'Other Organizations', label: 'Other Organizations' },
+  ];
+  instituteGrades: string[] = ['A', 'B', 'A+'];
+  instituteOwnedByOptions: string[] = ['NDDB', 'Co-operative', 'NGO', 'Private'];
+  organizations: any[] = [];
   constructor(
     private adminService: AdminService,
     private authService: AuthService,
@@ -146,11 +128,6 @@ export class TrainingCentreComponent implements OnInit {
 
   // Previous State Heads Modal properties
   showPreviousInstituteHeadsModal = false;
-  previousStateHeadsModalConfig: ModalConfig = {
-    title: 'Previous Institute Heads',
-    size: 'xl',
-    primaryButtonText: 'Close',
-  };
   previousInstituteHeadsData: any[] = [];
   previousStateHeadsTableColumns: TableColumn[] = [
     { key: 'contactPersonName', header: 'Contact Person Name' },
@@ -202,155 +179,13 @@ export class TrainingCentreComponent implements OnInit {
         title: 'Edit',
       });
     }
-
-    // Initialize modalConfig for all user roles
-    this.modalConfig = {
-      title: 'Training Institute Admin Details',
-      size: 'l',
-      showCloseButton: true,
-      showFooter: true,
-      primaryButtonText: 'Close',
-      fields: [
-        {
-          id: 'instituteImage',
-          label: 'Institute Image',
-          type: 'file',
-          accept: '.jpg,.jpeg,.png,.gif',
-          placeholder: 'Select institute image',
-          disabled: this.userRole == 5 || this.userRole == 6,
-        },
-        {
-          id: 'trainingInstituteName',
-          label: 'Institute Name',
-          type: 'text',
-          required: true,
-          placeholder: 'Enter institute name',
-          disabled: this.userRole == 5 || this.userRole == 6,
-        },
-        {
-          id: 'state',
-          label: 'Current State',
-          type: 'text',
-          disabled: true,
-          placeholder: 'Current state',
-        },
-        {
-          id: 'district',
-          label: 'Current District',
-          type: 'text',
-          disabled: true,
-          placeholder: 'Current district',
-        },
-        {
-          id: 'newStateId',
-          label: 'Change State (Optional)',
-          type: 'select',
-          placeholder: 'Select new state if you want to change',
-          options: [],
-          disabled: this.userRole == 5 || this.userRole == 6,
-        },
-        {
-          id: 'newDistrictId',
-          label: 'Change District (Optional)',
-          type: 'select',
-          placeholder: 'Select new district if you want to change',
-          options: [],
-          disabled: this.userRole == 5 || this.userRole == 6,
-        },
-        {
-          id: 'contactPersonName',
-          label: 'Institute Head Name',
-          type: 'text',
-          required: true,
-          placeholder: 'Enter institute head name',
-          disabled: this.userRole == 1,
-        },
-        {
-          id: 'contactNumber',
-          label: 'Contact Number',
-          type: 'tel',
-          required: true,
-          placeholder: 'Enter contact number',
-          pattern: '[0-9]{10}',
-          disabled: this.userRole == 1,
-        },
-        {
-          id: 'emailId',
-          label: 'Email ID',
-          type: 'email',
-          required: true,
-          placeholder: 'Enter email address',
-          disabled: this.userRole == 1,
-        },
-        {
-          id: 'stateHeadContactPerson',
-          label: 'State Head Name',
-          type: 'text',
-          placeholder: 'Enter state head name',
-          disabled:
-            this.userRole == 5 || this.userRole == 6 || this.userRole === 1,
-        },
-        {
-          id: 'stateHeadContact',
-          label: 'State Head Contact',
-          type: 'tel',
-          placeholder: 'Enter state head contact number',
-          pattern: '[0-9]{10}',
-          disabled:
-            this.userRole == 5 || this.userRole == 6 || this.userRole === 1,
-        },
-        {
-          id: 'stateHeadEmail',
-          label: 'State Head Email',
-          type: 'email',
-          placeholder: 'Enter state head email address',
-          disabled:
-            this.userRole == 5 || this.userRole == 6 || this.userRole === 1,
-        },
-        {
-          id: 'designation',
-          label: 'Designation',
-          type: 'text',
-          placeholder: 'Enter designation',
-          disabled: this.userRole == 1,
-        },
-        {
-          id: 'registrationId',
-          label: 'Registration ID',
-          type: 'text',
-          placeholder: 'Enter registration ID',
-          disabled: true,
-        },
-        {
-          id: 'address',
-          label: 'Address',
-          type: 'textarea',
-          placeholder: 'Enter complete address',
-          required: false,
-          disabled: this.userRole == 5 || this.userRole == 6,
-        },
-        {
-          id: 'latitude',
-          label: 'Latitude',
-          type: 'number',
-          placeholder: 'Enter latitude (e.g., 28.6139)',
-          disabled: this.userRole == 5 || this.userRole == 6,
-        },
-        {
-          id: 'longitude',
-          label: 'Longitude',
-          type: 'number',
-          placeholder: 'Enter longitude (e.g., 77.2090)',
-          disabled: this.userRole == 5 || this.userRole == 6,
-        },
-      ],
-    };
     if (this.userRole === 6) {
       this.loadTrainingInstitutesOrganization();
     } else {
       this.loadTrainingInstitutes();
     }
     this.loadStates();
+    this.loadOrganizations();
   }
 
   onPreviousInstituteHeadsModalClose(): void {
@@ -444,18 +279,20 @@ export class TrainingCentreComponent implements OnInit {
     this.locationService.getStates().subscribe({
       next: (states) => {
         this.states = states;
-        const stateField = this.modalConfig.fields?.find(
-          (field) => field.id === 'newStateId'
-        );
-        if (stateField) {
-          stateField.options = states.map((state) => ({
-            value: state.id,
-            label: state.stateName,
-          }));
-        }
       },
       error: (error) => {
         console.error('Error loading states:', error);
+      },
+    });
+  }
+  loadOrganizations(): void {
+    this.adminService.getAllOrganization().subscribe({
+      next: (organizations) => {
+        this.organizations = organizations || [];
+      },
+      error: (error) => {
+        console.error('Error loading organizations:', error);
+        this.toastr.error('Failed to load organizations');
       },
     });
   }
@@ -481,20 +318,6 @@ export class TrainingCentreComponent implements OnInit {
             item.active ? 'Active' : 'Inactive',
         },
       ];
-      this.tableColumns1 = [
-        { key: 'trainingInstituteName', header: 'TRAINING.INSTITUTE_NAME' },
-        { key: 'state', header: 'COMMON.STATE' },
-        { key: 'district', header: 'COMMON.DISTRICT' },
-        { key: 'contactPersonName', header: 'TRAINING.INSTITUTE_HEAD' },
-        { key: 'contactNumber', header: 'COMMON.CONTACT_NUMBER' },
-        { key: 'emailId', header: 'COMMON.CONTACT_MAIL' },
-        {
-          key: 'status',
-          header: 'COMMON.STATUS',
-          transform: (value: any, item: any) =>
-            item.active ? 'Active' : 'Inactive',
-        },
-      ];
     } else {
       this.tableColumns = [
         { key: 'trainingInstituteName', header: 'TRAINING.INSTITUTE_NAME' },
@@ -502,48 +325,32 @@ export class TrainingCentreComponent implements OnInit {
         { key: 'district', header: 'COMMON.DISTRICT' },
         {
           key: 'stateHeadContactPerson',
-          header: 'TRAINING.STATE_HEAD_NAME',
+          header: 'State/Organization Head Name',
+          transform: (value: any, item: any) =>
+            item.instituteType === 'Other Organizations'
+              ? item.organizationHeadContactPerson
+              : item.stateHeadContactPerson,
         },
         {
           key: 'stateHeadContact',
-          header: 'TRAINING.STATE_HEAD_CONTACT',
+          header: 'State/Organization Head Contact',
+          transform: (value: any, item: any) =>
+            item.instituteType === 'Other Organizations'
+              ? item.organizationHeadContact
+              : item.stateHeadContact,
         },
         {
           key: 'stateHeadEmail',
-          header: 'TRAINING.STATE_HEAD_EMAIL',
-        },
-        { key: 'contactPersonName', header: 'TRAINING.INSTITUTE_HEAD' },
-        { key: 'contactNumber', header: 'COMMON.CONTACT_NUMBER' },
-        { key: 'emailId', header: 'COMMON.CONTACT_MAIL' },
-        {
-          key: 'status',
-          header: 'COMMON.STATUS',
+          header: 'State/Organization Head Email',
           transform: (value: any, item: any) =>
-            item.active ? 'Active' : 'Inactive',
-        },
-      ];
-
-      this.tableColumns1 = [
-        { key: 'trainingInstituteName', header: 'TRAINING.INSTITUTE_NAME' },
-        { key: 'state', header: 'COMMON.STATE' },
-        { key: 'district', header: 'COMMON.DISTRICT' },
-        {
-          key: 'organizationHeadContactPerson',
-          header: 'TRAINING.ORGANIZATION_HEAD_NAME',
-        },
-        {
-          key: 'organizationHeadContact',
-          header: 'TRAINING.ORGANIZATION_HEAD_CONTACT',
-        },
-        {
-          key: 'organizationHeadEmail',
-          header: 'TRAINING.ORGANIZATION_HEAD_EMAIL',
+            item.instituteType === 'Other Organizations'
+              ? item.organizationHeadEmail
+              : item.stateHeadEmail,
         },
         { key: 'contactPersonName', header: 'TRAINING.INSTITUTE_HEAD' },
         { key: 'contactNumber', header: 'COMMON.CONTACT_NUMBER' },
         { key: 'emailId', header: 'COMMON.CONTACT_MAIL' },
         { key: 'designation', header: 'COMMON.DESIGNATION' },
-
         {
           key: 'status',
           header: 'COMMON.STATUS',
@@ -558,15 +365,6 @@ export class TrainingCentreComponent implements OnInit {
     this.locationService.getDistrictsByState(stateId).subscribe({
       next: (districts) => {
         this.districts = districts;
-        const newDistrictField = this.modalConfig.fields?.find(
-          (field) => field.id === 'newDistrictId'
-        );
-        if (newDistrictField) {
-          newDistrictField.options = districts.map((district) => ({
-            value: district.id,
-            label: district.districtName,
-          }));
-        }
       },
       error: (error) => {
         console.error('Error loading districts:', error);
@@ -612,6 +410,13 @@ export class TrainingCentreComponent implements OnInit {
       }
     }
 
+    // Filter by institute type
+    if (this.instituteTypeFilter) {
+      filtered = filtered.filter(
+        (centre) => centre.instituteType === this.instituteTypeFilter
+      );
+    }
+
     return filtered;
   }
   get filteredGovtTrainingCentres(): any[] {
@@ -634,16 +439,18 @@ export class TrainingCentreComponent implements OnInit {
     this.statusFilter = status;
   }
 
+  onInstituteTypeFilterChange(type: string): void {
+    this.instituteTypeFilter = type;
+  }
+
   clearFilters(): void {
     this.stateFilter = '';
     this.statusFilter = '';
+    this.instituteTypeFilter = '';
   }
 
   onTableAction(event: { action: string; item: any; index: number }) {
     switch (event.action) {
-      case 'view':
-        this.viewTrainingCentre(event.item);
-        break;
       case 'edit':
         this.editTrainingCentre(event.item);
         break;
@@ -660,40 +467,6 @@ export class TrainingCentreComponent implements OnInit {
         this.deleteTrainingCentre(event.item);
         break;
     }
-  }
-
-  viewTrainingCentre(centre: any) {
-    this.selectedCentre = { ...centre };
-    this.modalMode = 'view';
-    this.modalConfig.title = 'Training Institute Admin Details';
-    this.modalConfig.primaryButtonText = 'Close';
-
-    // Set current image via authenticated blob URL if available
-    if (centre.instituteImageUrl) {
-      const fileName = centre.instituteImageUrl;
-      this.adminService.downloadInstituteImage(fileName).subscribe({
-        next: (blob: Blob) => {
-          const imageUrl = URL.createObjectURL(blob);
-          this.currentImageUrl = imageUrl;
-          this.selectedCentre.instituteImage = imageUrl; // for view mode
-          this.selectedCentre.instituteImageUrl = imageUrl; // for edit preview consistency
-        },
-        error: () => {
-          // Fallback to direct URL if blob fails
-          const directUrl = `${this.url}api/photo/download/${fileName}`;
-          this.currentImageUrl = directUrl;
-          this.selectedCentre.instituteImage = directUrl;
-          this.selectedCentre.instituteImageUrl = directUrl;
-        },
-      });
-    }
-
-    // Filter out state and district change fields for view mode
-    this.modalConfig.fields = this.modalConfig.fields?.filter(
-      (field) => field.id !== 'newStateId' && field.id !== 'newDistrictId'
-    );
-
-    this.showModal = true;
   }
 
   // editTrainingCentre(centre: any) {
@@ -731,14 +504,73 @@ export class TrainingCentreComponent implements OnInit {
   // }
   editTrainingCentre(centre: any) {
     this.selectedCentre = { ...centre };
-    this.modalMode = 'edit';
-    this.modalConfig.title = 'Edit Training Institute';
 
-    // enable footer and show update button
-    this.modalConfig.showFooter = true;
-    this.modalConfig.primaryButtonText = 'Update';
-    this.modalConfig.secondaryButtonText = 'Cancel';
+    const originalStateId = Array.isArray(centre.stateId)
+      ? centre.stateId[0]
+      : centre.stateId;
+    const originalDistrictId = Array.isArray(centre.districtId)
+      ? centre.districtId[0]
+      : centre.districtId;
+
+    this.editForm = {
+      trainingInstituteName: this.normalizeString(centre.trainingInstituteName),
+      registrationId: this.normalizeString(centre.registrationId),
+      contactPersonName: this.normalizeString(centre.contactPersonName),
+      contactNumber: this.normalizeString(centre.contactNumber),
+      emailId: this.normalizeString(centre.emailId),
+      designation: this.normalizeString(centre.designation),
+      instituteType: this.normalizeString(centre.instituteType),
+      instituteGrade: this.normalizeString(centre.instituteGrade),
+      instituteOwnedBy: this.normalizeString(centre.instituteOwnedBy),
+      organizationId:
+        centre.organizationId !== undefined && centre.organizationId !== null
+          ? centre.organizationId
+          : null,
+      expiryDate: this.formatDateInput(
+        centre.expiryDate || centre.registrationValidity
+      ),
+      address: this.normalizeString(centre.address),
+      latitude: centre.latitude ?? null,
+      longitude: centre.longitude ?? null,
+      newStateId: originalStateId ?? null,
+      newDistrictId: originalDistrictId ?? null,
+    };
+
+    this.selectedStateId = originalStateId ?? null;
+    this.districts = [];
     this.selectedImageFile = null;
+    if (this.currentImageUrl?.startsWith('blob:')) {
+      URL.revokeObjectURL(this.currentImageUrl);
+    }
+    this.currentImageUrl = null;
+
+    if (originalStateId) {
+      this.loadDistrictsByState(originalStateId);
+    }
+
+    console.log('[TrainingCentre/EditModal] open centre=', centre);
+    console.log('[TrainingCentre/EditModal] init form=', this.editForm);
+    console.log('[TrainingCentre/EditModal] option sets', {
+      instituteTypes: this.instituteTypes.map((t) => t.value),
+      instituteGrades: this.instituteGrades,
+      instituteOwnedByOptions: this.instituteOwnedByOptions,
+      organizationsCount: this.organizations?.length || 0,
+    });
+    this.logDropdownValueMatch(
+      'instituteType',
+      this.editForm.instituteType,
+      this.instituteTypes.map((t) => t.value)
+    );
+    this.logDropdownValueMatch(
+      'instituteGrade',
+      this.editForm.instituteGrade,
+      this.instituteGrades
+    );
+    this.logDropdownValueMatch(
+      'instituteOwnedBy',
+      this.editForm.instituteOwnedBy,
+      this.instituteOwnedByOptions
+    );
 
     if (centre.instituteImageUrl) {
       const fileName = centre.instituteImageUrl;
@@ -747,54 +579,18 @@ export class TrainingCentreComponent implements OnInit {
           const imageUrl = URL.createObjectURL(blob);
           this.currentImageUrl = imageUrl;
           this.selectedCentre.instituteImageUrl = imageUrl;
-          this.selectedCentre.instituteImage = imageUrl;
+          console.log('[TrainingCentre/EditModal] image loaded as blob url');
         },
-        error: () => {
+        error: (error) => {
           const directUrl = `${this.url}api/photo/download/${fileName}`;
           this.currentImageUrl = directUrl;
           this.selectedCentre.instituteImageUrl = directUrl;
-          this.selectedCentre.instituteImage = directUrl;
+          console.log('[TrainingCentre/EditModal] image blob failed, fallback url', error);
         },
       });
     }
 
-    const nameField = this.modalConfig.fields?.find(
-      (f) => f.id === 'stateHeadContactPerson'
-    );
-    const contactField = this.modalConfig.fields?.find(
-      (f) => f.id === 'stateHeadContact'
-    );
-    const emailField = this.modalConfig.fields?.find(
-      (f) => f.id === 'stateHeadEmail'
-    );
-
-    if (centre.instituteType === 'Other Organizations') {
-      // Change labels
-      if (nameField) nameField.label = 'Organization Head Name';
-      if (contactField) contactField.label = 'Organization Head Contact';
-      if (emailField) emailField.label = 'Organization Head Email';
-
-      // Prefill org head values
-      this.selectedCentre.stateHeadContactPerson =
-        centre.organizationHeadContactPerson;
-      this.selectedCentre.stateHeadContact = centre.organizationHeadContact;
-      this.selectedCentre.stateHeadEmail = centre.organizationHeadEmail;
-    } else {
-      // Restore original labels for Government
-      if (nameField) nameField.label = 'State Head Name';
-      if (contactField) contactField.label = 'State Head Contact';
-      if (emailField) emailField.label = 'State Head Email';
-
-      // Prefill state head values
-      this.selectedCentre.stateHeadContactPerson =
-        centre.stateHeadContactPerson;
-      this.selectedCentre.stateHeadContact = centre.stateHeadContact;
-      this.selectedCentre.stateHeadEmail = centre.stateHeadEmail;
-    }
-
-    this.restoreStateDistrictFields();
-
-    this.showModal = true;
+    this.showEditModal = true;
   }
 
   fillTrainingCentre(centre: any) {
@@ -803,72 +599,112 @@ export class TrainingCentreComponent implements OnInit {
     });
   }
 
-  restoreStateDistrictFields() {
-    // Check if state and district change fields are missing and restore them
-    const hasNewStateField = this.modalConfig.fields?.some(
-      (field) => field.id === 'newStateId'
-    );
-    const hasNewDistrictField = this.modalConfig.fields?.some(
-      (field) => field.id === 'newDistrictId'
-    );
-
-    if (!hasNewStateField) {
-      // Find the position after 'district' field to insert state change field
-      const districtIndex = this.modalConfig.fields?.findIndex(
-        (field) => field.id === 'district'
-      );
-      if (districtIndex !== undefined && districtIndex >= 0) {
-        this.modalConfig.fields?.splice(districtIndex + 1, 0, {
-          id: 'newStateId',
-          label: 'Change State (Optional)',
-          type: 'select',
-          placeholder: 'Select new state if you want to change',
-          options: [],
-        });
-      }
+  closeEditModal() {
+    this.showEditModal = false;
+    this.isEditSaving = false;
+    this.selectedCentre = null;
+    this.editForm = {};
+    this.selectedStateId = null;
+    this.districts = [];
+    this.selectedImageFile = null;
+    if (this.currentImageUrl?.startsWith('blob:')) {
+      URL.revokeObjectURL(this.currentImageUrl);
     }
+    this.currentImageUrl = null;
+  }
 
-    if (!hasNewDistrictField) {
-      // Find the position after 'newStateId' field to insert district change field
-      const newStateIndex = this.modalConfig.fields?.findIndex(
-        (field) => field.id === 'newStateId'
-      );
-      if (newStateIndex !== undefined && newStateIndex >= 0) {
-        this.modalConfig.fields?.splice(newStateIndex + 1, 0, {
-          id: 'newDistrictId',
-          label: 'Change District (Optional)',
-          type: 'select',
-          placeholder: 'Select new district if you want to change',
-          options: [],
-          disabled: true,
-        });
-      }
+  onEditBackdropClick(event: MouseEvent) {
+    if (event.target === event.currentTarget) {
+      this.closeEditModal();
     }
   }
 
-  getFieldDisabledState(fieldId: string, centre: any): boolean {
-    if (this.modalMode === 'view') {
-      return true;
+  onConfirmBackdropClick(event: MouseEvent) {
+    if (event.target === event.currentTarget) {
+      this.onCancelToggle();
     }
+  }
 
-    if (
-      fieldId === 'registrationId' ||
-      fieldId === 'currentState' ||
-      fieldId === 'currentDistrict'
-    ) {
-      return true;
+  clearSelectedImage() {
+    if (this.selectedImageFile && this.currentImageUrl?.startsWith('blob:')) {
+      URL.revokeObjectURL(this.currentImageUrl);
     }
+    this.selectedImageFile = null;
+    this.currentImageUrl = this.selectedCentre?.instituteImageUrl || null;
+  }
 
-    if (fieldId === 'newDistrictId') {
-      const newStateField = this.modalConfig.fields?.find(
-        (field) => field.id === 'newStateId'
-      );
-      if (newStateField && !newStateField.value) {
-        return true;
-      }
+  onEditFieldChange(field: string, value: any) {
+    this.editForm[field] = value;
+    console.log('[TrainingCentre/EditModal] change', { field, value });
+  }
+
+  onEditInstituteTypeChange(value: any) {
+    this.editForm.instituteType = value;
+    console.log('[TrainingCentre/EditModal] instituteType change', value);
+    if (this.editForm.instituteType !== 'Other Organizations') {
+      this.editForm.instituteOwnedBy = '';
+      this.editForm.organizationId = null;
+      console.log('[TrainingCentre/EditModal] cleared org fields for non-other type');
     }
+  }
 
-    return false;
+  onEditNewStateChange(stateId: any) {
+    this.editForm.newStateId = stateId;
+    this.editForm.newDistrictId = null;
+    console.log('[TrainingCentre/EditModal] newStateId change', stateId);
+    if (stateId) {
+      this.loadDistrictsByState(stateId);
+    } else {
+      this.districts = [];
+    }
+  }
+
+  onEditInstituteImageChange(event: any) {
+    const file = event?.target?.files?.[0] || null;
+    this.selectedImageFile = file;
+    console.log('[TrainingCentre/EditModal] instituteImage selected', file);
+    if (this.currentImageUrl?.startsWith('blob:')) {
+      URL.revokeObjectURL(this.currentImageUrl);
+    }
+    this.currentImageUrl = file ? URL.createObjectURL(file) : null;
+  }
+
+  submitEditModal() {
+    console.log('[TrainingCentre/EditModal] submit form=', this.editForm);
+    this.isEditSaving = true;
+    this.updateTrainingCentre({ ...this.editForm });
+  }
+
+  private normalizeString(value: any): string {
+    if (value === undefined || value === null) return '';
+    return typeof value === 'string' ? value.trim() : String(value);
+  }
+
+  private formatDateInput(value: any): string {
+    if (!value) return '';
+    if (typeof value === 'string') {
+      return value.includes('T') ? value.split('T')[0] : value;
+    }
+    return '';
+  }
+
+  private logDropdownValueMatch(field: string, value: any, options: any[]) {
+    const normalized = this.normalizeString(value);
+    const optionSet = new Set(options.map((o) => this.normalizeString(o)));
+    const match = optionSet.has(normalized);
+    if (!match && normalized) {
+      console.warn('[TrainingCentre/EditModal] value not in options', {
+        field,
+        value: normalized,
+        options,
+      });
+      return;
+    }
+    console.log('[TrainingCentre/EditModal] value match', {
+      field,
+      value: normalized,
+      match,
+    });
   }
 
   toggleCentreStatus(centre: any) {
@@ -885,7 +721,7 @@ export class TrainingCentreComponent implements OnInit {
     const statusText = isActive ? 'Active' : 'Inactive';
 
     // Set the confirmation modal content
-    this.confirmModalConfig.content = `
+    this.confirmModalContent = `
       <div class="alert alert-warning mb-3">
         <i class="fas fa-exclamation-triangle me-2"></i>
         <strong>Do you want to ${actionText} this training institute?</strong>
@@ -942,8 +778,8 @@ export class TrainingCentreComponent implements OnInit {
     this.showConfirmModal = true;
   }
 
-  onConfirmToggle(formData: any) {
-    if (formData.confirmationText?.toLowerCase() === 'confirm') {
+  onConfirmToggle() {
+    if (this.confirmationText?.toLowerCase() === 'confirm') {
       this.performToggle();
     } else {
       alert('Please type "confirm" to proceed with the status change.');
@@ -954,7 +790,7 @@ export class TrainingCentreComponent implements OnInit {
     if (!this.pendingToggleItem) return;
 
     // Set loading state to show spinner
-    this.confirmModalConfig.isLoading = true;
+    this.isConfirmLoading = true;
 
     this.adminService
       .toggleActiveInactive(this.pendingToggleItem.id)
@@ -970,7 +806,7 @@ export class TrainingCentreComponent implements OnInit {
           }
 
           // Reset loading state and close the confirmation modal
-          this.confirmModalConfig.isLoading = false;
+          this.isConfirmLoading = false;
           this.showConfirmModal = false;
           this.pendingToggleItem = null;
           this.confirmationText = '';
@@ -986,7 +822,7 @@ export class TrainingCentreComponent implements OnInit {
           alert('Failed to update centre status. Please try again.');
 
           // Reset loading state and close the confirmation modal
-          this.confirmModalConfig.isLoading = false;
+          this.isConfirmLoading = false;
           this.showConfirmModal = false;
           this.pendingToggleItem = null;
           this.confirmationText = '';
@@ -996,6 +832,7 @@ export class TrainingCentreComponent implements OnInit {
 
   onCancelToggle() {
     this.showConfirmModal = false;
+    this.isConfirmLoading = false;
     this.pendingToggleItem = null;
     this.confirmationText = '';
   }
@@ -1014,72 +851,6 @@ export class TrainingCentreComponent implements OnInit {
           alert('Failed to delete training centre');
         },
       });
-    }
-  }
-
-  closeModal() {
-    this.showModal = false;
-    this.selectedCentre = null;
-    this.modalMode = 'view';
-    this.modalConfig.title = 'Training Institute Admin Details';
-    this.modalConfig.primaryButtonText = 'Close';
-    this.selectedStateId = null;
-    const newDistrictField = this.modalConfig.fields?.find(
-      (field) => field.id === 'newDistrictId'
-    );
-    if (newDistrictField) {
-      newDistrictField.disabled = true;
-      newDistrictField.options = [];
-      newDistrictField.value = null;
-    }
-    const newStateField = this.modalConfig.fields?.find(
-      (field) => field.id === 'newStateId'
-    );
-    if (newStateField) {
-      newStateField.value = null;
-    }
-    this.selectedImageFile = null;
-    if (this.currentImageUrl?.startsWith('blob:')) {
-      URL.revokeObjectURL(this.currentImageUrl);
-    }
-    this.currentImageUrl = null;
-  }
-
-  onModalFieldChange(event: { fieldId: string; value: any }) {
-    if (event.fieldId === 'newStateId' && event.value) {
-      this.selectedStateId = event.value;
-      this.loadDistrictsByState(event.value);
-
-      // Enable and reset district field
-      const newDistrictField = this.modalConfig.fields?.find(
-        (field) => field.id === 'newDistrictId'
-      );
-      if (newDistrictField) {
-        newDistrictField.disabled = false;
-        newDistrictField.value = null;
-      }
-    } else if (
-      event.fieldId === 'instituteImage' &&
-      event.value instanceof File
-    ) {
-      this.selectedImageFile = event.value;
-      // Revoke previous blob URL if any
-      if (this.currentImageUrl?.startsWith('blob:')) {
-        URL.revokeObjectURL(this.currentImageUrl);
-      }
-      // Create a preview URL for the selected image
-      const previewUrl = URL.createObjectURL(event.value);
-      this.currentImageUrl = previewUrl;
-      this.selectedCentre.instituteImageUrl = previewUrl;
-      this.selectedCentre.instituteImage = previewUrl;
-    }
-  }
-
-  onModalPrimaryAction(data: any) {
-    if (this.modalMode === 'edit') {
-      this.updateTrainingCentre(data);
-    } else {
-      this.closeModal();
     }
   }
 
@@ -1107,6 +878,8 @@ export class TrainingCentreComponent implements OnInit {
       id: this.selectedCentre.id,
       // username: this.selectedCentre.username || 'user1', // Add username field
       trainingInstituteName: updatedData.trainingInstituteName,
+      registrationId: updatedData.registrationId || null,
+      expiryDate: updatedData.expiryDate || null,
       stateId: finalStateId,
       districtId: finalDistrictId,
       // block: updatedData.block || '',
@@ -1115,9 +888,18 @@ export class TrainingCentreComponent implements OnInit {
       contactNumber: updatedData.contactNumber,
       emailId: updatedData.emailId,
       address: updatedData.address || '',
-      latitude: updatedData.latitude || 0,
-      longitude: updatedData.longitude || 0,
+      latitude: updatedData.latitude ?? null,
+      longitude: updatedData.longitude ?? null,
+      instituteType: updatedData.instituteType || '',
+      instituteGrade: updatedData.instituteGrade || '',
+      instituteOwnedBy: updatedData.instituteOwnedBy || '',
+      organizationId:
+        updatedData.organizationId !== undefined && updatedData.organizationId !== null
+          ? updatedData.organizationId
+          : null,
     };
+
+    console.log('[TrainingCentre/EditModal] update payload=', instituteDetails);
 
     // Create a Blob for instituteDetails with proper content type
     const instituteDetailsBlob = new Blob([JSON.stringify(instituteDetails)], {
@@ -1133,6 +915,7 @@ export class TrainingCentreComponent implements OnInit {
 
     this.adminService.updateTrainingInstitute(formData).subscribe({
       next: (response) => {
+        this.isEditSaving = false;
         // Update the item in the local array
         const index = this.trainingCentres.findIndex(
           (centre) => centre.id === this.selectedCentre.id
@@ -1145,18 +928,14 @@ export class TrainingCentreComponent implements OnInit {
           };
         }
 
-        // Clear the file preview after successful save
-        if (this.editModal) {
-          this.editModal.removeFilePreview('instituteImage');
-        }
-
         alert('Training centre updated successfully');
-        this.closeModal();
+        this.closeEditModal();
 
         // Optionally reload the data to ensure consistency
         this.loadTrainingInstitutes();
       },
       error: (error) => {
+        this.isEditSaving = false;
         console.error('Error updating training centre:', error);
         alert('Failed to update training centre. Please try again.');
       },

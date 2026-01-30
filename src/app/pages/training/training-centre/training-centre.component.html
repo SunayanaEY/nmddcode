@@ -155,6 +155,20 @@
         </select>
       </div>
 
+      <div class="filter-group">
+        <label for="instituteTypeFilter" class="filter-label">Institute Type</label>
+        <select
+          id="instituteTypeFilter"
+          class="filter-select"
+          [(ngModel)]="instituteTypeFilter"
+          (ngModelChange)="onInstituteTypeFilterChange($event)"
+        >
+          <option value="">All Institutes</option>
+          <option value="Government Owned">Government Owned</option>
+          <option value="Other Organizations">Other Organizations</option>
+        </select>
+      </div>
+
       <div class="filter-actions">
         <button class="btn btn-secondary btn-sm" (click)="clearFilters()">
           <svg
@@ -204,24 +218,11 @@
   </div>
 
   <!-- Training Centres Table -->
-  <div *ngIf="this.userRole !== 6">
-    <div *ngIf="!isLoading && !error" class="table-container">
-      <h2 class="ms-5 mt-3 mb-3">Government Institutes</h2>
-      <app-table
-        [columns]="tableColumns"
-        [data]="filteredGovtTrainingCentres"
-        [actions]="tableActions"
-        (actionClick)="onTableAction($event)"
-      >
-      </app-table>
-    </div>
-  </div>
-
-  <div *ngIf="!isLoading && !error" class="table-container mt-4">
-    <h2 class="ms-5 mt-3 mb-3">Private Institutes</h2>
+  <div *ngIf="!isLoading && !error" class="table-container">
+    <h2 class="ms-5 mt-3 mb-3">All Institutes</h2>
     <app-table
-      [columns]="tableColumns1"
-      [data]="filteredPrivateTrainingCentres"
+      [columns]="tableColumns"
+      [data]="filteredTrainingCentres"
       [actions]="tableActions"
       (actionClick)="onTableAction($event)"
     >
@@ -229,30 +230,370 @@
   </div>
 </div>
 
-<!-- Generic Modal Component -->
-<app-modal
-  #editModal
-  [show]="showModal"
-  [config]="modalConfig"
-  [data]="selectedCentre"
-  [mode]="modalMode"
-  (close)="closeModal()"
-  (primaryAction)="onModalPrimaryAction($event)"
-  (fieldChange)="onModalFieldChange($event)"
+<div
+  class="tc-modal-backdrop"
+  *ngIf="showEditModal"
+  [class.show]="showEditModal"
+  (click)="closeEditModal()"
+></div>
+<div
+  class="tc-modal"
+  *ngIf="showEditModal"
+  [class.show]="showEditModal"
+  (click)="onEditBackdropClick($event)"
 >
-</app-modal>
+  <div class="tc-modal-dialog tc-modal-xl">
+    <div class="tc-modal-content">
+      <div class="tc-modal-header">
+        <h5 class="tc-modal-title">Edit Training Institute Admin Details</h5>
+        <button
+          type="button"
+          class="tc-btn-close"
+          (click)="closeEditModal()"
+          aria-label="Close"
+        >
+          <i class="bi bi-x-lg"></i>
+        </button>
+      </div>
 
-<!-- Confirmation Modal -->
-<app-modal
-  [show]="showConfirmModal"
-  [config]="confirmModalConfig"
-  [data]="{ confirmationText: confirmationText }"
-  mode="edit"
-  (close)="onCancelToggle()"
-  (primaryAction)="onConfirmToggle($event)"
-  (secondaryAction)="onCancelToggle()"
+      <div class="tc-modal-body">
+        <div class="form-fields">
+          <div class="row">
+            <div class="col-12 col-md-6 mb-3">
+              <label for="trainingInstituteName" class="form-label"
+                >Institute Name</label
+              >
+              <input
+                id="trainingInstituteName"
+                type="text"
+                class="form-control"
+                [(ngModel)]="editForm.trainingInstituteName"
+                (ngModelChange)="onEditFieldChange('trainingInstituteName', $event)"
+              />
+            </div>
+
+            <div class="col-12 col-md-6 mb-3">
+              <label for="registrationId" class="form-label"
+                >Registration ID</label
+              >
+              <input
+                id="registrationId"
+                type="text"
+                class="form-control"
+                [(ngModel)]="editForm.registrationId"
+                (ngModelChange)="onEditFieldChange('registrationId', $event)"
+              />
+            </div>
+
+            <div class="col-12 col-md-6 mb-3">
+              <label for="expiryDate" class="form-label">Expiry Date</label>
+              <input
+                id="expiryDate"
+                type="date"
+                class="form-control"
+                [(ngModel)]="editForm.expiryDate"
+                (ngModelChange)="onEditFieldChange('expiryDate', $event)"
+              />
+            </div>
+
+            <div class="col-12 col-md-6 mb-3">
+              <label for="instituteType" class="form-label"
+                >Institute Type</label
+              >
+              <select
+                id="instituteType"
+                class="form-control"
+                [(ngModel)]="editForm.instituteType"
+                (ngModelChange)="onEditInstituteTypeChange($event)"
+              >
+                <option value="" disabled>Select Institute Type</option>
+                <option *ngFor="let type of instituteTypes" [value]="type.value">
+                  {{ type.label }}
+                </option>
+              </select>
+            </div>
+
+            <div
+              class="col-12 col-md-6 mb-3"
+              *ngIf="editForm.instituteType === 'Other Organizations'"
+            >
+              <label for="organizationId" class="form-label"
+                >Other Organizations</label
+              >
+              <select
+                id="organizationId"
+                class="form-control"
+                [(ngModel)]="editForm.organizationId"
+                (ngModelChange)="onEditFieldChange('organizationId', $event)"
+              >
+                <option [ngValue]="null" disabled>Select Organization</option>
+                <option *ngFor="let org of organizations" [ngValue]="org.id">
+                  {{ org.organizationName }}
+                </option>
+              </select>
+            </div>
+
+            <div
+              class="col-12 col-md-6 mb-3"
+              *ngIf="editForm.instituteType === 'Other Organizations'"
+            >
+              <label for="instituteOwnedBy" class="form-label"
+                >Institute Owned By</label
+              >
+              <select
+                id="instituteOwnedBy"
+                class="form-control"
+                [(ngModel)]="editForm.instituteOwnedBy"
+                (ngModelChange)="onEditFieldChange('instituteOwnedBy', $event)"
+              >
+                <option value="" disabled>Select Institute Owned By</option>
+                <option *ngFor="let owner of instituteOwnedByOptions" [value]="owner">
+                  {{ owner }}
+                </option>
+              </select>
+            </div>
+
+            <div class="col-12 col-md-6 mb-3">
+              <label for="instituteGrade" class="form-label"
+                >Institute Grade</label
+              >
+              <select
+                id="instituteGrade"
+                class="form-control"
+                [(ngModel)]="editForm.instituteGrade"
+                (ngModelChange)="onEditFieldChange('instituteGrade', $event)"
+              >
+                <option value="" disabled>Select Institute Grade</option>
+                <option *ngFor="let grade of instituteGrades" [value]="grade">
+                  {{ grade }}
+                </option>
+              </select>
+            </div>
+
+            <div class="col-12 col-md-6 mb-3">
+              <label for="contactPersonName" class="form-label"
+                >Contact Person</label
+              >
+              <input
+                id="contactPersonName"
+                type="text"
+                class="form-control"
+                [(ngModel)]="editForm.contactPersonName"
+                (ngModelChange)="onEditFieldChange('contactPersonName', $event)"
+              />
+            </div>
+
+            <div class="col-12 col-md-6 mb-3">
+              <label for="contactNumber" class="form-label"
+                >Contact Number</label
+              >
+              <input
+                id="contactNumber"
+                type="tel"
+                class="form-control"
+                [(ngModel)]="editForm.contactNumber"
+                (ngModelChange)="onEditFieldChange('contactNumber', $event)"
+              />
+            </div>
+
+            <div class="col-12 col-md-6 mb-3">
+              <label for="emailId" class="form-label">Email</label>
+              <input
+                id="emailId"
+                type="email"
+                class="form-control"
+                [(ngModel)]="editForm.emailId"
+                (ngModelChange)="onEditFieldChange('emailId', $event)"
+              />
+            </div>
+
+            <div class="col-12 col-md-6 mb-3">
+              <label for="designation" class="form-label">Designation</label>
+              <input
+                id="designation"
+                type="text"
+                class="form-control"
+                [(ngModel)]="editForm.designation"
+                (ngModelChange)="onEditFieldChange('designation', $event)"
+              />
+            </div>
+
+            <div class="col-12 col-md-6 mb-3">
+              <label for="newStateId" class="form-label">State</label>
+              <select
+                id="newStateId"
+                class="form-control"
+                [(ngModel)]="editForm.newStateId"
+                (ngModelChange)="onEditNewStateChange($event)"
+              >
+                <option [ngValue]="null" disabled>Select State</option>
+                <option *ngFor="let state of states" [ngValue]="state.id">
+                  {{ state.stateName }}
+                </option>
+              </select>
+            </div>
+
+            <div class="col-12 col-md-6 mb-3">
+              <label for="newDistrictId" class="form-label">District</label>
+              <select
+                id="newDistrictId"
+                class="form-control"
+                [(ngModel)]="editForm.newDistrictId"
+                (ngModelChange)="onEditFieldChange('newDistrictId', $event)"
+                [disabled]="!editForm.newStateId"
+              >
+                <option [ngValue]="null" disabled>Select District</option>
+                <option *ngFor="let district of districts" [ngValue]="district.id">
+                  {{ district.districtName }}
+                </option>
+              </select>
+            </div>
+
+            <div class="col-12 mb-3">
+              <label for="address" class="form-label">Address</label>
+              <textarea
+                id="address"
+                class="form-control"
+                rows="3"
+                [(ngModel)]="editForm.address"
+                (ngModelChange)="onEditFieldChange('address', $event)"
+              ></textarea>
+            </div>
+
+            <div class="col-12 col-md-6 mb-3">
+              <label for="latitude" class="form-label">Latitude</label>
+              <input
+                id="latitude"
+                type="number"
+                class="form-control"
+                [(ngModel)]="editForm.latitude"
+                (ngModelChange)="onEditFieldChange('latitude', $event)"
+              />
+            </div>
+
+            <div class="col-12 col-md-6 mb-3">
+              <label for="longitude" class="form-label">Longitude</label>
+              <input
+                id="longitude"
+                type="number"
+                class="form-control"
+                [(ngModel)]="editForm.longitude"
+                (ngModelChange)="onEditFieldChange('longitude', $event)"
+              />
+            </div>
+
+            <div class="col-12 mb-3">
+              <label for="instituteImage" class="form-label">Institute Image</label>
+              <div class="tc-image-preview" *ngIf="currentImageUrl">
+                <img
+                  [src]="currentImageUrl"
+                  alt="Institute Image"
+                  class="tc-preview-image"
+                />
+                <button
+                  type="button"
+                  class="btn btn-sm btn-danger tc-remove-image-btn"
+                  (click)="clearSelectedImage()"
+                >
+                  <i class="bi bi-x"></i>
+                </button>
+              </div>
+              <input
+                id="instituteImage"
+                type="file"
+                class="form-control"
+                accept="image/*"
+                (change)="onEditInstituteImageChange($event)"
+              />
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="tc-modal-footer">
+        <button type="button" class="btn btn-outline-secondary" (click)="closeEditModal()">
+          Cancel
+        </button>
+        <button
+          type="button"
+          class="btn btn-primary"
+          [disabled]="isEditSaving"
+          (click)="submitEditModal()"
+        >
+          <span
+            *ngIf="isEditSaving"
+            class="spinner-border spinner-border-sm me-2"
+            role="status"
+            aria-hidden="true"
+          ></span>
+          Update
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div
+  class="tc-modal-backdrop"
+  *ngIf="showConfirmModal"
+  [class.show]="showConfirmModal"
+  (click)="onCancelToggle()"
+></div>
+<div
+  class="tc-modal"
+  *ngIf="showConfirmModal"
+  [class.show]="showConfirmModal"
+  (click)="onConfirmBackdropClick($event)"
 >
-</app-modal>
+  <div class="tc-modal-dialog tc-modal-l">
+    <div class="tc-modal-content">
+      <div class="tc-modal-header">
+        <h5 class="tc-modal-title">Confirm Status Change</h5>
+        <button
+          type="button"
+          class="tc-btn-close"
+          (click)="onCancelToggle()"
+          aria-label="Close"
+        >
+          <i class="bi bi-x-lg"></i>
+        </button>
+      </div>
+      <div class="tc-modal-body">
+        <div [innerHTML]="confirmModalContent"></div>
+        <div class="mt-3">
+          <label for="confirmationText" class="form-label"
+            >Type <strong>confirm</strong> to proceed</label
+          >
+          <input
+            id="confirmationText"
+            type="text"
+            class="form-control"
+            [(ngModel)]="confirmationText"
+          />
+        </div>
+      </div>
+      <div class="tc-modal-footer">
+        <button type="button" class="btn btn-outline-secondary" (click)="onCancelToggle()">
+          Cancel
+        </button>
+        <button
+          type="button"
+          class="btn btn-primary"
+          [disabled]="isConfirmLoading"
+          (click)="onConfirmToggle()"
+        >
+          <span
+            *ngIf="isConfirmLoading"
+            class="spinner-border spinner-border-sm me-2"
+            role="status"
+            aria-hidden="true"
+          ></span>
+          Confirm
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
 <!-- Custom Previous Institute Heads Modal -->
 <div
   class="modal fade"

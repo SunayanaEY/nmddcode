@@ -9,6 +9,14 @@
       </div>
 
       <div class="card-content">
+        <div class="text-left mb-4" *ngIf="instituteImageUrl">
+          <img
+            [src]="instituteImageUrl"
+            alt="Institute Image"
+            class="img-fluid rounded"
+            style="max-height: 200px; border: 1px solid #ddd; padding: 5px;"
+          />
+        </div>
         <form [formGroup]="profileForm" (ngSubmit)="onSubmit()">
           <!-- Basic Information Section -->
           <div
@@ -159,6 +167,7 @@
                   >Other Organizations<span class="required">*</span></label
                 >
                 <select
+                  *ngIf="userRole !== 5"
                   id="organization"
                   formControlName="organization"
                   class="form-control"
@@ -172,6 +181,13 @@
                     {{ org.organizationName }}
                   </option>
                 </select>
+                <input
+                  *ngIf="userRole === 5"
+                  type="text"
+                  class="form-control"
+                  [value]="instituteData?.organizationName || ''"
+                  disabled
+                />
                 <div
                   class="invalid-feedback"
                   *ngIf="

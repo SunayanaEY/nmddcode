@@ -63,6 +63,7 @@ export class TrainingCentreAdminProfileComponent implements OnInit {
   userId: any;
   today: string | undefined;
   organizations: any[] = [];
+  instituteImageUrl: string | null = null;
 
   // Location data
   states: State[] = [];
@@ -355,8 +356,8 @@ export class TrainingCentreAdminProfileComponent implements OnInit {
       district: this.instituteData.districtId,
     });
 
-    // Load organizations if user role is 6 (or if needed)
-    if (this.userRole == 6 && this.instituteData.organizationId) {
+    // Load organizations if user role is 6 or 5 (or if needed)
+    if ((this.userRole == 6 || this.userRole == 5) && this.instituteData.organizationId) {
       this.loadOrganizations();
       this.profileForm.patchValue({
         organization: this.instituteData.organizationId,
@@ -396,6 +397,20 @@ export class TrainingCentreAdminProfileComponent implements OnInit {
       this.profileForm.patchValue({
         emailId: this.instituteData.emailId,
       });
+    }
+
+    // Load institute image if available
+    if (this.instituteData.instituteImageUrl) {
+      this.adminService
+        .downloadInstituteImage(this.instituteData.instituteImageUrl)
+        .subscribe({
+          next: (blob: Blob) => {
+            this.instituteImageUrl = URL.createObjectURL(blob);
+          },
+          error: (error: any) => {
+            console.error('Error loading institute image:', error);
+          },
+        });
     }
   }
 
