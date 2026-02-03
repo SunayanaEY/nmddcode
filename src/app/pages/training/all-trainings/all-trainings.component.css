@@ -153,3 +153,47 @@
   white-space: normal; /* allows wrapping */
   word-wrap: break-word;
 }
+
+.status-filter-section {
+  background-color: #ffffff;
+  border-radius: 12px;
+  padding: 16px 20px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06);
+  border: 1px solid #e5e9f2;
+  max-width: 420px;
+}
+
+.status-filter-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 10px;
+}
+
+.status-filter-title {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-weight: 600;
+  color: #155e91;
+}
+
+.status-filter-icon {
+  font-size: 18px;
+}
+
+.status-filter-body {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.active-status-tag {
+  margin-top: 4px;
+}
+
+.active-status-tag .badge {
+  border-radius: 999px;
+  padding: 6px 12px;
+  border: 1px solid #d0d7e2;
+}

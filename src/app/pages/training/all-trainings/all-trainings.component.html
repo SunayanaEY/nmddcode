@@ -217,6 +217,49 @@
     </span>
   </div>
 
+  <div class="status-filter-section mt-3 mb-5">
+    <div class="status-filter-header">
+      <div class="status-filter-title">
+        <i class="bi bi-funnel status-filter-icon"></i>
+        <span>{{ "Status" | translate }}</span>
+      </div>
+      <button
+        type="button"
+        class="btn btn-outline-secondary btn-sm"
+        (click)="clearStatusFilter()"
+        [disabled]="!filters.status"
+      >
+        <i class="bi bi-x-circle me-1"></i>
+        {{ "Clear Filter" | translate }}
+      </button>
+    </div>
+
+    <div class="status-filter-body">
+      <ng-select
+        class="custom-ng-select form-control"
+        placeholder="Select Status"
+        [(ngModel)]="filters.status"
+        (change)="applyFilters()"
+        [clearable]="true"
+        [searchable]="true"
+      >
+        <ng-option
+          *ngFor="let status of uniqueValuesStatus()"
+          [value]="status"
+        >
+          {{ status }}
+        </ng-option>
+      </ng-select>
+      
+      <div class="active-status-tag" *ngIf="filters.status">
+        <span class="badge bg-light text-dark">
+          <i class="bi bi-check-circle me-1"></i>
+          {{ "Status" | translate }}: {{ filters.status }}
+        </span>
+      </div>
+    </div>
+  </div>
+
   <app-table
     [columns]="tableColumns"
     [data]="filteredData"
@@ -230,6 +273,23 @@
     [isLoading]="isLoading"
   >
   </app-table>
+</div>
+
+<div style="position: absolute; left: -9999px; top: -9999px;">
+  <app-latest-certificate-layout
+    #hiddenCertificate
+    [data]="certificateDataForBulk"
+    [uniqueId]="certificateUinForBulk"
+  >
+  </app-latest-certificate-layout>
+</div>
+<div style="position: absolute; left: -8999px; top: -8999px;">
+  <app-id-card
+    #hiddenIdCard
+    [data]="idCardDataForBulk"
+    [uniqueId]="idCardUinForBulk"
+  >
+  </app-id-card>
 </div>
 <ng-template #trainingDetailsModal let-modal>
   <div class="modal-header bg-appColor">
