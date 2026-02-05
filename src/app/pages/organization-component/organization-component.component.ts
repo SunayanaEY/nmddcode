@@ -56,7 +56,7 @@ export class OrganizationComponentComponent implements OnInit {
 
   breadcrumbItems: BreadcrumbItem[] = [
     { label: 'Training Module', url: '/admin/dashboard' },
-    { label: 'Private Organization Registration' },
+    { label: 'Other Organization Registration' },
   ];
 
   // Custom validator for password matching
@@ -141,7 +141,7 @@ export class OrganizationComponentComponent implements OnInit {
           this.isLoading = false;
         },
         error: (error) => {
-          console.error('Error loading private organizations:', error);
+          console.error('Error loading Other  Organizations:', error);
           this.error = 'Failed to load organization data';
           this.isLoading = false;
         },

@@ -5,16 +5,16 @@
     <div class="profile-card">
       <div class="card-header">
         <h2 *ngIf="userRole == 1" class="card-title">
-          {{'Private Organization Registration'|translate}}
+          {{'Other Organization Registration'|translate}}
         </h2>
         <p *ngIf="userRole == 1" class="card-subtitle">
-          {{'Create a new private organization administrator profile'|translate}}
+          {{'Create a new Other Organization administrator profile'|translate}}
         </p>
         <h2 *ngIf="userRole == 6" class="card-title">
-          {{'Private Organization Profile Updation'|translate}}
+          {{'Other Organization Profile Updation'|translate}}
         </h2>
         <p *ngIf="userRole == 6" class="card-subtitle">
-          {{'Update the private organization administrator profile'|translate}}
+          {{'Update the Other Organization administrator profile'|translate}}
         </p>
       </div>
 
@@ -30,7 +30,7 @@
             <div class="form-row">
               <div class="form-group">
                 <label for="organizationName"
-                  >{{'Private Organization Name'|translate}}<span class="required"
+                  >{{'Other Organization Name'|translate}}<span class="required"
                     >*</span
                   ></label
                 >

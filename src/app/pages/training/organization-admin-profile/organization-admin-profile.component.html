@@ -60,9 +60,9 @@
                   </span>
                 </div>
               </div>
-              <div class="form-group">
+              <div class="form-group" *ngIf="userRole === 6">
                 <label for="trainingInstituteRegistration">
-                  {{ 'PRIVATE_ORG.LABEL_REG_NO' | translate }}<span class="required">*</span>
+                  {{ 'PRIVATE_ORG.LABEL_REG_NO' | translate }}
                 </label>
                 <input
                   type="text"
@@ -95,6 +95,10 @@
               <div class="form-group">
                 <label for="organizationCode">
                   {{ 'PRIVATE_ORG.LABEL_ORG_CODE' | translate }}<span class="required">*</span>
+                  <i
+                    class="fas fa-info-circle ms-1 text-muted"
+                    title="Enter a unique 4-letter alphabetic organization code, for example ORGA."
+                  ></i>
                 </label>
                 <input
                   type="text"
@@ -122,6 +126,12 @@
                   <span
                     *ngIf="profileForm.get('organizationCode')?.errors?.['pattern']">
                     {{ 'PRIVATE_ORG.VALIDATION_ORG_CODE_PATTERN' | translate }}
+                  </span>
+                  <span
+                    *ngIf="profileForm.get('organizationCode')?.errors?.['orgCodeExists']">
+                    {{
+                      profileForm.get('organizationCode')?.errors?.['orgCodeExists']
+                    }}
                   </span>
                 </div>
               </div>
@@ -624,7 +634,7 @@
               *ngIf="userRole == 1 || userRole == 5"
               type="submit"
               class="btn btn-primary"
-              [disabled]="isLoading || profileForm.invalid"
+              [disabled]="isLoading || profileForm.invalid || profileForm.pending"
             >
               <span *ngIf="!isLoading">
                 <i class="fas fa-save me-2"></i>{{ 'PRIVATE_ORG.BUTTON_CREATE_PROFILE' | translate }}
@@ -637,7 +647,7 @@
               *ngIf="userRole == 6"
               type="submit"
               class="btn btn-primary"
-              [disabled]="isLoading || profileForm.invalid"
+              [disabled]="isLoading || profileForm.invalid || profileForm.pending"
             >
               <span *ngIf="!isLoading">
                 <i class="fas fa-save me-2"></i>{{ 'PRIVATE_ORG.BUTTON_UPDATE_PROFILE' | translate }}

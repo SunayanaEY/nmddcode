@@ -46,7 +46,7 @@ export class OrganizationTableDataComponent implements OnInit {
 
   breadcrumbItems: BreadcrumbItem[] = [
     { label: 'Dashboard', url: '/admin/dashboard' },
-    { label: 'Private Organization Data' },
+    { label: 'Other Organization Data' },
   ];
 
   showModal = false;
@@ -104,7 +104,6 @@ export class OrganizationTableDataComponent implements OnInit {
     { key: 'district', header: 'District' },
     // { key: 'address', header: 'Address' },
     { key: 'email', header: 'Email' },
-    { key: 'registrationNumber', header: 'Reg No.' },
     { key: 'contactName', header: 'Contact Person' },
     { key: 'contactNumber', header: 'Contact Number' },
     { key: 'designation', header: 'Designation' },
@@ -133,7 +132,6 @@ export class OrganizationTableDataComponent implements OnInit {
     'State',
     'District',
     'Email',
-    'Reg. No.',
     'Contact Person',
     'Contact Number',
   ];
@@ -143,7 +141,6 @@ export class OrganizationTableDataComponent implements OnInit {
     'state',
     'district',
     'email',
-    'registrationNumber',
     'contactName',
     'contactNumber',
   ];
@@ -281,7 +278,7 @@ export class OrganizationTableDataComponent implements OnInit {
         this.isLoading = false;
       },
       error: (error) => {
-        console.error('Error loading private organizations:', error);
+        console.error('Error loading Other  Organizations:', error);
         this.error = 'Failed to load organization data';
         this.isLoading = false;
       },
@@ -297,7 +294,7 @@ export class OrganizationTableDataComponent implements OnInit {
         this.isLoading = false;
       },
       error: (error) => {
-        console.error('Error loading private organizations:', error);
+        console.error('Error loading Other  Organizations:', error);
         this.error = 'Failed to load organization data';
         this.isLoading = false;
       },
