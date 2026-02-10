@@ -60,6 +60,41 @@
                   </span>
                 </div>
               </div>
+              <div class="form-group">
+                <label for="organizationType">
+                  Organization Type<span class="required">*</span>
+                </label>
+                <select
+                  id="organizationType"
+                  formControlName="organizationType"
+                  class="form-control"
+                  [class.is-invalid]="
+                    profileForm.get('organizationType')?.invalid &&
+                    profileForm.get('organizationType')?.touched
+                  "
+                >
+                  <option value="" disabled>Select Organization Type</option>
+                  <option
+                    *ngFor="let owner of organizationTypeOptions"
+                    [value]="owner"
+                  >
+                    {{ owner }}
+                  </option>
+                </select>
+                <div
+                  class="invalid-feedback"
+                  *ngIf="
+                    profileForm.get('organizationType')?.invalid &&
+                    profileForm.get('organizationType')?.touched
+                  "
+                >
+                  <span
+                    *ngIf="profileForm.get('organizationType')?.errors?.['required']"
+                  >
+                    Organization type is required
+                  </span>
+                </div>
+              </div>
               <div class="form-group" *ngIf="userRole === 6">
                 <label for="trainingInstituteRegistration">
                   {{ 'PRIVATE_ORG.LABEL_REG_NO' | translate }}
