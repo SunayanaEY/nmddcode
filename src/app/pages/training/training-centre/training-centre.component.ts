@@ -521,7 +521,9 @@ export class TrainingCentreComponent implements OnInit {
       designation: this.normalizeString(centre.designation),
       instituteType: this.normalizeString(centre.instituteType),
       instituteGrade: this.normalizeString(centre.instituteGrade),
-      instituteOwnedBy: this.normalizeString(centre.instituteOwnedBy),
+      instituteOwnedBy: this.mapInstituteOwnedByCodeToLabel(
+        this.normalizeString(centre.instituteOwnedBy)
+      ),
       organizationId:
         centre.organizationId !== undefined && centre.organizationId !== null
           ? centre.organizationId
@@ -686,6 +688,36 @@ export class TrainingCentreComponent implements OnInit {
       return value.includes('T') ? value.split('T')[0] : value;
     }
     return '';
+  }
+
+  private mapInstituteOwnedByCodeToLabel(code: string): string {
+    switch (code) {
+      case 'COOP':
+        return 'Co-operative';
+      case 'NGOS':
+        return 'NGO';
+      case 'PRVT':
+        return 'Private';
+      case 'NDDB':
+        return 'NDDB';
+      default:
+        return code;
+    }
+  }
+
+  private mapInstituteOwnedByLabelToCode(label: string): string {
+    switch (label) {
+      case 'Co-operative':
+        return 'COOP';
+      case 'NGO':
+        return 'NGOS';
+      case 'Private':
+        return 'PRVT';
+      case 'NDDB':
+        return 'NDDB';
+      default:
+        return label;
+    }
   }
 
   private logDropdownValueMatch(field: string, value: any, options: any[]) {
@@ -892,7 +924,9 @@ export class TrainingCentreComponent implements OnInit {
       longitude: updatedData.longitude ?? null,
       instituteType: updatedData.instituteType || '',
       instituteGrade: updatedData.instituteGrade || '',
-      instituteOwnedBy: updatedData.instituteOwnedBy || '',
+      instituteOwnedBy: this.mapInstituteOwnedByLabelToCode(
+        updatedData.instituteOwnedBy || ''
+      ),
       organizationId:
         updatedData.organizationId !== undefined && updatedData.organizationId !== null
           ? updatedData.organizationId

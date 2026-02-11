@@ -54,9 +54,26 @@ export class OrganizationComponentComponent implements OnInit {
     { value: 'Private', label: 'Private' },
   ];
 
+  organizationTypeOptions: string[] = ['NDDB', 'Co-operative', 'NGO', 'Private'];
+
+  private mapOrganizationTypeToCode(value: string): string {
+    switch (value) {
+      case 'NDDB':
+        return 'NDDB';
+      case 'Co-operative':
+        return 'COOP';
+      case 'NGO':
+        return 'NGOS';
+      case 'Private':
+        return 'PRVT';
+      default:
+        return value;
+    }
+  }
+
   breadcrumbItems: BreadcrumbItem[] = [
     { label: 'Training Module', url: '/admin/dashboard' },
-    { label: 'Private Organization Registration' },
+    { label: 'Other Organization Registration' },
   ];
 
   // Custom validator for password matching
@@ -97,6 +114,7 @@ export class OrganizationComponentComponent implements OnInit {
           '',
           [Validators.required, Validators.minLength(3)],
         ],
+        instituteType: ['', [Validators.required]],
         state: ['', [Validators.required]],
         district: ['', [Validators.required]],
         address: ['', [Validators.required, Validators.minLength(10)]],
@@ -141,7 +159,7 @@ export class OrganizationComponentComponent implements OnInit {
           this.isLoading = false;
         },
         error: (error) => {
-          console.error('Error loading private organizations:', error);
+          console.error('Error loading Other  Organizations:', error);
           this.error = 'Failed to load organization data';
           this.isLoading = false;
         },
@@ -202,6 +220,7 @@ export class OrganizationComponentComponent implements OnInit {
     this.profileForm.patchValue({
       organizationName: this.organizationData.organizationName,
       trainingInstituteRegistration: this.organizationData.registrationNumber,
+      organizationType: this.organizationData.instituteType,
       state: this.organizationData.stateId,
       address: this.organizationData.address,
       contactPersonName: this.organizationData.contactName,
@@ -233,6 +252,9 @@ export class OrganizationComponentComponent implements OnInit {
         organizationName: this.profileForm.get('organizationName')?.value || '',
         registrationNumber:
           this.profileForm.get('trainingInstituteRegistration')?.value || '',
+        organizationType: this.mapOrganizationTypeToCode(
+          this.profileForm.get('organizationType')?.value || ''
+        ),
         stateId: parseInt(this.profileForm.get('state')?.value) || 0,
         districtId: parseInt(this.profileForm.get('district')?.value) || 0,
         address: this.profileForm.get('address')?.value || '',
@@ -285,6 +307,9 @@ export class OrganizationComponentComponent implements OnInit {
         organizationName: this.profileForm.get('organizationName')?.value || '',
         registrationNumber:
           this.profileForm.get('trainingInstituteRegistration')?.value || '',
+        organizationType: this.mapOrganizationTypeToCode(
+          this.profileForm.get('organizationType')?.value || ''
+        ),
         stateId: parseInt(this.profileForm.get('state')?.value) || 0,
         districtId: parseInt(this.profileForm.get('district')?.value) || 0,
         address: this.profileForm.get('address')?.value || '',

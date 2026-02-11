@@ -8,6 +8,8 @@ import {
   AbstractControl,
   ValidationErrors,
 } from '@angular/forms';
+import { Observable, of } from 'rxjs';
+import { catchError, map } from 'rxjs/operators';
 import { AdminService } from '../services/training-admin.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
@@ -68,9 +70,26 @@ export class OrganizationAdminProfileComponent implements OnInit {
     { value: 'Private', label: 'Private' },
   ];
 
+  organizationTypeOptions: string[] = ['NDDB', 'Co-operative', 'NGO', 'Private'];
+
+  private mapOrganizationTypeToCode(value: string): string {
+    switch (value) {
+      case 'NDDB':
+        return 'NDDB';
+      case 'Co-operative':
+        return 'COOP';
+      case 'NGO':
+        return 'NGOS';
+      case 'Private':
+        return 'PRVT';
+      default:
+        return value;
+    }
+  }
+
   breadcrumbItems: BreadcrumbItem[] = [
     { label: 'Dashboard', url: '/admin/training-module' },
-    { label: 'Private Organization Registration' },
+    { label: 'Other Organization Registration' },
   ];
 
   // Custom validator for password matching
@@ -85,6 +104,29 @@ export class OrganizationAdminProfileComponent implements OnInit {
     return password.value === confirmPassword.value
       ? null
       : { passwordMismatch: true };
+  }
+
+  organizationCodeValidator(
+    control: AbstractControl
+  ): Observable<ValidationErrors | null> {
+    const code = control.value;
+
+    if (!code) {
+      return of(null);
+    }
+
+    if (!/^[A-Za-z]{4}$/.test(code)) {
+      return of(null);
+    }
+
+    return this.authService.checkOrganizationCode(code).pipe(
+      map((response) =>
+        response.exists ? { orgCodeExists: response.message } : null
+      ),
+      catchError(() =>
+        of({ orgCodeExists: 'Organization code validation failed' })
+      )
+    );
   }
 
   constructor(
@@ -109,11 +151,15 @@ export class OrganizationAdminProfileComponent implements OnInit {
         organizationName: ['', [Validators.required, Validators.minLength(3)]],
         trainingInstituteRegistration: [
           '',
-          [Validators.required, Validators.minLength(3)],
+          this.userRole === 6
+            ? [Validators.required, Validators.minLength(3)]
+            : [],
         ],
+        organizationType: ['', [Validators.required]],
         organizationCode: [
           '',
           [Validators.required, Validators.pattern(/^[A-Za-z]{4}$/)],
+          [this.organizationCodeValidator.bind(this)],
         ],
         state: ['', [Validators.required]],
         district: ['', [Validators.required]],
@@ -159,7 +205,7 @@ export class OrganizationAdminProfileComponent implements OnInit {
           this.isLoading = false;
         },
         error: (error) => {
-          console.error('Error loading private organizations:', error);
+          console.error('Error loading Other  Organizations:', error);
           this.error = 'Failed to load organization data';
           this.isLoading = false;
         },
@@ -225,6 +271,7 @@ export class OrganizationAdminProfileComponent implements OnInit {
     this.profileForm.patchValue({
       organizationName: this.organizationData.organizationName,
       trainingInstituteRegistration: this.organizationData.registrationNumber,
+      organizationType: this.organizationData.instituteOwnedBy,
       state: this.organizationData.stateId,
       address: this.organizationData.address,
       contactPersonName: this.organizationData.contactName,
@@ -239,7 +286,7 @@ export class OrganizationAdminProfileComponent implements OnInit {
   }
 
   onSubmit() {
-    if (this.profileForm.invalid) {
+    if (this.profileForm.invalid || this.profileForm.pending) {
       this.markFormGroupTouched(this.profileForm);
       this.toastr.error(
         'Please fill in all required fields correctly',
@@ -254,9 +301,11 @@ export class OrganizationAdminProfileComponent implements OnInit {
 
       const organizationDetails = {
         organizationName: this.profileForm.get('organizationName')?.value || '',
-        registrationNumber:
-          this.profileForm.get('trainingInstituteRegistration')?.value || '',
+        registrationNumber: null,
         organizationCode: this.profileForm.get('organizationCode')?.value || '',
+        organizationType: this.mapOrganizationTypeToCode(
+          this.profileForm.get('organizationType')?.value || ''
+        ),
         stateId: parseInt(this.profileForm.get('state')?.value) || 0,
         districtId: parseInt(this.profileForm.get('district')?.value) || 0,
         address: this.profileForm.get('address')?.value || '',
@@ -309,6 +358,9 @@ export class OrganizationAdminProfileComponent implements OnInit {
         organizationName: this.profileForm.get('organizationName')?.value || '',
         registrationNumber:
           this.profileForm.get('trainingInstituteRegistration')?.value || '',
+        organizationType: this.mapOrganizationTypeToCode(
+          this.profileForm.get('organizationType')?.value || ''
+        ),
         stateId: parseInt(this.profileForm.get('state')?.value) || 0,
         districtId: parseInt(this.profileForm.get('district')?.value) || 0,
         address: this.profileForm.get('address')?.value || '',
@@ -337,7 +389,7 @@ export class OrganizationAdminProfileComponent implements OnInit {
               this.profileForm.reset();
 
               this.toastr.success(
-                `Organization profile updated successfully! Registration ID: ${registrationId}`,
+                `Organization profile updated successfully!`,
                 'Success'
               );
 

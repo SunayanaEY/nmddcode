@@ -289,6 +289,31 @@ export class AuthService {
       );
   }
 
+  checkOrganizationCode(
+    organizationCode: string
+  ): Observable<{ organizationCode: string; exists: boolean; message: string }> {
+    return this.http
+      .get<{ organizationCode: string; exists: boolean; message: string }>(
+        `${this.apiUrl}organization/check-orgcode`,
+        {
+          params: { organizationCode },
+        }
+      )
+      .pipe(
+        catchError((error) => {
+          console.error('Organization code check failed', error);
+          const message =
+            (error && error.error && error.error.message) ||
+            'Organization code validation failed';
+          return of({
+            organizationCode,
+            exists: true,
+            message,
+          });
+        })
+      );
+  }
+
   // Session timeout management methods
   private startSessionMonitoring(): void {
     this.stopSessionMonitoring(); // Stop any existing monitoring

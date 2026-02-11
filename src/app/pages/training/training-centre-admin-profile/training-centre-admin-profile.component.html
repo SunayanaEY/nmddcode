@@ -202,50 +202,6 @@
                 </div>
               </div>
             </div>
-            <div
-              class="form-row"
-              *ngIf="
-                profileForm.get('instituteType')?.value ===
-                'Other Organizations'
-              "
-            >
-              <div class="form-group">
-                <label for="instituteOwnedBy"
-                  >Institute Owned By<span class="required">*</span></label
-                >
-                <select
-                  id="instituteOwnedBy"
-                  formControlName="instituteOwnedBy"
-                  class="form-control"
-                  [class.is-invalid]="
-                    profileForm.get('instituteOwnedBy')?.invalid &&
-                    profileForm.get('instituteOwnedBy')?.touched
-                  "
-                >
-                  <option value="" disabled>Select Institute Owned By</option>
-                  <option
-                    *ngFor="let owner of instituteOwnedByOptions"
-                    [value]="owner"
-                  >
-                    {{ owner }}
-                  </option>
-                </select>
-                <div
-                  class="invalid-feedback"
-                  *ngIf="
-                    profileForm.get('instituteOwnedBy')?.invalid &&
-                    profileForm.get('instituteOwnedBy')?.touched
-                  "
-                >
-                  <span
-                    *ngIf="
-                      profileForm.get('instituteOwnedBy')?.errors?.['required']
-                    "
-                    >Institute owned by is required</span
-                  >
-                </div>
-              </div>
-            </div>
             <div class="form-row">
               <div class="form-group">
                 <label for="instituteGrade"
