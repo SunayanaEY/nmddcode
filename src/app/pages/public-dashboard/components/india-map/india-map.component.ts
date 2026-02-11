@@ -38,7 +38,9 @@ interface InstituteMarker {
   templateUrl: './india-map.component.html',
   styleUrls: ['./india-map.component.css'],
 })
-export class IndiaMapComponent implements OnInit, AfterViewInit, OnDestroy, OnChanges {
+export class IndiaMapComponent
+  implements OnInit, AfterViewInit, OnDestroy, OnChanges
+{
   @ViewChild('mapContainer', { static: false }) mapContainer!: ElementRef;
   @Input() selectedState: StateData | null = null;
   @Input() isLoading = false;
@@ -81,38 +83,38 @@ export class IndiaMapComponent implements OnInit, AfterViewInit, OnDestroy, OnCh
     'Andaman and Nicobar Islands': 'andaman-and-nicobar-islands',
     'Andhra Pradesh': 'andhra-pradesh',
     'Arunachal Pradesh': 'arunachal-pradesh',
-    'Assam': 'assam',
-    'Bihar': 'bihar',
-    'Chandigarh': 'chandigarh',
-    'Chhattisgarh': 'chhattisgarh',
-    'Delhi': 'delhi',
+    Assam: 'assam',
+    Bihar: 'bihar',
+    Chandigarh: 'chandigarh',
+    Chhattisgarh: 'chhattisgarh',
+    Delhi: 'delhi',
     'Dadra and Nagar Haveli and Daman and Diu': 'dnh-and-dd',
-    'Goa': 'goa',
-    'Gujarat': 'gujarat',
-    'Haryana': 'haryana',
+    Goa: 'goa',
+    Gujarat: 'gujarat',
+    Haryana: 'haryana',
     'Himachal Pradesh': 'himachal-pradesh',
     'Jammu and Kashmir': 'jammu-and-kashmir',
-    'Jharkhand': 'jharkhand',
-    'Karnataka': 'karnataka',
-    'Kerala': 'kerala',
-    'Ladakh': 'ladakh',
-    'Lakshadweep': 'lakshadweep',
+    Jharkhand: 'jharkhand',
+    Karnataka: 'karnataka',
+    Kerala: 'kerala',
+    Ladakh: 'ladakh',
+    Lakshadweep: 'lakshadweep',
     'Madhya Pradesh': 'madhya-pradesh',
-    'Maharashtra': 'maharashtra',
-    'Manipur': 'manipur',
-    'Meghalaya': 'meghalaya',
-    'Mizoram': 'mizoram',
-    'Nagaland': 'nagaland',
-    'Odisha': 'odisha',
-    'Puducherry': 'puducherry',
-    'Punjab': 'punjab',
-    'Rajasthan': 'rajasthan',
-    'Sikkim': 'sikkim',
+    Maharashtra: 'maharashtra',
+    Manipur: 'manipur',
+    Meghalaya: 'meghalaya',
+    Mizoram: 'mizoram',
+    Nagaland: 'nagaland',
+    Odisha: 'odisha',
+    Puducherry: 'puducherry',
+    Punjab: 'punjab',
+    Rajasthan: 'rajasthan',
+    Sikkim: 'sikkim',
     'Tamil Nadu': 'tamilnadu',
-    'Telangana': 'telangana',
-    'Tripura': 'tripura',
+    Telangana: 'telangana',
+    Tripura: 'tripura',
     'Uttar Pradesh': 'uttar-pradesh',
-    'Uttarakhand': 'uttarakhand',
+    Uttarakhand: 'uttarakhand',
     'West Bengal': 'west-bengal',
   };
 
@@ -155,26 +157,31 @@ export class IndiaMapComponent implements OnInit, AfterViewInit, OnDestroy, OnCh
   }
 
   private loadInstituteData(): void {
-    this.dashboardService.getInstituteLocations(this.organizationId || undefined, this.instituteType || undefined).subscribe({
-      next: (data: InstituteLocationData[]) => {
-        this.institutes = data.map((institute) => ({
-          id: institute.id,
-          name: institute.name,
-          latitude: institute.latitude,
-          longitude: institute.longitude,
-          address: institute.address,
-          trainingConducted: institute.trainingConducted || 0,
-          traineesCount: institute.traineesCount || 0,
-        }));
-        // Re-render markers if map is already initialized
-        if (this.g) {
-          this.addInstituteMarkers();
-        }
-      },
-      error: (error) => {
-        console.error('❌ Error loading institute data:', error);
-      },
-    });
+    this.dashboardService
+      .getInstituteLocations(
+        this.organizationId || undefined,
+        this.instituteType || undefined,
+      )
+      .subscribe({
+        next: (data: InstituteLocationData[]) => {
+          this.institutes = data.map((institute) => ({
+            id: institute.id,
+            name: institute.name,
+            latitude: institute.latitude,
+            longitude: institute.longitude,
+            address: institute.address,
+            trainingConducted: institute.trainingConducted || 0,
+            traineesCount: institute.traineesCount || 0,
+          }));
+          // Re-render markers if map is already initialized
+          if (this.g) {
+            this.addInstituteMarkers();
+          }
+        },
+        error: (error) => {
+          console.error('❌ Error loading institute data:', error);
+        },
+      });
   }
 
   ngAfterViewInit(): void {
@@ -235,12 +242,11 @@ export class IndiaMapComponent implements OnInit, AfterViewInit, OnDestroy, OnCh
       .attr('viewBox', `0 0 ${this.width} ${this.height}`)
       .attr(
         'preserveAspectRatio',
-        this.variant === 'login' ? 'xMidYMid slice' : 'xMidYMid meet'
+        this.variant === 'login' ? 'xMidYMid slice' : 'xMidYMid meet',
       );
 
     if (this.variant === 'login') {
-      this.svg
-        .style('background', 'transparent');
+      this.svg.style('background', 'transparent');
     } else {
       this.svg
         .style('background', 'rgba(255, 255, 255, 0.08)')
@@ -279,7 +285,7 @@ export class IndiaMapComponent implements OnInit, AfterViewInit, OnDestroy, OnCh
 
       if (!response.ok) {
         throw new Error(
-          `HTTP error! status: ${response.status} - ${response.statusText}`
+          `HTTP error! status: ${response.status} - ${response.statusText}`,
         );
       }
 
@@ -297,14 +303,18 @@ export class IndiaMapComponent implements OnInit, AfterViewInit, OnDestroy, OnCh
 
   private createMapFromGeoJSON(geoData: any): void {
     // Use fitExtent to match SVG size and preserve aspect
-    this.projection = d3
-      .geoMercator()
-      .fitExtent(
-        this.variant === 'login'
-          ? [[0, 0], [this.width, this.height]]
-          : [[10, 10], [this.width - 10, this.height - 10]],
-        geoData
-      );
+    this.projection = d3.geoMercator().fitExtent(
+      this.variant === 'login'
+        ? [
+            [0, 0],
+            [this.width, this.height],
+          ]
+        : [
+            [10, 10],
+            [this.width - 10, this.height - 10],
+          ],
+      geoData,
+    );
 
     this.path = d3.geoPath().projection(this.projection);
 
@@ -319,7 +329,7 @@ export class IndiaMapComponent implements OnInit, AfterViewInit, OnDestroy, OnCh
       .selectAll('.state')
       .data(geoData.features);
 
-    const baseFill = this.variant === 'login' ? '#dbdee2' : '#24a8efde';
+    const baseFill = this.variant === 'login' ? '#dbdee2' : '#f0e1b7de';
     const baseStroke = this.variant === 'login' ? '#9a9999a9' : '#211e1ea6';
     const hoverFill = this.variant === 'login' ? '#c2c2c2ff' : '#6188afff';
 
@@ -333,7 +343,8 @@ export class IndiaMapComponent implements OnInit, AfterViewInit, OnDestroy, OnCh
       .style('cursor', 'pointer')
       .on('mouseover', (event: any, d: any) => {
         d3.select(event.currentTarget).attr('fill', hoverFill);
-        const stateName = d.properties.NAME || d.properties.name || 'Unknown State';
+        const stateName =
+          d.properties.NAME || d.properties.name || 'Unknown State';
         this.showTooltip(event, stateName);
       })
       .on('mouseout', (event: any) => {
@@ -365,13 +376,20 @@ export class IndiaMapComponent implements OnInit, AfterViewInit, OnDestroy, OnCh
     this.g.select('.states-group').remove();
 
     // Fit projection to state extent with margin
-    this.projection = d3.geoMercator().fitExtent([[10, 10], [this.width - 10, this.height - 10]], geo);
+    this.projection = d3.geoMercator().fitExtent(
+      [
+        [10, 10],
+        [this.width - 10, this.height - 10],
+      ],
+      geo,
+    );
     this.path = d3.geoPath().projection(this.projection);
 
     // Create fresh group
     const statesGroup = this.g.append('g').attr('class', 'states-group');
 
-    const features = geo.features || (geo.type === 'FeatureCollection' ? geo.features : [geo]);
+    const features =
+      geo.features || (geo.type === 'FeatureCollection' ? geo.features : [geo]);
 
     statesGroup
       .selectAll('.state')
@@ -387,7 +405,11 @@ export class IndiaMapComponent implements OnInit, AfterViewInit, OnDestroy, OnCh
       .on('mouseover', (event: any, d: any) => {
         const hoverFill = this.variant === 'login' ? '#e5e7eb' : '#6188afff';
         d3.select(event.currentTarget).attr('fill', hoverFill);
-        const districtName = d.properties?.district || d.properties?.name || this.currentStateName || '';
+        const districtName =
+          d.properties?.district ||
+          d.properties?.name ||
+          this.currentStateName ||
+          '';
         this.showTooltip(event, districtName);
       })
       .on('mouseout', (event: any) => {
@@ -429,11 +451,15 @@ export class IndiaMapComponent implements OnInit, AfterViewInit, OnDestroy, OnCh
   private getStateTopoJsonPath(stateName: string): string | null {
     const normalized = this.normalizeStateName(stateName);
     const key = Object.keys(this.stateTopoFileMap).find(
-      (k) => this.normalizeStateName(k).toLowerCase() === normalized.toLowerCase()
+      (k) =>
+        this.normalizeStateName(k).toLowerCase() === normalized.toLowerCase(),
     );
     if (!key) {
       // Handle common alias
-      if (normalized.toLowerCase().includes('nct') && normalized.toLowerCase().includes('delhi')) {
+      if (
+        normalized.toLowerCase().includes('nct') &&
+        normalized.toLowerCase().includes('delhi')
+      ) {
         return 'assets/geoJsonData/topojson/states/delhi.json';
       }
       return null;
@@ -442,7 +468,10 @@ export class IndiaMapComponent implements OnInit, AfterViewInit, OnDestroy, OnCh
     return `assets/geoJsonData/topojson/states/${fileSlug}.json`;
   }
 
-  private async loadAndRenderStateMap(topoPath: string, stateName: string): Promise<void> {
+  private async loadAndRenderStateMap(
+    topoPath: string,
+    stateName: string,
+  ): Promise<void> {
     try {
       this.isStateView = true;
       this.currentStateName = stateName;
@@ -454,8 +483,15 @@ export class IndiaMapComponent implements OnInit, AfterViewInit, OnDestroy, OnCh
       const topology = await response.json();
       const objects: any = (topology as any).objects;
       const firstKey = Object.keys(objects)[0];
-      const objectForFeatures = objects['districts'] ?? objects['features'] ?? objects['states'] ?? objects[firstKey];
-      const featureCollection: any = topojsonFeature(topology as any, objectForFeatures as any);
+      const objectForFeatures =
+        objects['districts'] ??
+        objects['features'] ??
+        objects['states'] ??
+        objects[firstKey];
+      const featureCollection: any = topojsonFeature(
+        topology as any,
+        objectForFeatures as any,
+      );
 
       this.renderStateGeoJSON(featureCollection);
       this.addInstituteMarkers();
@@ -463,7 +499,6 @@ export class IndiaMapComponent implements OnInit, AfterViewInit, OnDestroy, OnCh
       console.error('Error loading state topojson:', err);
     }
   }
-
 
   backToIndia(): void {
     this.isStateView = false;
@@ -515,7 +550,7 @@ export class IndiaMapComponent implements OnInit, AfterViewInit, OnDestroy, OnCh
       // Calculate scale and translate for zooming
       const scale = Math.min(
         8,
-        0.9 / Math.max(dx / this.width, dy / this.height)
+        0.9 / Math.max(dx / this.width, dy / this.height),
       );
       const translate = [
         this.width / 2 - scale * x,
@@ -645,24 +680,34 @@ export class IndiaMapComponent implements OnInit, AfterViewInit, OnDestroy, OnCh
       .on('mouseover', (event: any, d: InstituteMarker) => {
         // For login variant, scale up the pin
         if (this.variant === 'login') {
-           d3.select(event.currentTarget).transition().duration(200).attr('transform', (t: any) => {
+          d3.select(event.currentTarget)
+            .transition()
+            .duration(200)
+            .attr('transform', (t: any) => {
               // Re-calculate position to maintain it, but add scale
-              const coords = this.projection ? this.projection([d.longitude, d.latitude]) : [this.width/2, this.height/2];
-              const x = coords ? coords[0] : this.width/2;
-              const y = coords ? coords[1] : this.height/2;
+              const coords = this.projection
+                ? this.projection([d.longitude, d.latitude])
+                : [this.width / 2, this.height / 2];
+              const x = coords ? coords[0] : this.width / 2;
+              const y = coords ? coords[1] : this.height / 2;
               return `translate(${x},${y}) scale(1.2)`;
-           });
+            });
         }
         this.onInstituteHover(event, d);
       })
       .on('mouseout', (event: any, d: InstituteMarker) => {
         if (this.variant === 'login') {
-           d3.select(event.currentTarget).transition().duration(200).attr('transform', (t: any) => {
-              const coords = this.projection ? this.projection([d.longitude, d.latitude]) : [this.width/2, this.height/2];
-              const x = coords ? coords[0] : this.width/2;
-              const y = coords ? coords[1] : this.height/2;
+          d3.select(event.currentTarget)
+            .transition()
+            .duration(200)
+            .attr('transform', (t: any) => {
+              const coords = this.projection
+                ? this.projection([d.longitude, d.latitude])
+                : [this.width / 2, this.height / 2];
+              const x = coords ? coords[0] : this.width / 2;
+              const y = coords ? coords[1] : this.height / 2;
               return `translate(${x},${y}) scale(1)`;
-           });
+            });
         }
         this.hideTooltip();
       });
@@ -685,23 +730,31 @@ export class IndiaMapComponent implements OnInit, AfterViewInit, OnDestroy, OnCh
     if (this.variant === 'login') {
       // Pin Path (Blue teardrop)
       // Path centered at bottom tip (0,0)
-      markerEnter.append('path')
-        .attr('d', 'M0,0 C-6,-10 -10,-16 -10,-21 C-10,-26.5 -5.5,-31 0,-31 C5.5,-31 10,-26.5 10,-21 C10,-16 6,-10 0,0 Z')
-        .attr('fill', '#2563eb') // Bootstrap primary blue
+      markerEnter
+        .append('path')
+        .attr(
+          'd',
+          'M0,-8 C-4,-8 -6,-5 -6,-2 C-6,2 0,8 0,8 C0,8 6,2 6,-2 C6,-5 4,-8 0,-8 Z',
+        )
+        .attr('fill', '#363ed1')
         .attr('stroke', '#ffffff')
-        .attr('stroke-width', 2);
+        .attr('stroke-width', 1);
 
       // Inner White Dot
-      markerEnter.append('circle')
+      markerEnter
+        .append('circle')
         .attr('cy', -21) // Position in the head of the pin
         .attr('r', 3.5)
         .attr('fill', '#ffffff');
     } else {
       // Dashboard variant - existing red circles
-      markerEnter.append('circle')
-        .attr('class', 'institute-marker')
-        .attr('r', 2)
-        .attr('fill', '#ff5722')
+      markerEnter
+        .append('path')
+        .attr(
+          'd',
+          'M0,-8 C-4,-8 -6,-5 -6,-2 C-6,2 0,8 0,8 C0,8 6,2 6,-2 C6,-5 4,-8 0,-8 Z',
+        )
+        .attr('fill', '#363ed1')
         .attr('stroke', '#ffffff')
         .attr('stroke-width', 1);
     }
