@@ -78,19 +78,23 @@ export class TrainingCentreComponent implements OnInit {
     { value: 'Other Organizations', label: 'Other Organizations' },
   ];
   instituteGrades: string[] = ['A', 'B', 'A+'];
-  instituteOwnedByOptions: string[] = ['NDDB', 'Co-operative', 'NGO', 'Private'];
+  instituteOwnedByOptions: string[] = [
+    'NDDB',
+    'Co-operative',
+    'NGO',
+    'Private',
+  ];
   organizations: any[] = [];
   constructor(
     private adminService: AdminService,
     private authService: AuthService,
     private locationService: LocationService,
     private toastr: ToastrService,
-    private router: Router
+    private router: Router,
   ) {}
 
   tableColumns: TableColumn[] = [];
   tableColumns1: TableColumn[] = [];
-
 
   tableActions: TableAction[] = [
     {
@@ -379,7 +383,7 @@ export class TrainingCentreComponent implements OnInit {
   get totalCapacity(): number {
     return this.trainingCentres.reduce(
       (total, centre) => total + (centre.capacity || 0),
-      0
+      0,
     );
   }
 
@@ -413,7 +417,7 @@ export class TrainingCentreComponent implements OnInit {
     // Filter by institute type
     if (this.instituteTypeFilter) {
       filtered = filtered.filter(
-        (centre) => centre.instituteType === this.instituteTypeFilter
+        (centre) => centre.instituteType === this.instituteTypeFilter,
       );
     }
 
@@ -421,13 +425,13 @@ export class TrainingCentreComponent implements OnInit {
   }
   get filteredGovtTrainingCentres(): any[] {
     return this.filteredTrainingCentres.filter(
-      (centre) => centre.instituteType !== 'Other Organizations'
+      (centre) => centre.instituteType !== 'Other Organizations',
     );
   }
 
   get filteredPrivateTrainingCentres(): any[] {
     return this.filteredTrainingCentres.filter(
-      (centre) => centre.instituteType === 'Other Organizations'
+      (centre) => centre.instituteType === 'Other Organizations',
     );
   }
 
@@ -522,14 +526,14 @@ export class TrainingCentreComponent implements OnInit {
       instituteType: this.normalizeString(centre.instituteType),
       instituteGrade: this.normalizeString(centre.instituteGrade),
       instituteOwnedBy: this.mapInstituteOwnedByCodeToLabel(
-        this.normalizeString(centre.instituteOwnedBy)
+        this.normalizeString(centre.instituteOwnedBy),
       ),
       organizationId:
         centre.organizationId !== undefined && centre.organizationId !== null
           ? centre.organizationId
           : null,
       expiryDate: this.formatDateInput(
-        centre.expiryDate || centre.registrationValidity
+        centre.expiryDate || centre.registrationValidity,
       ),
       address: this.normalizeString(centre.address),
       latitude: centre.latitude ?? null,
@@ -561,17 +565,17 @@ export class TrainingCentreComponent implements OnInit {
     this.logDropdownValueMatch(
       'instituteType',
       this.editForm.instituteType,
-      this.instituteTypes.map((t) => t.value)
+      this.instituteTypes.map((t) => t.value),
     );
     this.logDropdownValueMatch(
       'instituteGrade',
       this.editForm.instituteGrade,
-      this.instituteGrades
+      this.instituteGrades,
     );
     this.logDropdownValueMatch(
       'instituteOwnedBy',
       this.editForm.instituteOwnedBy,
-      this.instituteOwnedByOptions
+      this.instituteOwnedByOptions,
     );
 
     if (centre.instituteImageUrl) {
@@ -587,7 +591,10 @@ export class TrainingCentreComponent implements OnInit {
           const directUrl = `${this.url}api/photo/download/${fileName}`;
           this.currentImageUrl = directUrl;
           this.selectedCentre.instituteImageUrl = directUrl;
-          console.log('[TrainingCentre/EditModal] image blob failed, fallback url', error);
+          console.log(
+            '[TrainingCentre/EditModal] image blob failed, fallback url',
+            error,
+          );
         },
       });
     }
@@ -646,7 +653,9 @@ export class TrainingCentreComponent implements OnInit {
     if (this.editForm.instituteType !== 'Other Organizations') {
       this.editForm.instituteOwnedBy = '';
       this.editForm.organizationId = null;
-      console.log('[TrainingCentre/EditModal] cleared org fields for non-other type');
+      console.log(
+        '[TrainingCentre/EditModal] cleared org fields for non-other type',
+      );
     }
   }
 
@@ -673,8 +682,63 @@ export class TrainingCentreComponent implements OnInit {
 
   submitEditModal() {
     console.log('[TrainingCentre/EditModal] submit form=', this.editForm);
+
+    if (!this.validateEditForm()) {
+      return;
+    }
+
     this.isEditSaving = true;
     this.updateTrainingCentre({ ...this.editForm });
+  }
+  private validateEditForm(): boolean {
+    const f = this.editForm;
+
+    if (!f.trainingInstituteName?.trim()) {
+      this.toastr.error('Institute Name is required');
+      return false;
+    }
+
+    if (!f.expiryDate) {
+      this.toastr.error('Expiry Date is required');
+      return false;
+    }
+
+    if (!f.instituteType) {
+      this.toastr.error('Institute Type is required');
+      return false;
+    }
+
+    if (!f.instituteGrade) {
+      this.toastr.error('Institute Grade is required');
+      return false;
+    }
+
+    if (!f.contactPersonName?.trim()) {
+      this.toastr.error('Contact Person is required');
+      return false;
+    }
+
+    if (!f.contactNumber?.trim()) {
+      this.toastr.error('Contact Number is required');
+      return false;
+    }
+
+    if (!f.emailId?.trim()) {
+      this.toastr.error('Email is required');
+      return false;
+    }
+
+    if (!f.newStateId) {
+      this.toastr.error('State is required');
+      return false;
+    }
+
+    if (!f.newDistrictId) {
+      this.toastr.error('District is required');
+      return false;
+    }
+
+    return true;
   }
 
   private normalizeString(value: any): string {
@@ -830,7 +894,7 @@ export class TrainingCentreComponent implements OnInit {
         next: (response) => {
           // Update the item in the local array
           const index = this.trainingCentres.findIndex(
-            (centre) => centre.id === this.pendingToggleItem.id
+            (centre) => centre.id === this.pendingToggleItem.id,
           );
           if (index !== -1) {
             this.trainingCentres[index].active =
@@ -874,7 +938,7 @@ export class TrainingCentreComponent implements OnInit {
       this.adminService.deleteTrainingInstitute(centre.id).subscribe({
         next: () => {
           this.trainingCentres = this.trainingCentres.filter(
-            (c) => c.id !== centre.id
+            (c) => c.id !== centre.id,
           );
           alert('Training centre deleted successfully');
         },
@@ -925,10 +989,11 @@ export class TrainingCentreComponent implements OnInit {
       instituteType: updatedData.instituteType || '',
       instituteGrade: updatedData.instituteGrade || '',
       instituteOwnedBy: this.mapInstituteOwnedByLabelToCode(
-        updatedData.instituteOwnedBy || ''
+        updatedData.instituteOwnedBy || '',
       ),
       organizationId:
-        updatedData.organizationId !== undefined && updatedData.organizationId !== null
+        updatedData.organizationId !== undefined &&
+        updatedData.organizationId !== null
           ? updatedData.organizationId
           : null,
     };
@@ -952,7 +1017,7 @@ export class TrainingCentreComponent implements OnInit {
         this.isEditSaving = false;
         // Update the item in the local array
         const index = this.trainingCentres.findIndex(
-          (centre) => centre.id === this.selectedCentre.id
+          (centre) => centre.id === this.selectedCentre.id,
         );
         if (index !== -1) {
           // Update with the response data or merge with existing data

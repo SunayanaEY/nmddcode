@@ -785,3 +785,7 @@
     font-size: 28px;
   }
 }
+.text-red{
+  color:red;
+  font-weight:600;
+}

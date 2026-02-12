@@ -156,7 +156,9 @@
       </div>
 
       <div class="filter-group">
-        <label for="instituteTypeFilter" class="filter-label">Institute Type</label>
+        <label for="instituteTypeFilter" class="filter-label"
+          >Institute Type</label
+        >
         <select
           id="instituteTypeFilter"
           class="filter-select"
@@ -261,14 +263,15 @@
           <div class="row">
             <div class="col-12 col-md-6 mb-3">
               <label for="trainingInstituteName" class="form-label"
-                >Institute Name</label
+                >Institute Name <span class="text-red">*</span></label
               >
               <input
                 id="trainingInstituteName"
                 type="text"
                 class="form-control"
                 [(ngModel)]="editForm.trainingInstituteName"
-                (ngModelChange)="onEditFieldChange('trainingInstituteName', $event)"
+                name="trainingInstituteName"
+                required
               />
             </div>
 
@@ -287,28 +290,33 @@
             </div>
 
             <div class="col-12 col-md-6 mb-3">
-              <label for="expiryDate" class="form-label">Expiry Date</label>
+              <label for="expiryDate" class="form-label">Expiry Date <span class="text-red">*</span></label>
               <input
                 id="expiryDate"
                 type="date"
                 class="form-control"
                 [(ngModel)]="editForm.expiryDate"
-                (ngModelChange)="onEditFieldChange('expiryDate', $event)"
+                name="expiryDate"
+                required
               />
             </div>
 
             <div class="col-12 col-md-6 mb-3">
               <label for="instituteType" class="form-label"
-                >Institute Type</label
+                >Institute Type <span class="text-red">*</span></label
               >
               <select
                 id="instituteType"
                 class="form-control"
                 [(ngModel)]="editForm.instituteType"
-                (ngModelChange)="onEditInstituteTypeChange($event)"
+                name="instituteType"
+                required
               >
                 <option value="" disabled>Select Institute Type</option>
-                <option *ngFor="let type of instituteTypes" [value]="type.value">
+                <option
+                  *ngFor="let type of instituteTypes"
+                  [value]="type.value"
+                >
                   {{ type.label }}
                 </option>
               </select>
@@ -348,7 +356,10 @@
                 (ngModelChange)="onEditFieldChange('instituteOwnedBy', $event)"
               >
                 <option value="" disabled>Select Institute Owned By</option>
-                <option *ngFor="let owner of instituteOwnedByOptions" [value]="owner">
+                <option
+                  *ngFor="let owner of instituteOwnedByOptions"
+                  [value]="owner"
+                >
                   {{ owner }}
                 </option>
               </select>
@@ -356,13 +367,14 @@
 
             <div class="col-12 col-md-6 mb-3">
               <label for="instituteGrade" class="form-label"
-                >Institute Grade</label
+                >Institute Grade <span class="text-red">*</span></label
               >
               <select
                 id="instituteGrade"
                 class="form-control"
                 [(ngModel)]="editForm.instituteGrade"
-                (ngModelChange)="onEditFieldChange('instituteGrade', $event)"
+                name="instituteGrade"
+                required
               >
                 <option value="" disabled>Select Institute Grade</option>
                 <option *ngFor="let grade of instituteGrades" [value]="grade">
@@ -373,38 +385,41 @@
 
             <div class="col-12 col-md-6 mb-3">
               <label for="contactPersonName" class="form-label"
-                >Contact Person</label
+                >Contact Person <span class="text-red">*</span></label
               >
               <input
                 id="contactPersonName"
                 type="text"
                 class="form-control"
                 [(ngModel)]="editForm.contactPersonName"
-                (ngModelChange)="onEditFieldChange('contactPersonName', $event)"
+                name="contactPersonName"
+                required
               />
             </div>
 
             <div class="col-12 col-md-6 mb-3">
               <label for="contactNumber" class="form-label"
-                >Contact Number</label
+                >Contact Number <span class="text-red">*</span></label
               >
               <input
                 id="contactNumber"
                 type="tel"
                 class="form-control"
                 [(ngModel)]="editForm.contactNumber"
-                (ngModelChange)="onEditFieldChange('contactNumber', $event)"
+                name="contactNumber"
+                required
               />
             </div>
 
             <div class="col-12 col-md-6 mb-3">
-              <label for="emailId" class="form-label">Email</label>
+              <label for="emailId" class="form-label">Email <span class="text-red">*</span></label>
               <input
                 id="emailId"
                 type="email"
                 class="form-control"
                 [(ngModel)]="editForm.emailId"
-                (ngModelChange)="onEditFieldChange('emailId', $event)"
+                name="emailId"
+                required
               />
             </div>
 
@@ -420,12 +435,13 @@
             </div>
 
             <div class="col-12 col-md-6 mb-3">
-              <label for="newStateId" class="form-label">State</label>
+              <label for="newStateId" class="form-label">State <span class="text-red">*</span></label>
               <select
                 id="newStateId"
                 class="form-control"
                 [(ngModel)]="editForm.newStateId"
-                (ngModelChange)="onEditNewStateChange($event)"
+                name="newStateId"
+                required
               >
                 <option [ngValue]="null" disabled>Select State</option>
                 <option *ngFor="let state of states" [ngValue]="state.id">
@@ -435,16 +451,20 @@
             </div>
 
             <div class="col-12 col-md-6 mb-3">
-              <label for="newDistrictId" class="form-label">District</label>
+              <label for="newDistrictId" class="form-label">District <span class="text-red">*</span></label>
               <select
                 id="newDistrictId"
                 class="form-control"
                 [(ngModel)]="editForm.newDistrictId"
-                (ngModelChange)="onEditFieldChange('newDistrictId', $event)"
+                name="newDistrictId"
+                required
                 [disabled]="!editForm.newStateId"
               >
                 <option [ngValue]="null" disabled>Select District</option>
-                <option *ngFor="let district of districts" [ngValue]="district.id">
+                <option
+                  *ngFor="let district of districts"
+                  [ngValue]="district.id"
+                >
                   {{ district.districtName }}
                 </option>
               </select>
@@ -484,7 +504,9 @@
             </div>
 
             <div class="col-12 mb-3">
-              <label for="instituteImage" class="form-label">Institute Image</label>
+              <label for="instituteImage" class="form-label"
+                >Institute Image</label
+              >
               <div class="tc-image-preview" *ngIf="currentImageUrl">
                 <img
                   [src]="currentImageUrl"
@@ -512,7 +534,11 @@
       </div>
 
       <div class="tc-modal-footer">
-        <button type="button" class="btn btn-outline-secondary" (click)="closeEditModal()">
+        <button
+          type="button"
+          class="btn btn-outline-secondary"
+          (click)="closeEditModal()"
+        >
           Cancel
         </button>
         <button
@@ -574,7 +600,11 @@
         </div>
       </div>
       <div class="tc-modal-footer">
-        <button type="button" class="btn btn-outline-secondary" (click)="onCancelToggle()">
+        <button
+          type="button"
+          class="btn btn-outline-secondary"
+          (click)="onCancelToggle()"
+        >
           Cancel
         </button>
         <button
@@ -684,8 +714,8 @@
                 <td>{{ item.designation }}</td>
                 <td>{{ item.contactNumber }}</td>
                 <td>{{ item.emailId }}</td>
-                <td>{{ item.startDate | date : "dd/MM/yyyy" }}</td>
-                <td>{{ item.endDate | date : "dd/MM/yyyy" }}</td>
+                <td>{{ item.startDate | date: "dd/MM/yyyy" }}</td>
+                <td>{{ item.endDate | date: "dd/MM/yyyy" }}</td>
               </tr>
 
               <tr *ngIf="previousInstituteHeadsData.length === 0">
