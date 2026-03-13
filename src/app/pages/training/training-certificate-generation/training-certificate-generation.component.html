@@ -680,6 +680,18 @@
   </div>
 </div>
 
+<app-image-cropper-modal
+  [visible]="showImageCropper"
+  [imageFile]="cropperInputFile"
+  [title]="cropperTargetType === 'signature' ? 'Crop Signature' : 'Crop Logo'"
+  [defaultAspectMode]="cropperTargetType === 'signature' ? 'panoramic' : 'rectangle'"
+  [outputFormat]="'png'"
+  [resizeToWidth]="1200"
+  (loadFailed)="onCropperLoadFailed()"
+  (canceled)="cancelImageCrop()"
+  (cropped)="onImageCropApplied($event)"
+></app-image-cropper-modal>
+
 <div class="modal-backdrop fade show" *ngIf="showPreview"></div>
 
 <div class="modal d-block certificate-preview-modal" tabindex="-1" role="dialog" *ngIf="showPreview">

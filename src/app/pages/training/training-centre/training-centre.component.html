@@ -559,6 +559,17 @@
     </div>
   </div>
 </div>
+<app-image-cropper-modal
+  [visible]="showImageCropper"
+  [imageFile]="cropperInputFile"
+  [title]="'Crop Institute Image'"
+  [defaultAspectMode]="'rectangle'"
+  [outputFormat]="'png'"
+  [resizeToWidth]="1200"
+  (loadFailed)="onEditImageCropLoadFailed()"
+  (canceled)="onEditImageCropCanceled()"
+  (cropped)="onEditImageCropApplied($event)"
+></app-image-cropper-modal>
 
 <div
   class="tc-modal-backdrop"

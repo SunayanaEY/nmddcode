@@ -1,0 +1,78 @@
+.cropper-modal-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(15, 23, 42, 0.65);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1500;
+  padding: 16px;
+}
+
+.cropper-modal-card {
+  width: min(540px, 100%);
+  background: #ffffff;
+  border-radius: 12px;
+  padding: 20px;
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.25);
+}
+
+.cropper-title {
+  margin: 0 0 16px;
+  color: #34495e;
+  font-size: 18px;
+  font-weight: 600;
+  text-align: left;
+}
+
+.cropper-mode-switch {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+
+.cropper-mode-btn {
+  border: 1px solid #d0d7e2;
+  border-radius: 8px;
+  background: #f8fafc;
+  color: #334155;
+  font-size: 12px;
+  padding: 6px 10px;
+  transition: all 0.2s ease;
+}
+
+.cropper-mode-btn.active {
+  background: #2563eb;
+  color: #ffffff;
+  border-color: #2563eb;
+}
+
+.cropper-frame {
+  width: 100%;
+  max-width: 500px;
+  height: 340px;
+  margin: 0 auto;
+  border-radius: 10px;
+  border: 2px solid #e2e8f0;
+  background: #f8fafc;
+}
+
+.cropper-frame image-cropper {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+.cropper-note {
+  margin-top: 10px;
+  font-size: 12px;
+  color: #64748b;
+  text-align: left;
+}
+
+.cropper-actions {
+  margin-top: 18px;
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+}

@@ -29,6 +29,10 @@ import { AdminService } from '../services/training-admin.service';
 import { MultiSelectDropdownComponent } from '../../../components/multi-select-dropdown/multi-select-dropdown.component';
 import { LatestCertificateLayoutComponent } from '../../latest-certificate-layout/latest-certificate-layout.component';
 import { environment } from '../../../../environments/environment';
+import {
+  CroppedImageResult,
+  ImageCropperModalComponent,
+} from '../../../components/image-cropper-modal/image-cropper-modal.component';
 
 
 @Component({
@@ -42,7 +46,8 @@ import { environment } from '../../../../environments/environment';
     BreadcrumbComponent,
     TranslateModule,
     MultiSelectDropdownComponent,
-    LatestCertificateLayoutComponent
+    LatestCertificateLayoutComponent,
+    ImageCropperModalComponent
   ],
   templateUrl: './training-certificate-generation.component.html',
   styleUrl: './training-certificate-generation.component.css',
@@ -150,6 +155,11 @@ export class TrainingCertificateGenerationComponent implements OnInit {
   showPreview: boolean = false;
   previewUniqueId: string = 'PREVIEW-UIN-000000';
   private previewBlobUrls: string[] = [];
+  showImageCropper = false;
+  cropperInputFile: File | null = null;
+  cropperOriginalFileName = 'certificate-image.png';
+  cropperTargetType: 'signature' | 'logo' = 'signature';
+  cropperTargetIndex = 0;
 
   private buildLogoUrl(raw?: string | null): string {
     const path = (raw || '').toString().trim();
@@ -496,25 +506,15 @@ export class TrainingCertificateGenerationComponent implements OnInit {
   }
 
   onFileSelect(file: File, type: 'signature' | 'logo', index: number) {
-    // Check if we're in update mode (populate is 'true') or create mode (populate is 'false', undefined, or null)
-    if (this.populate === 'true') {
-      if (type === 'signature') {
-        this.signaturesNew[index].file = file;
-        // Clear validation error when file is uploaded
-        this.signatureValidationError = '';
-      } else {
-        this.logosNew[index].file = file;
-      }
-    } else {
-      // Create mode (populate is 'false', undefined, or null)
-      if (type === 'signature') {
-        this.signatures[index].file = file;
-        // Clear validation error when file is uploaded
-        this.signatureValidationError = '';
-      } else {
-        this.logos[index].file = file;
-      }
+    if (!file || !file.type.startsWith('image/')) {
+      this.toastr.error('Please select a valid image file', 'File Error');
+      return;
     }
+    this.cropperTargetType = type;
+    this.cropperTargetIndex = index;
+    this.cropperOriginalFileName = file.name || `${type}-${index + 1}.png`;
+    this.cropperInputFile = file;
+    this.showImageCropper = true;
   }
 
   removeSignature(index: number) {
@@ -522,6 +522,9 @@ export class TrainingCertificateGenerationComponent implements OnInit {
       this.signaturesNew[index].file = null;
     } else {
       this.signatures[index].file = null;
+    }
+    if (typeof this.mySelectedFile[index] === 'string' && this.mySelectedFile[index].startsWith('blob:')) {
+      URL.revokeObjectURL(this.mySelectedFile[index]);
     }
     this.mySelectedFile[index] = '';
   }
@@ -532,7 +535,78 @@ export class TrainingCertificateGenerationComponent implements OnInit {
     } else {
       this.logos[index].file = null;
     }
+    if (typeof this.mySelectedLogo[index] === 'string' && this.mySelectedLogo[index].startsWith('blob:')) {
+      URL.revokeObjectURL(this.mySelectedLogo[index]);
+    }
     this.mySelectedLogo[index] = '';
+  }
+
+  cancelImageCrop() {
+    this.showImageCropper = false;
+    this.cropperInputFile = null;
+  }
+
+  onCropperLoadFailed() {
+    this.toastr.error('Please select a valid image file', 'File Error');
+    this.cancelImageCrop();
+  }
+
+  onImageCropApplied(event: CroppedImageResult) {
+    if (!event.blob) {
+      this.toastr.error('Unable to crop selected image', 'Image Error');
+      return;
+    }
+
+    const mimeType = event.mimeType || 'image/png';
+    const croppedFile = new File(
+      [event.blob],
+      this.createCroppedFileName(this.cropperOriginalFileName, mimeType),
+      { type: mimeType }
+    );
+
+    if (this.populate === 'true') {
+      if (this.cropperTargetType === 'signature') {
+        this.signaturesNew[this.cropperTargetIndex].file = croppedFile;
+        this.signatureValidationError = '';
+      } else {
+        this.logosNew[this.cropperTargetIndex].file = croppedFile;
+        this.logoValidationError = '';
+      }
+    } else if (this.cropperTargetType === 'signature') {
+      this.signatures[this.cropperTargetIndex].file = croppedFile;
+      this.signatureValidationError = '';
+    } else {
+      this.logos[this.cropperTargetIndex].file = croppedFile;
+      this.logoValidationError = '';
+    }
+
+    if (this.cropperTargetType === 'signature') {
+      this.setCroppedPreview(this.mySelectedFile, this.cropperTargetIndex, event.previewUrl);
+    } else {
+      this.setCroppedPreview(this.mySelectedLogo, this.cropperTargetIndex, event.previewUrl);
+    }
+
+    this.showImageCropper = false;
+    this.cropperInputFile = null;
+  }
+
+  private setCroppedPreview(target: any[], index: number, previewUrl: string) {
+    const existing = target[index];
+    if (typeof existing === 'string' && existing.startsWith('blob:')) {
+      URL.revokeObjectURL(existing);
+    }
+    target[index] = previewUrl;
+  }
+
+  private createCroppedFileName(originalFileName: string, mimeType: string) {
+    const baseName = originalFileName.replace(/\.[^/.]+$/, '') || 'certificate-image';
+    if (mimeType.includes('jpeg') || mimeType.includes('jpg')) {
+      return `${baseName}-cropped.jpg`;
+    }
+    if (mimeType.includes('webp')) {
+      return `${baseName}-cropped.webp`;
+    }
+    return `${baseName}-cropped.png`;
   }
 
   addMoreSignature() {

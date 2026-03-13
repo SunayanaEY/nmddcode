@@ -1,0 +1,75 @@
+<div
+  class="cropper-modal-backdrop"
+  *ngIf="visible"
+  (click)="onBackdropClick($event)"
+>
+  <div class="cropper-modal-card" (click)="$event.stopPropagation()">
+    <h4 class="cropper-title">{{ title }}</h4>
+    <div class="cropper-mode-switch">
+      <button
+        type="button"
+        class="cropper-mode-btn"
+        [class.active]="aspectMode === 'square'"
+        (click)="setAspect('square')"
+      >
+        Square
+      </button>
+      <button
+        type="button"
+        class="cropper-mode-btn"
+        [class.active]="aspectMode === 'rectangle'"
+        (click)="setAspect('rectangle')"
+      >
+        Rectangle
+      </button>
+      <button
+        type="button"
+        class="cropper-mode-btn"
+        [class.active]="aspectMode === 'panoramic'"
+        (click)="setAspect('panoramic')"
+      >
+        Panoramic
+      </button>
+      <button
+        type="button"
+        class="cropper-mode-btn"
+        [class.active]="aspectMode === 'free'"
+        (click)="setAspect('free')"
+      >
+        Free
+      </button>
+    </div>
+
+    <div class="cropper-frame">
+      <image-cropper
+        *ngIf="imageFile"
+        [imageFile]="imageFile"
+        [maintainAspectRatio]="maintainAspectRatio"
+        [aspectRatio]="aspectRatio"
+        [resizeToWidth]="resizeToWidth"
+        [onlyScaleDown]="true"
+        [roundCropper]="false"
+        [format]="outputFormat"
+        output="blob"
+        (imageCropped)="onImageCropped($event)"
+        (loadImageFailed)="onLoadFailed()"
+      ></image-cropper>
+    </div>
+
+    <div class="cropper-note">Drag and resize the crop box as needed</div>
+
+    <div class="cropper-actions">
+      <button type="button" class="btn btn-secondary" (click)="cancel()">
+        Cancel
+      </button>
+      <button
+        type="button"
+        class="btn btn-primary"
+        [disabled]="!croppedBlob"
+        (click)="apply()"
+      >
+        Apply Crop
+      </button>
+    </div>
+  </div>
+</div>
