@@ -543,7 +543,7 @@
             <div class="form-row">
               <div class="form-group third-width">
                 <label>{{ "Signatory Name" | translate }}
-                  <span class="text-danger">*</span></label>
+                  <span class="text-danger" *ngIf="i === 0">*</span></label>
                 <input type="text" [value]="signature.name" (input)="onSignatureNameChange($event, i)"
                   [placeholder]="'Enter the Name of Signatory here' | translate" class="form-control"
                   [class.is-invalid]="signatureFieldErrors[i]?.name" />
@@ -555,7 +555,7 @@
               </div>
               <div class="form-group third-width">
                 <label>{{ "Signatory Designation" | translate }}
-                  <span class="text-danger">*</span></label>
+                  <span class="text-danger" *ngIf="i === 0">*</span></label>
                 <input type="text" [value]="signature.designation" (input)="onSignatureDesignationChange($event, i)"
                   [placeholder]="
                     'Enter the Designation of Signatory here' | translate
@@ -568,7 +568,7 @@
               </div>
               <div class="form-group third-width">
                 <label>{{ "Signatory Organization" | translate }}
-                  <span class="text-danger">*</span></label>
+                  <span class="text-danger" *ngIf="i === 0">*</span></label>
                 <input type="text" [value]="signature.organization" (input)="onSignatureOrganizationChange($event, i)"
                   [placeholder]="
                     'Enter the Organization of Signatory here' | translate

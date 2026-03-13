@@ -459,6 +459,8 @@ export class TrainingCertificateGenerationComponent implements OnInit {
         this.trainingForm.patchValue({
           trainingInstituteName: selectedInstitute,
         });
+        this.selectedTrainingInstituteName = selectedInstitute.trainingInstituteName;
+        this.selectedTrainingInstituteId = selectedInstitute.id;
       } else {
         // If institute not found in list, create a temporary object
         const tempInstitute = {
@@ -468,6 +470,8 @@ export class TrainingCertificateGenerationComponent implements OnInit {
         this.trainingForm.patchValue({
           trainingInstituteName: tempInstitute,
         });
+        this.selectedTrainingInstituteName = tempInstitute.trainingInstituteName;
+        this.selectedTrainingInstituteId = tempInstitute.id;
       }
     }
   }
@@ -489,6 +493,16 @@ export class TrainingCertificateGenerationComponent implements OnInit {
         // Set training institute if training details are already loaded
         if (this.trainingDetails) {
           this.setTrainingInstitute();
+          return;
+        }
+
+        if (Array.isArray(this.instituteNames) && this.instituteNames.length === 1) {
+          const defaultInstitute = this.instituteNames[0];
+          this.trainingForm.patchValue({
+            trainingInstituteName: defaultInstitute,
+          });
+          this.selectedTrainingInstituteName = defaultInstitute.trainingInstituteName;
+          this.selectedTrainingInstituteId = defaultInstitute.id;
         }
       },
       error: (err) => {
@@ -709,6 +723,11 @@ export class TrainingCertificateGenerationComponent implements OnInit {
     const selectedInstitute = this.trainingForm.get(
       'trainingInstituteName'
     )?.value;
+    if (!selectedInstitute) {
+      this.selectedTrainingInstituteName = null;
+      this.selectedTrainingInstituteId = null;
+      return;
+    }
     this.selectedTrainingInstituteName =
       selectedInstitute.trainingInstituteName;
     this.selectedTrainingInstituteId = selectedInstitute.id;
@@ -1110,21 +1129,16 @@ export class TrainingCertificateGenerationComponent implements OnInit {
     this.signatureValidationError = '';
 
     if (this.populate === 'true') {
-      // For update mode, check signaturesNew array
-      const validSignatures = this.signaturesNew.filter(
-        (sig) => sig.file || sig.signatorySignaturePath
-      );
-
-      if (validSignatures.length < 2) {
-        this.signatureValidationError = 'Both signatures are required';
+      const instituteHeadSignature =
+        this.signaturesNew[0]?.file || this.signaturesNew[0]?.signatorySignaturePath;
+      if (!instituteHeadSignature) {
+        this.signatureValidationError = "Institute Head's signature is required";
         return false;
       }
     } else {
-      // Create mode (populate is 'false', undefined, or null)
-      const validSignatures = this.signatures.filter((sig) => sig.file);
-
-      if (validSignatures.length < 2) {
-        this.signatureValidationError = 'Both signatures are required';
+      const instituteHeadSignature = this.signatures[0]?.file;
+      if (!instituteHeadSignature) {
+        this.signatureValidationError = "Institute Head's signature is required";
         return false;
       }
     }
