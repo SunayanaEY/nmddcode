@@ -666,28 +666,20 @@
               {{ 'PRIVATE_ORG.BUTTON_CANCEL' | translate }}
             </button>
             <button
-              *ngIf="userRole == 1 || userRole == 5"
               type="submit"
               class="btn btn-primary"
               [disabled]="isLoading || profileForm.invalid || profileForm.pending"
             >
-              <span *ngIf="!isLoading">
+              <span *ngIf="!isLoading && !isUpdateMode">
                 <i class="fas fa-save me-2"></i>{{ 'PRIVATE_ORG.BUTTON_CREATE_PROFILE' | translate }}
               </span>
-              <span *ngIf="isLoading">
+              <span *ngIf="isLoading && !isUpdateMode">
                 <i class="fas fa-spinner fa-spin me-2"></i>{{ 'PRIVATE_ORG.BUTTON_CREATING' | translate }}
               </span>
-            </button>
-            <button
-              *ngIf="userRole == 6"
-              type="submit"
-              class="btn btn-primary"
-              [disabled]="isLoading || profileForm.invalid || profileForm.pending"
-            >
-              <span *ngIf="!isLoading">
+              <span *ngIf="!isLoading && isUpdateMode">
                 <i class="fas fa-save me-2"></i>{{ 'PRIVATE_ORG.BUTTON_UPDATE_PROFILE' | translate }}
               </span>
-              <span *ngIf="isLoading">
+              <span *ngIf="isLoading && isUpdateMode">
                 <i class="fas fa-spinner fa-spin me-2"></i>{{ 'PRIVATE_ORG.BUTTON_UPDATING' | translate }}
               </span>
             </button>
