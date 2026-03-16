@@ -13,11 +13,18 @@ import { TrainingService } from '../../../pages/training/services/training.servi
 import { AdminService } from '../services/training-admin.service';
 import { saveAs } from 'file-saver';
 import { TranslateModule } from '@ngx-translate/core';
+import { FormsModule } from '@angular/forms';
 
 @Component({
   selector: 'app-bulk-training-upload',
   standalone: true,
-  imports: [CommonModule, BreadcrumbComponent, FileUploadComponent, TranslateModule],
+  imports: [
+    CommonModule,
+    BreadcrumbComponent,
+    FileUploadComponent,
+    TranslateModule,
+    FormsModule,
+  ],
   templateUrl: './bulk-training-upload.component.html',
   styleUrl: './bulk-training-upload.component.css',
 })
@@ -31,9 +38,11 @@ export class BulkTrainingUploadComponent implements OnInit {
     { label: 'Bulk Training Upload' },
   ];
 
+  prefixArray: string[] = [];
+  prefixSet: boolean = false;
   validationErrors: any[] = [];
   invalidRowsData: any[] = [];
-
+  prefixes: string[] = ['Mr', 'Ms', 'Mrs', 'Dr', 'Prof'];
   uploadProgress = 0;
   errorCount = 0;
   errorRowCount = 0;
@@ -62,7 +71,16 @@ export class BulkTrainingUploadComponent implements OnInit {
 
   get paginatedData(): any[] {
     const startIndex = (this.currentPage - 1) * this.pageSize;
-    return this.excelData.slice(startIndex, startIndex + this.pageSize);
+    this.prefixArray = new Array(this.pageSize).fill('Mr');
+    const data = this.excelData.slice(startIndex, startIndex + this.pageSize);
+    if (this.prefixSet) {
+      return data;
+    }
+    data.forEach((item) => {
+      item.Name = `Mr ${item.Name}`;
+    });
+    this.prefixSet = true;
+    return data;
   }
 
   constructor(
@@ -70,7 +88,7 @@ export class BulkTrainingUploadComponent implements OnInit {
     private adminService: AdminService,
     private toastr: ToastrService,
     private route: ActivatedRoute,
-    private router: Router
+    private router: Router,
   ) {}
 
   ngOnInit(): void {
@@ -123,7 +141,7 @@ export class BulkTrainingUploadComponent implements OnInit {
       try {
         this.isLoadingSchedule = true;
         this.trainingScheduleUrl = await this.toBlobUrl(
-          this.trainingDetails.trainingScheduleDetail
+          this.trainingDetails.trainingScheduleDetail,
         );
       } catch (error) {
         console.error('Failed to load training schedule:', error);
@@ -135,81 +153,84 @@ export class BulkTrainingUploadComponent implements OnInit {
   }
 
   onFileSelected(file: File): void {
-  this.validationErrors = [];
-  this.invalidRowsData = [];
-  this.showValidationReport = false;
-  this.excelData = [];
-  this.headers = [];
-  this.currentPage = 1;
+    this.validationErrors = [];
+    this.invalidRowsData = [];
+    this.showValidationReport = false;
+    this.excelData = [];
+    this.headers = [];
+    this.currentPage = 1;
 
-  const reader: FileReader = new FileReader();
+    const reader: FileReader = new FileReader();
 
-  reader.onload = (e: any) => {
-    const bstr: string = e.target.result;
-    const workbook: XLSX.WorkBook = XLSX.read(bstr, { type: 'binary' });
-    const sheetName: string = workbook.SheetNames[0];
-    const worksheet: XLSX.WorkSheet = workbook.Sheets[sheetName];
+    reader.onload = (e: any) => {
+      const bstr: string = e.target.result;
+      const workbook: XLSX.WorkBook = XLSX.read(bstr, { type: 'binary' });
+      const sheetName: string = workbook.SheetNames[0];
+      const worksheet: XLSX.WorkSheet = workbook.Sheets[sheetName];
 
-    const data: any[] = XLSX.utils.sheet_to_json(worksheet, {
-      defval: '',
-      header: 1,
-    });
+      const data: any[] = XLSX.utils.sheet_to_json(worksheet, {
+        defval: '',
+        header: 1,
+      });
 
-    if (data.length > 0) {
-      this.headers = data[0];
+      if (data.length > 0) {
+        this.headers = data[0];
 
-      this.excelData = data
-        .slice(1)
-        .filter((row) => {
-          // Check if row has at least one non-empty cell
-          return row.some((cell: any) => {
-            return cell !== null && 
-                   cell !== undefined && 
-                   cell !== '' && 
-                   String(cell).trim() !== '';
+        this.excelData = data
+          .slice(1)
+          .filter((row) => {
+            // Check if row has at least one non-empty cell
+            return row.some((cell: any) => {
+              return (
+                cell !== null &&
+                cell !== undefined &&
+                cell !== '' &&
+                String(cell).trim() !== ''
+              );
+            });
+          })
+          .map((row) => {
+            const obj: any = {};
+
+            this.headers.forEach((h, i) => {
+              obj[h] = row[i] ?? '';
+            });
+
+            // Add photo fields safely
+            obj.photoPreview = null;
+            obj.photoId = null;
+
+            return obj;
           });
-        })
-        .map((row) => {
-          const obj: any = {};
 
-          this.headers.forEach((h, i) => {
-            obj[h] = row[i] ?? '';
+        const dobHeader = this.headers.find((h) =>
+          /dob|date of birth/i.test(h),
+        );
+
+        if (dobHeader) {
+          let ageHeader = this.headers.find((h) => /^age$/i.test(h));
+
+          if (!ageHeader) {
+            const genderIdx = this.headers.findIndex((h) => /gender/i.test(h));
+            const insertIdx =
+              genderIdx > -1 ? genderIdx + 1 : this.headers.length;
+            ageHeader = 'Age';
+            this.headers.splice(insertIdx, 0, ageHeader);
+          }
+
+          this.excelData = this.excelData.map((row) => {
+            const age = this.computeAgeFromDobString(row[dobHeader]);
+            return { ...row, [ageHeader]: age };
           });
-
-          // Add photo fields safely
-          obj.photoPreview = null;
-          obj.photoId = null;
-
-          return obj;
-        });
-
-      const dobHeader = this.headers.find((h) =>
-        /dob|date of birth/i.test(h)
-      );
-
-      if (dobHeader) {
-        let ageHeader = this.headers.find((h) => /^age$/i.test(h));
-
-        if (!ageHeader) {
-          const genderIdx = this.headers.findIndex((h) => /gender/i.test(h));
-          const insertIdx = genderIdx > -1 ? genderIdx + 1 : this.headers.length;
-          ageHeader = 'Age';
-          this.headers.splice(insertIdx, 0, ageHeader);
         }
-
-        this.excelData = this.excelData.map((row) => {
-          const age = this.computeAgeFromDobString(row[dobHeader]);
-          return { ...row, [ageHeader]: age };
-        });
       }
-    }
 
-    this.validateExcelData(this.excelData);
-  };
+      this.validateExcelData(this.excelData);
+    };
 
-  reader.readAsBinaryString(file);
-  this.selectedFile = file;
-}
+    reader.readAsBinaryString(file);
+    this.selectedFile = file;
+  }
 
   async generateTemplate() {
     const workbook = new ExcelJS.Workbook();
@@ -330,6 +351,14 @@ export class BulkTrainingUploadComponent implements OnInit {
     saveAs(blob, 'Excel_Template.xlsx');
   }
 
+  onRowPrefixSelected(event: any, row: any) {
+    const selectedPrefix = event.target.value;
+    console.log('current row name before update:', row.Name);
+    row.Name = selectedPrefix
+      ? `${selectedPrefix} ${row.Name || ''}`.trim()
+      : row.Name;
+    console.log('Updated name with prefix:', row.Name);
+  }
   onRowPhotoSelected(event: any, row: any) {
     const file: File = event.target.files[0];
     if (!file) return;
@@ -557,7 +586,7 @@ export class BulkTrainingUploadComponent implements OnInit {
           this.isSpinning = false;
           this.toastr.success(
             'Participants submitted successfully!',
-            'Success'
+            'Success',
           );
           this.router.navigate(['/admin/approvedrejectedTrainings']);
         },
@@ -582,6 +611,7 @@ export class BulkTrainingUploadComponent implements OnInit {
     this.uploadProgress = 0;
     this.excelData = [];
     this.showFileUpload = false;
+    this.prefixSet = false;
     setTimeout(() => {
       this.showFileUpload = true;
     }, 0);
@@ -624,7 +654,7 @@ export class BulkTrainingUploadComponent implements OnInit {
         .uploadTraineeExcel(
           this.selectedFile,
           trainingId,
-          this.trainingInstituteId
+          this.trainingInstituteId,
         )
         .subscribe({
           next: () => {

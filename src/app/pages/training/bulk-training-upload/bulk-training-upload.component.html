@@ -40,11 +40,15 @@
       </div>
       <div class="detail-item">
         <span class="label">{{ "Start Date" | translate }}:</span>
-        <span class="value">{{ trainingDetails?.startDate | date: 'dd-MM-yyyy' }}</span>
+        <span class="value">{{
+          trainingDetails?.startDate | date: "dd-MM-yyyy"
+        }}</span>
       </div>
       <div class="detail-item">
         <span class="label">{{ "End Date" | translate }}:</span>
-        <span class="value">{{ trainingDetails?.endDate | date: 'dd-MM-yyyy' }}</span>
+        <span class="value">{{
+          trainingDetails?.endDate | date: "dd-MM-yyyy"
+        }}</span>
       </div>
       <div class="detail-item">
         <span class="label">{{ "Duration" | translate }}:</span>
@@ -79,7 +83,9 @@
               {{ "View Schedule" | translate }}
             </a>
             <span
-              *ngIf="!trainingScheduleUrl && trainingDetails?.trainingScheduleDetail"
+              *ngIf="
+                !trainingScheduleUrl && trainingDetails?.trainingScheduleDetail
+              "
               class="text-danger"
             >
               {{ "Failed to Load" | translate }}
@@ -111,7 +117,9 @@
       <i class="bi bi-file-earmark-spreadsheet"></i>
       <div class="template-info">
         <h3>{{ "Download Excel Template" | translate }}</h3>
-        <p>{{ "Includes Mandatory fields and Validation Rules" | translate }}</p> 
+        <p>
+          {{ "Includes Mandatory fields and Validation Rules" | translate }}
+        </p>
         <button
           type="button"
           class="btn btn-success mt-2"
@@ -143,6 +151,7 @@
         <thead class="table-light">
           <tr>
             <th>Sl.no.</th>
+            <th>Honorifics</th>
             <th *ngFor="let col of headers">
               {{ col }}
             </th>
@@ -153,12 +162,26 @@
 
         <tbody>
           <tr *ngFor="let row of paginatedData; let i = index">
-            <td>{{i+1}}</td>
-            
+            <td>{{ i + 1 }}</td>
+
+            <td style="width: 100px; min-width: 80px; text-align: center">
+              <!-- Prefix dropdown -->
+              <select
+                class="form-select form-select-sm mb-2"
+                aria-label="Title prefix"
+                [(ngModel)]="prefixArray[i]"
+                (change)="onRowPrefixSelected($event, row)"
+              >
+                <option *ngFor="let p of prefixes" [value]="p">
+                  {{ p }}
+                </option>
+              </select>
+            </td>
+
             <td *ngFor="let col of headers">
               {{ row[col] }}
             </td>
-            <td style="width: 200px;min-width: 220px; text-align: center">
+            <td style="width: 200px; min-width: 220px; text-align: center">
               <input
                 type="file"
                 accept="image/*"

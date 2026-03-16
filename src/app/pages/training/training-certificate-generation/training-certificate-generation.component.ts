@@ -9,7 +9,7 @@ import {
   Validators,
   AbstractControl,
   ValidationErrors,
-  FormArray
+  FormArray,
 } from '@angular/forms';
 import { SchemeService } from '../../training/services/scheme.service';
 import { TrainingService } from '../../../pages/training/services/training.service';
@@ -34,7 +34,6 @@ import {
   ImageCropperModalComponent,
 } from '../../../components/image-cropper-modal/image-cropper-modal.component';
 
-
 @Component({
   selector: 'app-training-certificate-generation',
   standalone: true,
@@ -47,7 +46,7 @@ import {
     TranslateModule,
     MultiSelectDropdownComponent,
     LatestCertificateLayoutComponent,
-    ImageCropperModalComponent
+    ImageCropperModalComponent,
   ],
   templateUrl: './training-certificate-generation.component.html',
   styleUrl: './training-certificate-generation.component.css',
@@ -169,7 +168,7 @@ export class TrainingCertificateGenerationComponent implements OnInit {
       if (u.protocol === 'http:' || u.protocol === 'https:') {
         return path;
       }
-    } catch { }
+    } catch {}
     if (path.startsWith('/')) {
       return `${this.apiUrl}${path.replace(/^\/+/, '')}`;
     }
@@ -200,7 +199,11 @@ export class TrainingCertificateGenerationComponent implements OnInit {
   }
 
   positiveDurationValidator(control: AbstractControl): ValidationErrors | null {
-    if (control.value === null || control.value === undefined || control.value === '') {
+    if (
+      control.value === null ||
+      control.value === undefined ||
+      control.value === ''
+    ) {
       return null; // Let required validator handle empty values
     }
 
@@ -223,7 +226,9 @@ export class TrainingCertificateGenerationComponent implements OnInit {
       const currentErrors = endCtrl?.errors || null;
       if (currentErrors && currentErrors['endBeforeStart']) {
         delete currentErrors['endBeforeStart'];
-        endCtrl?.setErrors(Object.keys(currentErrors).length ? currentErrors : null);
+        endCtrl?.setErrors(
+          Object.keys(currentErrors).length ? currentErrors : null,
+        );
       }
       return null;
     }
@@ -243,7 +248,9 @@ export class TrainingCertificateGenerationComponent implements OnInit {
     const currentErrors = endCtrl?.errors || null;
     if (currentErrors && currentErrors['endBeforeStart']) {
       delete currentErrors['endBeforeStart'];
-      endCtrl?.setErrors(Object.keys(currentErrors).length ? currentErrors : null);
+      endCtrl?.setErrors(
+        Object.keys(currentErrors).length ? currentErrors : null,
+      );
     }
 
     return null;
@@ -257,7 +264,7 @@ export class TrainingCertificateGenerationComponent implements OnInit {
     private locationService: LocationService,
     private trainingService: TrainingService,
     private route: ActivatedRoute,
-    private adminService: AdminService
+    private adminService: AdminService,
   ) {
     this.trainingForm = this.fb.group(
       {
@@ -282,12 +289,12 @@ export class TrainingCertificateGenerationComponent implements OnInit {
         trainingType: ['', Validators.required],
         modeOfTraining: ['', Validators.required],
         trainingRegion: ['D', Validators.required],
-        dateRanges: this.fb.array([], [
-          Validators.required,
-          Validators.minLength(1),
-        ]),
+        dateRanges: this.fb.array(
+          [],
+          [Validators.required, Validators.minLength(1)],
+        ),
       },
-      { validators: [this.noOverlapValidator.bind(this)] }
+      { validators: [this.noOverlapValidator.bind(this)] },
     );
   }
   ngOnInit() {
@@ -325,12 +332,14 @@ export class TrainingCertificateGenerationComponent implements OnInit {
     // Trainer names are now written by the dropdown via ControlValueAccessor
     const guestTrainerControl = this.trainingForm.get('guestTrainerName');
     // Detect if "Other" is among selected trainers
-    const hasOther = Array.isArray(selectedTrainers) && selectedTrainers.some((t: any) => {
-      if (t && typeof t === 'object') {
-        return t.name === 'Other' || t.trainerName === 'Other';
-      }
-      return t === 'Other';
-    });
+    const hasOther =
+      Array.isArray(selectedTrainers) &&
+      selectedTrainers.some((t: any) => {
+        if (t && typeof t === 'object') {
+          return t.name === 'Other' || t.trainerName === 'Other';
+        }
+        return t === 'Other';
+      });
 
     this.showGuestTrainerField = !!hasOther;
 
@@ -390,8 +399,8 @@ export class TrainingCertificateGenerationComponent implements OnInit {
             this.trainingDetails.trainingRegion === 'IN'
               ? 'F'
               : this.trainingDetails.trainingRegion === 'BH'
-              ? 'D'
-              : this.trainingDetails.trainingRegion || 'D',
+                ? 'D'
+                : this.trainingDetails.trainingRegion || 'D',
         });
 
         // Clear existing date ranges and repopulate with top-level dates from API
@@ -424,16 +433,17 @@ export class TrainingCertificateGenerationComponent implements OnInit {
               designation: s.signatoryDesignation,
               organization: s.signatoryOrganization,
               signatorySignaturePath: s.signatorySignaturePath,
-            })
+            }),
           );
 
-          this.mySelectedFile = this.trainingDetails.signatures.map(
-            (s: any) => this.buildLogoUrl(s.signatorySignaturePath)
+          this.mySelectedFile = this.trainingDetails.signatures.map((s: any) =>
+            this.buildLogoUrl(s.signatorySignaturePath),
           );
         }
 
         if (this.trainingDetails.trainingScheduleDetail) {
-          this.existingTrainingSchedulePath = this.trainingDetails.trainingScheduleDetail;
+          this.existingTrainingSchedulePath =
+            this.trainingDetails.trainingScheduleDetail;
         }
 
         this.mySelectedLogo = [
@@ -452,14 +462,15 @@ export class TrainingCertificateGenerationComponent implements OnInit {
     if (this.trainingDetails && this.instituteNames) {
       const selectedInstitute = this.instituteNames.find(
         (institute: any) =>
-          institute.id === this.trainingDetails.trainingInstituteId
+          institute.id === this.trainingDetails.trainingInstituteId,
       );
 
       if (selectedInstitute) {
         this.trainingForm.patchValue({
           trainingInstituteName: selectedInstitute,
         });
-        this.selectedTrainingInstituteName = selectedInstitute.trainingInstituteName;
+        this.selectedTrainingInstituteName =
+          selectedInstitute.trainingInstituteName;
         this.selectedTrainingInstituteId = selectedInstitute.id;
       } else {
         // If institute not found in list, create a temporary object
@@ -470,7 +481,8 @@ export class TrainingCertificateGenerationComponent implements OnInit {
         this.trainingForm.patchValue({
           trainingInstituteName: tempInstitute,
         });
-        this.selectedTrainingInstituteName = tempInstitute.trainingInstituteName;
+        this.selectedTrainingInstituteName =
+          tempInstitute.trainingInstituteName;
         this.selectedTrainingInstituteId = tempInstitute.id;
       }
     }
@@ -496,12 +508,16 @@ export class TrainingCertificateGenerationComponent implements OnInit {
           return;
         }
 
-        if (Array.isArray(this.instituteNames) && this.instituteNames.length === 1) {
+        if (
+          Array.isArray(this.instituteNames) &&
+          this.instituteNames.length === 1
+        ) {
           const defaultInstitute = this.instituteNames[0];
           this.trainingForm.patchValue({
             trainingInstituteName: defaultInstitute,
           });
-          this.selectedTrainingInstituteName = defaultInstitute.trainingInstituteName;
+          this.selectedTrainingInstituteName =
+            defaultInstitute.trainingInstituteName;
           this.selectedTrainingInstituteId = defaultInstitute.id;
         }
       },
@@ -537,7 +553,10 @@ export class TrainingCertificateGenerationComponent implements OnInit {
     } else {
       this.signatures[index].file = null;
     }
-    if (typeof this.mySelectedFile[index] === 'string' && this.mySelectedFile[index].startsWith('blob:')) {
+    if (
+      typeof this.mySelectedFile[index] === 'string' &&
+      this.mySelectedFile[index].startsWith('blob:')
+    ) {
       URL.revokeObjectURL(this.mySelectedFile[index]);
     }
     this.mySelectedFile[index] = '';
@@ -549,7 +568,10 @@ export class TrainingCertificateGenerationComponent implements OnInit {
     } else {
       this.logos[index].file = null;
     }
-    if (typeof this.mySelectedLogo[index] === 'string' && this.mySelectedLogo[index].startsWith('blob:')) {
+    if (
+      typeof this.mySelectedLogo[index] === 'string' &&
+      this.mySelectedLogo[index].startsWith('blob:')
+    ) {
       URL.revokeObjectURL(this.mySelectedLogo[index]);
     }
     this.mySelectedLogo[index] = '';
@@ -575,7 +597,7 @@ export class TrainingCertificateGenerationComponent implements OnInit {
     const croppedFile = new File(
       [event.blob],
       this.createCroppedFileName(this.cropperOriginalFileName, mimeType),
-      { type: mimeType }
+      { type: mimeType },
     );
 
     if (this.populate === 'true') {
@@ -595,9 +617,17 @@ export class TrainingCertificateGenerationComponent implements OnInit {
     }
 
     if (this.cropperTargetType === 'signature') {
-      this.setCroppedPreview(this.mySelectedFile, this.cropperTargetIndex, event.previewUrl);
+      this.setCroppedPreview(
+        this.mySelectedFile,
+        this.cropperTargetIndex,
+        event.previewUrl,
+      );
     } else {
-      this.setCroppedPreview(this.mySelectedLogo, this.cropperTargetIndex, event.previewUrl);
+      this.setCroppedPreview(
+        this.mySelectedLogo,
+        this.cropperTargetIndex,
+        event.previewUrl,
+      );
     }
 
     this.showImageCropper = false;
@@ -613,7 +643,8 @@ export class TrainingCertificateGenerationComponent implements OnInit {
   }
 
   private createCroppedFileName(originalFileName: string, mimeType: string) {
-    const baseName = originalFileName.replace(/\.[^/.]+$/, '') || 'certificate-image';
+    const baseName =
+      originalFileName.replace(/\.[^/.]+$/, '') || 'certificate-image';
     if (mimeType.includes('jpeg') || mimeType.includes('jpg')) {
       return `${baseName}-cropped.jpg`;
     }
@@ -693,7 +724,11 @@ export class TrainingCertificateGenerationComponent implements OnInit {
     this.adminService.getTrainersByTrainingHead(trainingHeadId).subscribe({
       next: (response) => {
         console.log('API Response:', response);
-        this.trainers = response.data.map((trainer: any) => ({ id: trainer.id, name: trainer.trainerName })) || [];
+        this.trainers =
+          response.data.map((trainer: any) => ({
+            id: trainer.id,
+            name: trainer.trainerName,
+          })) || [];
         console.log('Assigned Trainers:', this.trainers);
         this.isLoadingTrainers = false;
       },
@@ -721,7 +756,7 @@ export class TrainingCertificateGenerationComponent implements OnInit {
 
   onTrainingInstituteChange() {
     const selectedInstitute = this.trainingForm.get(
-      'trainingInstituteName'
+      'trainingInstituteName',
     )?.value;
     if (!selectedInstitute) {
       this.selectedTrainingInstituteName = null;
@@ -800,14 +835,15 @@ export class TrainingCertificateGenerationComponent implements OnInit {
     }
 
     if (this.selectedTrainers.length > 0) {
-      data['trainerId'] = this.selectedTrainers.map(t => t.id).join(',');
-      data['trainerName'] = this.selectedTrainers.map(t => t.name).join(', ');
+      data['trainerId'] = this.selectedTrainers.map((t) => t.id).join(',');
+      data['trainerName'] = this.selectedTrainers.map((t) => t.name).join(', ');
     } else {
       data['trainerId'] = null;
       data['trainerName'] = null;
     }
     delete data['guestTrainerName'];
     // alert('coming to : ' + this.populate);
+
     if (this.populate == 'true') {
       // alert('coming here !!');
       data['id'] = this.trainingId;
@@ -834,6 +870,7 @@ export class TrainingCertificateGenerationComponent implements OnInit {
         }
       });
 
+      console.log('Logos to upload:', this.logosNew);
       this.logosNew.forEach((item, index) => {
         if (item && item.file) {
           payload.append(`logos${index + 1}`, item.file); // logos1, logos2, logos3
@@ -851,7 +888,7 @@ export class TrainingCertificateGenerationComponent implements OnInit {
         next: (response) => {
           this.toastr.success(
             'Training Details Updated Successfully!',
-            'Success'
+            'Success',
           );
           const trainingId = response.data.id;
           this.router.navigate(['/admin/approvedrejectedTrainings'], {
@@ -878,19 +915,23 @@ export class TrainingCertificateGenerationComponent implements OnInit {
         data['signatories'] = signatories;
       }
 
-      const logos = [0, 1, 2]
-        .map((i) =>
-          this.logos[i] && this.logos[i].file ? this.logos[i].file : null
-        )
-        .filter((file) => file !== null);
+      const logos: (File | null)[] = [0, 1, 2].map((i) =>
+        this.logos[i] && this.logos[i].file ? this.logos[i].file : null,
+      );
 
-      if (logos.length > 0) {
-        logos.forEach((logo) => {
-          payload.append('logos', logo);
-        });
-      }
+      const [logoLeft, logoCenter, logoRight] = logos;
+
+      payload.append('logoLeft', logoLeft instanceof File ? logoLeft : '');
+      payload.append(
+        'logoCenter',
+        logoCenter instanceof File ? logoCenter : '',
+      );
+      payload.append('logoRight', logoRight instanceof File ? logoRight : '');
+      payload.append('logos', '');
 
       payload.append('data', JSON.stringify(data));
+
+      this.logFormData(payload, 'Outgoing payload');
 
       this.signatures.forEach((item) => {
         if (item.file) {
@@ -907,7 +948,7 @@ export class TrainingCertificateGenerationComponent implements OnInit {
         next: (response) => {
           this.toastr.success(
             'Training Details Saved Successfully!',
-            'Success'
+            'Success',
           );
           const trainingId = response.data.id;
           this.router.navigate(['/admin/approvedrejectedTrainings'], {
@@ -923,10 +964,27 @@ export class TrainingCertificateGenerationComponent implements OnInit {
     }
   }
 
+  logFormData(fd: FormData, title = 'FormData payload') {
+    console.group(title);
+    for (const [key, value] of fd.entries()) {
+      if (value instanceof File) {
+        console.log(
+          `${key}: [File] name="${value.name}", type="${value.type}", size=${value.size}B`,
+        );
+      } else {
+        console.log(`${key}: "${value}"`);
+      }
+    }
+    console.groupEnd();
+  }
+
   openPreview() {
     if (this.trainingForm.invalid) {
       this.trainingForm.markAllAsTouched();
-      this.toastr.error('Please fill all required fields before previewing', 'Error');
+      this.toastr.error(
+        'Please fill all required fields before previewing',
+        'Error',
+      );
       return;
     }
 
@@ -957,13 +1015,15 @@ export class TrainingCertificateGenerationComponent implements OnInit {
 
     if (ranges.length > 0) {
       const sorted = [...ranges].sort(
-        (a, b) => new Date(a.start).getTime() - new Date(b.start).getTime()
+        (a, b) => new Date(a.start).getTime() - new Date(b.start).getTime(),
       );
       startDate = sorted[0].start;
       endDate = sorted[sorted.length - 1].end;
     }
 
-    const instituteControl = this.trainingForm.get('trainingInstituteName')?.value;
+    const instituteControl = this.trainingForm.get(
+      'trainingInstituteName',
+    )?.value;
     const trainingInstituteName =
       instituteControl?.trainingInstituteName ||
       this.selectedTrainingInstituteName ||
@@ -980,7 +1040,7 @@ export class TrainingCertificateGenerationComponent implements OnInit {
           (sig.file || sig.signatorySignaturePath) &&
           sig.name &&
           sig.designation &&
-          sig.organization
+          sig.organization,
       )
       .slice(0, 2)
       .map((sig) => {
@@ -1042,7 +1102,7 @@ export class TrainingCertificateGenerationComponent implements OnInit {
       this.previewBlobUrls.forEach((url) => {
         try {
           URL.revokeObjectURL(url);
-        } catch { }
+        } catch {}
       });
       this.previewBlobUrls = [];
     }
@@ -1130,15 +1190,18 @@ export class TrainingCertificateGenerationComponent implements OnInit {
 
     if (this.populate === 'true') {
       const instituteHeadSignature =
-        this.signaturesNew[0]?.file || this.signaturesNew[0]?.signatorySignaturePath;
+        this.signaturesNew[0]?.file ||
+        this.signaturesNew[0]?.signatorySignaturePath;
       if (!instituteHeadSignature) {
-        this.signatureValidationError = "Institute Head's signature is required";
+        this.signatureValidationError =
+          "Institute Head's signature is required";
         return false;
       }
     } else {
       const instituteHeadSignature = this.signatures[0]?.file;
       if (!instituteHeadSignature) {
-        this.signatureValidationError = "Institute Head's signature is required";
+        this.signatureValidationError =
+          "Institute Head's signature is required";
         return false;
       }
     }
@@ -1182,8 +1245,7 @@ export class TrainingCertificateGenerationComponent implements OnInit {
 
     if (this.populate === 'true') {
       const centerHasLogo =
-        (this.logosNew[1] && this.logosNew[1].file) ||
-        !!this.mySelectedLogo[1];
+        (this.logosNew[1] && this.logosNew[1].file) || !!this.mySelectedLogo[1];
 
       if (!centerHasLogo) {
         this.logoValidationError = 'Center logo is required';
@@ -1200,12 +1262,14 @@ export class TrainingCertificateGenerationComponent implements OnInit {
     return true;
   }
 
-
   get dateRanges(): FormArray {
     return this.trainingForm.get('dateRanges') as FormArray;
   }
 
-  private createDateRangeGroup(startDate?: string, endDate?: string): FormGroup {
+  private createDateRangeGroup(
+    startDate?: string,
+    endDate?: string,
+  ): FormGroup {
     return this.fb.group(
       {
         startDate: [
@@ -1214,7 +1278,7 @@ export class TrainingCertificateGenerationComponent implements OnInit {
         ],
         endDate: [endDate || '', Validators.required],
       },
-      { validators: [this.endDateAfterStartValidator.bind(this)] }
+      { validators: [this.endDateAfterStartValidator.bind(this)] },
     );
   }
 
@@ -1278,7 +1342,10 @@ export class TrainingCertificateGenerationComponent implements OnInit {
     }
   }
 
-  private clearControlError(control: AbstractControl | null, key: string): void {
+  private clearControlError(
+    control: AbstractControl | null,
+    key: string,
+  ): void {
     if (!control || !control.errors) return;
     const { [key]: removed, ...rest } = control.errors;
     control.setErrors(Object.keys(rest).length ? rest : null);
