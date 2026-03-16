@@ -92,6 +92,14 @@ export class LatestCertificateLayoutComponent implements OnInit, OnChanges {
     return `${this.certificateUrl}verify-certificate?uin=${this.finalUniqueId}`;
   }
 
+  get rightSignatureTitle(): string {
+    const instituteType = (this.data?.instituteType || '').toString().trim().toLowerCase();
+    if (instituteType === 'other organizations') {
+      return 'Other Organization Head Signature';
+    }
+    return 'State Head Signature';
+  }
+
   // Determine a valid trainee photo URL from possible API fields
   get validPhotoUrl(): string | null {
     const candidates: Array<string | undefined> = [
