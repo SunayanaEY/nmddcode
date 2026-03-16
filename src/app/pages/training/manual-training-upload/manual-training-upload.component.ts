@@ -52,6 +52,7 @@ export class ManualTrainingUploadComponent implements OnInit {
   participants: Participant[] = [];
   editingIndex: number = -1;
   alphabetError: boolean = false;
+  selectedPrefix: string = '';
   // aadharError: boolean = false;
   emailError: boolean = false;
   selectedParticipant: Participant | null = null;
@@ -98,7 +99,7 @@ export class ManualTrainingUploadComponent implements OnInit {
     private adminService: AdminService,
     private toastr: ToastrService,
     private route: ActivatedRoute,
-    private router: Router
+    private router: Router,
   ) {
     this.initializeForm();
   }
@@ -134,7 +135,6 @@ export class ManualTrainingUploadComponent implements OnInit {
   //   this.getTrainingDetails(this.trainingId);
   // }
 
-
   initializeForm(): void {
     this.participantForm = this.fb.group({
       name: [
@@ -155,6 +155,8 @@ export class ManualTrainingUploadComponent implements OnInit {
           Validators.pattern(/^[0-9]+$/),
         ],
       ],
+      prefix: ['Mr', Validators.required],
+
       gender: ['', Validators.required],
       contactNumber: [
         '',
@@ -236,7 +238,7 @@ export class ManualTrainingUploadComponent implements OnInit {
           this.isSpinning = false;
           this.toastr.error(
             'Failed to upload trainee image. Try again !',
-            'Error'
+            'Error',
           );
         },
       });
@@ -282,7 +284,7 @@ export class ManualTrainingUploadComponent implements OnInit {
       try {
         this.isLoadingSchedule = true;
         this.trainingScheduleUrl = await this.toBlobUrl(
-          this.trainingDetails.trainingScheduleDetail
+          this.trainingDetails.trainingScheduleDetail,
         );
       } catch (error) {
         console.error('Failed to load training schedule:', error);
@@ -326,8 +328,9 @@ export class ManualTrainingUploadComponent implements OnInit {
       const formValue = this.participantForm.getRawValue();
 
       // Mask sensitive data for display
+      this.selectedPrefix = formValue.prefix;
       const participant: Participant = {
-        name: formValue.name,
+        name: `${formValue.prefix} ${formValue.name}`.trim(),
         age: formValue.age,
         gender: formValue.gender,
         contactNumber: this.maskContactNumber(formValue.contactNumber),
@@ -359,7 +362,7 @@ export class ManualTrainingUploadComponent implements OnInit {
       const formValue = this.participantForm.getRawValue();
 
       const updatedParticipant: Participant = {
-        name: formValue.name,
+        name: `${formValue.prefix} ${formValue.name}`.trim(),
         age: formValue.age,
         gender: formValue.gender,
         contactNumber: this.maskContactNumber(formValue.contactNumber),
@@ -429,6 +432,22 @@ export class ManualTrainingUploadComponent implements OnInit {
     }
   }
 
+  getNameOnly(fullName: string): string {
+    const ALLOWED_PREFIXES = new Set(['Mr', 'Ms', 'Mrs', 'Dr', 'Prof']);
+    if (!fullName) return '';
+    const trimmed = fullName.trim();
+
+    // Split only once on the first space
+    const firstSpace = trimmed.indexOf(' ');
+    if (firstSpace === -1) return trimmed; // no space → no prefix to remove
+
+    const firstToken = trimmed.slice(0, firstSpace);
+    const rest = trimmed.slice(firstSpace + 1).trim();
+
+    // If the first token is a known prefix, drop it; otherwise keep the full name
+    return ALLOWED_PREFIXES.has(firstToken) ? rest : trimmed;
+  }
+
   editParticipant(index: number): void {
     this.editingIndex = index;
     const participant = this.participants[index];
@@ -438,7 +457,8 @@ export class ManualTrainingUploadComponent implements OnInit {
     this.openAddModal(true);
 
     this.participantForm.patchValue({
-      name: participant.name,
+      prefix: this.selectedPrefix,
+      name: this.getNameOnly(participant.name),
       age: participant.age,
       dob: participant.dob,
       gender: participant.gender,

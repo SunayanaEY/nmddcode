@@ -13,11 +13,18 @@ import { TrainingService } from '../../../pages/training/services/training.servi
 import { AdminService } from '../services/training-admin.service';
 import { saveAs } from 'file-saver';
 import { TranslateModule } from '@ngx-translate/core';
+import { FormsModule } from '@angular/forms';
 
 @Component({
   selector: 'app-bulk-training-upload',
   standalone: true,
-  imports: [CommonModule, BreadcrumbComponent, FileUploadComponent, TranslateModule],
+  imports: [
+    CommonModule,
+    BreadcrumbComponent,
+    FileUploadComponent,
+    TranslateModule,
+    FormsModule,
+  ],
   templateUrl: './bulk-training-upload.component.html',
   styleUrl: './bulk-training-upload.component.css',
 })
@@ -31,9 +38,11 @@ export class BulkTrainingUploadComponent implements OnInit {
     { label: 'Bulk Training Upload' },
   ];
 
+  prefixArray: string[] = [];
+  prefixSet: boolean = false;
   validationErrors: any[] = [];
   invalidRowsData: any[] = [];
-
+  prefixes: string[] = ['Mr', 'Ms', 'Mrs', 'Dr', 'Prof'];
   uploadProgress = 0;
   errorCount = 0;
   errorRowCount = 0;
@@ -62,7 +71,16 @@ export class BulkTrainingUploadComponent implements OnInit {
 
   get paginatedData(): any[] {
     const startIndex = (this.currentPage - 1) * this.pageSize;
-    return this.excelData.slice(startIndex, startIndex + this.pageSize);
+    this.prefixArray = new Array(this.pageSize).fill('Mr');
+    const data = this.excelData.slice(startIndex, startIndex + this.pageSize);
+    if (this.prefixSet) {
+      return data;
+    }
+    data.forEach((item) => {
+      item.Name = `Mr ${item.Name}`;
+    });
+    this.prefixSet = true;
+    return data;
   }
 
   constructor(
@@ -70,7 +88,7 @@ export class BulkTrainingUploadComponent implements OnInit {
     private adminService: AdminService,
     private toastr: ToastrService,
     private route: ActivatedRoute,
-    private router: Router
+    private router: Router,
   ) {}
 
   ngOnInit(): void {
@@ -123,7 +141,7 @@ export class BulkTrainingUploadComponent implements OnInit {
       try {
         this.isLoadingSchedule = true;
         this.trainingScheduleUrl = await this.toBlobUrl(
-          this.trainingDetails.trainingScheduleDetail
+          this.trainingDetails.trainingScheduleDetail,
         );
       } catch (error) {
         console.error('Failed to load training schedule:', error);
@@ -135,82 +153,203 @@ export class BulkTrainingUploadComponent implements OnInit {
   }
 
   onFileSelected(file: File): void {
-  this.validationErrors = [];
-  this.invalidRowsData = [];
-  this.showValidationReport = false;
-  this.excelData = [];
-  this.headers = [];
-  this.currentPage = 1;
+    this.validationErrors = [];
+    this.invalidRowsData = [];
+    this.showValidationReport = false;
+    this.excelData = [];
+    this.headers = [];
+    this.currentPage = 1;
 
-  const reader: FileReader = new FileReader();
+    const reader: FileReader = new FileReader();
 
-  reader.onload = (e: any) => {
-    const bstr: string = e.target.result;
-    const workbook: XLSX.WorkBook = XLSX.read(bstr, { type: 'binary' });
-    const sheetName: string = workbook.SheetNames[0];
-    const worksheet: XLSX.WorkSheet = workbook.Sheets[sheetName];
+    reader.onload = (e: any) => {
+      const bstr: string = e.target.result;
+      const workbook: XLSX.WorkBook = XLSX.read(bstr, { type: 'binary' });
+      const sheetName: string = workbook.SheetNames[0];
+      const worksheet: XLSX.WorkSheet = workbook.Sheets[sheetName];
 
-    const data: any[] = XLSX.utils.sheet_to_json(worksheet, {
-      defval: '',
-      header: 1,
-    });
+      const data: any[] = XLSX.utils.sheet_to_json(worksheet, {
+        defval: '',
+        header: 1,
+      });
 
-    if (data.length > 0) {
-      this.headers = data[0];
+      if (data.length > 0) {
+        this.headers = data[0];
 
-      this.excelData = data
-        .slice(1)
-        .filter((row) => {
-          // Check if row has at least one non-empty cell
-          return row.some((cell: any) => {
-            return cell !== null && 
-                   cell !== undefined && 
-                   cell !== '' && 
-                   String(cell).trim() !== '';
+        this.excelData = data
+          .slice(1)
+          .filter((row) => {
+            // Check if row has at least one non-empty cell
+            return row.some((cell: any) => {
+              return (
+                cell !== null &&
+                cell !== undefined &&
+                cell !== '' &&
+                String(cell).trim() !== ''
+              );
+            });
+          })
+          .map((row) => {
+            const obj: any = {};
+
+            this.headers.forEach((h, i) => {
+              obj[h] = row[i] ?? '';
+            });
+
+            // Add photo fields safely
+            obj.photoPreview = null;
+            obj.photoId = null;
+
+            return obj;
           });
-        })
-        .map((row) => {
-          const obj: any = {};
 
-          this.headers.forEach((h, i) => {
-            obj[h] = row[i] ?? '';
+        const dobHeader = this.headers.find((h) =>
+          /dob|date of birth/i.test(h),
+        );
+
+        if (dobHeader) {
+          let ageHeader = this.headers.find((h) => /^age$/i.test(h));
+
+          if (!ageHeader) {
+            const genderIdx = this.headers.findIndex((h) => /gender/i.test(h));
+            const insertIdx =
+              genderIdx > -1 ? genderIdx + 1 : this.headers.length;
+            ageHeader = 'Age';
+            this.headers.splice(insertIdx, 0, ageHeader);
+          }
+
+          this.excelData = this.excelData.map((row) => {
+            const age = this.computeAgeFromDobString(row[dobHeader]);
+            return { ...row, [ageHeader]: age };
           });
-
-          // Add photo fields safely
-          obj.photoPreview = null;
-          obj.photoId = null;
-
-          return obj;
-        });
-
-      const dobHeader = this.headers.find((h) =>
-        /dob|date of birth/i.test(h)
-      );
-
-      if (dobHeader) {
-        let ageHeader = this.headers.find((h) => /^age$/i.test(h));
-
-        if (!ageHeader) {
-          const genderIdx = this.headers.findIndex((h) => /gender/i.test(h));
-          const insertIdx = genderIdx > -1 ? genderIdx + 1 : this.headers.length;
-          ageHeader = 'Age';
-          this.headers.splice(insertIdx, 0, ageHeader);
         }
-
-        this.excelData = this.excelData.map((row) => {
-          const age = this.computeAgeFromDobString(row[dobHeader]);
-          return { ...row, [ageHeader]: age };
-        });
       }
-    }
 
-    this.validateExcelData(this.excelData);
-  };
+      this.validateExcelData(this.excelData);
+    };
 
-  reader.readAsBinaryString(file);
-  this.selectedFile = file;
-}
+    reader.readAsBinaryString(file);
+    this.selectedFile = file;
+  }
 
+  // async generateTemplate() {
+  //   const workbook = new ExcelJS.Workbook();
+  //   const worksheet = workbook.addWorksheet('User Data');
+
+  //   const MAX_ROWS = 1000;
+
+  //   // Define headers
+  //   worksheet.columns = [
+  //     { header: 'Name', key: 'name', width: 20 },
+  //     { header: 'Gender', key: 'gender', width: 12 },
+  //     { header: 'Contact Number', key: 'contact', width: 18 },
+  //     { header: "Father's Name", key: 'fatherName', width: 20 },
+  //     { header: 'Email', key: 'email', width: 25 },
+  //     { header: 'Date of Birth (dd-MM-yyyy)', key: 'dob', width: 25 },
+  //     { header: 'Category (GN, OBC, SC, ST)', key: 'category', width: 25 },
+  //     { header: 'Educational Qualification', key: 'education', width: 30 },
+  //     {
+  //       header: 'Recommended by (Organization)',
+  //       key: 'recommendedBy',
+  //       width: 30,
+  //     },
+  //   ];
+
+  //   worksheet.getRow(1).font = { bold: true };
+  //   worksheet.getRow(1).fill = {
+  //     type: 'pattern',
+  //     pattern: 'solid',
+  //     fgColor: { argb: 'FFD3D3D3' },
+  //   };
+
+  //   for (let i = 2; i <= MAX_ROWS; i++) {
+  //     worksheet.addRow({});
+  //   }
+
+  //   for (let row = 2; row <= MAX_ROWS; row++) {
+  //     worksheet.getCell(`B${row}`).dataValidation = {
+  //       type: 'list',
+  //       allowBlank: false,
+  //       formulae: ['"Male,Female,Others"'],
+  //       showErrorMessage: true,
+  //       errorStyle: 'error',
+  //       errorTitle: 'Invalid Gender',
+  //       error: 'Please select from the dropdown: Male, Female, or Others',
+  //     };
+
+  //     // ✅ Contact Number Validation (Column C)
+  //     worksheet.getCell(`C${row}`).dataValidation = {
+  //       type: 'custom',
+  //       allowBlank: false,
+  //       formulae: [
+  //         `AND(LEN(C${row})=10,ISNUMBER(VALUE(C${row})),VALUE(C${row})>=1000000000,VALUE(C${row})<=9999999999)`,
+  //       ],
+  //       showErrorMessage: true,
+  //       errorStyle: 'error',
+  //       errorTitle: 'Invalid Contact Number',
+  //       error: 'Contact number must be exactly 10 digits',
+  //     };
+
+  //     worksheet.getCell(`C${row}`).numFmt = '@';
+
+  //     // ✅ Email Validation (Column E)
+  //     worksheet.getCell(`E${row}`).dataValidation = {
+  //       type: 'custom',
+  //       allowBlank: false,
+  //       formulae: [
+  //         `AND(ISNUMBER(SEARCH("@",E${row})),ISNUMBER(SEARCH(".",E${row})),LEN(E${row})>5)`,
+  //       ],
+  //       showErrorMessage: true,
+  //       errorStyle: 'error',
+  //       errorTitle: 'Invalid Email',
+  //       error: 'Please enter a valid email',
+  //     };
+
+  //     // ✅ DOB Validation as TEXT (Column F)
+  //     worksheet.getCell(`F${row}`).dataValidation = {
+  //       type: 'custom',
+  //       allowBlank: false,
+  //       formulae: [
+  //         `AND(
+  //         LEN(F${row})=10,
+  //         MID(F${row},3,1)="-",
+  //         MID(F${row},6,1)="-",
+  //         VALUE(LEFT(F${row},2))>=1,
+  //         VALUE(LEFT(F${row},2))<=31,
+  //         VALUE(MID(F${row},4,2))>=1,
+  //         VALUE(MID(F${row},4,2))<=12,
+  //         VALUE(RIGHT(F${row},4))>=1910,
+  //         VALUE(RIGHT(F${row},4))<=2100
+  //       )`,
+  //       ],
+  //       showErrorMessage: true,
+  //       errorStyle: 'error',
+  //       errorTitle: 'Invalid Date Format',
+  //       error: 'Use dd-MM-yyyy between year 1910–2100',
+  //     };
+
+  //     worksheet.getCell(`F${row}`).numFmt = '@';
+
+  //     // ✅ Category Dropdown (Column G)
+  //     worksheet.getCell(`G${row}`).dataValidation = {
+  //       type: 'list',
+  //       allowBlank: false,
+  //       formulae: ['"GN,OBC,SC,ST"'],
+  //       showErrorMessage: true,
+  //       errorStyle: 'error',
+  //       errorTitle: 'Invalid Category',
+  //       error: 'Select GN, OBC, SC, or ST',
+  //     };
+  //   }
+
+  //   // ✅ Generate Excel file
+  //   const buffer = await workbook.xlsx.writeBuffer();
+  //   const blob = new Blob([buffer], {
+  //     type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+  //   });
+
+  //   saveAs(blob, 'Excel_Template.xlsx');
+  // }
   async generateTemplate() {
     const workbook = new ExcelJS.Workbook();
     const worksheet = workbook.addWorksheet('User Data');
@@ -224,7 +363,12 @@ export class BulkTrainingUploadComponent implements OnInit {
       { header: 'Contact Number', key: 'contact', width: 18 },
       { header: "Father's Name", key: 'fatherName', width: 20 },
       { header: 'Email', key: 'email', width: 25 },
-      { header: 'Date of Birth (dd-MM-yyyy)', key: 'dob', width: 25 },
+      // 🔁 Updated header to reflect both allowed formats
+      {
+        header: 'Date of Birth (dd-MM-yyyy or dd/MM/yyyy)',
+        key: 'dob',
+        width: 30,
+      },
       { header: 'Category (GN, OBC, SC, ST)', key: 'category', width: 25 },
       { header: 'Educational Qualification', key: 'education', width: 30 },
       {
@@ -234,6 +378,7 @@ export class BulkTrainingUploadComponent implements OnInit {
       },
     ];
 
+    // Header styling
     worksheet.getRow(1).font = { bold: true };
     worksheet.getRow(1).fill = {
       type: 'pattern',
@@ -241,11 +386,13 @@ export class BulkTrainingUploadComponent implements OnInit {
       fgColor: { argb: 'FFD3D3D3' },
     };
 
+    // Create empty rows up to MAX_ROWS
     for (let i = 2; i <= MAX_ROWS; i++) {
       worksheet.addRow({});
     }
 
     for (let row = 2; row <= MAX_ROWS; row++) {
+      // Gender (Column B) - List
       worksheet.getCell(`B${row}`).dataValidation = {
         type: 'list',
         allowBlank: false,
@@ -256,7 +403,7 @@ export class BulkTrainingUploadComponent implements OnInit {
         error: 'Please select from the dropdown: Male, Female, or Others',
       };
 
-      // ✅ Contact Number Validation (Column C)
+      // Contact Number (Column C) - exactly 10 digits (numeric range)
       worksheet.getCell(`C${row}`).dataValidation = {
         type: 'custom',
         allowBlank: false,
@@ -268,10 +415,10 @@ export class BulkTrainingUploadComponent implements OnInit {
         errorTitle: 'Invalid Contact Number',
         error: 'Contact number must be exactly 10 digits',
       };
-
+      // Keep as text so leading zeros (if ever needed) are preserved visually
       worksheet.getCell(`C${row}`).numFmt = '@';
 
-      // ✅ Email Validation (Column E)
+      // Email (Column E) - basic sanity check
       worksheet.getCell(`E${row}`).dataValidation = {
         type: 'custom',
         allowBlank: false,
@@ -284,32 +431,46 @@ export class BulkTrainingUploadComponent implements OnInit {
         error: 'Please enter a valid email',
       };
 
-      // ✅ DOB Validation as TEXT (Column F)
+      // DOB (Column F) — allow dd-MM-yyyy OR dd/MM/yyyy as TEXT
       worksheet.getCell(`F${row}`).dataValidation = {
         type: 'custom',
         allowBlank: false,
         formulae: [
-          `AND(
-          LEN(F${row})=10,
-          MID(F${row},3,1)="-",
-          MID(F${row},6,1)="-",
-          VALUE(LEFT(F${row},2))>=1,
-          VALUE(LEFT(F${row},2))<=31,
-          VALUE(MID(F${row},4,2))>=1,
-          VALUE(MID(F${row},4,2))<=12,
-          VALUE(RIGHT(F${row},4))>=1910,
-          VALUE(RIGHT(F${row},4))<=2100
+          // Accepts dd-MM-yyyy OR dd/MM/yyyy (strict positions and ranges)
+          `OR(
+          AND(
+            LEN(F${row})=10,
+            MID(F${row},3,1)="-",
+            MID(F${row},6,1)="-",
+            VALUE(LEFT(F${row},2))>=1,
+            VALUE(LEFT(F${row},2))<=31,
+            VALUE(MID(F${row},4,2))>=1,
+            VALUE(MID(F${row},4,2))<=12,
+            VALUE(RIGHT(F${row},4))>=1910,
+            VALUE(RIGHT(F${row},4))<=2100
+          ),
+          AND(
+            LEN(F${row})=10,
+            MID(F${row},3,1)="/",
+            MID(F${row},6,1)="/",
+            VALUE(LEFT(F${row},2))>=1,
+            VALUE(LEFT(F${row},2))<=31,
+            VALUE(MID(F${row},4,2))>=1,
+            VALUE(MID(F${row},4,2))<=12,
+            VALUE(RIGHT(F${row},4))>=1910,
+            VALUE(RIGHT(F${row},4))<=2100
+          )
         )`,
         ],
         showErrorMessage: true,
         errorStyle: 'error',
         errorTitle: 'Invalid Date Format',
-        error: 'Use dd-MM-yyyy between year 1910–2100',
+        error: 'Use dd-MM-yyyy or dd/MM/yyyy between year 1910–2100',
       };
-
+      // Keep DOB as text so Excel doesn't auto-convert/reformat
       worksheet.getCell(`F${row}`).numFmt = '@';
 
-      // ✅ Category Dropdown (Column G)
+      // Category (Column G) - List
       worksheet.getCell(`G${row}`).dataValidation = {
         type: 'list',
         allowBlank: false,
@@ -321,7 +482,7 @@ export class BulkTrainingUploadComponent implements OnInit {
       };
     }
 
-    // ✅ Generate Excel file
+    // Generate Excel file
     const buffer = await workbook.xlsx.writeBuffer();
     const blob = new Blob([buffer], {
       type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
@@ -330,6 +491,14 @@ export class BulkTrainingUploadComponent implements OnInit {
     saveAs(blob, 'Excel_Template.xlsx');
   }
 
+  onRowPrefixSelected(event: any, row: any) {
+    const selectedPrefix = event.target.value;
+    console.log('current row name before update:', row.Name);
+    row.Name = selectedPrefix
+      ? `${selectedPrefix} ${row.Name || ''}`.trim()
+      : row.Name;
+    console.log('Updated name with prefix:', row.Name);
+  }
   onRowPhotoSelected(event: any, row: any) {
     const file: File = event.target.files[0];
     if (!file) return;
@@ -557,7 +726,7 @@ export class BulkTrainingUploadComponent implements OnInit {
           this.isSpinning = false;
           this.toastr.success(
             'Participants submitted successfully!',
-            'Success'
+            'Success',
           );
           this.router.navigate(['/admin/approvedrejectedTrainings']);
         },
@@ -582,6 +751,7 @@ export class BulkTrainingUploadComponent implements OnInit {
     this.uploadProgress = 0;
     this.excelData = [];
     this.showFileUpload = false;
+    this.prefixSet = false;
     setTimeout(() => {
       this.showFileUpload = true;
     }, 0);
@@ -624,7 +794,7 @@ export class BulkTrainingUploadComponent implements OnInit {
         .uploadTraineeExcel(
           this.selectedFile,
           trainingId,
-          this.trainingInstituteId
+          this.trainingInstituteId,
         )
         .subscribe({
           next: () => {

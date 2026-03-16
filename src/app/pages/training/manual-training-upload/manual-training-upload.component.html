@@ -41,13 +41,13 @@
       <div class="detail-item">
         <span class="label">Start Date:</span>
         <span class="value">{{
-          trainingDetails?.startDate | date : "dd-MM-yyyy"
+          trainingDetails?.startDate | date: "dd-MM-yyyy"
         }}</span>
       </div>
       <div class="detail-item">
         <span class="label">End Date:</span>
         <span class="value">{{
-          trainingDetails?.endDate | date : "dd-MM-yyyy"
+          trainingDetails?.endDate | date: "dd-MM-yyyy"
         }}</span>
       </div>
 
@@ -84,7 +84,9 @@
               View Schedule
             </a>
             <span
-              *ngIf="!trainingScheduleUrl && trainingDetails?.trainingScheduleDetail"
+              *ngIf="
+                !trainingScheduleUrl && trainingDetails?.trainingScheduleDetail
+              "
               class="text-danger"
             >
               Failed to Load
@@ -172,7 +174,42 @@
       <div class="modal-body">
         <form [formGroup]="participantForm" (ngSubmit)="addParticipant()">
           <div class="row">
-            <div class="col-md-5">
+            <div class="col-md-2">
+              <div class="mb-3 mt-4">
+                <label for="name" class="form-label"
+                  >Honorifics <span class="text-danger">*</span></label
+                >
+                <select
+                  class="form-control"
+                  id="prefix"
+                  formControlName="prefix"
+                  [class.is-invalid]="
+                    participantForm.get('prefix')?.invalid &&
+                    participantForm.get('prefix')?.touched
+                  "
+                >
+                  <option selected value="Mr">Mr</option>
+                  <option value="Ms">Ms</option>
+                  <option value="Mrs">Mrs</option>
+                  <option value="Dr">Dr</option>
+                  <option value="Prof">Prof</option>
+                </select>
+                <div
+                  class="invalid-feedback"
+                  *ngIf="
+                    participantForm.get('prefix')?.invalid &&
+                    participantForm.get('prefix')?.touched
+                  "
+                >
+                  <div
+                    *ngIf="participantForm.get('prefix')?.errors?.['required']"
+                  >
+                    Honorifics is required.
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-4">
               <div class="mb-3 mt-4">
                 <label for="name" class="form-label"
                   >Name <span class="text-danger">*</span></label
@@ -217,7 +254,7 @@
               </div>
             </div>
 
-            <div class="col-md-4">
+            <div class="col-md-3">
               <div class="mb-3 mt-4 ms-2">
                 <label for="gender" class="form-label"
                   >Gender <span class="text-danger">*</span></label
@@ -254,9 +291,7 @@
 
             <div class="col-md-3">
               <div class="mb-3">
-                <label for="photo" class="form-label"
-                  >Photo</label
-                >
+                <label for="photo" class="form-label">Photo</label>
                 <div class="photo-upload-container">
                   <div class="photo-preview" (click)="fileInput.click()">
                     <img
@@ -311,22 +346,30 @@
                   "
                 >
                   <div
-                    *ngIf="participantForm.get('fatherName')?.errors?.['required']"
+                    *ngIf="
+                      participantForm.get('fatherName')?.errors?.['required']
+                    "
                   >
                     Father's name is required.
                   </div>
                   <div
-                    *ngIf="participantForm.get('fatherName')?.errors?.['minlength']"
+                    *ngIf="
+                      participantForm.get('fatherName')?.errors?.['minlength']
+                    "
                   >
                     Father's name must be at least 2 characters long.
                   </div>
                   <div
-                    *ngIf="participantForm.get('fatherName')?.errors?.['maxlength']"
+                    *ngIf="
+                      participantForm.get('fatherName')?.errors?.['maxlength']
+                    "
                   >
                     Father's name cannot exceed 50 characters.
                   </div>
                   <div
-                    *ngIf="participantForm.get('fatherName')?.errors?.['pattern']"
+                    *ngIf="
+                      participantForm.get('fatherName')?.errors?.['pattern']
+                    "
                   >
                     Father's name can only contain letters and spaces.
                   </div>
@@ -359,17 +402,28 @@
                   "
                 >
                   <div
-                    *ngIf="participantForm.get('contactNumber')?.errors?.['required']"
+                    *ngIf="
+                      participantForm.get('contactNumber')?.errors?.['required']
+                    "
                   >
                     Contact number is required.
                   </div>
                   <div
-                    *ngIf="participantForm.get('contactNumber')?.errors?.['pattern']"
+                    *ngIf="
+                      participantForm.get('contactNumber')?.errors?.['pattern']
+                    "
                   >
                     Contact number must be exactly 10 digits.
                   </div>
                   <div
-                    *ngIf="participantForm.get('contactNumber')?.errors?.['minlength'] || participantForm.get('contactNumber')?.errors?.['maxlength']"
+                    *ngIf="
+                      participantForm.get('contactNumber')?.errors?.[
+                        'minlength'
+                      ] ||
+                      participantForm.get('contactNumber')?.errors?.[
+                        'maxlength'
+                      ]
+                    "
                   >
                     Contact number must be exactly 10 digits.
                   </div>
@@ -534,9 +588,7 @@
                   >
                     Date of birth cannot be in the future.
                   </div>
-                  <div
-                    *ngIf="participantForm.get('dob')?.errors?.['tooYoung']"
-                  >
+                  <div *ngIf="participantForm.get('dob')?.errors?.['tooYoung']">
                     Age must be at least 18 years.
                   </div>
                   <div *ngIf="participantForm.get('dob')?.errors?.['tooOld']">
