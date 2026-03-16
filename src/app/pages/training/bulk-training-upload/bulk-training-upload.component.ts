@@ -232,6 +232,124 @@ export class BulkTrainingUploadComponent implements OnInit {
     this.selectedFile = file;
   }
 
+  // async generateTemplate() {
+  //   const workbook = new ExcelJS.Workbook();
+  //   const worksheet = workbook.addWorksheet('User Data');
+
+  //   const MAX_ROWS = 1000;
+
+  //   // Define headers
+  //   worksheet.columns = [
+  //     { header: 'Name', key: 'name', width: 20 },
+  //     { header: 'Gender', key: 'gender', width: 12 },
+  //     { header: 'Contact Number', key: 'contact', width: 18 },
+  //     { header: "Father's Name", key: 'fatherName', width: 20 },
+  //     { header: 'Email', key: 'email', width: 25 },
+  //     { header: 'Date of Birth (dd-MM-yyyy)', key: 'dob', width: 25 },
+  //     { header: 'Category (GN, OBC, SC, ST)', key: 'category', width: 25 },
+  //     { header: 'Educational Qualification', key: 'education', width: 30 },
+  //     {
+  //       header: 'Recommended by (Organization)',
+  //       key: 'recommendedBy',
+  //       width: 30,
+  //     },
+  //   ];
+
+  //   worksheet.getRow(1).font = { bold: true };
+  //   worksheet.getRow(1).fill = {
+  //     type: 'pattern',
+  //     pattern: 'solid',
+  //     fgColor: { argb: 'FFD3D3D3' },
+  //   };
+
+  //   for (let i = 2; i <= MAX_ROWS; i++) {
+  //     worksheet.addRow({});
+  //   }
+
+  //   for (let row = 2; row <= MAX_ROWS; row++) {
+  //     worksheet.getCell(`B${row}`).dataValidation = {
+  //       type: 'list',
+  //       allowBlank: false,
+  //       formulae: ['"Male,Female,Others"'],
+  //       showErrorMessage: true,
+  //       errorStyle: 'error',
+  //       errorTitle: 'Invalid Gender',
+  //       error: 'Please select from the dropdown: Male, Female, or Others',
+  //     };
+
+  //     // ✅ Contact Number Validation (Column C)
+  //     worksheet.getCell(`C${row}`).dataValidation = {
+  //       type: 'custom',
+  //       allowBlank: false,
+  //       formulae: [
+  //         `AND(LEN(C${row})=10,ISNUMBER(VALUE(C${row})),VALUE(C${row})>=1000000000,VALUE(C${row})<=9999999999)`,
+  //       ],
+  //       showErrorMessage: true,
+  //       errorStyle: 'error',
+  //       errorTitle: 'Invalid Contact Number',
+  //       error: 'Contact number must be exactly 10 digits',
+  //     };
+
+  //     worksheet.getCell(`C${row}`).numFmt = '@';
+
+  //     // ✅ Email Validation (Column E)
+  //     worksheet.getCell(`E${row}`).dataValidation = {
+  //       type: 'custom',
+  //       allowBlank: false,
+  //       formulae: [
+  //         `AND(ISNUMBER(SEARCH("@",E${row})),ISNUMBER(SEARCH(".",E${row})),LEN(E${row})>5)`,
+  //       ],
+  //       showErrorMessage: true,
+  //       errorStyle: 'error',
+  //       errorTitle: 'Invalid Email',
+  //       error: 'Please enter a valid email',
+  //     };
+
+  //     // ✅ DOB Validation as TEXT (Column F)
+  //     worksheet.getCell(`F${row}`).dataValidation = {
+  //       type: 'custom',
+  //       allowBlank: false,
+  //       formulae: [
+  //         `AND(
+  //         LEN(F${row})=10,
+  //         MID(F${row},3,1)="-",
+  //         MID(F${row},6,1)="-",
+  //         VALUE(LEFT(F${row},2))>=1,
+  //         VALUE(LEFT(F${row},2))<=31,
+  //         VALUE(MID(F${row},4,2))>=1,
+  //         VALUE(MID(F${row},4,2))<=12,
+  //         VALUE(RIGHT(F${row},4))>=1910,
+  //         VALUE(RIGHT(F${row},4))<=2100
+  //       )`,
+  //       ],
+  //       showErrorMessage: true,
+  //       errorStyle: 'error',
+  //       errorTitle: 'Invalid Date Format',
+  //       error: 'Use dd-MM-yyyy between year 1910–2100',
+  //     };
+
+  //     worksheet.getCell(`F${row}`).numFmt = '@';
+
+  //     // ✅ Category Dropdown (Column G)
+  //     worksheet.getCell(`G${row}`).dataValidation = {
+  //       type: 'list',
+  //       allowBlank: false,
+  //       formulae: ['"GN,OBC,SC,ST"'],
+  //       showErrorMessage: true,
+  //       errorStyle: 'error',
+  //       errorTitle: 'Invalid Category',
+  //       error: 'Select GN, OBC, SC, or ST',
+  //     };
+  //   }
+
+  //   // ✅ Generate Excel file
+  //   const buffer = await workbook.xlsx.writeBuffer();
+  //   const blob = new Blob([buffer], {
+  //     type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+  //   });
+
+  //   saveAs(blob, 'Excel_Template.xlsx');
+  // }
   async generateTemplate() {
     const workbook = new ExcelJS.Workbook();
     const worksheet = workbook.addWorksheet('User Data');
@@ -245,7 +363,12 @@ export class BulkTrainingUploadComponent implements OnInit {
       { header: 'Contact Number', key: 'contact', width: 18 },
       { header: "Father's Name", key: 'fatherName', width: 20 },
       { header: 'Email', key: 'email', width: 25 },
-      { header: 'Date of Birth (dd-MM-yyyy)', key: 'dob', width: 25 },
+      // 🔁 Updated header to reflect both allowed formats
+      {
+        header: 'Date of Birth (dd-MM-yyyy or dd/MM/yyyy)',
+        key: 'dob',
+        width: 30,
+      },
       { header: 'Category (GN, OBC, SC, ST)', key: 'category', width: 25 },
       { header: 'Educational Qualification', key: 'education', width: 30 },
       {
@@ -255,6 +378,7 @@ export class BulkTrainingUploadComponent implements OnInit {
       },
     ];
 
+    // Header styling
     worksheet.getRow(1).font = { bold: true };
     worksheet.getRow(1).fill = {
       type: 'pattern',
@@ -262,11 +386,13 @@ export class BulkTrainingUploadComponent implements OnInit {
       fgColor: { argb: 'FFD3D3D3' },
     };
 
+    // Create empty rows up to MAX_ROWS
     for (let i = 2; i <= MAX_ROWS; i++) {
       worksheet.addRow({});
     }
 
     for (let row = 2; row <= MAX_ROWS; row++) {
+      // Gender (Column B) - List
       worksheet.getCell(`B${row}`).dataValidation = {
         type: 'list',
         allowBlank: false,
@@ -277,7 +403,7 @@ export class BulkTrainingUploadComponent implements OnInit {
         error: 'Please select from the dropdown: Male, Female, or Others',
       };
 
-      // ✅ Contact Number Validation (Column C)
+      // Contact Number (Column C) - exactly 10 digits (numeric range)
       worksheet.getCell(`C${row}`).dataValidation = {
         type: 'custom',
         allowBlank: false,
@@ -289,10 +415,10 @@ export class BulkTrainingUploadComponent implements OnInit {
         errorTitle: 'Invalid Contact Number',
         error: 'Contact number must be exactly 10 digits',
       };
-
+      // Keep as text so leading zeros (if ever needed) are preserved visually
       worksheet.getCell(`C${row}`).numFmt = '@';
 
-      // ✅ Email Validation (Column E)
+      // Email (Column E) - basic sanity check
       worksheet.getCell(`E${row}`).dataValidation = {
         type: 'custom',
         allowBlank: false,
@@ -305,32 +431,46 @@ export class BulkTrainingUploadComponent implements OnInit {
         error: 'Please enter a valid email',
       };
 
-      // ✅ DOB Validation as TEXT (Column F)
+      // DOB (Column F) — allow dd-MM-yyyy OR dd/MM/yyyy as TEXT
       worksheet.getCell(`F${row}`).dataValidation = {
         type: 'custom',
         allowBlank: false,
         formulae: [
-          `AND(
-          LEN(F${row})=10,
-          MID(F${row},3,1)="-",
-          MID(F${row},6,1)="-",
-          VALUE(LEFT(F${row},2))>=1,
-          VALUE(LEFT(F${row},2))<=31,
-          VALUE(MID(F${row},4,2))>=1,
-          VALUE(MID(F${row},4,2))<=12,
-          VALUE(RIGHT(F${row},4))>=1910,
-          VALUE(RIGHT(F${row},4))<=2100
+          // Accepts dd-MM-yyyy OR dd/MM/yyyy (strict positions and ranges)
+          `OR(
+          AND(
+            LEN(F${row})=10,
+            MID(F${row},3,1)="-",
+            MID(F${row},6,1)="-",
+            VALUE(LEFT(F${row},2))>=1,
+            VALUE(LEFT(F${row},2))<=31,
+            VALUE(MID(F${row},4,2))>=1,
+            VALUE(MID(F${row},4,2))<=12,
+            VALUE(RIGHT(F${row},4))>=1910,
+            VALUE(RIGHT(F${row},4))<=2100
+          ),
+          AND(
+            LEN(F${row})=10,
+            MID(F${row},3,1)="/",
+            MID(F${row},6,1)="/",
+            VALUE(LEFT(F${row},2))>=1,
+            VALUE(LEFT(F${row},2))<=31,
+            VALUE(MID(F${row},4,2))>=1,
+            VALUE(MID(F${row},4,2))<=12,
+            VALUE(RIGHT(F${row},4))>=1910,
+            VALUE(RIGHT(F${row},4))<=2100
+          )
         )`,
         ],
         showErrorMessage: true,
         errorStyle: 'error',
         errorTitle: 'Invalid Date Format',
-        error: 'Use dd-MM-yyyy between year 1910–2100',
+        error: 'Use dd-MM-yyyy or dd/MM/yyyy between year 1910–2100',
       };
-
+      // Keep DOB as text so Excel doesn't auto-convert/reformat
       worksheet.getCell(`F${row}`).numFmt = '@';
 
-      // ✅ Category Dropdown (Column G)
+      // Category (Column G) - List
       worksheet.getCell(`G${row}`).dataValidation = {
         type: 'list',
         allowBlank: false,
@@ -342,7 +482,7 @@ export class BulkTrainingUploadComponent implements OnInit {
       };
     }
 
-    // ✅ Generate Excel file
+    // Generate Excel file
     const buffer = await workbook.xlsx.writeBuffer();
     const blob = new Blob([buffer], {
       type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
