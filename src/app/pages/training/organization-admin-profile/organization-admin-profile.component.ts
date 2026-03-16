@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import {
   FormBuilder,
@@ -32,6 +32,10 @@ import { TranslateModule } from '@ngx-translate/core';
   styleUrl: './organization-admin-profile.component.css',
 })
 export class OrganizationAdminProfileComponent implements OnInit {
+  @Input() editData: any = null;
+  @Output() formSubmissionSuccess = new EventEmitter<void>();
+  @Output() formCanceled = new EventEmitter<void>();
+
   profileForm: FormGroup;
   selectedFile: File | null = null;
   selectedFileDoc: File | null = null;
@@ -56,6 +60,8 @@ export class OrganizationAdminProfileComponent implements OnInit {
   userId: any;
   error: string | null = null;
   organizationData: any;
+  editOrganizationId: string | null = null;
+  originalOrganizationCode = '';
   today: string | undefined;
 
   // Location data
@@ -82,6 +88,28 @@ export class OrganizationAdminProfileComponent implements OnInit {
         return 'NGOS';
       case 'Private':
         return 'PRVT';
+      default:
+        return value;
+    }
+  }
+
+  private mapOrganizationTypeFromCode(value: string): string {
+    switch ((value || '').toUpperCase()) {
+      case 'NDDB':
+        return 'NDDB';
+      case 'COOP':
+      case 'CO-OPERATIVE':
+      case 'COOPERATIVE':
+      case 'CO-OP':
+      case 'CO-OPRATIVE':
+      case 'CO-OPERATIVE SOCIETY':
+        return 'Co-operative';
+      case 'NGOS':
+      case 'NGO':
+        return 'NGO';
+      case 'PRVT':
+      case 'PRIVATE':
+        return 'Private';
       default:
         return value;
     }
@@ -116,6 +144,14 @@ export class OrganizationAdminProfileComponent implements OnInit {
     }
 
     if (!/^[A-Za-z]{4}$/.test(code)) {
+      return of(null);
+    }
+
+    if (
+      this.editOrganizationId &&
+      this.originalOrganizationCode &&
+      code.toUpperCase() === this.originalOrganizationCode.toUpperCase()
+    ) {
       return of(null);
     }
 
@@ -222,6 +258,10 @@ export class OrganizationAdminProfileComponent implements OnInit {
     this.profileForm.get('password')?.valueChanges.subscribe((password) => {
       this.validatePassword(password || '');
     });
+
+    if (this.editData) {
+      this.setEditData(this.editData);
+    }
   }
   getRole() {
     const userData = sessionStorage.getItem('user');
@@ -268,21 +308,68 @@ export class OrganizationAdminProfileComponent implements OnInit {
     });
   }
   initializeForm() {
+    this.editOrganizationId = this.organizationData.id || this.userId || null;
+    this.originalOrganizationCode = this.organizationData.organizationCode || '';
     this.profileForm.patchValue({
       organizationName: this.organizationData.organizationName,
       trainingInstituteRegistration: this.organizationData.registrationNumber,
-      organizationType: this.organizationData.instituteOwnedBy,
+      organizationType: this.mapOrganizationTypeFromCode(
+        this.organizationData.organizationType ||
+          this.organizationData.instituteOwnedBy
+      ),
+      organizationCode: this.organizationData.organizationCode || '',
       state: this.organizationData.stateId,
       address: this.organizationData.address,
       contactPersonName: this.organizationData.contactName,
       designation: this.organizationData.designation,
       contactNumber: this.organizationData.contactNumber,
       emailId: this.organizationData.email,
+      password: '',
+      confirmPassword: '',
     });
     this.loadDistricts(this.organizationData.stateId);
     this.profileForm.patchValue({
       district: this.organizationData.districtId,
     });
+  }
+
+  setEditData(data: any): void {
+    this.editOrganizationId = data.id || null;
+    this.originalOrganizationCode = data.organizationCode || '';
+
+    this.profileForm.patchValue({
+      organizationName: data.organizationName || '',
+      trainingInstituteRegistration: data.registrationNumber || '',
+      organizationType: this.mapOrganizationTypeFromCode(
+        data.organizationType || data.instituteOwnedBy
+      ),
+      organizationCode: data.organizationCode || '',
+      state: data.stateId || '',
+      district: data.districtId || '',
+      address: data.address || '',
+      contactPersonName: data.contactName || '',
+      designation: data.designation || '',
+      contactNumber: data.contactNumber || '',
+      emailId: data.email || '',
+      password: '',
+      confirmPassword: '',
+    });
+
+    if (data.stateId) {
+      this.loadDistricts(data.stateId);
+    }
+  }
+
+  clearEditMode(): void {
+    this.editOrganizationId = null;
+    this.originalOrganizationCode = '';
+    if (this.userRole == 6 && this.organizationData) {
+      this.initializeForm();
+      return;
+    }
+    this.profileForm.reset();
+    this.profileForm.markAsPristine();
+    this.profileForm.markAsUntouched();
   }
 
   onSubmit() {
@@ -294,9 +381,10 @@ export class OrganizationAdminProfileComponent implements OnInit {
       );
       return;
     }
-    const formData = new FormData();
+    const isUpdateMode = this.userRole == 6 || !!this.editOrganizationId;
+    const targetOrganizationId = this.editOrganizationId || this.userId;
 
-    if (this.userRole == 1) {
+    if (!isUpdateMode) {
       this.isLoading = true;
 
       const organizationDetails = {
@@ -333,9 +421,11 @@ export class OrganizationAdminProfileComponent implements OnInit {
               `Organization Admin profile created successfully! Registration ID: ${registrationId}`,
               'Success'
             );
-
-            // Navigate to training centre component after successful registration
-            this.router.navigate(['/admin/organization-table']);
+            if (this.formSubmissionSuccess.observers.length > 0) {
+              this.formSubmissionSuccess.emit();
+            } else {
+              this.router.navigate(['/admin/organization-table']);
+            }
           } else {
             this.toastr.error(
               response.message || 'Registration failed',
@@ -377,7 +467,7 @@ export class OrganizationAdminProfileComponent implements OnInit {
       // Append instituteDetails as JSON string with explicit content type
 
       this.authService
-        .updateOrganization(this.userId, organizationDetails)
+        .updateOrganization(targetOrganizationId, organizationDetails)
         .subscribe({
           next: (response) => {
             this.isLoading = false;
@@ -387,14 +477,18 @@ export class OrganizationAdminProfileComponent implements OnInit {
 
               // Reset form after successful registration
               this.profileForm.reset();
+              this.editOrganizationId = null;
+              this.originalOrganizationCode = '';
 
               this.toastr.success(
                 `Organization profile updated successfully!`,
                 'Success'
               );
-
-              // Navigate to training centre component after successful registration
-              this.router.navigate(['/admin/organization-table']);
+              if (this.formSubmissionSuccess.observers.length > 0) {
+                this.formSubmissionSuccess.emit();
+              } else {
+                this.router.navigate(['/admin/organization-table']);
+              }
             } else {
               this.toastr.error(response.message || 'Updation failed', 'Error');
             }
@@ -638,6 +732,8 @@ export class OrganizationAdminProfileComponent implements OnInit {
       this.initializeForm();
     } else {
       this.profileForm.reset();
+      this.editOrganizationId = null;
+      this.originalOrganizationCode = '';
     }
 
     this.selectedFile = null;
@@ -647,6 +743,13 @@ export class OrganizationAdminProfileComponent implements OnInit {
 
     this.profileForm.markAsPristine();
     this.profileForm.markAsUntouched();
+    if (this.formCanceled.observers.length > 0) {
+      this.formCanceled.emit();
+    }
+  }
+
+  get isUpdateMode(): boolean {
+    return this.userRole == 6 || !!this.editOrganizationId;
   }
 
   validatePassword(password: string) {
