@@ -296,6 +296,20 @@ label {
   border-color: #ef4444;
 }
 
+.username-status {
+  margin-top: 0.35rem;
+  font-size: 0.8rem;
+  font-weight: 500;
+}
+
+.username-status.checking {
+  color: #0d6efd;
+}
+
+.username-status.available {
+  color: #198754;
+}
+
 .textarea {
   resize: vertical;
   min-height: 100px;

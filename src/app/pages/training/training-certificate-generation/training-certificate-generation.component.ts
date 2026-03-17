@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { TranslateModule } from '@ngx-translate/core';
 import {
@@ -51,7 +51,7 @@ import {
   templateUrl: './training-certificate-generation.component.html',
   styleUrl: './training-certificate-generation.component.css',
 })
-export class TrainingCertificateGenerationComponent implements OnInit {
+export class TrainingCertificateGenerationComponent implements OnInit, OnDestroy {
   breadcrumbItems: BreadcrumbItem[] = [
     { label: 'Dashboard', url: '/admin/role-dashboard' },
     { label: 'Schedule Training' },
@@ -134,6 +134,8 @@ export class TrainingCertificateGenerationComponent implements OnInit {
   mySelectedLogo: any[] = ['', '', ''];
   trainingScheduleFile: File | null = null;
   existingTrainingSchedulePath: string = '';
+  trainingSchedulePreviewUrl: string = '';
+  trainingScheduleDownloadName: string = '';
   showScheduleError: boolean = false;
 
   signature_1_id: number = 0;
@@ -317,6 +319,11 @@ export class TrainingCertificateGenerationComponent implements OnInit {
     }
   }
 
+  ngOnDestroy(): void {
+    this.revokeTrainingSchedulePreviewUrl();
+    this.cleanupPreviewBlobUrls();
+  }
+
   get secondarySignatureSectionTitle(): string {
     const normalizedType = (this.instituteType || '').trim().toLowerCase();
     if (normalizedType === 'other organizations') {
@@ -468,6 +475,10 @@ export class TrainingCertificateGenerationComponent implements OnInit {
         if (this.trainingDetails.trainingScheduleDetail) {
           this.existingTrainingSchedulePath =
             this.trainingDetails.trainingScheduleDetail;
+          this.prepareTrainingSchedulePreview();
+        } else {
+          this.existingTrainingSchedulePath = '';
+          this.revokeTrainingSchedulePreviewUrl();
         }
 
         this.mySelectedLogo = [
@@ -1151,6 +1162,11 @@ export class TrainingCertificateGenerationComponent implements OnInit {
   onTrainingScheduleSelect(file: File) {
     if (file) {
       this.trainingScheduleFile = file;
+      this.existingTrainingSchedulePath = '';
+      this.setTrainingSchedulePreviewUrl(
+        window.URL.createObjectURL(file),
+        file.name,
+      );
       this.showScheduleError = false;
     }
   }
@@ -1158,6 +1174,87 @@ export class TrainingCertificateGenerationComponent implements OnInit {
   onTrainingScheduleRemove() {
     this.trainingScheduleFile = null;
     this.existingTrainingSchedulePath = '';
+    this.revokeTrainingSchedulePreviewUrl();
+    this.trainingScheduleDownloadName = '';
+  }
+
+  openTrainingSchedulePreview() {
+    if (!this.trainingSchedulePreviewUrl) return;
+    window.open(this.trainingSchedulePreviewUrl, '_blank', 'noopener,noreferrer');
+  }
+
+  downloadTrainingSchedule() {
+    if (this.trainingSchedulePreviewUrl) {
+      this.triggerScheduleDownload(
+        this.trainingSchedulePreviewUrl,
+        this.trainingScheduleDownloadName || 'training-schedule',
+      );
+      return;
+    }
+
+    if (!this.existingTrainingSchedulePath) return;
+    this.adminService
+      .downloadInstituteImage(this.existingTrainingSchedulePath)
+      .subscribe({
+        next: (blob: Blob) => {
+          const url = window.URL.createObjectURL(blob);
+          const name = this.getTrainingScheduleFileName(
+            this.existingTrainingSchedulePath,
+          );
+          this.triggerScheduleDownload(url, name);
+          window.URL.revokeObjectURL(url);
+        },
+        error: () => {
+          this.toastr.error('Failed to download training schedule', 'Error');
+        },
+      });
+  }
+
+  private prepareTrainingSchedulePreview() {
+    if (!this.existingTrainingSchedulePath) return;
+    this.adminService
+      .downloadInstituteImage(this.existingTrainingSchedulePath)
+      .subscribe({
+        next: (blob: Blob) => {
+          this.setTrainingSchedulePreviewUrl(
+            window.URL.createObjectURL(blob),
+            this.getTrainingScheduleFileName(this.existingTrainingSchedulePath),
+          );
+        },
+        error: () => {
+          this.revokeTrainingSchedulePreviewUrl();
+          this.trainingScheduleDownloadName = '';
+        },
+      });
+  }
+
+  private setTrainingSchedulePreviewUrl(url: string, name: string) {
+    this.revokeTrainingSchedulePreviewUrl();
+    this.trainingSchedulePreviewUrl = url;
+    this.trainingScheduleDownloadName = name || 'training-schedule';
+  }
+
+  private revokeTrainingSchedulePreviewUrl() {
+    if (
+      this.trainingSchedulePreviewUrl &&
+      this.trainingSchedulePreviewUrl.startsWith('blob:')
+    ) {
+      window.URL.revokeObjectURL(this.trainingSchedulePreviewUrl);
+    }
+    this.trainingSchedulePreviewUrl = '';
+  }
+
+  private getTrainingScheduleFileName(path: string): string {
+    const raw = (path || '').toString().trim();
+    if (!raw) return 'training-schedule';
+    return raw.split(/[/\\]/).pop() || 'training-schedule';
+  }
+
+  private triggerScheduleDownload(url: string, fileName: string) {
+    const anchor = document.createElement('a');
+    anchor.href = url;
+    anchor.download = fileName;
+    anchor.click();
   }
 
   onSignatureNameChange(event: Event, index: number) {

@@ -517,7 +517,17 @@
               <app-file-upload [acceptedFileTypes]="'.pdf,.doc,.docx'"
                 [uploadText]="'Drag and Drop the Training Schedule here'"
                 (fileSelected)="onTrainingScheduleSelect($event)" (fileRemoved)="onTrainingScheduleRemove()"
+                (filePathRemoved)="onTrainingScheduleRemove()"
                 [filePath]="existingTrainingSchedulePath"></app-file-upload>
+              <div class="training-schedule-actions"
+                *ngIf="trainingSchedulePreviewUrl && (trainingScheduleFile || existingTrainingSchedulePath)">
+                <button type="button" class="btn btn-outline-primary btn-sm" (click)="openTrainingSchedulePreview()">
+                  Preview
+                </button>
+                <button type="button" class="btn btn-primary btn-sm" (click)="downloadTrainingSchedule()">
+                  Download
+                </button>
+              </div>
               <div *ngIf="showScheduleError" class="text-danger small mt-1">
                 {{ "Training schedule file is required" | translate }}
               </div>
