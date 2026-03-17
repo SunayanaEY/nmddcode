@@ -594,8 +594,8 @@
             <div class="form-row">
               <app-file-upload [acceptedFileTypes]="'.png,.jpg,.jpeg'" [maxFileSizeMB]="2"
                 [uploadText]="'Drag and Drop the Signature here'" (fileSelected)="onFileSelect($event, 'signature', i)"
-                (fileRemoved)="removeSignature(i)" [filePath]="mySelectedFile[i]" [showFileInfo]="false"
-                [enableImagePreview]="true" [showRemoveButton]="populate !== 'true'">
+                (fileRemoved)="removeSignature(i)" (filePathRemoved)="removeSignature(i)" [filePath]="mySelectedFile[i]"
+                [showFileInfo]="false" [enableImagePreview]="true" [showRemoveButton]="true">
               </app-file-upload>
             </div>
           </div>
@@ -628,8 +628,8 @@
               <div class="logo-slot-body">
                 <app-file-upload [acceptedFileTypes]="'.png,.jpg,.jpeg'" [maxFileSizeMB]="2"
                   [uploadText]="'Drag and Drop your logo here'" (fileSelected)="onFileSelect($event, 'logo', 0)"
-                  (fileRemoved)="removeLogo(0)" [filePath]="mySelectedLogo[0]" [showFileInfo]="false"
-                  [enableImagePreview]="true" [showRemoveButton]="populate !== 'true'">
+                  (fileRemoved)="removeLogo(0)" (filePathRemoved)="removeLogo(0)" [filePath]="mySelectedLogo[0]"
+                  [showFileInfo]="false" [enableImagePreview]="true" [showRemoveButton]="true">
                 </app-file-upload>
               </div>
             </div>
@@ -644,8 +644,8 @@
               <div class="logo-slot-body">
                 <app-file-upload [acceptedFileTypes]="'.png,.jpg,.jpeg'" [maxFileSizeMB]="2"
                   [uploadText]="'Drag and Drop your logo here'" (fileSelected)="onFileSelect($event, 'logo', 1)"
-                  (fileRemoved)="removeLogo(1)" [filePath]="mySelectedLogo[1]" [showFileInfo]="false"
-                  [enableImagePreview]="true" [showRemoveButton]="populate !== 'true'">
+                  (fileRemoved)="removeLogo(1)" (filePathRemoved)="removeLogo(1)" [filePath]="mySelectedLogo[1]"
+                  [showFileInfo]="false" [enableImagePreview]="true" [showRemoveButton]="true">
                 </app-file-upload>
               </div>
             </div>
@@ -657,8 +657,8 @@
               <div class="logo-slot-body">
                 <app-file-upload [acceptedFileTypes]="'.png,.jpg,.jpeg'" [maxFileSizeMB]="2"
                   [uploadText]="'Drag and Drop your logo here'" (fileSelected)="onFileSelect($event, 'logo', 2)"
-                  (fileRemoved)="removeLogo(2)" [filePath]="mySelectedLogo[2]" [showFileInfo]="false"
-                  [enableImagePreview]="true" [showRemoveButton]="populate !== 'true'">
+                  (fileRemoved)="removeLogo(2)" (filePathRemoved)="removeLogo(2)" [filePath]="mySelectedLogo[2]"
+                  [showFileInfo]="false" [enableImagePreview]="true" [showRemoveButton]="true">
                 </app-file-upload>
               </div>
             </div>

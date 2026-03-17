@@ -585,6 +585,7 @@ export class TrainingCertificateGenerationComponent implements OnInit, OnDestroy
   removeSignature(index: number) {
     if (this.populate === 'true') {
       this.signaturesNew[index].file = null;
+      this.signaturesNew[index].signatorySignaturePath = '';
     } else {
       this.signatures[index].file = null;
     }
@@ -638,6 +639,7 @@ export class TrainingCertificateGenerationComponent implements OnInit, OnDestroy
     if (this.populate === 'true') {
       if (this.cropperTargetType === 'signature') {
         this.signaturesNew[this.cropperTargetIndex].file = croppedFile;
+        this.signaturesNew[this.cropperTargetIndex].signatorySignaturePath = '';
         this.signatureValidationError = '';
       } else {
         this.logosNew[this.cropperTargetIndex].file = croppedFile;
