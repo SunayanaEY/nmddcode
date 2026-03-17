@@ -159,6 +159,7 @@ export class TrainingCertificateGenerationComponent implements OnInit {
   cropperOriginalFileName = 'certificate-image.png';
   cropperTargetType: 'signature' | 'logo' = 'signature';
   cropperTargetIndex = 0;
+  instituteType: string = '';
 
   private buildLogoUrl(raw?: string | null): string {
     const path = (raw || '').toString().trim();
@@ -298,6 +299,7 @@ export class TrainingCertificateGenerationComponent implements OnInit {
     );
   }
   ngOnInit() {
+    this.loadInstituteTypeFromSession();
     this.addDateRange();
     this.getSchemes();
     this.getInstituteNames();
@@ -312,6 +314,28 @@ export class TrainingCertificateGenerationComponent implements OnInit {
     } else {
       this.mySelectedFile = ['', ''];
       this.mySelectedLogo = ['', '', ''];
+    }
+  }
+
+  get secondarySignatureSectionTitle(): string {
+    const normalizedType = (this.instituteType || '').trim().toLowerCase();
+    if (normalizedType === 'other organizations') {
+      return "Other Organization Head's Section";
+    }
+    return "State Head's Section";
+  }
+
+  private loadInstituteTypeFromSession(): void {
+    try {
+      const userDataRaw = sessionStorage.getItem('user');
+      if (!userDataRaw) {
+        this.instituteType = '';
+        return;
+      }
+      const userData = JSON.parse(userDataRaw);
+      this.instituteType = (userData?.instituteType || '').toString();
+    } catch {
+      this.instituteType = '';
     }
   }
 
