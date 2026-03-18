@@ -66,14 +66,14 @@ export class DashboardComponent {
               ...res.data,
               location: `${res.data.venueBlock}, ${res.data.venueDistrict}, ${res.data.venueState}`,
               trainingDate: new Date(res.data.trainingDate).toLocaleDateString(
-                'en-GB'
+                'en-GB',
               ), // dd/mm/yyyy
             };
 
             this.selectedItem = modifiedData;
 
             const modalElement = document.getElementById(
-              'viewCertificateModal'
+              'viewCertificateModal',
             );
             if (modalElement) {
               const modal = new (window as any).bootstrap.Modal(modalElement);
@@ -122,6 +122,7 @@ export class DashboardComponent {
   isStateAdmin: boolean = false;
   stateAdminStateId: string | null = null;
   private isUpdatingFilters = false;
+  instituteId: any | null = null;
 
   instituteTypes = [
     { value: 'Government Owned', label: 'Government Owned' },
@@ -142,7 +143,7 @@ export class DashboardComponent {
     private cdr: ChangeDetectorRef,
     private dashboardApiService: DashboardApiService,
     private excelService: ExcelService,
-    private adminService: AdminService
+    private adminService: AdminService,
   ) {
     this.filterForm = this.fb.group({
       stateId: [''],
@@ -196,7 +197,7 @@ export class DashboardComponent {
           this.filterForm.patchValue({ stateId: this.stateAdminStateId });
           this.selectedStateId = parseInt(this.stateAdminStateId);
           const selected = this.states.find(
-            (s) => s.id === this.selectedStateId
+            (s) => s.id === this.selectedStateId,
           );
           this.selectedState = selected
             ? { stateId: String(selected.id), stateName: selected.stateName }
@@ -238,16 +239,18 @@ export class DashboardComponent {
     this.isUpdatingFilters = false;
     this.selectedTrainingInstituteId = null;
 
-    this.dashboardApiService.getTrainingInstitutes(stateId, this.organizationId || undefined).subscribe({
-      next: (institutes) => {
-        this.trainingInstitutes = institutes;
-        this.isLoadingTrainingInstitutes = false;
-      },
-      error: (error) => {
-        console.error('Error loading training institutes:', error);
-        this.isLoadingTrainingInstitutes = false;
-      },
-    });
+    this.dashboardApiService
+      .getTrainingInstitutes(stateId, this.organizationId || undefined)
+      .subscribe({
+        next: (institutes) => {
+          this.trainingInstitutes = institutes;
+          this.isLoadingTrainingInstitutes = false;
+        },
+        error: (error) => {
+          console.error('Error loading training institutes:', error);
+          this.isLoadingTrainingInstitutes = false;
+        },
+      });
   }
 
   setupFilterSubscriptions(): void {
@@ -263,6 +266,7 @@ export class DashboardComponent {
         this.loadDistricts(stateId);
         this.loadTrainingInstitutes(stateId);
       } else {
+        this.loadTrainingInstitutes();
         this.districts = [];
         this.selectedDistrictId = null;
         this.trainingInstitutes = [];
@@ -316,7 +320,7 @@ export class DashboardComponent {
         this.selectedDistrictId || undefined,
         this.selectedTrainingInstituteId || undefined,
         this.organizationId || undefined,
-        this.selectedInstituteType || undefined
+        this.selectedInstituteType || undefined,
       )
       .subscribe({
         next: (response) => {
@@ -443,7 +447,7 @@ export class DashboardComponent {
         this.selectedDistrictId || undefined,
         this.selectedTrainingInstituteId || undefined,
         this.organizationId || undefined,
-        this.selectedInstituteType || undefined
+        this.selectedInstituteType || undefined,
       )
       .subscribe({
         next: (data) => {
@@ -491,7 +495,7 @@ export class DashboardComponent {
         id: 'totalCertificatesApproved',
         title: 'Total Certificates Approved',
         value: this.formatKpiValue(
-          this.dashboardStats.totalCertificatesApproved
+          this.dashboardStats.totalCertificatesApproved,
         ),
         icon: 'fas fa-certificate',
         colorClass: 'kpi-card-purple',
@@ -580,9 +584,10 @@ export class DashboardComponent {
     if (kpiType == 'totalInstituteDetails') {
       let instituteObservable;
       if (this.organizationId) {
-        instituteObservable = this.adminService.getTrainingInstitutesOrganization(
-          this.organizationId
-        );
+        instituteObservable =
+          this.adminService.getTrainingInstitutesOrganization(
+            this.organizationId,
+          );
       } else {
         instituteObservable = this.adminService.getTrainingInstitutes();
       }
@@ -612,7 +617,7 @@ export class DashboardComponent {
             this.excelService.exportAsExcelFile(excelData, filename);
 
             console.log(
-              `Successfully exported ${excelData.length} records for ${kpiType}`
+              `Successfully exported ${excelData.length} records for ${kpiType}`,
             );
           } else {
             console.warn('No data available for export');
@@ -640,7 +645,7 @@ export class DashboardComponent {
           this.selectedDistrictId || undefined,
           this.selectedTrainingInstituteId || undefined,
           this.organizationId || undefined,
-          this.selectedInstituteType || undefined
+          this.selectedInstituteType || undefined,
         )
         .subscribe({
           next: (response) => {
@@ -648,12 +653,12 @@ export class DashboardComponent {
               // Transform data for Excel export
               const excelData = response.data.map((item, index) => ({
                 'Sl. No.': index + 1,
-                'State': item.venueState,
-                'District': item.venueDistrict,
+                State: item.venueState,
+                District: item.venueDistrict,
                 'Institute Name': item.trainingInstituteName,
                 'Name of the Training': item.trainingTitle,
                 'Training ID': item.trainingId,
-                'Scheme': item.scheme,
+                Scheme: item.scheme,
                 'Trainer Name': item.trainerName,
                 'No of Trainees': item.numberOfTrainees,
                 'From Date': this.formatDate(item.fromDate),
@@ -670,7 +675,7 @@ export class DashboardComponent {
               this.excelService.exportAsExcelFile(excelData, filename);
 
               console.log(
-                `Successfully exported ${excelData.length} records for ${kpiType}`
+                `Successfully exported ${excelData.length} records for ${kpiType}`,
               );
             } else {
               console.warn('No data available for export');
@@ -698,7 +703,7 @@ export class DashboardComponent {
           this.selectedDistrictId || undefined,
           this.selectedTrainingInstituteId || undefined,
           this.organizationId || undefined,
-          this.selectedInstituteType || undefined
+          this.selectedInstituteType || undefined,
         )
         .subscribe({
           next: (response) => {
@@ -733,7 +738,7 @@ export class DashboardComponent {
               this.excelService.exportAsExcelFile(excelData, filename);
 
               console.log(
-                `Successfully exported ${excelData.length} records for ${kpiType}`
+                `Successfully exported ${excelData.length} records for ${kpiType}`,
               );
             } else {
               console.warn('No data available for export');
@@ -761,7 +766,7 @@ export class DashboardComponent {
           this.selectedDistrictId || undefined,
           this.selectedTrainingInstituteId || undefined,
           this.organizationId || undefined,
-          this.selectedInstituteType || undefined
+          this.selectedInstituteType || undefined,
         )
         .subscribe({
           next: (response) => {
@@ -795,7 +800,7 @@ export class DashboardComponent {
               this.excelService.exportAsExcelFile(excelData, filename);
 
               console.log(
-                `Successfully exported ${excelData.length} records for ${kpiType}`
+                `Successfully exported ${excelData.length} records for ${kpiType}`,
               );
             } else {
               console.warn('No data available for export');
@@ -829,4 +834,3 @@ export class DashboardComponent {
     }
   }
 }
-
