@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { TranslateModule } from '@ngx-translate/core';
 import {
@@ -32,6 +32,14 @@ import {
   ModalConfig,
   ModalField,
 } from '../../../components/modal/modal.component';
+import { Subscription, of } from 'rxjs';
+import {
+  catchError,
+  debounceTime,
+  distinctUntilChanged,
+  map,
+  switchMap,
+} from 'rxjs/operators';
 
 @Component({
   selector: 'app-state-admin-profile',
@@ -46,7 +54,7 @@ import {
   templateUrl: './state-admin-profile.component.html',
   styleUrl: './state-admin-profile.component.css',
 })
-export class StateAdminProfileComponent implements OnInit {
+export class StateAdminProfileComponent implements OnInit, OnDestroy {
   profileForm: FormGroup;
   selectedFile: File | null = null;
   selectedFileDoc: File | null = null;
@@ -64,6 +72,9 @@ export class StateAdminProfileComponent implements OnInit {
   hasNumber = false;
   hasSpecialChar = false;
   isLoading = false;
+  usernameCheckSubscription: Subscription | null = null;
+  isCheckingUsername = false;
+  isUsernameAvailable = false;
   userRole: any;
   instituteData: any;
   trainingInstituteId: any;
@@ -211,6 +222,14 @@ export class StateAdminProfileComponent implements OnInit {
       {
         state: ['', Validators.required],
         adminName: ['', [Validators.required, Validators.minLength(2),Validators.pattern('^[a-zA-Z ]*$')]],
+        username: [
+          '',
+          [
+            Validators.required,
+            Validators.minLength(3),
+            Validators.pattern(/^[a-zA-Z0-9_.-]+$/),
+          ],
+        ],
         designation: ['', Validators.required],
         phone: [
           '',
@@ -247,6 +266,7 @@ export class StateAdminProfileComponent implements OnInit {
     this.profileForm.get('password')?.valueChanges.subscribe((password) => {
       this.validatePassword(password || '');
     });
+    this.setupUsernameAvailabilityCheck();
   }
 
   getRole() {
@@ -308,6 +328,7 @@ export class StateAdminProfileComponent implements OnInit {
       // Prepare payload according to API specification
       const payload = {
         contactPersonName: formData.adminName,
+        username: formData.username,
         designation: formData.designation,
         contactNumber: formData.phone,
         emailId: formData.email,
@@ -323,6 +344,7 @@ export class StateAdminProfileComponent implements OnInit {
             response.message || 'State admin profile saved successfully!'
           );
           this.profileForm.reset();
+          this.resetUsernameAvailabilityState();
           this.isLoading = false;
           // Reload table data to show the new entry
           this.loadStateAdminData();
@@ -490,6 +512,113 @@ export class StateAdminProfileComponent implements OnInit {
     this.hasSpecialChar = /[@$!%*?&]/.test(password || '');
   }
 
+  private setupUsernameAvailabilityCheck() {
+    const usernameControl = this.profileForm.get('username');
+    if (!usernameControl) {
+      return;
+    }
+
+    this.usernameCheckSubscription?.unsubscribe();
+    this.usernameCheckSubscription = usernameControl.valueChanges
+      .pipe(
+        debounceTime(400),
+        distinctUntilChanged(),
+        switchMap((value: string) => {
+          const username = (value || '').trim();
+
+          if (!username || usernameControl.invalid) {
+            this.resetUsernameAvailabilityState();
+            return of(null);
+          }
+
+          this.isCheckingUsername = true;
+          this.isUsernameAvailable = false;
+          this.clearUsernameTakenError();
+
+          return this.authService.checkUsername(username).pipe(
+            map((response) => ({
+              available: this.isUsernameValid(response),
+            })),
+            catchError(() => of({ available: false }))
+          );
+        })
+      )
+      .subscribe((result) => {
+        if (!result) {
+          return;
+        }
+
+        this.isCheckingUsername = false;
+        if (result.available) {
+          this.isUsernameAvailable = true;
+          this.clearUsernameTakenError();
+          return;
+        }
+
+        this.isUsernameAvailable = false;
+        usernameControl.setErrors({
+          ...(usernameControl.errors || {}),
+          usernameTaken: true,
+        });
+      });
+  }
+
+  private isUsernameValid(response: any): boolean {
+    if (typeof response === 'boolean') {
+      return response;
+    }
+    if (!response || typeof response !== 'object') {
+      return false;
+    }
+    if (typeof response.valid === 'boolean') {
+      return response.valid;
+    }
+    if (typeof response.available === 'boolean') {
+      return response.available;
+    }
+    if (typeof response.exists === 'boolean') {
+      return !response.exists;
+    }
+    if (typeof response.success === 'boolean') {
+      return response.success;
+    }
+
+    const responseData = response.data;
+    if (responseData && typeof responseData === 'object') {
+      if (typeof responseData.valid === 'boolean') {
+        return responseData.valid;
+      }
+      if (typeof responseData.available === 'boolean') {
+        return responseData.available;
+      }
+      if (typeof responseData.exists === 'boolean') {
+        return !responseData.exists;
+      }
+    }
+
+    return false;
+  }
+
+  private clearUsernameTakenError() {
+    const usernameControl = this.profileForm.get('username');
+    if (!usernameControl?.errors) {
+      return;
+    }
+
+    const { usernameTaken, ...restErrors } = usernameControl.errors;
+    if (usernameTaken) {
+      usernameControl.setErrors(
+        Object.keys(restErrors).length ? restErrors : null
+      );
+    }
+  }
+
+  private resetUsernameAvailabilityState() {
+    this.isCheckingUsername = false;
+    this.isUsernameAvailable = false;
+    this.clearUsernameTakenError();
+  }
+
   markFormGroupTouched(formGroup: FormGroup) {
     Object.keys(formGroup.controls).forEach((key) => {
       const control = formGroup.get(key);
@@ -586,6 +715,7 @@ export class StateAdminProfileComponent implements OnInit {
       this.profileForm.patchValue({
         state: data.stateId,
         adminName: data.contactPersonName,
+        username: data.username || '',
         designation: data.designation,
         phone: data.contactNumber,
         email: data.emailId
@@ -701,5 +831,9 @@ export class StateAdminProfileComponent implements OnInit {
 
   onPreviousStateHeadsModalPrimaryAction(): void {
     this.onPreviousStateHeadsModalClose();
+  }
+
+  ngOnDestroy(): void {
+    this.usernameCheckSubscription?.unsubscribe();
   }
 }
