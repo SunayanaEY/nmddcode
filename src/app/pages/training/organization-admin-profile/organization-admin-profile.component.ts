@@ -331,6 +331,7 @@ export class OrganizationAdminProfileComponent implements OnInit {
     this.profileForm.patchValue({
       district: this.organizationData.districtId,
     });
+    this.setupPasswordValidationByMode();
   }
 
   setEditData(data: any): void {
@@ -358,6 +359,7 @@ export class OrganizationAdminProfileComponent implements OnInit {
     if (data.stateId) {
       this.loadDistricts(data.stateId);
     }
+    this.setupPasswordValidationByMode();
   }
 
   clearEditMode(): void {
@@ -368,8 +370,34 @@ export class OrganizationAdminProfileComponent implements OnInit {
       return;
     }
     this.profileForm.reset();
+    this.setupPasswordValidationByMode();
     this.profileForm.markAsPristine();
     this.profileForm.markAsUntouched();
+  }
+
+  private setupPasswordValidationByMode(): void {
+    const passwordControl = this.profileForm.get('password');
+    const confirmPasswordControl = this.profileForm.get('confirmPassword');
+
+    if (this.isUpdateMode) {
+      passwordControl?.setValue('');
+      confirmPasswordControl?.setValue('');
+      passwordControl?.clearValidators();
+      confirmPasswordControl?.clearValidators();
+    } else {
+      passwordControl?.setValidators([
+        Validators.required,
+        Validators.minLength(8),
+        Validators.pattern(
+          /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]/,
+        ),
+      ]);
+      confirmPasswordControl?.setValidators([Validators.required]);
+    }
+
+    passwordControl?.updateValueAndValidity({ emitEvent: false });
+    confirmPasswordControl?.updateValueAndValidity({ emitEvent: false });
+    this.profileForm.updateValueAndValidity({ emitEvent: false });
   }
 
   onSubmit() {
@@ -458,7 +486,6 @@ export class OrganizationAdminProfileComponent implements OnInit {
         designation: this.profileForm.get('designation')?.value || '',
         contactNumber: this.profileForm.get('contactNumber')?.value || '',
         email: this.profileForm.get('emailId')?.value || '',
-        password: this.profileForm.get('password')?.value || '',
 
         // latitude: this.profileForm.get('latitude')?.value || null,
         // longitude: this.profileForm.get('longitude')?.value || null,

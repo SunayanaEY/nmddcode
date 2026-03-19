@@ -315,6 +315,12 @@ export class AuthService {
       );
   }
 
+  checkUsername(username: string): Observable<any> {
+    return this.http.get<any>(`${this.apiUrl}api/auth/check-username`, {
+      params: { username },
+    });
+  }
+
   // Session timeout management methods
   private startSessionMonitoring(): void {
     this.stopSessionMonitoring(); // Stop any existing monitoring

@@ -313,6 +313,7 @@
                 <span style="color: red">*</span>
               </label>
               <input type="number" id="duration" formControlName="duration" [placeholder]="'xx' | translate"
+                max="24"
                 class="form-control" [class.is-invalid]="
                   trainingForm.get('duration')?.invalid &&
                   trainingForm.get('duration')?.touched
@@ -326,6 +327,9 @@
                 </small>
                 <small *ngIf="trainingForm.get('duration')?.errors?.['invalidDuration']" class="text-danger">
                   {{ "Duration must be a positive number" | translate }}
+                </small>
+                <small *ngIf="trainingForm.get('duration')?.errors?.['maxDurationExceeded']" class="text-danger">
+                  {{ "Training duration cannot be more than 24 hours" | translate }}
                 </small>
               </div>
             </div>

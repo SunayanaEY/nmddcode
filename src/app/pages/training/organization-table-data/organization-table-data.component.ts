@@ -117,12 +117,12 @@ export class OrganizationTableDataComponent implements OnInit {
       class: 'btn-edit',
       title: 'Edit',
     },
-    {
-      name: 'delete',
-      icon: 'bi-trash',
-      class: 'btn-warning',
-      title: 'Delete',
-    },
+    // {
+    //   name: 'delete',
+    //   icon: 'bi-trash',
+    //   class: 'btn-warning',
+    //   title: 'Delete',
+    // },
   ];
 
   trainingCentres: any[] = [];

@@ -437,7 +437,7 @@
           </div>
 
           <!-- Security Information Section -->
-          <div class="form-section">
+          <div class="form-section" *ngIf="!isUpdateMode">
             <h3 class="section-title">
               {{ 'PRIVATE_ORG.SECTION_SECURITY_INFO' | translate }}
             </h3>

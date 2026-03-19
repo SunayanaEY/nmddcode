@@ -218,6 +218,27 @@ export class TrainingCertificateGenerationComponent implements OnInit, OnDestroy
     return null;
   }
 
+  maxDurationValidator(control: AbstractControl): ValidationErrors | null {
+    if (
+      control.value === null ||
+      control.value === undefined ||
+      control.value === ''
+    ) {
+      return null;
+    }
+
+    const value = Number(control.value);
+    if (isNaN(value)) {
+      return null;
+    }
+
+    if (value > 24) {
+      return { maxDurationExceeded: true };
+    }
+
+    return null;
+  }
+
   endDateAfterStartValidator(group: AbstractControl): ValidationErrors | null {
     const start = group.get('startDate')?.value;
     const end = group.get('endDate')?.value;
@@ -282,7 +303,11 @@ export class TrainingCertificateGenerationComponent implements OnInit, OnDestroy
         venueAddress: ['', Validators.required],
         duration: [
           '',
-          [Validators.required, this.positiveDurationValidator.bind(this)],
+          [
+            Validators.required,
+            this.positiveDurationValidator.bind(this),
+            this.maxDurationValidator.bind(this),
+          ],
         ],
         durationType: ['Hours', Validators.required],
         trainingDescription: [
@@ -807,6 +832,10 @@ export class TrainingCertificateGenerationComponent implements OnInit, OnDestroy
   onManualUpload() {
     if (this.trainingForm.invalid) {
       this.trainingForm.markAllAsTouched();
+      this.toastr.error(
+        'Please fill all required fields before submitting',
+        'Error',
+      );
       return;
     }
 
@@ -927,10 +956,7 @@ export class TrainingCertificateGenerationComponent implements OnInit, OnDestroy
             'Training Details Updated Successfully!',
             'Success',
           );
-          const trainingId = response.data.id;
-          this.router.navigate(['/admin/approvedrejectedTrainings'], {
-            queryParams: { trainingId: trainingId },
-          });
+          this.router.navigate(['/admin/all-trainings']);
           this.isSpinner = false;
         },
         error: (error) => {
@@ -1117,6 +1143,7 @@ export class TrainingCertificateGenerationComponent implements OnInit, OnDestroy
       startDate: startDate,
       endDate: endDate,
       trainingInstituteName,
+      instituteType: this.instituteType,
       logoPath1: logoPaths[0],
       logoPath2: logoPaths[1],
       logoPath3: logoPaths[2],

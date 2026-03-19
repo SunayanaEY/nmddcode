@@ -93,11 +93,29 @@ export class LatestCertificateLayoutComponent implements OnInit, OnChanges {
   }
 
   get rightSignatureTitle(): string {
-    const instituteType = (this.data?.instituteType || '').toString().trim().toLowerCase();
+    const instituteType = this.getInstituteTypeValue();
     if (instituteType === 'other organizations') {
       return 'Other Organization Head Signature';
     }
     return 'State Head Signature';
+  }
+
+  private getInstituteTypeValue(): string {
+    const dataInstituteType = (this.data?.instituteType || '').toString().trim().toLowerCase();
+    if (dataInstituteType) {
+      return dataInstituteType;
+    }
+
+    try {
+      const userDataRaw = sessionStorage.getItem('user');
+      if (!userDataRaw) {
+        return '';
+      }
+      const userData = JSON.parse(userDataRaw);
+      return (userData?.instituteType || '').toString().trim().toLowerCase();
+    } catch {
+      return '';
+    }
   }
 
   // Determine a valid trainee photo URL from possible API fields
