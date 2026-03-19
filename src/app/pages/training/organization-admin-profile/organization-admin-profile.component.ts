@@ -1,4 +1,11 @@
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import {
+  Component,
+  EventEmitter,
+  Input,
+  OnDestroy,
+  OnInit,
+  Output,
+} from '@angular/core';
 import { CommonModule } from '@angular/common';
 import {
   FormBuilder,
@@ -8,8 +15,14 @@ import {
   AbstractControl,
   ValidationErrors,
 } from '@angular/forms';
-import { Observable, of } from 'rxjs';
-import { catchError, map } from 'rxjs/operators';
+import { Observable, Subscription, of } from 'rxjs';
+import {
+  catchError,
+  debounceTime,
+  distinctUntilChanged,
+  map,
+  switchMap,
+} from 'rxjs/operators';
 import { AdminService } from '../services/training-admin.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
@@ -31,7 +44,7 @@ import { TranslateModule } from '@ngx-translate/core';
   templateUrl: './organization-admin-profile.component.html',
   styleUrl: './organization-admin-profile.component.css',
 })
-export class OrganizationAdminProfileComponent implements OnInit {
+export class OrganizationAdminProfileComponent implements OnInit, OnDestroy {
   @Input() editData: any = null;
   @Output() formSubmissionSuccess = new EventEmitter<void>();
   @Output() formCanceled = new EventEmitter<void>();
@@ -45,6 +58,9 @@ export class OrganizationAdminProfileComponent implements OnInit {
   isDragOverDoc = false;
   showPassword = false;
   showConfirmPassword = false;
+  usernameCheckSubscription: Subscription | null = null;
+  isCheckingUsername = false;
+  isUsernameAvailable = false;
 
   // Password validation properties
   hasMinLength = false;
@@ -185,6 +201,7 @@ export class OrganizationAdminProfileComponent implements OnInit {
     this.profileForm = this.fb.group(
       {
         organizationName: ['', [Validators.required, Validators.minLength(3)]],
+        username: [''],
         trainingInstituteRegistration: [
           '',
           this.userRole === 6
@@ -262,6 +279,8 @@ export class OrganizationAdminProfileComponent implements OnInit {
     if (this.editData) {
       this.setEditData(this.editData);
     }
+    this.setupUsernameValidationByMode();
+    this.setupUsernameAvailabilityCheck();
   }
   getRole() {
     const userData = sessionStorage.getItem('user');
@@ -312,6 +331,7 @@ export class OrganizationAdminProfileComponent implements OnInit {
     this.originalOrganizationCode = this.organizationData.organizationCode || '';
     this.profileForm.patchValue({
       organizationName: this.organizationData.organizationName,
+      username: this.organizationData.username || '',
       trainingInstituteRegistration: this.organizationData.registrationNumber,
       organizationType: this.mapOrganizationTypeFromCode(
         this.organizationData.organizationType ||
@@ -331,6 +351,8 @@ export class OrganizationAdminProfileComponent implements OnInit {
     this.profileForm.patchValue({
       district: this.organizationData.districtId,
     });
+    this.setupPasswordValidationByMode();
+    this.setupUsernameValidationByMode();
   }
 
   setEditData(data: any): void {
@@ -339,6 +361,7 @@ export class OrganizationAdminProfileComponent implements OnInit {
 
     this.profileForm.patchValue({
       organizationName: data.organizationName || '',
+      username: data.username || '',
       trainingInstituteRegistration: data.registrationNumber || '',
       organizationType: this.mapOrganizationTypeFromCode(
         data.organizationType || data.instituteOwnedBy
@@ -358,6 +381,8 @@ export class OrganizationAdminProfileComponent implements OnInit {
     if (data.stateId) {
       this.loadDistricts(data.stateId);
     }
+    this.setupPasswordValidationByMode();
+    this.setupUsernameValidationByMode();
   }
 
   clearEditMode(): void {
@@ -368,8 +393,57 @@ export class OrganizationAdminProfileComponent implements OnInit {
       return;
     }
     this.profileForm.reset();
+    this.resetUsernameAvailabilityState();
+    this.setupPasswordValidationByMode();
+    this.setupUsernameValidationByMode();
     this.profileForm.markAsPristine();
     this.profileForm.markAsUntouched();
+  }
+
+  private setupPasswordValidationByMode(): void {
+    const passwordControl = this.profileForm.get('password');
+    const confirmPasswordControl = this.profileForm.get('confirmPassword');
+
+    if (this.isUpdateMode) {
+      passwordControl?.setValue('');
+      confirmPasswordControl?.setValue('');
+      passwordControl?.clearValidators();
+      confirmPasswordControl?.clearValidators();
+    } else {
+      passwordControl?.setValidators([
+        Validators.required,
+        Validators.minLength(8),
+        Validators.pattern(
+          /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]/,
+        ),
+      ]);
+      confirmPasswordControl?.setValidators([Validators.required]);
+    }
+
+    passwordControl?.updateValueAndValidity({ emitEvent: false });
+    confirmPasswordControl?.updateValueAndValidity({ emitEvent: false });
+    this.profileForm.updateValueAndValidity({ emitEvent: false });
+  }
+
+  private setupUsernameValidationByMode(): void {
+    const usernameControl = this.profileForm.get('username');
+    if (!usernameControl) {
+      return;
+    }
+
+    if (this.isUpdateMode || this.userRole === 6) {
+      usernameControl.clearValidators();
+      this.resetUsernameAvailabilityState();
+      this.clearUsernameTakenError();
+    } else {
+      usernameControl.setValidators([
+        Validators.required,
+        Validators.minLength(3),
+        Validators.pattern(/^[a-zA-Z0-9_.-]+$/),
+      ]);
+    }
+
+    usernameControl.updateValueAndValidity({ emitEvent: false });
   }
 
   onSubmit() {
@@ -389,6 +463,7 @@ export class OrganizationAdminProfileComponent implements OnInit {
 
       const organizationDetails = {
         organizationName: this.profileForm.get('organizationName')?.value || '',
+        username: this.profileForm.get('username')?.value || '',
         registrationNumber: null,
         organizationCode: this.profileForm.get('organizationCode')?.value || '',
         organizationType: this.mapOrganizationTypeToCode(
@@ -417,6 +492,7 @@ export class OrganizationAdminProfileComponent implements OnInit {
 
             // Reset form after successful registration
             this.profileForm.reset();
+            this.resetUsernameAvailabilityState();
             this.toastr.success(
               `Organization Admin profile created successfully! Registration ID: ${registrationId}`,
               'Success'
@@ -458,7 +534,6 @@ export class OrganizationAdminProfileComponent implements OnInit {
         designation: this.profileForm.get('designation')?.value || '',
         contactNumber: this.profileForm.get('contactNumber')?.value || '',
         email: this.profileForm.get('emailId')?.value || '',
-        password: this.profileForm.get('password')?.value || '',
 
         // latitude: this.profileForm.get('latitude')?.value || null,
         // longitude: this.profileForm.get('longitude')?.value || null,
@@ -743,6 +818,8 @@ export class OrganizationAdminProfileComponent implements OnInit {
 
     this.profileForm.markAsPristine();
     this.profileForm.markAsUntouched();
+    this.resetUsernameAvailabilityState();
+    this.setupUsernameValidationByMode();
     if (this.formCanceled.observers.length > 0) {
       this.formCanceled.emit();
     }
@@ -758,5 +835,121 @@ export class OrganizationAdminProfileComponent implements OnInit {
     this.hasLowercase = /[a-z]/.test(password);
     this.hasNumber = /\d/.test(password);
     this.hasSpecialChar = /[@$!%*?&]/.test(password);
+  }
+
+  private setupUsernameAvailabilityCheck() {
+    const usernameControl = this.profileForm.get('username');
+    if (!usernameControl) {
+      return;
+    }
+
+    this.usernameCheckSubscription?.unsubscribe();
+    this.usernameCheckSubscription = usernameControl.valueChanges
+      .pipe(
+        debounceTime(400),
+        distinctUntilChanged(),
+        switchMap((value: string) => {
+          const username = (value || '').trim();
+
+          if (
+            !username ||
+            usernameControl.invalid ||
+            this.isUpdateMode ||
+            this.userRole === 6
+          ) {
+            this.resetUsernameAvailabilityState();
+            return of(null);
+          }
+
+          this.isCheckingUsername = true;
+          this.isUsernameAvailable = false;
+          this.clearUsernameTakenError();
+
+          return this.authService.checkUsername(username).pipe(
+            map((response) => ({
+              available: this.isUsernameValid(response),
+            })),
+            catchError(() => of({ available: false }))
+          );
+        })
+      )
+      .subscribe((result) => {
+        if (!result) {
+          return;
+        }
+
+        this.isCheckingUsername = false;
+        if (result.available) {
+          this.isUsernameAvailable = true;
+          this.clearUsernameTakenError();
+          return;
+        }
+
+        this.isUsernameAvailable = false;
+        usernameControl.setErrors({
+          ...(usernameControl.errors || {}),
+          usernameTaken: true,
+        });
+      });
+  }
+
+  private isUsernameValid(response: any): boolean {
+    if (typeof response === 'boolean') {
+      return response;
+    }
+    if (!response || typeof response !== 'object') {
+      return false;
+    }
+    if (typeof response.valid === 'boolean') {
+      return response.valid;
+    }
+    if (typeof response.available === 'boolean') {
+      return response.available;
+    }
+    if (typeof response.exists === 'boolean') {
+      return !response.exists;
+    }
+    if (typeof response.success === 'boolean') {
+      return response.success;
+    }
+
+    const responseData = response.data;
+    if (responseData && typeof responseData === 'object') {
+      if (typeof responseData.valid === 'boolean') {
+        return responseData.valid;
+      }
+      if (typeof responseData.available === 'boolean') {
+        return responseData.available;
+      }
+      if (typeof responseData.exists === 'boolean') {
+        return !responseData.exists;
+      }
+    }
+
+    return false;
+  }
+
+  private clearUsernameTakenError() {
+    const usernameControl = this.profileForm.get('username');
+    if (!usernameControl?.errors) {
+      return;
+    }
+
+    const { usernameTaken, ...restErrors } = usernameControl.errors;
+    if (usernameTaken) {
+      usernameControl.setErrors(
+        Object.keys(restErrors).length ? restErrors : null
+      );
+    }
+  }
+
+  private resetUsernameAvailabilityState() {
+    this.isCheckingUsername = false;
+    this.isUsernameAvailable = false;
+    this.clearUsernameTakenError();
+  }
+
+  ngOnDestroy(): void {
+    this.usernameCheckSubscription?.unsubscribe();
   }
 }

@@ -77,7 +77,7 @@
                 crossorigin="anonymous" />
             </p>
             <p>_____________________</p>
-            <p>{{ data.signatures[0].signatoryName }}</p>
+            <p class="signature-name">{{ data.signatures[0].signatoryName }}</p>
             <p>{{ data.signatures[0].signatoryDesignation }}</p>
             <p>{{ data.signatures[0].signatoryOrganization }}</p>
             <p class="signature-title">Institute Head Signature</p>
@@ -89,21 +89,21 @@
         </div>
 
         <!-- Right Signature -->
-        <div class="signature" aria-label="State Head Signature">
+        <div class="signature" [attr.aria-label]="rightSignatureTitle">
           <ng-container *ngIf="data?.signatures?.length > 1; else emptyRight">
             <p>
               <img [src]="signatureUrls[1] || data.signatures[1].signatorySignaturePath" alt=""
                 crossorigin="anonymous" />
             </p>
             <p>_____________________</p>
-            <p>{{ data.signatures[1].signatoryName }}</p>
+            <p class="signature-name">{{ data.signatures[1].signatoryName }}</p>
             <p>{{ data.signatures[1].signatoryDesignation }}</p>
             <p>{{ data.signatures[1].signatoryOrganization }}</p>
-            <p class="signature-title">State Head Signature</p>
+            <p class="signature-title">{{ rightSignatureTitle }}</p>
           </ng-container>
           <ng-template #emptyRight>
             <div class="signature-placeholder" aria-hidden="true"></div>
-            <p class="signature-title">State Head Signature</p>
+            <p class="signature-title">{{ rightSignatureTitle }}</p>
           </ng-template>
         </div>
       </div>

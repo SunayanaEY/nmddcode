@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { TranslateModule } from '@ngx-translate/core';
 import {
@@ -51,7 +51,7 @@ import {
   templateUrl: './training-certificate-generation.component.html',
   styleUrl: './training-certificate-generation.component.css',
 })
-export class TrainingCertificateGenerationComponent implements OnInit {
+export class TrainingCertificateGenerationComponent implements OnInit, OnDestroy {
   breadcrumbItems: BreadcrumbItem[] = [
     { label: 'Dashboard', url: '/admin/role-dashboard' },
     { label: 'Schedule Training' },
@@ -134,6 +134,8 @@ export class TrainingCertificateGenerationComponent implements OnInit {
   mySelectedLogo: any[] = ['', '', ''];
   trainingScheduleFile: File | null = null;
   existingTrainingSchedulePath: string = '';
+  trainingSchedulePreviewUrl: string = '';
+  trainingScheduleDownloadName: string = '';
   showScheduleError: boolean = false;
 
   signature_1_id: number = 0;
@@ -159,6 +161,7 @@ export class TrainingCertificateGenerationComponent implements OnInit {
   cropperOriginalFileName = 'certificate-image.png';
   cropperTargetType: 'signature' | 'logo' = 'signature';
   cropperTargetIndex = 0;
+  instituteType: string = '';
 
   private buildLogoUrl(raw?: string | null): string {
     const path = (raw || '').toString().trim();
@@ -210,6 +213,27 @@ export class TrainingCertificateGenerationComponent implements OnInit {
     const value = Number(control.value);
     if (isNaN(value) || value <= 0) {
       return { invalidDuration: true };
+    }
+
+    return null;
+  }
+
+  maxDurationValidator(control: AbstractControl): ValidationErrors | null {
+    if (
+      control.value === null ||
+      control.value === undefined ||
+      control.value === ''
+    ) {
+      return null;
+    }
+
+    const value = Number(control.value);
+    if (isNaN(value)) {
+      return null;
+    }
+
+    if (value > 24) {
+      return { maxDurationExceeded: true };
     }
 
     return null;
@@ -279,7 +303,11 @@ export class TrainingCertificateGenerationComponent implements OnInit {
         venueAddress: ['', Validators.required],
         duration: [
           '',
-          [Validators.required, this.positiveDurationValidator.bind(this)],
+          [
+            Validators.required,
+            this.positiveDurationValidator.bind(this),
+            this.maxDurationValidator.bind(this),
+          ],
         ],
         durationType: ['Hours', Validators.required],
         trainingDescription: [
@@ -298,6 +326,7 @@ export class TrainingCertificateGenerationComponent implements OnInit {
     );
   }
   ngOnInit() {
+    this.loadInstituteTypeFromSession();
     this.addDateRange();
     this.getSchemes();
     this.getInstituteNames();
@@ -312,6 +341,33 @@ export class TrainingCertificateGenerationComponent implements OnInit {
     } else {
       this.mySelectedFile = ['', ''];
       this.mySelectedLogo = ['', '', ''];
+    }
+  }
+
+  ngOnDestroy(): void {
+    this.revokeTrainingSchedulePreviewUrl();
+    this.cleanupPreviewBlobUrls();
+  }
+
+  get secondarySignatureSectionTitle(): string {
+    const normalizedType = (this.instituteType || '').trim().toLowerCase();
+    if (normalizedType === 'other organizations') {
+      return "Other Organization Head's Section";
+    }
+    return "State Head's Section";
+  }
+
+  private loadInstituteTypeFromSession(): void {
+    try {
+      const userDataRaw = sessionStorage.getItem('user');
+      if (!userDataRaw) {
+        this.instituteType = '';
+        return;
+      }
+      const userData = JSON.parse(userDataRaw);
+      this.instituteType = (userData?.instituteType || '').toString();
+    } catch {
+      this.instituteType = '';
     }
   }
 
@@ -444,6 +500,10 @@ export class TrainingCertificateGenerationComponent implements OnInit {
         if (this.trainingDetails.trainingScheduleDetail) {
           this.existingTrainingSchedulePath =
             this.trainingDetails.trainingScheduleDetail;
+          this.prepareTrainingSchedulePreview();
+        } else {
+          this.existingTrainingSchedulePath = '';
+          this.revokeTrainingSchedulePreviewUrl();
         }
 
         this.mySelectedLogo = [
@@ -550,6 +610,7 @@ export class TrainingCertificateGenerationComponent implements OnInit {
   removeSignature(index: number) {
     if (this.populate === 'true') {
       this.signaturesNew[index].file = null;
+      this.signaturesNew[index].signatorySignaturePath = '';
     } else {
       this.signatures[index].file = null;
     }
@@ -603,6 +664,7 @@ export class TrainingCertificateGenerationComponent implements OnInit {
     if (this.populate === 'true') {
       if (this.cropperTargetType === 'signature') {
         this.signaturesNew[this.cropperTargetIndex].file = croppedFile;
+        this.signaturesNew[this.cropperTargetIndex].signatorySignaturePath = '';
         this.signatureValidationError = '';
       } else {
         this.logosNew[this.cropperTargetIndex].file = croppedFile;
@@ -770,6 +832,10 @@ export class TrainingCertificateGenerationComponent implements OnInit {
   onManualUpload() {
     if (this.trainingForm.invalid) {
       this.trainingForm.markAllAsTouched();
+      this.toastr.error(
+        'Please fill all required fields before submitting',
+        'Error',
+      );
       return;
     }
 
@@ -890,10 +956,7 @@ export class TrainingCertificateGenerationComponent implements OnInit {
             'Training Details Updated Successfully!',
             'Success',
           );
-          const trainingId = response.data.id;
-          this.router.navigate(['/admin/approvedrejectedTrainings'], {
-            queryParams: { trainingId: trainingId },
-          });
+          this.router.navigate(['/admin/all-trainings']);
           this.isSpinner = false;
         },
         error: (error) => {
@@ -1080,6 +1143,7 @@ export class TrainingCertificateGenerationComponent implements OnInit {
       startDate: startDate,
       endDate: endDate,
       trainingInstituteName,
+      instituteType: this.instituteType,
       logoPath1: logoPaths[0],
       logoPath2: logoPaths[1],
       logoPath3: logoPaths[2],
@@ -1127,6 +1191,11 @@ export class TrainingCertificateGenerationComponent implements OnInit {
   onTrainingScheduleSelect(file: File) {
     if (file) {
       this.trainingScheduleFile = file;
+      this.existingTrainingSchedulePath = '';
+      this.setTrainingSchedulePreviewUrl(
+        window.URL.createObjectURL(file),
+        file.name,
+      );
       this.showScheduleError = false;
     }
   }
@@ -1134,6 +1203,87 @@ export class TrainingCertificateGenerationComponent implements OnInit {
   onTrainingScheduleRemove() {
     this.trainingScheduleFile = null;
     this.existingTrainingSchedulePath = '';
+    this.revokeTrainingSchedulePreviewUrl();
+    this.trainingScheduleDownloadName = '';
+  }
+
+  openTrainingSchedulePreview() {
+    if (!this.trainingSchedulePreviewUrl) return;
+    window.open(this.trainingSchedulePreviewUrl, '_blank', 'noopener,noreferrer');
+  }
+
+  downloadTrainingSchedule() {
+    if (this.trainingSchedulePreviewUrl) {
+      this.triggerScheduleDownload(
+        this.trainingSchedulePreviewUrl,
+        this.trainingScheduleDownloadName || 'training-schedule',
+      );
+      return;
+    }
+
+    if (!this.existingTrainingSchedulePath) return;
+    this.adminService
+      .downloadInstituteImage(this.existingTrainingSchedulePath)
+      .subscribe({
+        next: (blob: Blob) => {
+          const url = window.URL.createObjectURL(blob);
+          const name = this.getTrainingScheduleFileName(
+            this.existingTrainingSchedulePath,
+          );
+          this.triggerScheduleDownload(url, name);
+          window.URL.revokeObjectURL(url);
+        },
+        error: () => {
+          this.toastr.error('Failed to download training schedule', 'Error');
+        },
+      });
+  }
+
+  private prepareTrainingSchedulePreview() {
+    if (!this.existingTrainingSchedulePath) return;
+    this.adminService
+      .downloadInstituteImage(this.existingTrainingSchedulePath)
+      .subscribe({
+        next: (blob: Blob) => {
+          this.setTrainingSchedulePreviewUrl(
+            window.URL.createObjectURL(blob),
+            this.getTrainingScheduleFileName(this.existingTrainingSchedulePath),
+          );
+        },
+        error: () => {
+          this.revokeTrainingSchedulePreviewUrl();
+          this.trainingScheduleDownloadName = '';
+        },
+      });
+  }
+
+  private setTrainingSchedulePreviewUrl(url: string, name: string) {
+    this.revokeTrainingSchedulePreviewUrl();
+    this.trainingSchedulePreviewUrl = url;
+    this.trainingScheduleDownloadName = name || 'training-schedule';
+  }
+
+  private revokeTrainingSchedulePreviewUrl() {
+    if (
+      this.trainingSchedulePreviewUrl &&
+      this.trainingSchedulePreviewUrl.startsWith('blob:')
+    ) {
+      window.URL.revokeObjectURL(this.trainingSchedulePreviewUrl);
+    }
+    this.trainingSchedulePreviewUrl = '';
+  }
+
+  private getTrainingScheduleFileName(path: string): string {
+    const raw = (path || '').toString().trim();
+    if (!raw) return 'training-schedule';
+    return raw.split(/[/\\]/).pop() || 'training-schedule';
+  }
+
+  private triggerScheduleDownload(url: string, fileName: string) {
+    const anchor = document.createElement('a');
+    anchor.href = url;
+    anchor.download = fileName;
+    anchor.click();
   }
 
   onSignatureNameChange(event: Event, index: number) {

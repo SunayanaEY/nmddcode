@@ -18,7 +18,7 @@
           </h3>
 
           <div class="form-row">
-            <div class="form-group half-width">
+            <div class="form-group third-width">
               <label for="operatorName"
                 >{{ "USER_PROFILE_CREATION.MANAGER_NAME" | translate }}
                 <span class="required">*</span></label
@@ -47,7 +47,59 @@
                 {{ "USER_PROFILE_CREATION.MANAGER_NAME_REQUIRED" | translate }}
               </div>
             </div>
-            <div class="form-group half-width">
+            <div class="form-group third-width">
+              <label for="username"
+                >{{ "USER_PROFILE_CREATION.USERNAME" | translate }}
+                <span class="required">*</span></label
+              >
+              <input
+                type="text"
+                id="username"
+                formControlName="username"
+                [placeholder]="
+                  'USER_PROFILE_CREATION.USERNAME_PLACEHOLDER' | translate
+                "
+                class="form-control"
+                [class.is-invalid]="
+                  profileForm.get('username')?.invalid &&
+                  profileForm.get('username')?.touched
+                "
+                (keypress)="allowUsernameCharacters($event)"
+              />
+              <div
+                *ngIf="
+                  profileForm.get('username')?.invalid &&
+                  profileForm.get('username')?.touched
+                "
+                class="invalid-feedback"
+              >
+                <div *ngIf="profileForm.get('username')?.errors?.['required']">
+                  {{ "USER_PROFILE_CREATION.USERNAME_REQUIRED" | translate }}
+                </div>
+                <div *ngIf="profileForm.get('username')?.errors?.['pattern']">
+                  {{ "USER_PROFILE_CREATION.USERNAME_PATTERN" | translate }}
+                </div>
+                <div
+                  *ngIf="profileForm.get('username')?.errors?.['usernameTaken']"
+                >
+                  {{ "USER_PROFILE_CREATION.USERNAME_TAKEN" | translate }}
+                </div>
+              </div>
+              <div *ngIf="isCheckingUsername" class="username-status checking">
+                {{ "USER_PROFILE_CREATION.USERNAME_CHECKING" | translate }}
+              </div>
+              <div
+                *ngIf="
+                  !isCheckingUsername &&
+                  profileForm.get('username')?.valid &&
+                  isUsernameAvailable
+                "
+                class="username-status available"
+              >
+                {{ "USER_PROFILE_CREATION.USERNAME_AVAILABLE" | translate }}
+              </div>
+            </div>
+            <div class="form-group third-width">
               <label for="designation"
                 >{{ "USER_PROFILE_CREATION.DESIGNATION" | translate }}
                 <span class="required">*</span></label
@@ -317,7 +369,12 @@
             type="submit"
             class="btn btn-lg"
             [ngClass]="isEditMode ? 'btn-warning' : 'btn-primary'"
-            [disabled]="isLoading || profileForm.invalid"
+            [disabled]="
+              isLoading ||
+              profileForm.invalid ||
+              isCheckingUsername ||
+              !isUsernameAvailable
+            "
           >
             <span
               *ngIf="isLoading"

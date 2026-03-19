@@ -51,4 +51,10 @@ export class UserProfileService {
       { observe: 'response' }
     );
   }
+
+  checkUsername(username: string): Observable<any> {
+    return this.http.get<any>(`${this.apiUrl}api/auth/check-username`, {
+      params: { username },
+    });
+  }
 }

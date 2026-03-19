@@ -470,6 +470,7 @@
                 id="duration"
                 formControlName="duration"
                 [placeholder]="'xx' | translate"
+                max="24"
                 class="form-control"
                 [class.is-invalid]="
                   trainingForm.get('duration')?.invalid &&
@@ -496,6 +497,18 @@
                   class="text-danger"
                 >
                   {{ "Duration must be a positive number" | translate }}
+                </small>
+                <small
+                  *ngIf="
+                    trainingForm.get('duration')?.errors?.[
+                      'maxDurationExceeded'
+                    ]
+                  "
+                  class="text-danger"
+                >
+                  {{
+                    "Training duration cannot be more than 24 hours" | translate
+                  }}
                 </small>
               </div>
             </div>
@@ -737,8 +750,31 @@
                 [uploadText]="'Drag and Drop the Training Schedule here'"
                 (fileSelected)="onTrainingScheduleSelect($event)"
                 (fileRemoved)="onTrainingScheduleRemove()"
+                (filePathRemoved)="onTrainingScheduleRemove()"
                 [filePath]="existingTrainingSchedulePath"
               ></app-file-upload>
+              <div
+                class="training-schedule-actions"
+                *ngIf="
+                  trainingSchedulePreviewUrl &&
+                  (trainingScheduleFile || existingTrainingSchedulePath)
+                "
+              >
+                <button
+                  type="button"
+                  class="btn btn-outline-primary btn-sm"
+                  (click)="openTrainingSchedulePreview()"
+                >
+                  Preview
+                </button>
+                <button
+                  type="button"
+                  class="btn btn-primary btn-sm"
+                  (click)="downloadTrainingSchedule()"
+                >
+                  Download
+                </button>
+              </div>
               <div *ngIf="showScheduleError" class="text-danger small mt-1">
                 {{ "Training schedule file is required" | translate }}
               </div>
@@ -762,7 +798,7 @@
               {{ "Institute Head's Section" | translate }}
             </h4>
             <h4 class="signature-section-title" *ngIf="i === 1">
-              {{ "State Head's Section" | translate }}
+              {{ secondarySignatureSectionTitle }}
             </h4>
 
             <div class="form-row">
@@ -845,10 +881,11 @@
                 [uploadText]="'Drag and Drop the Signature here'"
                 (fileSelected)="onFileSelect($event, 'signature', i)"
                 (fileRemoved)="removeSignature(i)"
+                (filePathRemoved)="removeSignature(i)"
                 [filePath]="mySelectedFile[i]"
                 [showFileInfo]="false"
                 [enableImagePreview]="true"
-                [showRemoveButton]="populate !== 'true'"
+                [showRemoveButton]="true"
               >
               </app-file-upload>
             </div>
@@ -894,10 +931,11 @@
                   [uploadText]="'Drag and Drop your logo here'"
                   (fileSelected)="onFileSelect($event, 'logo', 0)"
                   (fileRemoved)="removeLogo(0)"
+                  (filePathRemoved)="removeLogo(0)"
                   [filePath]="mySelectedLogo[0]"
                   [showFileInfo]="false"
                   [enableImagePreview]="true"
-                  [showRemoveButton]="populate !== 'true'"
+                  [showRemoveButton]="true"
                 >
                 </app-file-upload>
               </div>
@@ -917,10 +955,11 @@
                   [uploadText]="'Drag and Drop your logo here'"
                   (fileSelected)="onFileSelect($event, 'logo', 1)"
                   (fileRemoved)="removeLogo(1)"
+                  (filePathRemoved)="removeLogo(1)"
                   [filePath]="mySelectedLogo[1]"
                   [showFileInfo]="false"
                   [enableImagePreview]="true"
-                  [showRemoveButton]="populate !== 'true'"
+                  [showRemoveButton]="true"
                 >
                 </app-file-upload>
               </div>
@@ -937,10 +976,11 @@
                   [uploadText]="'Drag and Drop your logo here'"
                   (fileSelected)="onFileSelect($event, 'logo', 2)"
                   (fileRemoved)="removeLogo(2)"
+                  (filePathRemoved)="removeLogo(2)"
                   [filePath]="mySelectedLogo[2]"
                   [showFileInfo]="false"
                   [enableImagePreview]="true"
-                  [showRemoveButton]="populate !== 'true'"
+                  [showRemoveButton]="true"
                 >
                 </app-file-upload>
               </div>

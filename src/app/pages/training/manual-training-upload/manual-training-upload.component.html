@@ -673,6 +673,17 @@
     </div>
   </div>
 </div>
+<app-image-cropper-modal
+  [visible]="showImageCropper"
+  [imageFile]="cropperInputFile"
+  [title]="'Crop Trainee Photo'"
+  [defaultAspectMode]="'square'"
+  [outputFormat]="'jpeg'"
+  [resizeToWidth]="800"
+  (loadFailed)="onPhotoCropLoadFailed()"
+  (canceled)="onPhotoCropCanceled()"
+  (cropped)="onPhotoCropApplied($event)"
+></app-image-cropper-modal>
 <div *ngIf="isSpinning" class="spinner-overlay">
   <div
     class="spinner-border text-primary"

@@ -45,6 +45,7 @@ import { AdminService } from '../services/training-admin.service';
 })
 export class ApprovedRejectedTrainingsComponent {
   trainingDetails: any;
+  userRole: number | null = null;
   trainingScheduleUrl: string | null = null;
   isLoadingSchedule: boolean = false;
   @ViewChild('trainingDetailsModal')
@@ -187,13 +188,12 @@ export class ApprovedRejectedTrainingsComponent {
   ];
 
   tableActionsTrainee: TableAction[] = [
-    //{ name: 'download', icon: 'bi bi-eye', class: 'btn-info', title: 'Download certificate' },
     {
       name: 'download',
       icon: 'bi bi-download',
       class: 'btn-success',
       title: 'Download certificate',
-      condition: (row: any) => row.status === 'Approved by State Head' || row.status === 'Certificate Issued & downloaded',
+      condition: (row: any) => this.canShowCertificateDownload(row),
     },
   ];
 
@@ -209,6 +209,7 @@ export class ApprovedRejectedTrainingsComponent {
   filteredData = [...this.trainingsList];
 
   ngOnInit(): void {
+    this.getRole();
     this.route.fragment.subscribe((fragment) => {
       if (fragment) {
         setTimeout(() => {
@@ -313,6 +314,14 @@ export class ApprovedRejectedTrainingsComponent {
         this.toastr.error('Error while fetching data!');
       },
     });
+  }
+
+  getRole() {
+    const userData = sessionStorage.getItem('user');
+    if (userData) {
+      const user = JSON.parse(userData);
+      this.userRole = user.role;
+    }
   }
   openTrainingDetails(row: any) {
     // alert('Training insititue : ' + this.trainingInstituteId);
@@ -491,6 +500,24 @@ export class ApprovedRejectedTrainingsComponent {
           console.error('Error loading certificate details:', error);
         },
       });
+  }
+
+  canShowCertificateDownload(row: any): boolean {
+    const isInstituteTrainingManager = this.userRole === 4;
+    const isCertificateApprovedRejectedTraining =
+      this.trainingDetails?.status === 'Certificate Approved / Rejected';
+
+    if (isInstituteTrainingManager) {
+      return isCertificateApprovedRejectedTraining;
+    }
+
+    return (
+      row.status === 'Approved by State Head' ||
+      row.status === 'Approved by Organization' ||
+      row.status === 'APPROVED BY ORGANIZATION' ||
+      row.status === 'Certificate Issued & downloaded' ||
+      row.status === 'Certificate Approved / Rejected'
+    );
   }
 
   async toBlobUrl(fileName: string): Promise<string> {

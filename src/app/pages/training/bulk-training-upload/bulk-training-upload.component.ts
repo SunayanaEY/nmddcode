@@ -14,6 +14,10 @@ import { AdminService } from '../services/training-admin.service';
 import { saveAs } from 'file-saver';
 import { TranslateModule } from '@ngx-translate/core';
 import { FormsModule } from '@angular/forms';
+import {
+  CroppedImageResult,
+  ImageCropperModalComponent,
+} from '../../../components/image-cropper-modal/image-cropper-modal.component';
 
 @Component({
   selector: 'app-bulk-training-upload',
@@ -24,6 +28,7 @@ import { FormsModule } from '@angular/forms';
     FileUploadComponent,
     TranslateModule,
     FormsModule,
+    ImageCropperModalComponent,
   ],
   templateUrl: './bulk-training-upload.component.html',
   styleUrl: './bulk-training-upload.component.css',
@@ -39,7 +44,7 @@ export class BulkTrainingUploadComponent implements OnInit {
   ];
 
   prefixArray: string[] = [];
-  prefixSet: boolean = false;
+  // prefixSet: boolean = false;
   validationErrors: any[] = [];
   invalidRowsData: any[] = [];
   prefixes: string[] = ['Mr', 'Ms', 'Mrs', 'Dr', 'Prof'];
@@ -64,6 +69,11 @@ export class BulkTrainingUploadComponent implements OnInit {
   pageSize: number = 10;
   excelHeaders: string[] = [];
   pagedData: any[] = [];
+  showImageCropper = false;
+  cropperInputFile: File | null = null;
+  cropperOriginalFileName = 'trainee-photo.jpg';
+  activePhotoRow: any | null = null;
+  previewRowErrors: { [key: number]: string[] } = {};
 
   get totalPages(): number {
     return Math.ceil(this.excelData.length / this.pageSize);
@@ -71,16 +81,7 @@ export class BulkTrainingUploadComponent implements OnInit {
 
   get paginatedData(): any[] {
     const startIndex = (this.currentPage - 1) * this.pageSize;
-    this.prefixArray = new Array(this.pageSize).fill('Mr');
-    const data = this.excelData.slice(startIndex, startIndex + this.pageSize);
-    if (this.prefixSet) {
-      return data;
-    }
-    data.forEach((item) => {
-      item.Name = `Mr ${item.Name}`;
-    });
-    this.prefixSet = true;
-    return data;
+    return this.excelData.slice(startIndex, startIndex + this.pageSize);
   }
 
   constructor(
@@ -89,7 +90,7 @@ export class BulkTrainingUploadComponent implements OnInit {
     private toastr: ToastrService,
     private route: ActivatedRoute,
     private router: Router,
-  ) {}
+  ) { }
 
   ngOnInit(): void {
     this.trainingId = this.route.snapshot.queryParams['trainingId'];
@@ -156,6 +157,7 @@ export class BulkTrainingUploadComponent implements OnInit {
     this.validationErrors = [];
     this.invalidRowsData = [];
     this.showValidationReport = false;
+    this.previewRowErrors = {};
     this.excelData = [];
     this.headers = [];
     this.currentPage = 1;
@@ -199,6 +201,8 @@ export class BulkTrainingUploadComponent implements OnInit {
             // Add photo fields safely
             obj.photoPreview = null;
             obj.photoId = null;
+            obj.honorific = '';
+            obj.honorificError = false;
 
             return obj;
           });
@@ -492,44 +496,104 @@ export class BulkTrainingUploadComponent implements OnInit {
   }
 
   onRowPrefixSelected(event: any, row: any) {
-    const selectedPrefix = event.target.value;
-    console.log('current row name before update:', row.Name);
+    const selectedPrefix = event?.target?.value ?? '';
+    row.honorific = selectedPrefix;
+    row.honorificError = !selectedPrefix;
+    const originalName = (row?.Name ?? '').toString().trim();
+
+    console.log('current row name before update:', originalName);
+    const baseName = originalName.replace(/^\S+\s+/, '') || originalName;
+
     row.Name = selectedPrefix
-      ? `${selectedPrefix} ${row.Name || ''}`.trim()
-      : row.Name;
-    console.log('Updated name with prefix:', row.Name);
+      ? `${selectedPrefix} ${baseName}`.trim()
+      : baseName;
+  }
+
+  private validateHonorificSelection(): boolean {
+    const invalidRows = this.excelData.filter(
+      (row: any) => !(row?.honorific || '').toString().trim(),
+    );
+    this.excelData.forEach((row: any) => {
+      row.honorificError = !(row?.honorific || '').toString().trim();
+    });
+    if (invalidRows.length > 0) {
+      this.toastr.error(
+        'Please select Honorifics for all participants before submitting.',
+        'Validation Error',
+      );
+      return false;
+    }
+    return true;
   }
   onRowPhotoSelected(event: any, row: any) {
-    const file: File = event.target.files[0];
+    const file: File | null = event?.target?.files?.[0] || null;
+    if (event?.target) {
+      event.target.value = '';
+    }
     if (!file) return;
 
-    // Validate file type (only allow images)
     if (!file.type.startsWith('image/')) {
       this.toastr.error('Only image files are allowed!', 'Invalid File');
-      event.target.value = ''; // Clear the input
       return;
     }
 
-    // ✅ Preview
-    const reader = new FileReader();
-    reader.onload = () => {
-      row.photoPreview = reader.result;
-    };
-    reader.readAsDataURL(file);
+    this.cropperOriginalFileName = file.name || 'trainee-photo.jpg';
+    this.cropperInputFile = file;
+    this.activePhotoRow = row;
+    this.showImageCropper = true;
+  }
 
-    // ✅ Upload
-    const formData = new FormData();
-    formData.append('file', file);
-    formData.append('photoType', 'TRAINEE');
+  onRowPhotoCropCanceled(): void {
+    this.showImageCropper = false;
+    this.cropperInputFile = null;
+    this.activePhotoRow = null;
+  }
 
-    this.trainingService.uploadTraineeImage(file, 'Trainee').subscribe({
+  onRowPhotoCropLoadFailed(): void {
+    this.toastr.error('Please select a valid image file', 'File Error');
+    this.onRowPhotoCropCanceled();
+  }
+
+  onRowPhotoCropApplied(event: CroppedImageResult): void {
+    if (!this.activePhotoRow) {
+      this.onRowPhotoCropCanceled();
+      return;
+    }
+
+    const selectedRow = this.activePhotoRow;
+    const croppedFile = new File(
+      [event.blob],
+      this.createCroppedFileName(this.cropperOriginalFileName, event.mimeType),
+      { type: event.mimeType },
+    );
+
+    selectedRow.photoPreview = event.previewUrl;
+    selectedRow.photoId = null;
+    this.showImageCropper = false;
+    this.cropperInputFile = null;
+    this.activePhotoRow = null;
+
+    this.trainingService.uploadTraineeImage(croppedFile, 'trainee').subscribe({
       next: (res: any) => {
-        row.photoId = res?.data?.photoId;
+        selectedRow.photoId = res?.data?.photoId ?? null;
       },
       error: () => {
-        alert('Photo upload failed');
+        selectedRow.photoId = null;
+        this.toastr.error('Photo upload failed', 'Error');
       },
     });
+  }
+
+  private createCroppedFileName(originalFileName: string, mimeType: string): string {
+    const baseName =
+      originalFileName.replace(/\.[^/.]+$/, '') || 'trainee-photo';
+    if (mimeType.includes('jpeg') || mimeType.includes('jpg')) {
+      return `${baseName}-cropped.jpg`;
+    }
+    if (mimeType.includes('webp')) {
+      return `${baseName}-cropped.webp`;
+    }
+    return `${baseName}-cropped.png`;
   }
 
   setPage(page: number): void {
@@ -557,6 +621,181 @@ export class BulkTrainingUploadComponent implements OnInit {
       row: Number(row),
       errors: grouped[Number(row)],
     }));
+  }
+
+  getPreviewRowNumber(pageIndex: number): number {
+    return (this.currentPage - 1) * this.pageSize + pageIndex + 1;
+  }
+
+  hasPreviewRowError(pageIndex: number): boolean {
+    const rowNumber = this.getPreviewRowNumber(pageIndex);
+    const errors = this.previewRowErrors[rowNumber];
+    return Array.isArray(errors) && errors.length > 0;
+  }
+
+  getPreviewRowErrorReason(pageIndex: number): string {
+    const rowNumber = this.getPreviewRowNumber(pageIndex);
+    const errors = this.previewRowErrors[rowNumber];
+    if (!Array.isArray(errors) || errors.length === 0) {
+      return '-';
+    }
+    return errors.join(' | ');
+  }
+
+  get hasServerRowErrors(): boolean {
+    return Object.keys(this.previewRowErrors).length > 0;
+  }
+
+  removeErroredPreviewRow(pageIndex: number): void {
+    if (!this.hasPreviewRowError(pageIndex)) {
+      return;
+    }
+
+    const rowNumber = this.getPreviewRowNumber(pageIndex);
+    const dataIndex = rowNumber - 1;
+    if (dataIndex < 0 || dataIndex >= this.excelData.length) {
+      return;
+    }
+
+    this.excelData.splice(dataIndex, 1);
+    this.rebuildServerErrorsAfterRowRemoval(rowNumber);
+
+    if (this.currentPage > this.totalPages && this.totalPages > 0) {
+      this.currentPage = this.totalPages;
+    }
+    if (this.totalPages === 0) {
+      this.currentPage = 1;
+    }
+  }
+
+  private parseSubmitResponse(response: any): any {
+    if (response && typeof response === 'object') {
+      return response;
+    }
+    if (typeof response === 'string') {
+      try {
+        return JSON.parse(response);
+      } catch {
+        return null;
+      }
+    }
+    return null;
+  }
+
+  private clearServerRowErrors(): void {
+    this.previewRowErrors = {};
+  }
+
+  private syncServerValidationReportFromPreviewErrors(): void {
+    const rows = Object.keys(this.previewRowErrors)
+      .map((row) => Number(row))
+      .filter((row) => !Number.isNaN(row))
+      .sort((a, b) => a - b);
+
+    const serverValidationErrors: any[] = [];
+    for (const row of rows) {
+      const messages = this.previewRowErrors[row] || [];
+      if (!messages.length) {
+        continue;
+      }
+      serverValidationErrors.push({
+        row,
+        column: 'Server Validation',
+        errorMessage: messages.join(' | '),
+      });
+    }
+
+    this.validationErrors = serverValidationErrors;
+    this.errorCount = serverValidationErrors.length;
+    this.errorRowCount = rows.length;
+    this.showValidationReport = serverValidationErrors.length > 0;
+  }
+
+  private rebuildServerErrorsAfterRowRemoval(removedRowNumber: number): void {
+    const updatedErrors: { [key: number]: string[] } = {};
+
+    Object.keys(this.previewRowErrors).forEach((key) => {
+      const row = Number(key);
+      if (Number.isNaN(row) || row === removedRowNumber) {
+        return;
+      }
+
+      const shiftedRow = row > removedRowNumber ? row - 1 : row;
+      updatedErrors[shiftedRow] = this.previewRowErrors[row];
+    });
+
+    this.previewRowErrors = updatedErrors;
+    this.syncServerValidationReportFromPreviewErrors();
+  }
+
+  private mapApiIndexToPreviewRow(errorItem: any): number | null {
+    const rawIndex = Number(errorItem?.index);
+    if (Number.isNaN(rawIndex)) {
+      return null;
+    }
+
+    const candidates = [rawIndex, rawIndex - 1].filter(
+      (index, pos, arr) =>
+        index >= 0 && index < this.excelData.length && arr.indexOf(index) === pos,
+    );
+
+    if (candidates.length === 0) {
+      return null;
+    }
+
+    const apiName = (errorItem?.name || '').toString().trim().toLowerCase();
+    if (apiName) {
+      for (const candidate of candidates) {
+        const rowName = (this.excelData[candidate]?.Name || '')
+          .toString()
+          .trim()
+          .toLowerCase();
+        if (rowName && rowName === apiName) {
+          return candidate + 1;
+        }
+      }
+    }
+
+    return candidates.includes(rawIndex - 1) ? rawIndex : rawIndex + 1;
+  }
+
+  private applyServerErrorsToPreview(responseBody: any): boolean {
+    const apiErrors = Array.isArray(responseBody?.errors) ? responseBody.errors : [];
+    if (apiErrors.length === 0) {
+      this.clearServerRowErrors();
+      return false;
+    }
+
+    this.clearServerRowErrors();
+
+    const serverValidationErrors: any[] = [];
+    for (const item of apiErrors) {
+      const rowNumber = this.mapApiIndexToPreviewRow(item);
+      const messages = Array.isArray(item?.messages)
+        ? item.messages.filter((msg: any) => typeof msg === 'string' && msg.trim())
+        : [];
+      if (!rowNumber || messages.length === 0) {
+        continue;
+      }
+
+      const existing = this.previewRowErrors[rowNumber] || [];
+      this.previewRowErrors[rowNumber] = [...existing, ...messages];
+      serverValidationErrors.push({
+        row: rowNumber,
+        column: 'Server Validation',
+        errorMessage: messages.join(' | '),
+      });
+    }
+
+    if (serverValidationErrors.length > 0) {
+      this.validationErrors = serverValidationErrors;
+      this.errorCount = serverValidationErrors.length;
+      this.errorRowCount = Object.keys(this.previewRowErrors).length;
+      this.showValidationReport = true;
+      return true;
+    }
+
+    return false;
   }
 
   validateExcelData(data: any[]): void {
@@ -697,7 +936,12 @@ export class BulkTrainingUploadComponent implements OnInit {
     return `${yyyy}-${mm}-${dd}`;
   }
   submitData() {
+    if (!this.validateHonorificSelection()) {
+      return;
+    }
     if (this.errorCount === 0) {
+      this.clearServerRowErrors();
+      this.showValidationReport = false;
       const trainingId = this.trainingId;
       const trainingInstituteId = this.trainingInstituteId;
 
@@ -723,7 +967,13 @@ export class BulkTrainingUploadComponent implements OnInit {
       this.isSpinning = true;
       this.trainingService.submitTrainees(convertedData).subscribe({
         next: (response) => {
+          const parsedResponse = this.parseSubmitResponse(response);
+          const hasServerErrors = this.applyServerErrorsToPreview(parsedResponse);
           this.isSpinning = false;
+          if (hasServerErrors) {
+            this.toastr.error('Some records have validation errors.', 'Error');
+            return;
+          }
           this.toastr.success(
             'Participants submitted successfully!',
             'Success',
@@ -731,7 +981,13 @@ export class BulkTrainingUploadComponent implements OnInit {
           this.router.navigate(['/admin/approvedrejectedTrainings']);
         },
         error: (error) => {
+          const parsedResponse = this.parseSubmitResponse(error?.error);
+          const hasServerErrors = this.applyServerErrorsToPreview(parsedResponse);
           this.isSpinning = false;
+          if (hasServerErrors) {
+            this.toastr.error('Some records have validation errors.', 'Error');
+            return;
+          }
           this.toastr.error('Failed to submit participants.', 'Error');
         },
       });
@@ -747,11 +1003,11 @@ export class BulkTrainingUploadComponent implements OnInit {
   reUploadFile(): void {
     this.showValidationReport = false;
     this.validationErrors = [];
+    this.clearServerRowErrors();
     this.invalidRowsData = [];
     this.uploadProgress = 0;
     this.excelData = [];
     this.showFileUpload = false;
-    this.prefixSet = false;
     setTimeout(() => {
       this.showFileUpload = true;
     }, 0);
