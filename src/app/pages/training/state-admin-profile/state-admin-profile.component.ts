@@ -324,11 +324,12 @@ export class StateAdminProfileComponent implements OnInit, OnDestroy {
   onSubmit(): void {
     if (this.profileForm.valid) {
       const formData = this.profileForm.value;
+      const apiUsername = this.buildStateAdminUsername(formData.username);
 
       // Prepare payload according to API specification
       const payload = {
         contactPersonName: formData.adminName,
-        username: formData.username,
+        username: apiUsername,
         designation: formData.designation,
         contactNumber: formData.phone,
         emailId: formData.email,
@@ -512,6 +513,16 @@ export class StateAdminProfileComponent implements OnInit, OnDestroy {
     this.hasSpecialChar = /[@$!%*?&]/.test(password || '');
   }
 
+  private buildStateAdminUsername(username: string): string {
+    const trimmedUsername = (username || '').trim();
+    if (!trimmedUsername) {
+      return '';
+    }
+    return /^sa-/i.test(trimmedUsername)
+      ? trimmedUsername
+      : `SA-${trimmedUsername}`;
+  }
+
   private setupUsernameAvailabilityCheck() {
     const usernameControl = this.profileForm.get('username');
     if (!usernameControl) {
@@ -525,6 +536,7 @@ export class StateAdminProfileComponent implements OnInit, OnDestroy {
         distinctUntilChanged(),
         switchMap((value: string) => {
           const username = (value || '').trim();
+          const apiUsername = this.buildStateAdminUsername(username);
 
           if (!username || usernameControl.invalid) {
             this.resetUsernameAvailabilityState();
@@ -535,7 +547,7 @@ export class StateAdminProfileComponent implements OnInit, OnDestroy {
           this.isUsernameAvailable = false;
           this.clearUsernameTakenError();
 
-          return this.authService.checkUsername(username).pipe(
+          return this.authService.checkUsername(apiUsername).pipe(
             map((response) => ({
               available: this.isUsernameValid(response),
             })),

@@ -60,7 +60,7 @@ export class LoginComponent implements OnInit {
     private trainingsService: TrainingService
   ) {
     this.signInForm = this.fb.group({
-      email: ['', [Validators.required, Validators.email]],
+      username: ['', [Validators.required, Validators.minLength(3)]],
       password: ['', [Validators.required, Validators.minLength(6)]],
     });
   }
@@ -94,9 +94,9 @@ export class LoginComponent implements OnInit {
     this.isLoading = true;
     this.errorMessage = '';
 
-    const { email, password } = this.signInForm.value;
+    const { username, password } = this.signInForm.value;
 
-    this.authService.login(email, password).subscribe({
+    this.authService.login(username, password).subscribe({
       next: (response) => {
         this.isLoading = false;
         if (response && response.data) {
@@ -105,8 +105,8 @@ export class LoginComponent implements OnInit {
           localStorage.setItem('roleId', response.data.role.toString());
           this.redirectBasedOnRole(response.data.role);
         } else {
-          this.errorMessage = 'Invalid email or password';
-          this.toastr.error('Invalid email or password', 'Login Failed');
+          this.errorMessage = 'Invalid username or password';
+          this.toastr.error('Invalid username or password', 'Login Failed');
         }
       },
       error: (error) => {

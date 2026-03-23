@@ -33,12 +33,12 @@
 
         <form [formGroup]="signInForm" (ngSubmit)="onSignIn()">
           <div class="form-group">
-            <label>Email Address</label>
+            <label>Username</label>
             <input
-              type="email"
-              formControlName="email"
-              placeholder="Enter Email"
-              [class.is-invalid]="signInForm.get('email')?.invalid && signInForm.get('email')?.touched"
+              type="text"
+              formControlName="username"
+              placeholder="Enter Username"
+              [class.is-invalid]="signInForm.get('username')?.invalid && signInForm.get('username')?.touched"
             />
           </div>
 

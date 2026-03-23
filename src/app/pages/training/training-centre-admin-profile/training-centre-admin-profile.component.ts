@@ -75,6 +75,7 @@ export class TrainingCentreAdminProfileComponent implements OnInit, OnDestroy {
   usernameCheckSubscription: Subscription | null = null;
   isCheckingUsername = false;
   isUsernameAvailable = false;
+  initialUsername = '';
 
   // Password validation properties
   hasMinLength = false;
@@ -154,14 +155,6 @@ export class TrainingCentreAdminProfileComponent implements OnInit, OnDestroy {
             Validators.required,
             Validators.minLength(3),
             Validators.pattern('^[a-zA-Z ]*$'),
-          ],
-        ],
-        username: [
-          '',
-          [
-            Validators.required,
-            Validators.minLength(3),
-            Validators.pattern(/^[a-zA-Z0-9_.-]+$/),
           ],
         ],
         instituteType: ['', [Validators.required]],
@@ -246,6 +239,16 @@ export class TrainingCentreAdminProfileComponent implements OnInit, OnDestroy {
             '',
             [Validators.required, Validators.minLength(2)],
           ],
+          username: [
+            '',
+            this.userRole === 5
+              ? [
+                  Validators.required,
+                  Validators.minLength(3),
+                  Validators.pattern(/^[a-zA-Z0-9_.-]+$/),
+                ]
+              : [],
+          ],
           designation: ['', [Validators.required]],
           contactNumber: [
             '',
@@ -273,15 +276,15 @@ export class TrainingCentreAdminProfileComponent implements OnInit, OnDestroy {
     const now = new Date();
     this.today = now.toISOString().split('T')[0];
     this.loadStates();
-    if (this.userRole == 1) {
-      this.setupUsernameAvailabilityCheck();
-    }
     if (this.userRole == 5 || this.userRole == 6) {
       this.initializeForm();
       // Subscribe to password field changes for real-time validation
       this.profileForm.get('password')?.valueChanges.subscribe((password) => {
         this.validatePassword(password || '');
       });
+    }
+    if (this.userRole == 5) {
+      this.setupUsernameAvailabilityCheck();
     }
   }
   onInstituteTypeChange(event:any){
@@ -424,6 +427,12 @@ export class TrainingCentreAdminProfileComponent implements OnInit, OnDestroy {
         contactPersonName: this.instituteData.contactPersonName,
       });
     }
+    if (this.instituteData.username != null) {
+      this.initialUsername = this.instituteData.username;
+      this.profileForm.patchValue({
+        username: this.instituteData.username,
+      });
+    }
     if (this.instituteData.designation != null) {
       this.profileForm.patchValue({
         designation: this.instituteData.designation,
@@ -495,7 +504,7 @@ export class TrainingCentreAdminProfileComponent implements OnInit, OnDestroy {
    * Handle form submission
    */
   onSubmit() {
-    if (this.userRole == 1 && this.isCheckingUsername) {
+    if (this.userRole == 5 && this.isCheckingUsername) {
       this.toastr.info('Please wait while username availability is checked');
       return;
     }
@@ -537,19 +546,10 @@ export class TrainingCentreAdminProfileComponent implements OnInit, OnDestroy {
         this.profileForm.get('instituteType')?.value === 'Other Organizations'
       ) {
         const organizationTypeCode = this.getSelectedOrganizationTypeCode();
-        if (!organizationTypeCode) {
-          this.isLoading = false;
-          this.toastr.error(
-            'Unable to determine organization type for selected organization',
-            'Error'
-          );
-          return;
-        }
 
         instituteDetails = {
           instituteName:
             this.profileForm.get('trainingInstituteName')?.value || '',
-          username: this.profileForm.get('username')?.value || '',
           // registrationNumber:
           //   this.profileForm.get('trainingInstituteRegistration')?.value || '',
           registrationValidity: expiryValue ? expiryValue + 'T00:00:00' : '',
@@ -567,7 +567,6 @@ export class TrainingCentreAdminProfileComponent implements OnInit, OnDestroy {
         instituteDetails = {
           instituteName:
             this.profileForm.get('trainingInstituteName')?.value || '',
-          username: this.profileForm.get('username')?.value || '',
           // registrationNumber:
           //   this.profileForm.get('trainingInstituteRegistration')?.value || '',
           registrationValidity: expiryValue ? expiryValue + 'T00:00:00' : '',
@@ -582,12 +581,14 @@ export class TrainingCentreAdminProfileComponent implements OnInit, OnDestroy {
       }
 
       // Append instituteDetails as JSON string with explicit content type
-      const instituteDetailsBlob = new Blob(
-        [JSON.stringify(instituteDetails)],
-        {
-          type: 'application/json',
-        }
+      const instituteDetailsString = JSON.stringify(instituteDetails);
+      console.log(
+        `[TrainingInstitute/Create] endpoint: trainingInstitutes/create/${this.userId}`
       );
+      console.log('[TrainingInstitute/Create] payload string:', instituteDetailsString);
+      const instituteDetailsBlob = new Blob([instituteDetailsString], {
+        type: 'application/json',
+      });
       formData.append('data', instituteDetailsBlob);
 
       // Append image file
@@ -633,6 +634,10 @@ export class TrainingCentreAdminProfileComponent implements OnInit, OnDestroy {
       const instituteDetails = {
         contactPersonName:
           this.profileForm.get('contactPersonName')?.value || '',
+        username:
+          this.userRole === 5
+            ? this.profileForm.get('username')?.value || ''
+            : undefined,
         designation: this.profileForm.get('designation')?.value || '',
         contactNumber: this.profileForm.get('contactNumber')?.value || '',
         emailId: this.profileForm.get('emailId')?.value || '',
@@ -927,6 +932,13 @@ export class TrainingCentreAdminProfileComponent implements OnInit, OnDestroy {
           const username = (value || '').trim();
 
           if (!username || usernameControl.invalid) {
+            this.resetUsernameAvailabilityState();
+            return of(null);
+          }
+          if (
+            this.initialUsername &&
+            username.toLowerCase() === this.initialUsername.toLowerCase()
+          ) {
             this.resetUsernameAvailabilityState();
             return of(null);
           }
