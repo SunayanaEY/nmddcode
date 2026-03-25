@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { TranslateModule } from '@ngx-translate/core';
 import {
@@ -32,14 +32,6 @@ import {
   ModalConfig,
   ModalField,
 } from '../../../components/modal/modal.component';
-import { Subscription, of } from 'rxjs';
-import {
-  catchError,
-  debounceTime,
-  distinctUntilChanged,
-  map,
-  switchMap,
-} from 'rxjs/operators';
 
 @Component({
   selector: 'app-state-admin-profile',
@@ -54,7 +46,7 @@ import {
   templateUrl: './state-admin-profile.component.html',
   styleUrl: './state-admin-profile.component.css',
 })
-export class StateAdminProfileComponent implements OnInit, OnDestroy {
+export class StateAdminProfileComponent implements OnInit {
   profileForm: FormGroup;
   selectedFile: File | null = null;
   selectedFileDoc: File | null = null;
@@ -72,9 +64,6 @@ export class StateAdminProfileComponent implements OnInit, OnDestroy {
   hasNumber = false;
   hasSpecialChar = false;
   isLoading = false;
-  usernameCheckSubscription: Subscription | null = null;
-  isCheckingUsername = false;
-  isUsernameAvailable = false;
   userRole: any;
   instituteData: any;
   trainingInstituteId: any;
@@ -105,6 +94,7 @@ export class StateAdminProfileComponent implements OnInit, OnDestroy {
   isTableLoading = false;
   tableColumns: TableColumn[] = [
     { key: 'state', header: 'State' },
+    { key: 'username', header: 'Username'},
     { key: 'adminName', header: 'Contact Person Name' },
     { key: 'designation', header: 'Designation' },
     { key: 'phone', header: 'Contact Number' },
@@ -167,6 +157,7 @@ export class StateAdminProfileComponent implements OnInit, OnDestroy {
   };
   previousStateHeadsData: any[] = [];
   previousStateHeadsTableColumns: TableColumn[] = [
+    { key: 'username', header: 'Username' },
     { key: 'contactPersonName', header: 'Contact Person Name' },
     { key: 'designation', header: 'Designation' },
     { key: 'contactNumber', header: 'Contact Number' },
@@ -222,14 +213,6 @@ export class StateAdminProfileComponent implements OnInit, OnDestroy {
       {
         state: ['', Validators.required],
         adminName: ['', [Validators.required, Validators.minLength(2),Validators.pattern('^[a-zA-Z ]*$')]],
-        username: [
-          '',
-          [
-            Validators.required,
-            Validators.minLength(3),
-            Validators.pattern(/^[a-zA-Z0-9_.-]+$/),
-          ],
-        ],
         designation: ['', Validators.required],
         phone: [
           '',
@@ -266,7 +249,6 @@ export class StateAdminProfileComponent implements OnInit, OnDestroy {
     this.profileForm.get('password')?.valueChanges.subscribe((password) => {
       this.validatePassword(password || '');
     });
-    this.setupUsernameAvailabilityCheck();
   }
 
   getRole() {
@@ -324,7 +306,7 @@ export class StateAdminProfileComponent implements OnInit, OnDestroy {
   onSubmit(): void {
     if (this.profileForm.valid) {
       const formData = this.profileForm.value;
-      const apiUsername = this.buildStateAdminUsername(formData.username);
+      const apiUsername = this.buildStateAdminUsername(formData.adminName);
 
       // Prepare payload according to API specification
       const payload = {
@@ -345,7 +327,6 @@ export class StateAdminProfileComponent implements OnInit, OnDestroy {
             response.message || 'State admin profile saved successfully!'
           );
           this.profileForm.reset();
-          this.resetUsernameAvailabilityState();
           this.isLoading = false;
           // Reload table data to show the new entry
           this.loadStateAdminData();
@@ -513,122 +494,17 @@ export class StateAdminProfileComponent implements OnInit, OnDestroy {
     this.hasSpecialChar = /[@$!%*?&]/.test(password || '');
   }
 
-  private buildStateAdminUsername(username: string): string {
-    const trimmedUsername = (username || '').trim();
-    if (!trimmedUsername) {
+  private buildStateAdminUsername(adminName: string): string {
+    const normalizedName = (adminName || '')
+      .trim()
+      .replace(/\s+/g, '')
+      .toLowerCase();
+    if (!normalizedName) {
       return '';
     }
-    return /^sa-/i.test(trimmedUsername)
-      ? trimmedUsername
-      : `SA-${trimmedUsername}`;
-  }
-
-  private setupUsernameAvailabilityCheck() {
-    const usernameControl = this.profileForm.get('username');
-    if (!usernameControl) {
-      return;
-    }
-
-    this.usernameCheckSubscription?.unsubscribe();
-    this.usernameCheckSubscription = usernameControl.valueChanges
-      .pipe(
-        debounceTime(400),
-        distinctUntilChanged(),
-        switchMap((value: string) => {
-          const username = (value || '').trim();
-          const apiUsername = this.buildStateAdminUsername(username);
-
-          if (!username || usernameControl.invalid) {
-            this.resetUsernameAvailabilityState();
-            return of(null);
-          }
-
-          this.isCheckingUsername = true;
-          this.isUsernameAvailable = false;
-          this.clearUsernameTakenError();
-
-          return this.authService.checkUsername(apiUsername).pipe(
-            map((response) => ({
-              available: this.isUsernameValid(response),
-            })),
-            catchError(() => of({ available: false }))
-          );
-        })
-      )
-      .subscribe((result) => {
-        if (!result) {
-          return;
-        }
-
-        this.isCheckingUsername = false;
-        if (result.available) {
-          this.isUsernameAvailable = true;
-          this.clearUsernameTakenError();
-          return;
-        }
-
-        this.isUsernameAvailable = false;
-        usernameControl.setErrors({
-          ...(usernameControl.errors || {}),
-          usernameTaken: true,
-        });
-      });
-  }
-
-  private isUsernameValid(response: any): boolean {
-    if (typeof response === 'boolean') {
-      return response;
-    }
-    if (!response || typeof response !== 'object') {
-      return false;
-    }
-    if (typeof response.valid === 'boolean') {
-      return response.valid;
-    }
-    if (typeof response.available === 'boolean') {
-      return response.available;
-    }
-    if (typeof response.exists === 'boolean') {
-      return !response.exists;
-    }
-    if (typeof response.success === 'boolean') {
-      return response.success;
-    }
-
-    const responseData = response.data;
-    if (responseData && typeof responseData === 'object') {
-      if (typeof responseData.valid === 'boolean') {
-        return responseData.valid;
-      }
-      if (typeof responseData.available === 'boolean') {
-        return responseData.available;
-      }
-      if (typeof responseData.exists === 'boolean') {
-        return !responseData.exists;
-      }
-    }
-
-    return false;
-  }
-
-  private clearUsernameTakenError() {
-    const usernameControl = this.profileForm.get('username');
-    if (!usernameControl?.errors) {
-      return;
-    }
-
-    const { usernameTaken, ...restErrors } = usernameControl.errors;
-    if (usernameTaken) {
-      usernameControl.setErrors(
-        Object.keys(restErrors).length ? restErrors : null
-      );
-    }
-  }
-
-  private resetUsernameAvailabilityState() {
-    this.isCheckingUsername = false;
-    this.isUsernameAvailable = false;
-    this.clearUsernameTakenError();
+    return /^sa-/i.test(normalizedName)
+      ? normalizedName
+      : `SA-${normalizedName}`;
   }
 
   markFormGroupTouched(formGroup: FormGroup) {
@@ -656,6 +532,7 @@ export class StateAdminProfileComponent implements OnInit, OnDestroy {
           this.stateAdminTableData = response.data.map((item) => ({
             id: item.id,
             state: item.stateName || 'N/A', // Use stateName from API or fallback
+            username: item.username || 'N/A',
             adminName: item.contactPersonName,
             designation: item.designation,
             phone: item.contactNumber,
@@ -727,7 +604,6 @@ export class StateAdminProfileComponent implements OnInit, OnDestroy {
       this.profileForm.patchValue({
         state: data.stateId,
         adminName: data.contactPersonName,
-        username: data.username || '',
         designation: data.designation,
         phone: data.contactNumber,
         email: data.emailId
@@ -845,7 +721,4 @@ export class StateAdminProfileComponent implements OnInit, OnDestroy {
     this.onPreviousStateHeadsModalClose();
   }
 
-  ngOnDestroy(): void {
-    this.usernameCheckSubscription?.unsubscribe();
-  }
 }

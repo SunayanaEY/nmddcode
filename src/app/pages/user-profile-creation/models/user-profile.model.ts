@@ -8,7 +8,6 @@ export interface RegisterInstituteRequest {
 
 export interface RegisterDataEntryOperatorRequest {
   operatorName: string;
-  username: string;
   designation: string;
   contactNumber: string;
   emailId: string;

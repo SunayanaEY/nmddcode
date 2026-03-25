@@ -497,6 +497,7 @@ export class AdminService {
       validTo: string | null;
       stateName: string | null;
       password: string | null;
+      username: string | null;
     }[];
     statusCode: number;
   }> {

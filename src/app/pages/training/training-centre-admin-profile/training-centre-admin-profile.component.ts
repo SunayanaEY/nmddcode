@@ -1,7 +1,6 @@
 import {
   Component,
   OnInit,
-  OnDestroy,
   Output,
   EventEmitter,
   ElementRef,
@@ -18,14 +17,6 @@ import {
 } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
-import { Subscription, of } from 'rxjs';
-import {
-  debounceTime,
-  distinctUntilChanged,
-  switchMap,
-  map,
-  catchError,
-} from 'rxjs/operators';
 import {
   BreadcrumbComponent,
   BreadcrumbItem,
@@ -57,7 +48,7 @@ import {
   templateUrl: './training-centre-admin-profile.component.html',
   styleUrls: ['./training-centre-admin-profile.component.css'],
 })
-export class TrainingCentreAdminProfileComponent implements OnInit, OnDestroy {
+export class TrainingCentreAdminProfileComponent implements OnInit {
   @Output() formSubmitted = new EventEmitter<void>();
   @ViewChild('docFileInput') docFileInputRef?: ElementRef<HTMLInputElement>;
   @ViewChild('imageFileInput') imageFileInputRef?: ElementRef<HTMLInputElement>;
@@ -72,10 +63,6 @@ export class TrainingCentreAdminProfileComponent implements OnInit, OnDestroy {
   isDragOverDoc = false;
   showPassword = false;
   showConfirmPassword = false;
-  usernameCheckSubscription: Subscription | null = null;
-  isCheckingUsername = false;
-  isUsernameAvailable = false;
-  initialUsername = '';
 
   // Password validation properties
   hasMinLength = false;
@@ -239,16 +226,6 @@ export class TrainingCentreAdminProfileComponent implements OnInit, OnDestroy {
             '',
             [Validators.required, Validators.minLength(2)],
           ],
-          username: [
-            '',
-            this.userRole === 5
-              ? [
-                  Validators.required,
-                  Validators.minLength(3),
-                  Validators.pattern(/^[a-zA-Z0-9_.-]+$/),
-                ]
-              : [],
-          ],
           designation: ['', [Validators.required]],
           contactNumber: [
             '',
@@ -282,9 +259,6 @@ export class TrainingCentreAdminProfileComponent implements OnInit, OnDestroy {
       this.profileForm.get('password')?.valueChanges.subscribe((password) => {
         this.validatePassword(password || '');
       });
-    }
-    if (this.userRole == 5) {
-      this.setupUsernameAvailabilityCheck();
     }
   }
   onInstituteTypeChange(event:any){
@@ -427,12 +401,6 @@ export class TrainingCentreAdminProfileComponent implements OnInit, OnDestroy {
         contactPersonName: this.instituteData.contactPersonName,
       });
     }
-    if (this.instituteData.username != null) {
-      this.initialUsername = this.instituteData.username;
-      this.profileForm.patchValue({
-        username: this.instituteData.username,
-      });
-    }
     if (this.instituteData.designation != null) {
       this.profileForm.patchValue({
         designation: this.instituteData.designation,
@@ -504,10 +472,6 @@ export class TrainingCentreAdminProfileComponent implements OnInit, OnDestroy {
    * Handle form submission
    */
   onSubmit() {
-    if (this.userRole == 5 && this.isCheckingUsername) {
-      this.toastr.info('Please wait while username availability is checked');
-      return;
-    }
     if (this.profileForm.invalid) {
       this.markFormGroupTouched(this.profileForm);
       this.toastr.error(
@@ -605,7 +569,6 @@ export class TrainingCentreAdminProfileComponent implements OnInit, OnDestroy {
             this.profileForm.reset();
             this.selectedFile = null;
             this.selectedImagePreview = null;
-            this.resetUsernameAvailabilityState();
 
             this.toastr.success(
               `Training Centre Admin profile created successfully! Registration ID: ${registrationId}`,
@@ -634,10 +597,6 @@ export class TrainingCentreAdminProfileComponent implements OnInit, OnDestroy {
       const instituteDetails = {
         contactPersonName:
           this.profileForm.get('contactPersonName')?.value || '',
-        username:
-          this.userRole === 5
-            ? this.profileForm.get('username')?.value || ''
-            : undefined,
         designation: this.profileForm.get('designation')?.value || '',
         contactNumber: this.profileForm.get('contactNumber')?.value || '',
         emailId: this.profileForm.get('emailId')?.value || '',
@@ -917,121 +876,4 @@ export class TrainingCentreAdminProfileComponent implements OnInit, OnDestroy {
     this.hasSpecialChar = /[@$!%*?&]/.test(password);
   }
 
-  private setupUsernameAvailabilityCheck() {
-    const usernameControl = this.profileForm.get('username');
-    if (!usernameControl) {
-      return;
-    }
-
-    this.usernameCheckSubscription?.unsubscribe();
-    this.usernameCheckSubscription = usernameControl.valueChanges
-      .pipe(
-        debounceTime(400),
-        distinctUntilChanged(),
-        switchMap((value: string) => {
-          const username = (value || '').trim();
-
-          if (!username || usernameControl.invalid) {
-            this.resetUsernameAvailabilityState();
-            return of(null);
-          }
-          if (
-            this.initialUsername &&
-            username.toLowerCase() === this.initialUsername.toLowerCase()
-          ) {
-            this.resetUsernameAvailabilityState();
-            return of(null);
-          }
-
-          this.isCheckingUsername = true;
-          this.isUsernameAvailable = false;
-          this.clearUsernameTakenError();
-
-          return this.authService.checkUsername(username).pipe(
-            map((response) => ({
-              available: this.isUsernameValid(response),
-            })),
-            catchError(() => of({ available: false }))
-          );
-        })
-      )
-      .subscribe((result) => {
-        if (!result) {
-          return;
-        }
-
-        this.isCheckingUsername = false;
-        if (result.available) {
-          this.isUsernameAvailable = true;
-          this.clearUsernameTakenError();
-          return;
-        }
-
-        this.isUsernameAvailable = false;
-        usernameControl.setErrors({
-          ...(usernameControl.errors || {}),
-          usernameTaken: true,
-        });
-      });
-  }
-
-  private isUsernameValid(response: any): boolean {
-    if (typeof response === 'boolean') {
-      return response;
-    }
-    if (!response || typeof response !== 'object') {
-      return false;
-    }
-    if (typeof response.valid === 'boolean') {
-      return response.valid;
-    }
-    if (typeof response.available === 'boolean') {
-      return response.available;
-    }
-    if (typeof response.exists === 'boolean') {
-      return !response.exists;
-    }
-    if (typeof response.success === 'boolean') {
-      return response.success;
-    }
-
-    const responseData = response.data;
-    if (responseData && typeof responseData === 'object') {
-      if (typeof responseData.valid === 'boolean') {
-        return responseData.valid;
-      }
-      if (typeof responseData.available === 'boolean') {
-        return responseData.available;
-      }
-      if (typeof responseData.exists === 'boolean') {
-        return !responseData.exists;
-      }
-    }
-
-    return false;
-  }
-
-  private clearUsernameTakenError() {
-    const usernameControl = this.profileForm.get('username');
-    if (!usernameControl?.errors) {
-      return;
-    }
-
-    const { usernameTaken, ...restErrors } = usernameControl.errors;
-    if (usernameTaken) {
-      usernameControl.setErrors(
-        Object.keys(restErrors).length ? restErrors : null
-      );
-    }
-  }
-
-  private resetUsernameAvailabilityState() {
-    this.isCheckingUsername = false;
-    this.isUsernameAvailable = false;
-    this.clearUsernameTakenError();
-  }
-
-  ngOnDestroy(): void {
-    this.usernameCheckSubscription?.unsubscribe();
-  }
 }

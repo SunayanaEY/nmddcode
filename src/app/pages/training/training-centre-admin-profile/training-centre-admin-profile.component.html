@@ -507,58 +507,6 @@
                 </div>
               </div>
 
-              <div class="form-group" *ngIf="userRole === 5">
-                <label for="username">Username<span class="required">*</span></label>
-                <input
-                  type="text"
-                  id="username"
-                  formControlName="username"
-                  placeholder="Enter username"
-                  class="form-control"
-                  [class.is-invalid]="
-                    profileForm.get('username')?.invalid &&
-                    profileForm.get('username')?.touched
-                  "
-                />
-                <div
-                  class="invalid-feedback"
-                  *ngIf="
-                    profileForm.get('username')?.invalid &&
-                    profileForm.get('username')?.touched
-                  "
-                >
-                  <span *ngIf="profileForm.get('username')?.errors?.['required']">
-                    Username is required
-                  </span>
-                  <span *ngIf="profileForm.get('username')?.errors?.['minlength']">
-                    Username must be at least 3 characters
-                  </span>
-                  <span *ngIf="profileForm.get('username')?.errors?.['pattern']">
-                    Only letters, numbers, underscore, dot and hyphen are allowed
-                  </span>
-                  <span *ngIf="profileForm.get('username')?.errors?.['usernameTaken']">
-                    Username already exists
-                  </span>
-                </div>
-                <small
-                  class="text-muted d-block mt-1"
-                  *ngIf="isCheckingUsername && profileForm.get('username')?.value"
-                >
-                  Checking username...
-                </small>
-                <small
-                  class="text-success d-block mt-1"
-                  *ngIf="
-                    !isCheckingUsername &&
-                    isUsernameAvailable &&
-                    profileForm.get('username')?.value &&
-                    !profileForm.get('username')?.errors
-                  "
-                >
-                  Username is available
-                </small>
-              </div>
-
               <div class="form-group">
                 <label for="designation"
                   >{{ "TRAINING.DESIGNATION" | translate

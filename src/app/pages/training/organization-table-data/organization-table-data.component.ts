@@ -99,6 +99,7 @@ export class OrganizationTableDataComponent implements OnInit {
   ) {}
 
   tableColumns: TableColumn[] = [
+    { key:'username', header: 'Username' },
     { key: 'organizationName', header: 'Name' },
     { key: 'organizationCode', header: 'Code' },
     { key: 'state', header: 'State' },
@@ -128,6 +129,7 @@ export class OrganizationTableDataComponent implements OnInit {
   trainingCentres: any[] = [];
 
   exportHeaders = [
+    'Username',
     'Organization Name',
     'Code',
     'State',
@@ -137,6 +139,7 @@ export class OrganizationTableDataComponent implements OnInit {
     'Contact Number',
   ];
   exportColumnKeys = [
+    'username',
     'organizationName',
     'organizationCode',
     'state',

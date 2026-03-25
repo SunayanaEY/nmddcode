@@ -119,6 +119,7 @@ export class TrainingCentreComponent implements OnInit {
     'Institute Name',
     'State',
     'District',
+    'Username',
     'State Head Name',
     'State Head Contact',
     'State Head Email',
@@ -130,6 +131,7 @@ export class TrainingCentreComponent implements OnInit {
     'trainingInstituteName',
     'state',
     'district',
+    'username',
     'stateHeadContactPerson',
     'stateHeadContact',
     'stateHeadEmail',
@@ -142,6 +144,7 @@ export class TrainingCentreComponent implements OnInit {
   showPreviousInstituteHeadsModal = false;
   previousInstituteHeadsData: any[] = [];
   previousStateHeadsTableColumns: TableColumn[] = [
+    { key: 'username', header: 'Username' },
     { key: 'contactPersonName', header: 'Contact Person Name' },
     { key: 'designation', header: 'Designation' },
     { key: 'contactNumber', header: 'Contact Number' },
@@ -320,6 +323,7 @@ export class TrainingCentreComponent implements OnInit {
         { key: 'trainingInstituteName', header: 'TRAINING.INSTITUTE_NAME' },
         { key: 'state', header: 'COMMON.STATE' },
         { key: 'district', header: 'COMMON.DISTRICT' },
+        { key: 'username', header: 'Username' },
         { key: 'contactPersonName', header: 'TRAINING.INSTITUTE_HEAD' },
         { key: 'contactNumber', header: 'COMMON.CONTACT_NUMBER' },
         { key: 'emailId', header: 'COMMON.CONTACT_MAIL' },
@@ -332,6 +336,7 @@ export class TrainingCentreComponent implements OnInit {
       ];
     } else {
       this.tableColumns = [
+        { key: 'username', header: 'Username' },
         { key: 'trainingInstituteName', header: 'TRAINING.INSTITUTE_NAME' },
         { key: 'state', header: 'COMMON.STATE' },
         { key: 'district', header: 'COMMON.DISTRICT' },
