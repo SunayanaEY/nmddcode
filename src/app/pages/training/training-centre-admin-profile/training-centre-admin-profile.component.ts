@@ -571,7 +571,7 @@ export class TrainingCentreAdminProfileComponent implements OnInit {
             this.selectedImagePreview = null;
 
             this.toastr.success(
-              `Training Centre Admin profile created successfully! Registration ID: ${registrationId}`,
+              `Training Centre Admin profile created successfully! `,
               'Success'
             );
 

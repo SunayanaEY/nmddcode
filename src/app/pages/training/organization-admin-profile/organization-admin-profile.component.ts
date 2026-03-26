@@ -455,7 +455,7 @@ export class OrganizationAdminProfileComponent implements OnInit {
             // Reset form after successful registration
             this.profileForm.reset();
             this.toastr.success(
-              `Organization Admin profile created successfully! Registration ID: ${registrationId}`,
+              `Organization Admin profile created successfully`,
               'Success'
             );
             if (this.formSubmissionSuccess.observers.length > 0) {
