@@ -5,29 +5,63 @@
     <div class="corner top-right"></div>
     <div class="corner bottom-left"></div>
     <div class="corner bottom-right"></div>
-    
+
     <!-- Top meta -->
     <div class="certificate-header" aria-label="Header">
-      <div>
+      <div class="col-3">
         <div class="certificate-ref">UIN No- {{ finalUniqueId }}</div>
-        <div class="certificate-ref" *ngIf="data?.trainingRefCode">Ref: {{ data?.trainingRefCode }}</div>
+        <div class="certificate-ref" *ngIf="data?.trainingRefCode">
+          Ref: {{ data?.trainingRefCode }}
+        </div>
       </div>
-      <div class="certificate-date">Date: {{ data?.certificateDate | date: 'dd.MM.yyyy' }}</div>
+      <div
+        class="col-5"
+        style="font-size: 1.3rem; text-align: center"
+        *ngIf="
+          data &&
+          data.includeInstituteName !== undefined &&
+          data.includeInstituteName
+        "
+      >
+        <div class="certificate-issuer">{{ data?.trainingInstituteName }}</div>
+      </div>
+      <div class="certificate-date col-3">
+        Date: {{ data?.certificateDate | date: "dd.MM.yyyy" }}
+      </div>
     </div>
 
     <!-- Logo Row -->
     <div class="brand-row" aria-label="Branding">
-      <img class="logo-small" [src]="logo1Url || data?.logoPath1" alt="" crossorigin="anonymous" />
-      <img class="logo-center" *ngIf="logo2Url || data?.logoPath2" [src]="logo2Url || data?.logoPath2" alt=""
-        crossorigin="anonymous" />
-      <img class="logo-small logo-small-right" *ngIf="data?.logoPath3 || logo3Url" [src]="logo3Url || data?.logoPath3"
-        alt="" crossorigin="anonymous" />
+      <img
+        class="logo-small"
+        [src]="logo1Url || data?.logoPath1"
+        alt=""
+        crossorigin="anonymous"
+      />
+      <img
+        class="logo-center"
+        *ngIf="logo2Url || data?.logoPath2"
+        [src]="logo2Url || data?.logoPath2"
+        alt=""
+        crossorigin="anonymous"
+      />
+      <img
+        class="logo-small logo-small-right"
+        *ngIf="data?.logoPath3 || logo3Url"
+        [src]="logo3Url || data?.logoPath3"
+        alt=""
+        crossorigin="anonymous"
+      />
     </div>
 
     <!-- QR Code (Center) + Trainee Photo (Right) Row -->
     <div class="qr-photo-row" aria-label="QR Code and Trainee Photo">
       <div class="qr-code">
-        <qrcode [qrdata]="qrData" [width]="100" [errorCorrectionLevel]="'M'"></qrcode>
+        <qrcode
+          [qrdata]="qrData"
+          [width]="100"
+          [errorCorrectionLevel]="'M'"
+        ></qrcode>
         <!-- <p class="uid">UIN: {{ finalUniqueId }}</p> -->
       </div>
       <div class="trainee-photo" *ngIf="traineePhotoUrl || validPhotoUrl">
@@ -45,7 +79,8 @@
         This is to certify that <span class="label">Mr/Mrs/Ms</span>
         <span class="name"> &nbsp;{{ data?.name }}</span>
         has successfully completed the training program
-        <span class="emphasis">{{ data?.trainingTitle }}</span>.
+        <span class="emphasis">{{ data?.trainingTitle }}</span
+        >.
       </p>
 
       <p>
@@ -54,15 +89,20 @@
           {{ totalDurationDays !== null ? totalDurationDays : data?.duration }}
         </span>
         <span>
-          &nbsp;{{ totalDurationDays !== null ? 'Days' : data?.durationType }}
+          &nbsp;{{ totalDurationDays !== null ? "Days" : data?.durationType }}
         </span>
         <ng-container>
-          from <span class="date">{{ data?.startDate | date: 'dd-MM-yyyy' }}</span>
-          to <span class="date">{{ data?.endDate | date: 'dd-MM-yyyy' }}</span>
+          from
+          <span class="date">{{ data?.startDate | date: "dd-MM-yyyy" }}</span>
+          to <span class="date">{{ data?.endDate | date: "dd-MM-yyyy" }}</span>
         </ng-container>
         conducted at
-        <span class="emphasis">{{ data?.trainingInstituteName || data?.organizationName || (data?.location ??
-          data?.venueState) }}</span> accredited by Government of India.
+        <span class="emphasis">{{
+          data?.trainingInstituteName ||
+            data?.organizationName ||
+            (data?.location ?? data?.venueState)
+        }}</span>
+        accredited by Government of India.
       </p>
     </section>
 
@@ -73,8 +113,13 @@
         <div class="signature" aria-label="Institute Head Signature">
           <ng-container *ngIf="data?.signatures?.length > 0; else emptyLeft">
             <p>
-              <img [src]="signatureUrls[0] || data.signatures[0].signatorySignaturePath" alt=""
-                crossorigin="anonymous" />
+              <img
+                [src]="
+                  signatureUrls[0] || data.signatures[0].signatorySignaturePath
+                "
+                alt=""
+                crossorigin="anonymous"
+              />
             </p>
             <p>_____________________</p>
             <p class="signature-name">{{ data.signatures[0].signatoryName }}</p>
@@ -92,8 +137,13 @@
         <div class="signature" [attr.aria-label]="rightSignatureTitle">
           <ng-container *ngIf="data?.signatures?.length > 1; else emptyRight">
             <p>
-              <img [src]="signatureUrls[1] || data.signatures[1].signatorySignaturePath" alt=""
-                crossorigin="anonymous" />
+              <img
+                [src]="
+                  signatureUrls[1] || data.signatures[1].signatorySignaturePath
+                "
+                alt=""
+                crossorigin="anonymous"
+              />
             </p>
             <p>_____________________</p>
             <p class="signature-name">{{ data.signatures[1].signatoryName }}</p>
@@ -112,6 +162,12 @@
 
   <!-- Actions -->
   <div class="modal-actions mt-3 mb-4 text-end">
-    <button class="btn btn-primary" (click)="download()" aria-label="Download certificate">Download</button>
+    <button
+      class="btn btn-primary"
+      (click)="download()"
+      aria-label="Download certificate"
+    >
+      Download
+    </button>
   </div>
 </div>

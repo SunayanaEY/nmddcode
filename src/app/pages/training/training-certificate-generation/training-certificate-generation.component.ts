@@ -51,7 +51,9 @@ import {
   templateUrl: './training-certificate-generation.component.html',
   styleUrl: './training-certificate-generation.component.css',
 })
-export class TrainingCertificateGenerationComponent implements OnInit, OnDestroy {
+export class TrainingCertificateGenerationComponent
+  implements OnInit, OnDestroy
+{
   breadcrumbItems: BreadcrumbItem[] = [
     { label: 'Dashboard', url: '/admin/role-dashboard' },
     { label: 'Schedule Training' },
@@ -62,6 +64,8 @@ export class TrainingCertificateGenerationComponent implements OnInit, OnDestroy
   logo1!: File;
   logo2!: File;
   logo3!: File;
+
+  includeInstituteName: boolean = false;
 
   signatures: any[] = [
     {
@@ -315,6 +319,7 @@ export class TrainingCertificateGenerationComponent implements OnInit, OnDestroy
           [Validators.required, Validators.maxLength(100)],
         ],
         trainingType: ['', Validators.required],
+        includeInstituteName: [Validators.required],
         modeOfTraining: ['', Validators.required],
         trainingRegion: ['D', Validators.required],
         dateRanges: this.fb.array(
@@ -450,6 +455,7 @@ export class TrainingCertificateGenerationComponent implements OnInit, OnDestroy
           durationType: this.trainingDetails.durationType,
           trainingDescription: this.trainingDetails.trainingDescription,
           trainingType: this.trainingDetails.trainingTypeId,
+          includeInstituteName: this.trainingDetails.includeInstituteName,
           modeOfTraining: this.trainingDetails.modeOfTraining,
           trainingRegion:
             this.trainingDetails.trainingRegion === 'IN'
@@ -869,6 +875,11 @@ export class TrainingCertificateGenerationComponent implements OnInit, OnDestroy
     if (data.hasOwnProperty('trainingInstituteName')) {
       data['trainingInstituteName'] = this.selectedTrainingInstituteName;
     }
+
+    if (data.hasOwnProperty('includeInstituteName')) {
+      data['includeInstituteName'] = this.includeInstituteName;
+    }
+
     data['trainingInstituteId'] = this.selectedTrainingInstituteId;
     // Get data from session storage
 
@@ -984,6 +995,8 @@ export class TrainingCertificateGenerationComponent implements OnInit, OnDestroy
 
       const [logoLeft, logoCenter, logoRight] = logos;
 
+      payload.append('data', JSON.stringify(data));
+
       payload.append('logoLeft', logoLeft instanceof File ? logoLeft : '');
       payload.append(
         'logoCenter',
@@ -992,7 +1005,7 @@ export class TrainingCertificateGenerationComponent implements OnInit, OnDestroy
       payload.append('logoRight', logoRight instanceof File ? logoRight : '');
       payload.append('logos', '');
 
-      payload.append('data', JSON.stringify(data));
+      console.log('Payload to upload:', payload);
 
       this.logFormData(payload, 'Outgoing payload');
 
@@ -1005,7 +1018,7 @@ export class TrainingCertificateGenerationComponent implements OnInit, OnDestroy
       if (this.trainingScheduleFile) {
         payload.append('trainingSchedule', this.trainingScheduleFile);
       }
-
+      console.log('Final payload with files:', JSON.stringify(payload));
       this.isSpinner = true;
       this.trainingService.saveTraining(payload).subscribe({
         next: (response) => {
@@ -1039,6 +1052,9 @@ export class TrainingCertificateGenerationComponent implements OnInit, OnDestroy
       }
     }
     console.groupEnd();
+  }
+  onCheckboxChange(event: any) {
+    // alert(this.includeInstituteName);
   }
 
   openPreview() {
@@ -1143,6 +1159,7 @@ export class TrainingCertificateGenerationComponent implements OnInit, OnDestroy
       startDate: startDate,
       endDate: endDate,
       trainingInstituteName,
+      includeInstituteName: this.includeInstituteName,
       instituteType: this.instituteType,
       logoPath1: logoPaths[0],
       logoPath2: logoPaths[1],
@@ -1209,7 +1226,11 @@ export class TrainingCertificateGenerationComponent implements OnInit, OnDestroy
 
   openTrainingSchedulePreview() {
     if (!this.trainingSchedulePreviewUrl) return;
-    window.open(this.trainingSchedulePreviewUrl, '_blank', 'noopener,noreferrer');
+    window.open(
+      this.trainingSchedulePreviewUrl,
+      '_blank',
+      'noopener,noreferrer',
+    );
   }
 
   downloadTrainingSchedule() {
