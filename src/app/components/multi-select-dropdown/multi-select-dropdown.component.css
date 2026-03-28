@@ -11,6 +11,9 @@
   border: none;
   min-height: 38px;
   padding: 14px 12px;
+  background-color: #fff;
+  color: #212529;
+  text-transform: none;
   cursor: pointer;
   display: flex;
   justify-content: space-between;
@@ -48,6 +51,7 @@
   color: #6c757d;
   background-color: transparent;
   font-weight: 400;
+  text-transform: none;
 }
 
 .dropdown-arrow {

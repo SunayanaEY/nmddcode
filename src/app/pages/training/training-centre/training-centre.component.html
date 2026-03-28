@@ -440,6 +440,7 @@
                 id="newStateId"
                 class="form-control"
                 [(ngModel)]="editForm.newStateId"
+                (ngModelChange)="onEditNewStateChange($event)"
                 name="newStateId"
                 required
               >

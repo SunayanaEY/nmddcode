@@ -33,6 +33,7 @@ export class RegisteredDataEntryOperatorsComponent implements OnInit {
 
   tableColumns: TableColumn[] = [
     { key: 'operatorName', header: 'TABLE_COLUMNS.OPERATOR_NAME' },
+    { key: 'username', header: 'USER_PROFILE_CREATION.USERNAME' },
     { key: 'designation', header: 'TABLE_COLUMNS.DESIGNATION' },
     { key: 'contactNumber', header: 'TABLE_COLUMNS.CONTACT_NUMBER' },
     { key: 'emailId', header: 'TABLE_COLUMNS.EMAIL_ID' },
