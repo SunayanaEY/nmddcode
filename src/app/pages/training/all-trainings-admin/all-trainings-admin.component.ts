@@ -1361,7 +1361,7 @@ export class AllTrainingsAdminComponent {
     });
   }
 
-  rejectTrainee(): void {
+  rejectTrainee(modal: any): void {
     if (this.rejectForm.valid) {
       this.isTableLoading = true;
       const remarks = this.rejectForm.get('remarks')?.value;
@@ -1371,6 +1371,7 @@ export class AllTrainingsAdminComponent {
         this.bulkRejectTraineesWithRemarks(
           this.selectedTraineesForBulkReject,
           remarks,
+          modal,
         );
       } else if (this.selectedTraineeForReject) {
         const payload = {
@@ -1397,7 +1398,6 @@ export class AllTrainingsAdminComponent {
                 response.data.message || 'Trainee rejected successfully',
                 'Success',
               );
-              this.onRejectModalDismiss();
 
               // Refresh the trainee list to reflect updated status
               this.refreshTraineeList();
@@ -1408,6 +1408,7 @@ export class AllTrainingsAdminComponent {
               );
             }
             this.isTableLoading = false;
+            modal.close();
             // Close only the reject modal, not all modals
             if (this.rejectModalRef) {
               this.rejectModalRef.close();
@@ -1612,8 +1613,11 @@ export class AllTrainingsAdminComponent {
     });
   }
 
-  bulkRejectTraineesWithRemarks(trainees: any[], remarks: string): void {
-    alert('coming to bulk reject !!');
+  bulkRejectTraineesWithRemarks(
+    trainees: any[],
+    remarks: string,
+    modal: any,
+  ): void {
     this.isTableLoading = true;
 
     // Filter trainees that can be rejected (not already approved or rejected)
@@ -1665,8 +1669,6 @@ export class AllTrainingsAdminComponent {
           if (this.traineeTable) {
             this.traineeTable.clearSelectedItems();
           }
-          alert('called !!');
-          this.onRejectModalDismiss();
 
           // Refresh the trainee list
           this.refreshTraineeList();
@@ -1676,6 +1678,7 @@ export class AllTrainingsAdminComponent {
             'Error',
           );
         }
+        modal.close();
 
         // Always close modal and cleanup after API response (success or failure)
         if (this.rejectModalRef) {
