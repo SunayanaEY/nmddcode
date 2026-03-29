@@ -951,12 +951,10 @@ export class TrainingCertificateGenerationComponent
         }
       });
 
-      console.log('Logos to upload:', this.logosNew);
+      const logoFieldKeys = ['logoLeft', 'logoCenter', 'logoRight'];
       this.logosNew.forEach((item, index) => {
         if (item && item.file) {
-          payload.append(`logos${index + 1}`, item.file); // logos1, logos2, logos3
-        } else {
-          payload.append(`logos${index + 1}`, ''); // empty string if no file
+          payload.append(logoFieldKeys[index], item.file);
         }
       });
 
