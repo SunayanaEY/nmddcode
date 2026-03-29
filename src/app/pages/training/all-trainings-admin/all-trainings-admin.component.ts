@@ -81,6 +81,8 @@ export class AllTrainingsAdminComponent {
   rejectModal!: AngularElementRef;
   @AngularViewChild('certificateModal')
   certificateModal!: AngularElementRef;
+  @AngularViewChild('traineeProfileModal')
+  traineeProfileModal!: AngularElementRef;
   @AngularViewChild('traineeTable')
   traineeTable!: TableComponent;
   @AngularViewChild('hiddenCertificate')
@@ -98,6 +100,10 @@ export class AllTrainingsAdminComponent {
   certificateDataForBulk: any = null;
   certificateUinForBulk: string = '';
   selectedTraineeForCertificate: any = null;
+  selectedTraineeProfile: any = null;
+  selectedTraineePhotoUrl: string | null = null;
+  isLoadingSelectedTraineePhoto: boolean = false;
+  private selectedTraineePhotoObjectUrl: string | null = null;
   trainingForm!: FormGroup;
   rejectionRemark: string = '';
   // falseVariable = false;
@@ -207,6 +213,12 @@ export class AllTrainingsAdminComponent {
   ];
 
   tableActionsTrainee: TableAction[] = [
+    {
+      name: 'viewRecord',
+      icon: 'bi bi-person-vcard',
+      class: 'btn-primary',
+      title: 'View record',
+    },
     {
       name: 'approve',
       icon: 'bi bi-check-circle',
@@ -345,6 +357,12 @@ export class AllTrainingsAdminComponent {
     if (this.userRole === 1) {
       this.tableActionsTrainee = [
         {
+          name: 'viewRecord',
+          icon: 'bi bi-person-vcard',
+          class: 'btn-primary',
+          title: 'View record',
+        },
+        {
           name: 'download',
           icon: 'bi bi-download',
           class: 'btn-info',
@@ -358,6 +376,12 @@ export class AllTrainingsAdminComponent {
       ];
     } else if (this.userRole === 3) {
       this.tableActionsTrainee = [
+        {
+          name: 'viewRecord',
+          icon: 'bi bi-person-vcard',
+          class: 'btn-primary',
+          title: 'View record',
+        },
         {
           name: 'approve',
           icon: 'bi bi-check-circle',
@@ -387,6 +411,12 @@ export class AllTrainingsAdminComponent {
       ];
     } else if (this.userRole === 5) {
       this.tableActionsTrainee = [
+        {
+          name: 'viewRecord',
+          icon: 'bi bi-person-vcard',
+          class: 'btn-primary',
+          title: 'View record',
+        },
         {
           name: 'approve',
           icon: 'bi bi-check-circle',
@@ -827,7 +857,54 @@ export class AllTrainingsAdminComponent {
       });
     } else if (event.action === 'download') {
       this.downloadCertificate(event.item);
+    } else if (event.action === 'viewRecord') {
+      this.openTraineeProfileModal(event.item);
     }
+  }
+
+  private clearSelectedTraineePhotoUrl(): void {
+    if (this.selectedTraineePhotoObjectUrl) {
+      URL.revokeObjectURL(this.selectedTraineePhotoObjectUrl);
+    }
+    this.selectedTraineePhotoObjectUrl = null;
+    this.selectedTraineePhotoUrl = null;
+  }
+
+  openTraineeProfileModal(trainee: any): void {
+    this.selectedTraineeProfile = trainee;
+    this.isLoadingSelectedTraineePhoto = false;
+    this.clearSelectedTraineePhotoUrl();
+
+    const photoId = Number(trainee?.photoId);
+    if (!Number.isNaN(photoId) && photoId > 0) {
+      this.isLoadingSelectedTraineePhoto = true;
+      this.trainingsService.downloadTraineeImage(photoId).subscribe({
+        next: (blob: Blob) => {
+          this.clearSelectedTraineePhotoUrl();
+          const imageUrl = URL.createObjectURL(blob);
+          this.selectedTraineePhotoObjectUrl = imageUrl;
+          this.selectedTraineePhotoUrl = imageUrl;
+          this.isLoadingSelectedTraineePhoto = false;
+        },
+        error: () => {
+          this.isLoadingSelectedTraineePhoto = false;
+          this.selectedTraineePhotoUrl = null;
+        },
+      });
+    }
+
+    const modalRef = this.modalService.open(this.traineeProfileModal, {
+      size: 'lg',
+      backdrop: 'static',
+      keyboard: false,
+      centered: true,
+    });
+
+    modalRef.result.finally(() => {
+      this.isLoadingSelectedTraineePhoto = false;
+      this.clearSelectedTraineePhotoUrl();
+      this.selectedTraineeProfile = null;
+    });
   }
 
   private async downloadAllCertificatesForTraining(
