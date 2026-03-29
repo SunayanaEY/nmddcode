@@ -323,7 +323,7 @@ export class TrainingCertificateGenerationComponent
           [Validators.required, Validators.maxLength(100)],
         ],
         trainingType: ['', Validators.required],
-        includeInstituteName: [Validators.required],
+        includeInstituteName: [false],
         modeOfTraining: ['', Validators.required],
         trainingRegion: ['D', Validators.required],
         dateRanges: this.fb.array(
@@ -468,6 +468,7 @@ export class TrainingCertificateGenerationComponent
                 ? 'D'
                 : this.trainingDetails.trainingRegion || 'D',
         });
+        this.includeInstituteName = !!this.trainingDetails.includeInstituteName;
 
         // Clear existing date ranges and repopulate with top-level dates from API
         this.dateRanges.clear();
@@ -506,6 +507,7 @@ export class TrainingCertificateGenerationComponent
             this.buildLogoUrl(s.signatorySignaturePath),
           );
         }
+        this.ensureSignatureSlots();
 
         if (this.trainingDetails.trainingScheduleDetail) {
           this.existingTrainingSchedulePath =
@@ -619,9 +621,26 @@ export class TrainingCertificateGenerationComponent
 
   removeSignature(index: number) {
     if (this.populate === 'true') {
+      if (!this.signaturesNew[index]) {
+        this.signaturesNew[index] = {
+          file: null,
+          name: '',
+          designation: '',
+          organization: '',
+          signatorySignaturePath: '',
+        };
+      }
       this.signaturesNew[index].file = null;
       this.signaturesNew[index].signatorySignaturePath = '';
     } else {
+      if (!this.signatures[index]) {
+        this.signatures[index] = {
+          file: null,
+          name: '',
+          designation: '',
+          organization: '',
+        };
+      }
       this.signatures[index].file = null;
     }
     if (
@@ -673,10 +692,22 @@ export class TrainingCertificateGenerationComponent
 
     if (this.populate === 'true') {
       if (this.cropperTargetType === 'signature') {
+        if (!this.signaturesNew[this.cropperTargetIndex]) {
+          this.signaturesNew[this.cropperTargetIndex] = {
+            file: null,
+            name: '',
+            designation: '',
+            organization: '',
+            signatorySignaturePath: '',
+          };
+        }
         this.signaturesNew[this.cropperTargetIndex].file = croppedFile;
         this.signaturesNew[this.cropperTargetIndex].signatorySignaturePath = '';
         this.signatureValidationError = '';
       } else {
+        if (!this.logosNew[this.cropperTargetIndex]) {
+          this.logosNew[this.cropperTargetIndex] = { file: null };
+        }
         this.logosNew[this.cropperTargetIndex].file = croppedFile;
         this.logoValidationError = '';
       }
@@ -704,6 +735,30 @@ export class TrainingCertificateGenerationComponent
 
     this.showImageCropper = false;
     this.cropperInputFile = null;
+  }
+
+  private ensureSignatureSlots() {
+    const minSlots = 2;
+    while (this.signaturesNew.length < minSlots) {
+      this.signaturesNew.push({
+        file: null,
+        name: '',
+        designation: '',
+        organization: '',
+        signatorySignaturePath: '',
+      });
+    }
+    while (this.signatures.length < minSlots) {
+      this.signatures.push({
+        file: null,
+        name: '',
+        designation: '',
+        organization: '',
+      });
+    }
+    while (this.mySelectedFile.length < minSlots) {
+      this.mySelectedFile.push('');
+    }
   }
 
   private setCroppedPreview(target: any[], index: number, previewUrl: string) {
@@ -881,7 +936,7 @@ export class TrainingCertificateGenerationComponent
     }
 
     if (data.hasOwnProperty('includeInstituteName')) {
-      data['includeInstituteName'] = this.includeInstituteName;
+      data['includeInstituteName'] = !!formData.includeInstituteName;
     }
 
     data['trainingInstituteId'] = this.selectedTrainingInstituteId;
@@ -929,8 +984,11 @@ export class TrainingCertificateGenerationComponent
       // alert('coming here !!');
       data['id'] = this.trainingId;
       const signatories = this.signaturesNew
-        .filter((sig) => sig.name && sig.designation && sig.organization) // keep only valid entries
-        .map((sig, index) => ({
+        .map((sig, index) => ({ sig, index }))
+        .filter(
+          ({ sig }) => sig.name && sig.designation && sig.organization,
+        )
+        .map(({ sig, index }) => ({
           id: sig.id,
           signatoryName: sig.name,
           signatoryDesignation: sig.designation,
@@ -1056,7 +1114,7 @@ export class TrainingCertificateGenerationComponent
     console.groupEnd();
   }
   onCheckboxChange(event: any) {
-    // alert(this.includeInstituteName);
+    this.includeInstituteName = !!event?.target?.checked;
   }
 
   openPreview() {
@@ -1161,7 +1219,7 @@ export class TrainingCertificateGenerationComponent
       startDate: startDate,
       endDate: endDate,
       trainingInstituteName,
-      includeInstituteName: this.includeInstituteName,
+      includeInstituteName: !!formValue.includeInstituteName,
       instituteType: this.instituteType,
       logoPath1: logoPaths[0],
       logoPath2: logoPaths[1],

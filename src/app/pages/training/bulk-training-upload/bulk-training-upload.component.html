@@ -137,8 +137,8 @@
               {{ col }}
             </th>
             <th style="width: 160px; text-align: center">Photo</th>
-            <th *ngIf="hasServerRowErrors" style="min-width: 240px">Error Reason</th>
-            <th *ngIf="hasServerRowErrors" style="width: 90px; text-align: center">Action</th>
+            <th *ngIf="hasAnyPreviewErrors" style="min-width: 240px">Error Reason</th>
+            <th *ngIf="hasAnyPreviewErrors" style="width: 90px; text-align: center">Action</th>
           </tr>
         </thead>
 
@@ -171,11 +171,11 @@
               <img *ngIf="row.photoPreview" [src]="row.photoPreview" width="80" height="80" class="mt-2 rounded border"
                 style="object-fit: cover" />
             </td>
-            <td *ngIf="hasServerRowErrors" class="preview-error-reason">
+            <td *ngIf="hasAnyPreviewErrors" class="preview-error-reason">
               {{ getPreviewRowErrorReason(i) }}
             </td>
-            <td *ngIf="hasServerRowErrors" class="text-center">
-              <button type="button" *ngIf="hasPreviewRowError(i)" class="btn btn-sm preview-remove-btn"
+            <td *ngIf="hasAnyPreviewErrors" class="text-center">
+              <button type="button" *ngIf="hasValidationErrorForPreviewRow(i)" class="btn btn-sm preview-remove-btn"
                 (click)="removeErroredPreviewRow(i)">
                 ×
               </button>

@@ -656,8 +656,14 @@ export class BulkTrainingUploadComponent implements OnInit {
     return Object.keys(this.previewRowErrors).length > 0;
   }
 
+  get hasAnyPreviewErrors(): boolean {
+    return (
+      this.validationErrors.length > 0 || Object.keys(this.previewRowErrors).length > 0
+    );
+  }
+
   removeErroredPreviewRow(pageIndex: number): void {
-    if (!this.hasPreviewRowError(pageIndex)) {
+    if (!this.hasValidationErrorForPreviewRow(pageIndex)) {
       return;
     }
 
@@ -668,7 +674,7 @@ export class BulkTrainingUploadComponent implements OnInit {
     }
 
     this.excelData.splice(dataIndex, 1);
-    this.rebuildServerErrorsAfterRowRemoval(rowNumber);
+    this.reindexValidationArtifactsAfterRowRemoval(rowNumber);
 
     if (this.currentPage > this.totalPages && this.totalPages > 0) {
       this.currentPage = this.totalPages;
@@ -676,6 +682,40 @@ export class BulkTrainingUploadComponent implements OnInit {
     if (this.totalPages === 0) {
       this.currentPage = 1;
     }
+  }
+
+  private reindexValidationArtifactsAfterRowRemoval(removedRowNumber: number): void {
+    const updatedPreviewErrors: { [key: number]: string[] } = {};
+
+    Object.keys(this.previewRowErrors).forEach((key) => {
+      const row = Number(key);
+      if (Number.isNaN(row) || row === removedRowNumber) {
+        return;
+      }
+
+      const shiftedRow = row > removedRowNumber ? row - 1 : row;
+      updatedPreviewErrors[shiftedRow] = this.previewRowErrors[row];
+    });
+    this.previewRowErrors = updatedPreviewErrors;
+
+    this.validationErrors = (this.validationErrors || [])
+      .filter((error) => Number(error?.row) !== removedRowNumber)
+      .map((error) => {
+        const row = Number(error?.row);
+        if (!Number.isNaN(row) && row > removedRowNumber) {
+          return { ...error, row: row - 1 };
+        }
+        return error;
+      });
+
+    this.errorCount = this.validationErrors.length;
+    this.errorRowCount = new Set(this.validationErrors.map((e) => Number(e.row))).size;
+    this.showValidationReport = this.errorCount > 0;
+
+    const invalidRowNumbers = new Set(this.validationErrors.map((e) => Number(e.row)));
+    this.invalidRowsData = this.excelData
+      .map((row, index) => ({ rowNumber: index + 1, ...row }))
+      .filter((row) => invalidRowNumbers.has(row.rowNumber));
   }
 
   private parseSubmitResponse(response: any): any {
@@ -883,6 +923,14 @@ export class BulkTrainingUploadComponent implements OnInit {
           column: 'Date of Birth',
           message: 'DOB must be in dd-MM-yyyy or dd/MM/yyyy format',
         });
+      } else {
+        const ageFromDob = this.computeAgeFromDobString(dob);
+        if (typeof ageFromDob === 'number' && ageFromDob < 18) {
+          rowErrors.push({
+            column: 'Date of Birth',
+            message: 'Trainees under 18 years are not allowed',
+          });
+        }
       }
 
       // Category validation
