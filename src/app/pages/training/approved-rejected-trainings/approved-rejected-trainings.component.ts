@@ -170,6 +170,8 @@ export class ApprovedRejectedTrainingsComponent {
     'Gender',
     'Contact',
     'Email',
+    'Status',
+    'Rejection Remark',
   ];
   columnKeysTrainee: Array<string> = [
     'name',
@@ -177,6 +179,8 @@ export class ApprovedRejectedTrainingsComponent {
     'gender',
     'contactNumber',
     'email',
+    'status',
+    'rejectionRemarks',
   ];
 
   tableColumnsTrainee: TableColumn[] = [
@@ -185,6 +189,8 @@ export class ApprovedRejectedTrainingsComponent {
     { key: 'gender', header: 'Gender' },
     { key: 'contactNumber', header: 'Contact' },
     { key: 'email', header: 'Email' },
+    { key: 'status', header: 'Status' },
+    { key: 'rejectionRemarks', header: 'Rejection Remark' },
   ];
 
   tableActionsTrainee: TableAction[] = [
@@ -511,21 +517,7 @@ export class ApprovedRejectedTrainingsComponent {
   }
 
   canShowCertificateDownload(row: any): boolean {
-    const isInstituteTrainingManager = this.userRole === 4;
-    const isCertificateApprovedRejectedTraining =
-      this.trainingDetails?.status === 'Certificate Approved / Rejected';
-
-    if (isInstituteTrainingManager) {
-      return isCertificateApprovedRejectedTraining;
-    }
-
-    return (
-      row.status === 'Approved by State Head' ||
-      row.status === 'Approved by Organization' ||
-      row.status === 'APPROVED BY ORGANIZATION' ||
-      row.status === 'Certificate Issued & downloaded' ||
-      row.status === 'Certificate Approved / Rejected'
-    );
+    return String(row?.status || '').trim().toLowerCase() === 'approved by state head';
   }
 
   async toBlobUrl(fileName: string): Promise<string> {

@@ -177,9 +177,13 @@ export class TrainingCertificateGenerationComponent
       }
     } catch {}
     if (path.startsWith('/')) {
-      return `${this.apiUrl}${path.replace(/^\/+/, '')}`;
+      return `${this.apiUrl.replace(/\/+$/, '')}/${path.replace(/^\/+/, '')}`;
     }
-    return `${this.apiUrl}api/photo/download/${encodeURIComponent(path)}`;
+    const baseUrl = this.apiUrl.replace(/\/+$/, '');
+    const photoPrefix = /\/api$/i.test(baseUrl)
+      ? 'photo/download'
+      : 'api/photo/download';
+    return `${baseUrl}/${photoPrefix}/${encodeURIComponent(path)}`;
   }
 
   // Custom validators

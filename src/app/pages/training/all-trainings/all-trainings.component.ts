@@ -227,12 +227,11 @@ export class AllTrainingsComponent {
         let index = 0;
         this.trainingsList.forEach((ele) => {
           const datePipe = new DatePipe('en-US');
-          ele['location'] =
-            ele['venueBlock'] +
-            ',' +
-            ele['venueDistrict'] +
-            ',' +
-            ele['venueState'];
+          ele['location'] = this.formatLocation(
+            ele['venueBlock'],
+            ele['venueDistrict'],
+            ele['venueState']
+          );
           ele['startDate'] = datePipe.transform(
             ele['startDate'],
             'dd/MM/yyyy'
@@ -250,12 +249,11 @@ export class AllTrainingsComponent {
     let index = 0;
     this.trainingsList.forEach((ele) => {
       const datePipe = new DatePipe('en-US');
-      ele['location'] =
-        ele['venueBlock'] +
-        ',' +
-        ele['venueDistrict'] +
-        ',' +
-        ele['venueState'];
+      ele['location'] = this.formatLocation(
+        ele['venueBlock'],
+        ele['venueDistrict'],
+        ele['venueState']
+      );
       ele['startDate'] = datePipe.transform(
         ele['startDate'],
         'dd/MM/yyyy'
@@ -397,6 +395,17 @@ export class AllTrainingsComponent {
 
   uniqueValuesStatus(): any[] {
     return [...new Set(this.trainingsList.map((item) => item['status']))];
+  }
+
+  private formatLocation(
+    venueBlock: string | null | undefined,
+    venueDistrict: string | null | undefined,
+    venueState: string | null | undefined
+  ): string {
+    return [venueBlock, venueDistrict, venueState]
+      .map((value) => (value || '').trim())
+      .filter((value) => value.length > 0)
+      .join(', ');
   }
 
   reset() {}

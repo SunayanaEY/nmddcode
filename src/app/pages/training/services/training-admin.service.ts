@@ -88,8 +88,13 @@ export class AdminService {
     const headers = token
       ? new HttpHeaders({ Authorization: `Bearer ${token}` })
       : new HttpHeaders();
+    const baseUrl = this.apiUrl.replace(/\/+$/, '');
+    const photoPrefix = /\/api$/i.test(baseUrl)
+      ? 'photo/download'
+      : 'api/photo/download';
+    const url = `${baseUrl}/${photoPrefix}/${encodeURIComponent(fileName)}`;
 
-    return this.http.get(`${this.apiUrl}api/photo/download/${fileName}`,
+    return this.http.get(url,
       {
         headers,
         responseType: 'blob'

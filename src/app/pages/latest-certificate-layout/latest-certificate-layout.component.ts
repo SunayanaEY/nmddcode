@@ -177,10 +177,13 @@ export class LatestCertificateLayoutComponent implements OnInit, OnChanges {
     let url = path;
     if (!this.isValidHttpUrl(path)) {
       if (path.startsWith('/')) {
-        url = `${this.apiUrl}${path.replace(/^\/+/, '')}`;
+        url = `${this.apiUrl.replace(/\/+$/, '')}/${path.replace(/^\/+/, '')}`;
       } else {
-        // Treat as file name for the common photo download endpoint
-        url = `${this.apiUrl}api/photo/download/${encodeURIComponent(path)}`;
+        const baseUrl = this.apiUrl.replace(/\/+$/, '');
+        const photoPrefix = /\/api$/i.test(baseUrl)
+          ? 'photo/download'
+          : 'api/photo/download';
+        url = `${baseUrl}/${photoPrefix}/${encodeURIComponent(path)}`;
       }
     }
 
