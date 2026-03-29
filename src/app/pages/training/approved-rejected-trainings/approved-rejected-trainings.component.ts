@@ -517,7 +517,12 @@ export class ApprovedRejectedTrainingsComponent {
   }
 
   canShowCertificateDownload(row: any): boolean {
-    return String(row?.status || '').trim().toLowerCase() === 'approved by state head';
+    const status = String(row?.status || '').trim().toLowerCase();
+    return (
+      status === 'approved by state head' ||
+      status === 'approved by organization' ||
+      status === 'approved by organisation'
+    );
   }
 
   async toBlobUrl(fileName: string): Promise<string> {
