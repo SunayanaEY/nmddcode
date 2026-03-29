@@ -223,8 +223,9 @@ export class BulkTrainingUploadComponent implements OnInit {
           }
 
           this.excelData = this.excelData.map((row) => {
-            const age = this.computeAgeFromDobString(row[dobHeader]);
-            return { ...row, [ageHeader]: age };
+            const normalizedDob = this.normalizeDobCell(row[dobHeader]);
+            const age = this.computeAgeFromDobString(normalizedDob);
+            return { ...row, [dobHeader]: normalizedDob, [ageHeader]: age };
           });
         }
       }
@@ -435,42 +436,6 @@ export class BulkTrainingUploadComponent implements OnInit {
         error: 'Please enter a valid email',
       };
 
-      // DOB (Column F) — allow dd-MM-yyyy OR dd/MM/yyyy as TEXT
-      worksheet.getCell(`F${row}`).dataValidation = {
-        type: 'custom',
-        allowBlank: false,
-        formulae: [
-          // Accepts dd-MM-yyyy OR dd/MM/yyyy (strict positions and ranges)
-          `OR(
-          AND(
-            LEN(F${row})=10,
-            MID(F${row},3,1)="-",
-            MID(F${row},6,1)="-",
-            VALUE(LEFT(F${row},2))>=1,
-            VALUE(LEFT(F${row},2))<=31,
-            VALUE(MID(F${row},4,2))>=1,
-            VALUE(MID(F${row},4,2))<=12,
-            VALUE(RIGHT(F${row},4))>=1910,
-            VALUE(RIGHT(F${row},4))<=2100
-          ),
-          AND(
-            LEN(F${row})=10,
-            MID(F${row},3,1)="/",
-            MID(F${row},6,1)="/",
-            VALUE(LEFT(F${row},2))>=1,
-            VALUE(LEFT(F${row},2))<=31,
-            VALUE(MID(F${row},4,2))>=1,
-            VALUE(MID(F${row},4,2))<=12,
-            VALUE(RIGHT(F${row},4))>=1910,
-            VALUE(RIGHT(F${row},4))<=2100
-          )
-        )`,
-        ],
-        showErrorMessage: true,
-        errorStyle: 'error',
-        errorTitle: 'Invalid Date Format',
-        error: 'Use dd-MM-yyyy or dd/MM/yyyy between year 1910–2100',
-      };
       // Keep DOB as text so Excel doesn't auto-convert/reformat
       worksheet.getCell(`F${row}`).numFmt = '@';
 
@@ -499,14 +464,35 @@ export class BulkTrainingUploadComponent implements OnInit {
     const selectedPrefix = event?.target?.value ?? '';
     row.honorific = selectedPrefix;
     row.honorificError = !selectedPrefix;
-    const originalName = (row?.Name ?? '').toString().trim();
-
-    console.log('current row name before update:', originalName);
-    const baseName = originalName.replace(/^\S+\s+/, '') || originalName;
+    const baseName = this.getBaseNameForHonorific(row);
 
     row.Name = selectedPrefix
       ? `${selectedPrefix} ${baseName}`.trim()
       : baseName;
+  }
+
+  private getBaseNameForHonorific(row: any): string {
+    const cachedBaseName = (row?._baseName ?? '').toString().trim();
+    if (cachedBaseName) {
+      return cachedBaseName;
+    }
+
+    const originalName = (row?.Name ?? '').toString().trim();
+    if (!originalName) {
+      row._baseName = '';
+      return '';
+    }
+
+    const escapedPrefixes = this.prefixes.map((prefix) =>
+      prefix.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'),
+    );
+    const prefixRegex = new RegExp(
+      `^(?:${escapedPrefixes.join('|')})\\.?\\s+`,
+      'i',
+    );
+    const baseName = originalName.replace(prefixRegex, '').trim() || originalName;
+    row._baseName = baseName;
+    return baseName;
   }
 
   private validateHonorificSelection(): boolean {
@@ -627,6 +613,30 @@ export class BulkTrainingUploadComponent implements OnInit {
     return (this.currentPage - 1) * this.pageSize + pageIndex + 1;
   }
 
+  private getValidationMessagesForRow(rowNumber: number): string[] {
+    const messages: string[] = [];
+
+    const previewErrors = this.previewRowErrors[rowNumber];
+    if (Array.isArray(previewErrors) && previewErrors.length > 0) {
+      messages.push(...previewErrors);
+    }
+
+    const rowErrors = this.validationErrors
+      .filter((error) => Number(error?.row) === rowNumber)
+      .map((error) => (error?.errorMessage || '').toString().trim())
+      .filter((message) => message.length > 0);
+    if (rowErrors.length > 0) {
+      messages.push(...rowErrors);
+    }
+
+    return [...new Set(messages)];
+  }
+
+  hasValidationErrorForPreviewRow(pageIndex: number): boolean {
+    const rowNumber = this.getPreviewRowNumber(pageIndex);
+    return this.getValidationMessagesForRow(rowNumber).length > 0;
+  }
+
   hasPreviewRowError(pageIndex: number): boolean {
     const rowNumber = this.getPreviewRowNumber(pageIndex);
     const errors = this.previewRowErrors[rowNumber];
@@ -635,8 +645,8 @@ export class BulkTrainingUploadComponent implements OnInit {
 
   getPreviewRowErrorReason(pageIndex: number): string {
     const rowNumber = this.getPreviewRowNumber(pageIndex);
-    const errors = this.previewRowErrors[rowNumber];
-    if (!Array.isArray(errors) || errors.length === 0) {
+    const errors = this.getValidationMessagesForRow(rowNumber);
+    if (errors.length === 0) {
       return '-';
     }
     return errors.join(' | ');
@@ -802,7 +812,7 @@ export class BulkTrainingUploadComponent implements OnInit {
     const rawErrors: any[] = [];
 
     data.forEach((row, index) => {
-      const excelRow = index + 2;
+      const excelRow = index + 1;
       const rowErrors: { column: string; message: string }[] = [];
 
       // ✅ Check if row is actually empty (all fields are empty)
@@ -864,12 +874,14 @@ export class BulkTrainingUploadComponent implements OnInit {
       }
 
       // DOB validation
-      const dob = (row['Date of Birth (dd-MM-yyyy)'] || '').toString().trim();
-      const dobRegex = /^(0[1-9]|[12][0-9]|3[01])-(0[1-9]|1[0-2])-\d{4}$/;
+      const dobHeader = this.getDobHeaderFromRow(row);
+      const dob = (dobHeader ? row[dobHeader] : '').toString().trim();
+      const dobRegex =
+        /^(0[1-9]|[12][0-9]|3[01])([\/-])(0[1-9]|1[0-2])\2\d{4}$/;
       if (!dobRegex.test(dob)) {
         rowErrors.push({
           column: 'Date of Birth',
-          message: 'DOB must be in dd-MM-yyyy format',
+          message: 'DOB must be in dd-MM-yyyy or dd/MM/yyyy format',
         });
       }
 
@@ -926,13 +938,26 @@ export class BulkTrainingUploadComponent implements OnInit {
 
     const invalidRowNumbers = new Set(rawErrors.map((e) => e.row));
     this.invalidRowsData = data
-      .map((row, index) => ({ rowNumber: index + 2, ...row }))
+      .map((row, index) => ({ rowNumber: index + 1, ...row }))
       .filter((row) => invalidRowNumbers.has(row.rowNumber));
   }
-  convertDateFormat(dateStr: string): string {
-    if (!dateStr) return '';
+  convertDateFormat(dateValue: any): string {
+    const normalized = this.normalizeDobCell(dateValue);
+    if (!normalized) return '';
 
-    const [dd, mm, yyyy] = dateStr.split('-');
+    const parts = normalized.split('-').map((p) => p.trim());
+    if (parts.length !== 3) return '';
+
+    if (parts[0].length === 4) {
+      const yyyy = parts[0];
+      const mm = parts[1].padStart(2, '0');
+      const dd = parts[2].padStart(2, '0');
+      return `${yyyy}-${mm}-${dd}`;
+    }
+
+    const dd = parts[0].padStart(2, '0');
+    const mm = parts[1].padStart(2, '0');
+    const yyyy = parts[2];
     return `${yyyy}-${mm}-${dd}`;
   }
   submitData() {
@@ -948,21 +973,23 @@ export class BulkTrainingUploadComponent implements OnInit {
       // ✅ USE ALL excelData, NOT paginatedData
       console.log('Submitting all data:', this.excelData);
 
-      const convertedData = this.excelData.map((row: any) => ({
+      const convertedData = this.excelData.map((row: any) => {
+        const dobHeader = this.getDobHeaderFromRow(row);
+        return ({
         name: row['Name'] || '',
         age: row['Age'] || 0,
         gender: row['Gender'] || '',
         contactNumber: row['Contact Number'] || '',
         fatherName: row["Father's Name"] || '',
         email: row['Email'] || '',
-        dob: this.convertDateFormat(row['Date of Birth (dd-MM-yyyy)']),
+        dob: this.convertDateFormat(dobHeader ? row[dobHeader] : ''),
         category: row['Category (GN, OBC, SC, ST)'] || '',
         educationalQualification: row['Educational Qualification'] || '',
         recommendedBy: row['Recommended by (Organization)'] || '',
         photoId: row['photoId'] || null,
         trainingId: trainingId,
         trainingInstituteId: trainingInstituteId,
-      }));
+      })});
 
       this.isSpinning = true;
       this.trainingService.submitTrainees(convertedData).subscribe({
@@ -1095,5 +1122,46 @@ export class BulkTrainingUploadComponent implements OnInit {
     }
 
     return age >= 0 && age <= 120 ? age : '';
+  }
+
+  private getDobHeaderFromRow(row: any): string | null {
+    const keys = Object.keys(row || {});
+    return keys.find((k) => /dob|date of birth/i.test(k)) || null;
+  }
+
+  private normalizeDobCell(value: any): string {
+    if (value === null || value === undefined || value === '') return '';
+
+    const formatDateParts = (y: number, m: number, d: number): string => {
+      return `${String(d).padStart(2, '0')}-${String(m).padStart(2, '0')}-${String(y)}`;
+    };
+
+    if (value instanceof Date && !isNaN(value.getTime())) {
+      return formatDateParts(
+        value.getFullYear(),
+        value.getMonth() + 1,
+        value.getDate(),
+      );
+    }
+
+    if (typeof value === 'number' && Number.isFinite(value)) {
+      const parsed = XLSX.SSF.parse_date_code(value);
+      if (parsed?.y && parsed?.m && parsed?.d) {
+        return formatDateParts(parsed.y, parsed.m, parsed.d);
+      }
+      return String(value);
+    }
+
+    const text = String(value).trim();
+    if (!text) return '';
+
+    if (/^\d+(\.\d+)?$/.test(text)) {
+      const parsed = XLSX.SSF.parse_date_code(Number(text));
+      if (parsed?.y && parsed?.m && parsed?.d) {
+        return formatDateParts(parsed.y, parsed.m, parsed.d);
+      }
+    }
+
+    return text.replace(/[\/\.]/g, '-');
   }
 }
