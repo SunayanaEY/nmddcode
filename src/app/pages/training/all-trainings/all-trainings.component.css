@@ -67,30 +67,37 @@
 }
 
 ::ng-deep .custom-ng-select .ng-dropdown-panel {
-  width: auto;
+  width: 100%;
   z-index: 1050;
-  border: 1px solid lightgrey;
-  border-radius: 2.5px;
+  border: 1px solid #d0d7e2;
+  border-radius: 8px;
   background: white;
-  height: auto;
-  overflow: hidden;
-  overflow-y: scroll;
-  scroll-behavior: smooth;
-  scrollbar-width: none;
-}
-
-.custom-ng-select.ng-option {
-  background-color: #f0f0f0;
-  width: 100px;
-}
-
-.ng-option-label {
-  background-color: #f0f0f0;
-  width: 100px;
+  max-height: 240px;
+  overflow-y: auto;
+  box-shadow: 0 10px 24px rgba(15, 23, 42, 0.12);
 }
 
 ::ng-deep .custom-ng-select .ng-dropdown-panel .ng-option {
-  border: 1px solid whitesmoke;
+  border-bottom: 1px solid #eef2f7;
+  padding: 10px 12px;
+  line-height: 1.4;
+  white-space: normal;
+  word-break: break-word;
+}
+
+::ng-deep .custom-ng-select .ng-dropdown-panel .ng-option:last-child {
+  border-bottom: none;
+}
+
+::ng-deep .custom-ng-select .ng-dropdown-panel .ng-option.ng-option-marked {
+  background-color: #f1f6ff;
+  color: #0f172a;
+}
+
+::ng-deep .custom-ng-select .ng-dropdown-panel .ng-option.ng-option-selected {
+  background-color: #e7f0ff;
+  color: #155e91;
+  font-weight: 600;
 }
 
 /* modal css */
@@ -170,6 +177,24 @@
   margin-bottom: 10px;
 }
 
+.clear-filter-btn {
+  border: none;
+  background: transparent;
+  color: #64748b;
+  font-size: 12px;
+  font-weight: 600;
+  padding: 0;
+}
+
+.clear-filter-btn:hover {
+  color: #334155;
+}
+
+.clear-filter-btn:focus {
+  outline: none;
+  box-shadow: none;
+}
+
 .status-filter-title {
   display: flex;
   align-items: center;
@@ -186,6 +211,36 @@
   display: flex;
   flex-direction: column;
   gap: 8px;
+}
+
+.status-ng-select {
+  width: 100%;
+}
+
+::ng-deep .status-ng-select.ng-select .ng-select-container {
+  min-height: 40px;
+  border: 1px solid #cfd7e4;
+  border-radius: 8px;
+  box-shadow: none;
+  background-color: #fff;
+}
+
+::ng-deep .status-ng-select.ng-select .ng-value-container {
+  padding-left: 12px;
+}
+
+::ng-deep .status-ng-select.ng-select .ng-placeholder {
+  color: #64748b;
+}
+
+::ng-deep .status-ng-select.ng-select .ng-arrow-wrapper {
+  padding-right: 10px;
+}
+
+::ng-deep .status-ng-select.ng-select.ng-select-opened > .ng-select-container,
+::ng-deep .status-ng-select.ng-select.ng-select-focused > .ng-select-container {
+  border-color: #3b82f6;
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.15);
 }
 
 .active-status-tag {

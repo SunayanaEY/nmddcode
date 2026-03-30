@@ -94,6 +94,7 @@ export class StateAdminProfileComponent implements OnInit {
   isTableLoading = false;
   tableColumns: TableColumn[] = [
     { key: 'state', header: 'State' },
+    { key: 'username', header: 'Username'},
     { key: 'adminName', header: 'Contact Person Name' },
     { key: 'designation', header: 'Designation' },
     { key: 'phone', header: 'Contact Number' },
@@ -156,6 +157,7 @@ export class StateAdminProfileComponent implements OnInit {
   };
   previousStateHeadsData: any[] = [];
   previousStateHeadsTableColumns: TableColumn[] = [
+    { key: 'username', header: 'Username' },
     { key: 'contactPersonName', header: 'Contact Person Name' },
     { key: 'designation', header: 'Designation' },
     { key: 'contactNumber', header: 'Contact Number' },
@@ -304,10 +306,12 @@ export class StateAdminProfileComponent implements OnInit {
   onSubmit(): void {
     if (this.profileForm.valid) {
       const formData = this.profileForm.value;
+      const apiUsername = this.buildStateAdminUsername(formData.adminName);
 
       // Prepare payload according to API specification
       const payload = {
         contactPersonName: formData.adminName,
+        username: apiUsername,
         designation: formData.designation,
         contactNumber: formData.phone,
         emailId: formData.email,
@@ -490,6 +494,19 @@ export class StateAdminProfileComponent implements OnInit {
     this.hasSpecialChar = /[@$!%*?&]/.test(password || '');
   }
 
+  private buildStateAdminUsername(adminName: string): string {
+    const normalizedName = (adminName || '')
+      .trim()
+      .replace(/\s+/g, '')
+      .toLowerCase();
+    if (!normalizedName) {
+      return '';
+    }
+    return /^sa-/i.test(normalizedName)
+      ? normalizedName
+      : `SA-${normalizedName}`;
+  }
+
   markFormGroupTouched(formGroup: FormGroup) {
     Object.keys(formGroup.controls).forEach((key) => {
       const control = formGroup.get(key);
@@ -515,6 +532,7 @@ export class StateAdminProfileComponent implements OnInit {
           this.stateAdminTableData = response.data.map((item) => ({
             id: item.id,
             state: item.stateName || 'N/A', // Use stateName from API or fallback
+            username: item.username || 'N/A',
             adminName: item.contactPersonName,
             designation: item.designation,
             phone: item.contactNumber,
@@ -702,4 +720,5 @@ export class StateAdminProfileComponent implements OnInit {
   onPreviousStateHeadsModalPrimaryAction(): void {
     this.onPreviousStateHeadsModalClose();
   }
+
 }

@@ -81,6 +81,8 @@ export class AllTrainingsAdminComponent {
   rejectModal!: AngularElementRef;
   @AngularViewChild('certificateModal')
   certificateModal!: AngularElementRef;
+  @AngularViewChild('traineeProfileModal')
+  traineeProfileModal!: AngularElementRef;
   @AngularViewChild('traineeTable')
   traineeTable!: TableComponent;
   @AngularViewChild('hiddenCertificate')
@@ -98,6 +100,10 @@ export class AllTrainingsAdminComponent {
   certificateDataForBulk: any = null;
   certificateUinForBulk: string = '';
   selectedTraineeForCertificate: any = null;
+  selectedTraineeProfile: any = null;
+  selectedTraineePhotoUrl: string | null = null;
+  isLoadingSelectedTraineePhoto: boolean = false;
+  private selectedTraineePhotoObjectUrl: string | null = null;
   trainingForm!: FormGroup;
   rejectionRemark: string = '';
   // falseVariable = false;
@@ -208,6 +214,12 @@ export class AllTrainingsAdminComponent {
 
   tableActionsTrainee: TableAction[] = [
     {
+      name: 'viewRecord',
+      icon: 'bi bi-person-vcard',
+      class: 'btn-primary',
+      title: 'View record',
+    },
+    {
       name: 'approve',
       icon: 'bi bi-check-circle',
       class: 'btn-success',
@@ -275,14 +287,14 @@ export class AllTrainingsAdminComponent {
           return rows.some(
             (row) =>
               row.status === 'Trainees details uploaded' ||
-              row.status === 'Recommended by Institute Head'
+              row.status === 'Recommended by Institute Head',
           );
         }
         // For other roles, show bulk approve if there are eligible items
         return rows.some(
           (row) =>
             row.status === 'Trainees details uploaded' ||
-            row.status === 'Recommended by Institute Head'
+            row.status === 'Recommended by Institute Head',
         );
       },
     },
@@ -300,7 +312,7 @@ export class AllTrainingsAdminComponent {
         return rows.some(
           (row) =>
             row.status === 'Trainees details uploaded' ||
-            row.status === 'Recommended by Institute Head'
+            row.status === 'Recommended by Institute Head',
         );
       },
     },
@@ -319,7 +331,7 @@ export class AllTrainingsAdminComponent {
     private spinner: NgxSpinnerService,
     private translate: TranslateService,
     private http: HttpClient,
-    private cdr: ChangeDetectorRef
+    private cdr: ChangeDetectorRef,
   ) {}
   filteredData = [...this.trainingsList];
 
@@ -345,6 +357,12 @@ export class AllTrainingsAdminComponent {
     if (this.userRole === 1) {
       this.tableActionsTrainee = [
         {
+          name: 'viewRecord',
+          icon: 'bi bi-person-vcard',
+          class: 'btn-primary',
+          title: 'View record',
+        },
+        {
           name: 'download',
           icon: 'bi bi-download',
           class: 'btn-info',
@@ -358,6 +376,12 @@ export class AllTrainingsAdminComponent {
       ];
     } else if (this.userRole === 3) {
       this.tableActionsTrainee = [
+        {
+          name: 'viewRecord',
+          icon: 'bi bi-person-vcard',
+          class: 'btn-primary',
+          title: 'View record',
+        },
         {
           name: 'approve',
           icon: 'bi bi-check-circle',
@@ -387,6 +411,12 @@ export class AllTrainingsAdminComponent {
       ];
     } else if (this.userRole === 5) {
       this.tableActionsTrainee = [
+        {
+          name: 'viewRecord',
+          icon: 'bi bi-person-vcard',
+          class: 'btn-primary',
+          title: 'View record',
+        },
         {
           name: 'approve',
           icon: 'bi bi-check-circle',
@@ -423,7 +453,7 @@ export class AllTrainingsAdminComponent {
           title: 'Bulk Approve',
           condition: (rows: any[]) => {
             return rows.some(
-              (row) => row.status === 'Recommended by Institute Head'
+              (row) => row.status === 'Recommended by Institute Head',
             );
           },
         },
@@ -434,7 +464,7 @@ export class AllTrainingsAdminComponent {
           title: 'Bulk Reject',
           condition: (rows: any[]) => {
             return rows.some(
-              (row) => row.status === 'Recommended by Institute Head'
+              (row) => row.status === 'Recommended by Institute Head',
             );
           },
         },
@@ -468,11 +498,11 @@ export class AllTrainingsAdminComponent {
                 ele['venueState'];
               ele['startDate'] = datePipe.transform(
                 ele['startDate'],
-                'dd/MM/yyyy'
+                'dd/MM/yyyy',
               )!;
               ele['endDate'] = datePipe.transform(
                 ele['endDate'],
-                'dd/MM/yyyy'
+                'dd/MM/yyyy',
               )!;
               this.trainingsList[index] = ele;
               index++;
@@ -532,7 +562,7 @@ export class AllTrainingsAdminComponent {
               ele['venueState'];
             ele['startDate'] = datePipe.transform(
               ele['startDate'],
-              'dd/MM/yyyy'
+              'dd/MM/yyyy',
             )!;
             ele['endDate'] = datePipe.transform(ele['endDate'], 'dd/MM/yyyy')!;
             this.trainingsList[index] = ele;
@@ -559,7 +589,7 @@ export class AllTrainingsAdminComponent {
             this.toastr.success(
               response.data.message ||
                 'Training sent for approval successfully',
-              'Success'
+              'Success',
             );
             this.ngOnInit();
             this.falseVariable = true;
@@ -567,7 +597,7 @@ export class AllTrainingsAdminComponent {
           } else {
             this.toastr.error(
               response.message || 'Failed to send training for approval',
-              'Error'
+              'Error',
             );
             this.falseVariable = false;
             this.modalService.dismissAll();
@@ -609,7 +639,7 @@ export class AllTrainingsAdminComponent {
           if (response.success) {
             this.toastr.success(
               response.data.message || 'Training rejected successfully',
-              'Success'
+              'Success',
             );
             this.ngOnInit();
             this.falseVariable = true;
@@ -617,7 +647,7 @@ export class AllTrainingsAdminComponent {
           } else {
             this.toastr.error(
               response.message || 'Failed to reject training',
-              'Error'
+              'Error',
             );
             this.falseVariable = false;
             this.modalService.dismissAll();
@@ -680,7 +710,7 @@ export class AllTrainingsAdminComponent {
             this.toastr.success(
               response.data.message ||
                 'Training Schedule approved successfully',
-              'Success'
+              'Success',
             );
             this.ngOnInit();
             this.falseVariable = true;
@@ -688,7 +718,7 @@ export class AllTrainingsAdminComponent {
           } else {
             this.toastr.error(
               response.message || 'Failed to approve training schedule',
-              'Error'
+              'Error',
             );
             this.falseVariable = false;
             this.modalService.dismissAll();
@@ -751,12 +781,12 @@ export class AllTrainingsAdminComponent {
           headers = new HttpHeaders({ Authorization: `Bearer ${token}` });
         }
         blob = (await firstValueFrom(
-          this.http.get(url, { responseType: 'blob', headers })
+          this.http.get(url, { responseType: 'blob', headers }),
         )) as Blob;
       } else {
         // Use service for filenames
         blob = await firstValueFrom(
-          this.adminService.downloadInstituteImage(path)
+          this.adminService.downloadInstituteImage(path),
         );
       }
       return URL.createObjectURL(blob);
@@ -771,7 +801,7 @@ export class AllTrainingsAdminComponent {
       this.isLoadingSchedule = true;
       try {
         this.trainingScheduleUrl = await this.toBlobUrl(
-          this.trainingDetails.trainingScheduleDetail
+          this.trainingDetails.trainingScheduleDetail,
         );
       } catch (error) {
         console.error('Error loading training schedule:', error);
@@ -827,11 +857,58 @@ export class AllTrainingsAdminComponent {
       });
     } else if (event.action === 'download') {
       this.downloadCertificate(event.item);
+    } else if (event.action === 'viewRecord') {
+      this.openTraineeProfileModal(event.item);
     }
   }
 
+  private clearSelectedTraineePhotoUrl(): void {
+    if (this.selectedTraineePhotoObjectUrl) {
+      URL.revokeObjectURL(this.selectedTraineePhotoObjectUrl);
+    }
+    this.selectedTraineePhotoObjectUrl = null;
+    this.selectedTraineePhotoUrl = null;
+  }
+
+  openTraineeProfileModal(trainee: any): void {
+    this.selectedTraineeProfile = trainee;
+    this.isLoadingSelectedTraineePhoto = false;
+    this.clearSelectedTraineePhotoUrl();
+
+    const photoId = Number(trainee?.photoId);
+    if (!Number.isNaN(photoId) && photoId > 0) {
+      this.isLoadingSelectedTraineePhoto = true;
+      this.trainingsService.downloadTraineeImage(photoId).subscribe({
+        next: (blob: Blob) => {
+          this.clearSelectedTraineePhotoUrl();
+          const imageUrl = URL.createObjectURL(blob);
+          this.selectedTraineePhotoObjectUrl = imageUrl;
+          this.selectedTraineePhotoUrl = imageUrl;
+          this.isLoadingSelectedTraineePhoto = false;
+        },
+        error: () => {
+          this.isLoadingSelectedTraineePhoto = false;
+          this.selectedTraineePhotoUrl = null;
+        },
+      });
+    }
+
+    const modalRef = this.modalService.open(this.traineeProfileModal, {
+      size: 'lg',
+      backdrop: 'static',
+      keyboard: false,
+      centered: true,
+    });
+
+    modalRef.result.finally(() => {
+      this.isLoadingSelectedTraineePhoto = false;
+      this.clearSelectedTraineePhotoUrl();
+      this.selectedTraineeProfile = null;
+    });
+  }
+
   private async downloadAllCertificatesForTraining(
-    training: any
+    training: any,
   ): Promise<void> {
     const trainingId = training?.id;
     if (!trainingId) {
@@ -843,7 +920,7 @@ export class AllTrainingsAdminComponent {
     this.spinner.show();
     try {
       const response = await firstValueFrom(
-        this.trainingsService.getTrainingWithTrainee(trainingId)
+        this.trainingsService.getTrainingWithTrainee(trainingId),
       );
       debugger;
       const trainingData: any =
@@ -861,7 +938,7 @@ export class AllTrainingsAdminComponent {
           t.status === 'Approved by Organization' ||
           t.status === 'APPROVED BY ORGANIZATION' ||
           t.status === 'Approved by State Head' ||
-          t.status === 'Certificate Issued & downloaded'
+          t.status === 'Certificate Issued & downloaded',
       );
 
       if (approvedTrainees.length === 0) {
@@ -874,8 +951,8 @@ export class AllTrainingsAdminComponent {
         (trainingData as any).signatures.length > 0
           ? (trainingData as any).signatures
           : Array.isArray((trainingData as any).signatories)
-          ? (trainingData as any).signatories
-          : [];
+            ? (trainingData as any).signatories
+            : [];
 
       const pdf = new jsPDF('portrait', 'mm', 'a4');
       const pdfWidth = pdf.internal.pageSize.getWidth();
@@ -900,7 +977,7 @@ export class AllTrainingsAdminComponent {
             if (Date.now() - startTime > maxWait) {
               console.warn(
                 'Bulk Certificate: Timeout waiting for certificate ready',
-                trainee.name
+                trainee.name,
               );
               break;
             }
@@ -940,7 +1017,7 @@ export class AllTrainingsAdminComponent {
               (pdfWidth - newWidth) / 2,
               posY,
               newWidth,
-              newHeight
+              newHeight,
             );
           } else {
             pdf.addImage(
@@ -949,7 +1026,7 @@ export class AllTrainingsAdminComponent {
               centerX,
               posY,
               targetWidth,
-              targetHeight
+              targetHeight,
             );
           }
 
@@ -984,7 +1061,7 @@ export class AllTrainingsAdminComponent {
 
     try {
       const response = await firstValueFrom(
-        this.trainingsService.getTrainingWithTrainee(trainingId)
+        this.trainingsService.getTrainingWithTrainee(trainingId),
       );
 
       const trainingData =
@@ -1000,7 +1077,7 @@ export class AllTrainingsAdminComponent {
           t.status === 'Approved by Organization' ||
           t.status === 'APPROVED BY ORGANIZATION' ||
           t.status === 'Approved by State Head' ||
-          t.status === 'Certificate Issued & downloaded'
+          t.status === 'Certificate Issued & downloaded',
       );
 
       if (approvedTrainees.length === 0) {
@@ -1012,8 +1089,8 @@ export class AllTrainingsAdminComponent {
         Array.isArray(trainingData.signatures) && trainingData.signatures.length
           ? trainingData.signatures
           : Array.isArray(trainingData.signatories)
-          ? trainingData.signatories
-          : [];
+            ? trainingData.signatories
+            : [];
 
       const pdf = new jsPDF('portrait', 'mm', 'a4');
       const pdfWidth = pdf.internal.pageSize.getWidth();
@@ -1051,26 +1128,29 @@ export class AllTrainingsAdminComponent {
         console.log('Bulk ID Card: Processing trainee', {
           name: trainee.name,
           logoPath1: trainingData.logoPath1,
-          traineePhotoId: (trainee as any).photoId
+          traineePhotoId: (trainee as any).photoId,
         });
 
         this.idCardUinForBulk = trainee.uin || 'UIN2025345780991';
 
         this.cdr.detectChanges();
-        
+
         // Wait for component to be ready (images loaded)
         if (this.hiddenIdCard) {
           const startTime = Date.now();
           const maxWait = 5000; // 5 seconds max wait per card
           while (!this.hiddenIdCard.isReady) {
-             if (Date.now() - startTime > maxWait) {
-               console.warn('Bulk ID Card: Timeout waiting for card ready', trainee.name);
-               break; 
-             }
-             await new Promise(resolve => setTimeout(resolve, 100));
+            if (Date.now() - startTime > maxWait) {
+              console.warn(
+                'Bulk ID Card: Timeout waiting for card ready',
+                trainee.name,
+              );
+              break;
+            }
+            await new Promise((resolve) => setTimeout(resolve, 100));
           }
         }
-        
+
         // Small extra buffer for rendering
         await new Promise((resolve) => setTimeout(resolve, 100));
 
@@ -1242,7 +1322,7 @@ export class AllTrainingsAdminComponent {
     // If state filter is applied, only show districts from that state
     const dataToFilter = this.filters.state
       ? this.trainingsList.filter(
-          (item) => item['venueState'] === this.filters.state
+          (item) => item['venueState'] === this.filters.state,
         )
       : this.trainingsList;
 
@@ -1275,7 +1355,7 @@ export class AllTrainingsAdminComponent {
   uniqueValuesInstituteName(): any[] {
     return [
       ...new Set(
-        this.trainingsList.map((item) => item['trainingInstituteName'])
+        this.trainingsList.map((item) => item['trainingInstituteName']),
       ),
     ];
   }
@@ -1335,7 +1415,7 @@ export class AllTrainingsAdminComponent {
 
           this.toastr.success(
             response.data.message || 'Trainee approved successfully',
-            'Success'
+            'Success',
           );
 
           // Refresh the trainee list to reflect updated status
@@ -1343,7 +1423,7 @@ export class AllTrainingsAdminComponent {
         } else {
           this.toastr.error(
             response.message || 'Failed to approve trainee',
-            'Error'
+            'Error',
           );
         }
       },
@@ -1358,7 +1438,7 @@ export class AllTrainingsAdminComponent {
     });
   }
 
-  rejectTrainee(): void {
+  rejectTrainee(modal: any): void {
     if (this.rejectForm.valid) {
       this.isTableLoading = true;
       const remarks = this.rejectForm.get('remarks')?.value;
@@ -1367,7 +1447,8 @@ export class AllTrainingsAdminComponent {
       if (this.selectedTraineesForBulkReject.length > 0) {
         this.bulkRejectTraineesWithRemarks(
           this.selectedTraineesForBulkReject,
-          remarks
+          remarks,
+          modal,
         );
       } else if (this.selectedTraineeForReject) {
         const payload = {
@@ -1392,7 +1473,7 @@ export class AllTrainingsAdminComponent {
               this.selectedTraineeForReject.remarks = remarks;
               this.toastr.success(
                 response.data.message || 'Trainee rejected successfully',
-                'Success'
+                'Success',
               );
 
               // Refresh the trainee list to reflect updated status
@@ -1400,10 +1481,11 @@ export class AllTrainingsAdminComponent {
             } else {
               this.toastr.error(
                 response.message || 'Failed to reject trainee',
-                'Error'
+                'Error',
               );
             }
             this.isTableLoading = false;
+            modal.close();
             // Close only the reject modal, not all modals
             if (this.rejectModalRef) {
               this.rejectModalRef.close();
@@ -1451,7 +1533,7 @@ export class AllTrainingsAdminComponent {
       .getCertificateDetails(
         trainee.uin || '',
         trainee.email || '',
-        trainee.contactNumber || ''
+        trainee.contactNumber || '',
       )
       .subscribe({
         next: (response) => {
@@ -1460,14 +1542,14 @@ export class AllTrainingsAdminComponent {
             this.certificateData.location = response.data.venueBlock
               ? response.data.venueBlock
               : '' + response.data.venueBlock && response.data.venueDistrict
-              ? ', '
-              : '' + response.data.venueDistrict
-              ? response.data.venueDistrict
-              : '' + response.data.venueDistrict && response.data.venueState
-              ? ', '
-              : '' + response.data.venueState
-              ? response.data.venueState
-              : '';
+                ? ', '
+                : '' + response.data.venueDistrict
+                  ? response.data.venueDistrict
+                  : '' + response.data.venueDistrict && response.data.venueState
+                    ? ', '
+                    : '' + response.data.venueState
+                      ? response.data.venueState
+                      : '';
             // Open certificate modal
             this.modalService.open(this.certificateModal, {
               size: 'xl',
@@ -1478,7 +1560,7 @@ export class AllTrainingsAdminComponent {
           } else {
             this.toastr.error(
               response.message || 'Failed to load certificate details',
-              'Error'
+              'Error',
             );
           }
         },
@@ -1525,13 +1607,13 @@ export class AllTrainingsAdminComponent {
           trainee.status !== 'Approved by State Head' &&
           trainee.status !== 'APPROVED BY ORGANIZATION' &&
           trainee.status !== 'Rejected by Institute Head' &&
-          trainee.status !== 'Certificate Issued & downloaded'
+          trainee.status !== 'Certificate Issued & downloaded',
       );
 
       if (eligibleTraineesForReject.length === 0) {
         this.toastr.warning(
           'No eligible trainees to reject. Please select trainees that are not already approved or rejected.',
-          'Warning'
+          'Warning',
         );
         return;
       }
@@ -1544,7 +1626,7 @@ export class AllTrainingsAdminComponent {
 
   bulkApproveTrainees(trainees: any[]): void {
     const eligibleTrainees = trainees.filter(
-      (trainee) => trainee.status !== 'APPROVED'
+      (trainee) => trainee.status !== 'APPROVED',
     );
 
     if (eligibleTrainees.length === 0) {
@@ -1573,7 +1655,7 @@ export class AllTrainingsAdminComponent {
           });
 
           this.toastr.success(
-            `${eligibleTrainees.length} trainees approved successfully!`
+            `${eligibleTrainees.length} trainees approved successfully!`,
           );
 
           // Clear selected items in the table
@@ -1586,7 +1668,7 @@ export class AllTrainingsAdminComponent {
         } else {
           this.toastr.error(
             response.message || 'Failed to approve trainees',
-            'Error'
+            'Error',
           );
         }
       },
@@ -1608,13 +1690,17 @@ export class AllTrainingsAdminComponent {
     });
   }
 
-  bulkRejectTraineesWithRemarks(trainees: any[], remarks: string): void {
+  bulkRejectTraineesWithRemarks(
+    trainees: any[],
+    remarks: string,
+    modal: any,
+  ): void {
     this.isTableLoading = true;
 
     // Filter trainees that can be rejected (not already approved or rejected)
     const eligibleTrainees = trainees.filter(
       (trainee) =>
-        trainee.status !== 'APPROVED' && trainee.status !== 'REJECTED'
+        trainee.status !== 'APPROVED' && trainee.status !== 'REJECTED',
     );
 
     if (eligibleTrainees.length === 0) {
@@ -1653,7 +1739,7 @@ export class AllTrainingsAdminComponent {
           // Show success message
           this.toastr.success(
             `${eligibleTrainees.length} trainee(s) rejected successfully`,
-            'Success'
+            'Success',
           );
 
           // Clear selected items in the table
@@ -1666,9 +1752,10 @@ export class AllTrainingsAdminComponent {
         } else {
           this.toastr.error(
             response.message || 'Failed to reject trainees',
-            'Error'
+            'Error',
           );
         }
+        modal.close();
 
         // Always close modal and cleanup after API response (success or failure)
         if (this.rejectModalRef) {

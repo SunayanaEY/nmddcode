@@ -26,6 +26,10 @@ import {
 import { TranslateModule } from '@ngx-translate/core';
 import { ToastrService } from 'ngx-toastr';
 import { environment } from '../../../../environments/environment';
+import {
+  CroppedImageResult,
+  ImageCropperModalComponent,
+} from '../../../components/image-cropper-modal/image-cropper-modal.component';
 
 @Component({
   selector: 'app-training-centre',
@@ -37,6 +41,7 @@ import { environment } from '../../../../environments/environment';
     TableComponent,
     HttpClientModule,
     TranslateModule,
+    ImageCropperModalComponent,
   ],
   templateUrl: './training-centre.component.html',
   styleUrls: ['./training-centre.component.css'],
@@ -72,6 +77,9 @@ export class TrainingCentreComponent implements OnInit {
   selectedStateId: number | null = null;
   selectedImageFile: File | null = null;
   currentImageUrl: string | null = null;
+  showImageCropper = false;
+  cropperInputFile: File | null = null;
+  cropperOriginalFileName = 'institute-image.jpg';
   url: string = environment.apiUrl;
   instituteTypes = [
     { value: 'Government Owned', label: 'Government Owned' },
@@ -111,6 +119,7 @@ export class TrainingCentreComponent implements OnInit {
     'Institute Name',
     'State',
     'District',
+    'Username',
     'State Head Name',
     'State Head Contact',
     'State Head Email',
@@ -122,6 +131,7 @@ export class TrainingCentreComponent implements OnInit {
     'trainingInstituteName',
     'state',
     'district',
+    'username',
     'stateHeadContactPerson',
     'stateHeadContact',
     'stateHeadEmail',
@@ -134,6 +144,7 @@ export class TrainingCentreComponent implements OnInit {
   showPreviousInstituteHeadsModal = false;
   previousInstituteHeadsData: any[] = [];
   previousStateHeadsTableColumns: TableColumn[] = [
+    { key: 'username', header: 'Username' },
     { key: 'contactPersonName', header: 'Contact Person Name' },
     { key: 'designation', header: 'Designation' },
     { key: 'contactNumber', header: 'Contact Number' },
@@ -312,6 +323,7 @@ export class TrainingCentreComponent implements OnInit {
         { key: 'trainingInstituteName', header: 'TRAINING.INSTITUTE_NAME' },
         { key: 'state', header: 'COMMON.STATE' },
         { key: 'district', header: 'COMMON.DISTRICT' },
+        { key: 'username', header: 'Username' },
         { key: 'contactPersonName', header: 'TRAINING.INSTITUTE_HEAD' },
         { key: 'contactNumber', header: 'COMMON.CONTACT_NUMBER' },
         { key: 'emailId', header: 'COMMON.CONTACT_MAIL' },
@@ -324,6 +336,7 @@ export class TrainingCentreComponent implements OnInit {
       ];
     } else {
       this.tableColumns = [
+        { key: 'username', header: 'Username' },
         { key: 'trainingInstituteName', header: 'TRAINING.INSTITUTE_NAME' },
         { key: 'state', header: 'COMMON.STATE' },
         { key: 'district', header: 'COMMON.DISTRICT' },
@@ -616,6 +629,8 @@ export class TrainingCentreComponent implements OnInit {
     this.selectedStateId = null;
     this.districts = [];
     this.selectedImageFile = null;
+    this.showImageCropper = false;
+    this.cropperInputFile = null;
     if (this.currentImageUrl?.startsWith('blob:')) {
       URL.revokeObjectURL(this.currentImageUrl);
     }
@@ -640,6 +655,8 @@ export class TrainingCentreComponent implements OnInit {
     }
     this.selectedImageFile = null;
     this.currentImageUrl = this.selectedCentre?.instituteImageUrl || null;
+    this.showImageCropper = false;
+    this.cropperInputFile = null;
   }
 
   onEditFieldChange(field: string, value: any) {
@@ -672,12 +689,59 @@ export class TrainingCentreComponent implements OnInit {
 
   onEditInstituteImageChange(event: any) {
     const file = event?.target?.files?.[0] || null;
-    this.selectedImageFile = file;
+    if (event?.target) {
+      event.target.value = '';
+    }
     console.log('[TrainingCentre/EditModal] instituteImage selected', file);
+    if (!file) {
+      return;
+    }
+    if (!file.type.startsWith('image/')) {
+      this.toastr.error('Please select a valid image file', 'File Error');
+      return;
+    }
+    if (file.size > 5 * 1024 * 1024) {
+      this.toastr.error('File size must be less than 5MB', 'File Error');
+      return;
+    }
+    this.cropperOriginalFileName = file.name || 'institute-image.jpg';
+    this.cropperInputFile = file;
+    this.showImageCropper = true;
+  }
+
+  onEditImageCropCanceled() {
+    this.showImageCropper = false;
+    this.cropperInputFile = null;
+  }
+
+  onEditImageCropLoadFailed() {
+    this.toastr.error('Please select a valid image file', 'File Error');
+    this.onEditImageCropCanceled();
+  }
+
+  onEditImageCropApplied(event: CroppedImageResult) {
     if (this.currentImageUrl?.startsWith('blob:')) {
       URL.revokeObjectURL(this.currentImageUrl);
     }
-    this.currentImageUrl = file ? URL.createObjectURL(file) : null;
+    this.selectedImageFile = new File(
+      [event.blob],
+      this.createCroppedFileName(this.cropperOriginalFileName, event.mimeType),
+      { type: event.mimeType }
+    );
+    this.currentImageUrl = event.previewUrl;
+    this.showImageCropper = false;
+    this.cropperInputFile = null;
+  }
+
+  private createCroppedFileName(originalFileName: string, mimeType: string) {
+    const baseName = originalFileName.replace(/\.[^/.]+$/, '') || 'institute-image';
+    if (mimeType.includes('jpeg') || mimeType.includes('jpg')) {
+      return `${baseName}-cropped.jpg`;
+    }
+    if (mimeType.includes('webp')) {
+      return `${baseName}-cropped.webp`;
+    }
+    return `${baseName}-cropped.png`;
   }
 
   submitEditModal() {

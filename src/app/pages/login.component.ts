@@ -8,7 +8,6 @@ import { ModalConfig, ModalComponent } from '../components/modal/modal.component
 import { TrainingService } from './training/services/training.service';
 import { LatestCertificateLayoutComponent } from './latest-certificate-layout/latest-certificate-layout.component';
 import { TranslateModule } from '@ngx-translate/core';
-import { HeartbeatService } from './training/services/heartbeat-service.service';
 import { IndiaMapComponent } from './public-dashboard/components/india-map/india-map.component';
 
 @Component({
@@ -58,11 +57,10 @@ export class LoginComponent implements OnInit {
     private router: Router,
     private route: ActivatedRoute,
     private toastr: ToastrService,
-    private trainingsService: TrainingService,
-    private heartbeatService: HeartbeatService
+    private trainingsService: TrainingService
   ) {
     this.signInForm = this.fb.group({
-      email: ['', [Validators.required, Validators.email]],
+      username: ['', [Validators.required, Validators.minLength(3)]],
       password: ['', [Validators.required, Validators.minLength(6)]],
     });
   }
@@ -96,25 +94,19 @@ export class LoginComponent implements OnInit {
     this.isLoading = true;
     this.errorMessage = '';
 
-    const { email, password } = this.signInForm.value;
+    const { username, password } = this.signInForm.value;
 
-    this.authService.login(email, password).subscribe({
+    this.authService.login(username, password).subscribe({
       next: (response) => {
         this.isLoading = false;
         if (response && response.data) {
           this.toastr.success('Login successful!', 'Welcome');
           localStorage.setItem('username', response.data.username);
           localStorage.setItem('roleId', response.data.role.toString());
-          const user = JSON.parse(sessionStorage.getItem('user') || '{}');
-          const authToken = user.authData;
-          if (authToken != null) {
-            this.onLoginSuccess(authToken);
-          }
-
           this.redirectBasedOnRole(response.data.role);
         } else {
-          this.errorMessage = 'Invalid email or password';
-          this.toastr.error('Invalid email or password', 'Login Failed');
+          this.errorMessage = 'Invalid username or password';
+          this.toastr.error('Invalid username or password', 'Login Failed');
         }
       },
       error: (error) => {
@@ -130,11 +122,6 @@ export class LoginComponent implements OnInit {
         console.error('Login error:', error);
       },
     });
-  }
-
-  onLoginSuccess(token: string) {
-    localStorage.setItem('authToken', token);
-    this.heartbeatService.startHeartbeat();
   }
 
   private redirectBasedOnRole(role: number): void {

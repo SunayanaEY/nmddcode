@@ -257,3 +257,28 @@ h2 {
   height: 1rem;
   border-width: 0.125em;
 }
+
+.preview-error-row {
+  background-color: #fff1f2 !important;
+}
+
+.preview-error-row td {
+  border-color: #f5c2c7 !important;
+}
+
+.preview-error-reason {
+  color: #b02a37;
+  font-weight: 500;
+}
+
+.preview-remove-btn {
+  background-color: #dc3545;
+  color: #fff;
+  border: none;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  line-height: 1;
+  font-size: 18px;
+  padding: 0;
+}

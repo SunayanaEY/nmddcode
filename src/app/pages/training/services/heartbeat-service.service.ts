@@ -7,14 +7,14 @@ import { environment } from '../../../../environments/environment';
   providedIn: 'root',
 })
 export class HeartbeatService implements OnDestroy {
-  private heartbeatInterval = 0.5 * 60 * 1000;
+  private heartbeatInterval = 60 * 1000;
   private subscription?: Subscription;
   private apiUrl = environment.apiUrl;
 
   constructor(private http: HttpClient) {}
 
   startHeartbeat() {
-    // Send immediately and then every 2 minutes
+    this.stopHeartbeat();
     this.sendHeartbeat();
     this.subscription = interval(this.heartbeatInterval).subscribe(() => {
       this.sendHeartbeat();
@@ -23,19 +23,14 @@ export class HeartbeatService implements OnDestroy {
 
   stopHeartbeat() {
     this.subscription?.unsubscribe();
+    this.subscription = undefined;
   }
 
   private sendHeartbeat() {
-    const token = localStorage.getItem('authToken');
-    if (!token) return;
-
     this.http
       .post(
         `${this.apiUrl}api/auth/heartbeat`,
-        {},
-        {
-          headers: { Authorization: token },
-        }
+        {}
       )
       .subscribe({
         next: () => console.log('Heartbeat sent'),

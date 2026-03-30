@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, EventEmitter, OnInit, Output, ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import {
   BreadcrumbComponent,
@@ -42,6 +42,7 @@ import { TranslateModule } from '@ngx-translate/core';
   styleUrl: './organization-table-data.component.css',
 })
 export class OrganizationTableDataComponent implements OnInit {
+  @Output() editRequested = new EventEmitter<any>();
   @ViewChild('editModal') editModal!: ModalComponent;
 
   breadcrumbItems: BreadcrumbItem[] = [
@@ -98,6 +99,7 @@ export class OrganizationTableDataComponent implements OnInit {
   ) {}
 
   tableColumns: TableColumn[] = [
+    { key:'username', header: 'Username' },
     { key: 'organizationName', header: 'Name' },
     { key: 'organizationCode', header: 'Code' },
     { key: 'state', header: 'State' },
@@ -110,23 +112,24 @@ export class OrganizationTableDataComponent implements OnInit {
   ];
 
   tableActions: TableAction[] = [
-    // {
-    //   name: 'edit',
-    //   icon: 'bi-eye',
-    //   class: 'btn-info',
-    //   title: 'View Details',
-    // },
     {
-      name: 'delete',
-      icon: 'bi-trash',
-      class: 'btn-warning',
-      title: 'Delete',
+      name: 'edit',
+      icon: 'bi-pencil',
+      class: 'btn-edit',
+      title: 'Edit',
     },
+    // {
+    //   name: 'delete',
+    //   icon: 'bi-trash',
+    //   class: 'btn-warning',
+    //   title: 'Delete',
+    // },
   ];
 
   trainingCentres: any[] = [];
 
   exportHeaders = [
+    'Username',
     'Organization Name',
     'Code',
     'State',
@@ -136,6 +139,7 @@ export class OrganizationTableDataComponent implements OnInit {
     'Contact Number',
   ];
   exportColumnKeys = [
+    'username',
     'organizationName',
     'organizationCode',
     'state',
@@ -405,21 +409,7 @@ export class OrganizationTableDataComponent implements OnInit {
   }
 
   editTrainingCentre(centre: any) {
-    this.selectedCentre = centre;
-    this.modalMode = 'edit';
-    this.modalConfig.title = 'Edit Training Institute Admin Details';
-    this.modalConfig.primaryButtonText = 'Update';
-    this.selectedImageFile = null;
-
-    // Set current image URL if available
-    if (centre.instituteImage) {
-      this.currentImageUrl = centre.instituteImage;
-    }
-
-    // Ensure state and district change fields are available for edit mode
-    this.restoreStateDistrictFields();
-
-    this.showModal = true;
+    this.editRequested.emit(centre);
   }
   fillTrainingCentre(centre: any) {
     this.router.navigate(['/admin/training-centre-admin-profile'], {

@@ -1,6 +1,7 @@
 export interface DataEntryOperator {
   id: string;
   operatorName: string;
+  username?: string;
   designation: string;
   contactNumber: string;
   emailId: string;

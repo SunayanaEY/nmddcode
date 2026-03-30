@@ -45,6 +45,7 @@ import { AdminService } from '../services/training-admin.service';
 })
 export class ApprovedRejectedTrainingsComponent {
   trainingDetails: any;
+  userRole: number | null = null;
   trainingScheduleUrl: string | null = null;
   isLoadingSchedule: boolean = false;
   @ViewChild('trainingDetailsModal')
@@ -169,6 +170,8 @@ export class ApprovedRejectedTrainingsComponent {
     'Gender',
     'Contact',
     'Email',
+    'Status',
+    'Rejection Remark',
   ];
   columnKeysTrainee: Array<string> = [
     'name',
@@ -176,6 +179,8 @@ export class ApprovedRejectedTrainingsComponent {
     'gender',
     'contactNumber',
     'email',
+    'status',
+    'rejectionRemarks',
   ];
 
   tableColumnsTrainee: TableColumn[] = [
@@ -184,16 +189,17 @@ export class ApprovedRejectedTrainingsComponent {
     { key: 'gender', header: 'Gender' },
     { key: 'contactNumber', header: 'Contact' },
     { key: 'email', header: 'Email' },
+    { key: 'status', header: 'Status' },
+    { key: 'rejectionRemarks', header: 'Rejection Remark' },
   ];
 
   tableActionsTrainee: TableAction[] = [
-    //{ name: 'download', icon: 'bi bi-eye', class: 'btn-info', title: 'Download certificate' },
     {
       name: 'download',
       icon: 'bi bi-download',
       class: 'btn-success',
       title: 'Download certificate',
-      condition: (row: any) => row.status === 'Approved by State Head' || row.status === 'Certificate Issued & downloaded',
+      condition: (row: any) => this.canShowCertificateDownload(row),
     },
   ];
 
@@ -209,6 +215,7 @@ export class ApprovedRejectedTrainingsComponent {
   filteredData = [...this.trainingsList];
 
   ngOnInit(): void {
+    this.getRole();
     this.route.fragment.subscribe((fragment) => {
       if (fragment) {
         setTimeout(() => {
@@ -231,12 +238,11 @@ export class ApprovedRejectedTrainingsComponent {
         let index = 0;
         this.trainingsList3.forEach((ele) => {
           const datePipe = new DatePipe('en-US');
-          ele['location'] =
-            ele['venueBlock'] +
-            ',' +
-            ele['venueDistrict'] +
-            ',' +
-            ele['venueState'];
+          ele['location'] = this.formatLocation(
+            ele['venueBlock'],
+            ele['venueDistrict'],
+            ele['venueState']
+          );
           ele['startDate'] = datePipe.transform(
             ele['startDate'],
             'dd/MM/yyyy'
@@ -261,12 +267,11 @@ export class ApprovedRejectedTrainingsComponent {
         let index = 0;
         this.trainingsList.forEach((ele) => {
           const datePipe = new DatePipe('en-US');
-          ele['location'] =
-            ele['venueBlock'] +
-            ',' +
-            ele['venueDistrict'] +
-            ',' +
-            ele['venueState'];
+          ele['location'] = this.formatLocation(
+            ele['venueBlock'],
+            ele['venueDistrict'],
+            ele['venueState']
+          );
           ele['startDate'] = datePipe.transform(
             ele['startDate'],
             'dd/MM/yyyy'
@@ -291,12 +296,11 @@ export class ApprovedRejectedTrainingsComponent {
         let index = 0;
         this.trainingsList2.forEach((ele) => {
           const datePipe = new DatePipe('en-US');
-          ele['location'] =
-            ele['venueBlock'] +
-            ',' +
-            ele['venueDistrict'] +
-            ',' +
-            ele['venueState'];
+          ele['location'] = this.formatLocation(
+            ele['venueBlock'],
+            ele['venueDistrict'],
+            ele['venueState']
+          );
           ele['startDate'] = datePipe.transform(
             ele['startDate'],
             'dd/MM/yyyy'
@@ -313,6 +317,14 @@ export class ApprovedRejectedTrainingsComponent {
         this.toastr.error('Error while fetching data!');
       },
     });
+  }
+
+  getRole() {
+    const userData = sessionStorage.getItem('user');
+    if (userData) {
+      const user = JSON.parse(userData);
+      this.userRole = user.role;
+    }
   }
   openTrainingDetails(row: any) {
     // alert('Training insititue : ' + this.trainingInstituteId);
@@ -430,6 +442,17 @@ export class ApprovedRejectedTrainingsComponent {
     return [...new Set(this.trainingsList.map((item) => item['status']))];
   }
 
+  private formatLocation(
+    venueBlock: string | null | undefined,
+    venueDistrict: string | null | undefined,
+    venueState: string | null | undefined
+  ): string {
+    return [venueBlock, venueDistrict, venueState]
+      .map((value) => (value || '').trim())
+      .filter((value) => value.length > 0)
+      .join(', ');
+  }
+
   reset() {}
 
   open() {}
@@ -491,6 +514,15 @@ export class ApprovedRejectedTrainingsComponent {
           console.error('Error loading certificate details:', error);
         },
       });
+  }
+
+  canShowCertificateDownload(row: any): boolean {
+    const status = String(row?.status || '').trim().toLowerCase();
+    return (
+      status === 'approved by state head' ||
+      status === 'approved by organization' ||
+      status === 'approved by organisation'
+    );
   }
 
   async toBlobUrl(fileName: string): Promise<string> {

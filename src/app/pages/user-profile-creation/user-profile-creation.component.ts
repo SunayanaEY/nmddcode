@@ -72,13 +72,13 @@ export class UserProfileCreationComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    // Subscribe to password field changes for real-time validation
     setTimeout(() => {
       this.profileForm.get('password')?.valueChanges.subscribe((password) => {
         this.validatePassword(password || '');
       });
     }, 0);
   }
+
   setEditData(data: any): void {
     this.isEditMode = true;
     this.editRowId = data.id;
@@ -175,6 +175,7 @@ export class UserProfileCreationComponent implements OnInit {
       event.preventDefault();
     }
   }
+
   private markFormGroupTouched() {
     Object.keys(this.profileForm.controls).forEach((key) => {
       const control = this.profileForm.get(key);
@@ -216,4 +217,5 @@ export class UserProfileCreationComponent implements OnInit {
       password
     );
   }
+
 }

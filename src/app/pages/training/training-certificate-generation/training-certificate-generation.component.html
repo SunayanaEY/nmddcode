@@ -21,17 +21,30 @@
                 {{ "Training Title" | translate }}
                 <span style="color: red">*</span>
               </label>
-              <input type="text" id="trainingTitle" formControlName="trainingTitle"
-                [attr.placeholder]="'Enter the Training Title here' | translate" class="form-control"
+              <input
+                type="text"
+                id="trainingTitle"
+                formControlName="trainingTitle"
+                [attr.placeholder]="'Enter the Training Title here' | translate"
+                class="form-control"
                 [class.is-invalid]="
                   trainingForm.get('trainingTitle')?.invalid &&
                   trainingForm.get('trainingTitle')?.touched
-                " />
-              <div *ngIf="
+                "
+              />
+              <div
+                *ngIf="
                   trainingForm.get('trainingTitle')?.invalid &&
                   trainingForm.get('trainingTitle')?.touched
-                " class="invalid-feedback">
-                <small *ngIf="trainingForm.get('trainingTitle')?.errors?.['required']" class="text-danger">
+                "
+                class="invalid-feedback"
+              >
+                <small
+                  *ngIf="
+                    trainingForm.get('trainingTitle')?.errors?.['required']
+                  "
+                  class="text-danger"
+                >
                   {{ "This field is required" | translate }}
                 </small>
               </div>
@@ -44,10 +57,15 @@
                 {{ "Scheme" | translate }}
                 <span style="color: red">*</span>
               </label>
-              <select id="scheme" formControlName="scheme" class="form-control" [class.is-invalid]="
+              <select
+                id="scheme"
+                formControlName="scheme"
+                class="form-control"
+                [class.is-invalid]="
                   trainingForm.get('scheme')?.invalid &&
                   trainingForm.get('scheme')?.touched
-                ">
+                "
+              >
                 <option value="">
                   {{ "Enter the Name of Scheme here" | translate }}
                 </option>
@@ -55,11 +73,17 @@
                   {{ scheme.schemeName }}
                 </option>
               </select>
-              <div *ngIf="
+              <div
+                *ngIf="
                   trainingForm.get('scheme')?.invalid &&
                   trainingForm.get('scheme')?.touched
-                " class="invalid-feedback">
-                <small *ngIf="trainingForm.get('scheme')?.errors?.['required']" class="text-danger">
+                "
+                class="invalid-feedback"
+              >
+                <small
+                  *ngIf="trainingForm.get('scheme')?.errors?.['required']"
+                  class="text-danger"
+                >
                   {{ "This field is required" | translate }}
                 </small>
               </div>
@@ -72,14 +96,23 @@
                 {{ "Trainer Name(s)" | translate }}
                 <span style="color: red">*</span>
               </label>
-              <app-multi-select-dropdown [items]="trainers" [placeholder]="'Select Trainer(s)' | translate"
+              <app-multi-select-dropdown
+                [items]="trainers"
+                [placeholder]="'Select Trainer(s)' | translate"
                 formControlName="trainerName"
-                (selectionChange)="onTrainerSelectionChange($event)"></app-multi-select-dropdown>
-              <div *ngIf="
+                (selectionChange)="onTrainerSelectionChange($event)"
+              ></app-multi-select-dropdown>
+              <div
+                *ngIf="
                   trainingForm.get('trainerName')?.invalid &&
                   trainingForm.get('trainerName')?.touched
-                " class="invalid-feedback">
-                <small *ngIf="trainingForm.get('trainerName')?.errors?.['required']" class="text-danger">
+                "
+                class="invalid-feedback"
+              >
+                <small
+                  *ngIf="trainingForm.get('trainerName')?.errors?.['required']"
+                  class="text-danger"
+                >
                   {{ "This field is required" | translate }}
                 </small>
               </div>
@@ -90,18 +123,30 @@
                   {{ "Guest Trainer's Name" | translate }}
                   <span style="color: red">*</span>
                 </label>
-                <input type="text" id="guestTrainerName" formControlName="guestTrainerName"
-                  [placeholder]="'Enter Guest Trainer Name' | translate" class="form-control" [class.is-invalid]="
+                <input
+                  type="text"
+                  id="guestTrainerName"
+                  formControlName="guestTrainerName"
+                  [placeholder]="'Enter Guest Trainer Name' | translate"
+                  class="form-control"
+                  [class.is-invalid]="
                     trainingForm.get('guestTrainerName')?.invalid &&
                     trainingForm.get('guestTrainerName')?.touched
-                  " />
-                <div *ngIf="
+                  "
+                />
+                <div
+                  *ngIf="
                     trainingForm.get('guestTrainerName')?.invalid &&
                     trainingForm.get('guestTrainerName')?.touched
-                  " class="invalid-feedback">
-                  <small *ngIf="
+                  "
+                  class="invalid-feedback"
+                >
+                  <small
+                    *ngIf="
                       trainingForm.get('guestTrainerName')?.errors?.['required']
-                    " class="text-danger">
+                    "
+                    class="text-danger"
+                  >
                     {{ "This field is required" | translate }}
                   </small>
                 </div>
@@ -113,25 +158,41 @@
                 {{ "Training Institute Name" | translate }}
                 <span style="color: red">*</span>
               </label>
-              <select id="trainingInstituteName" formControlName="trainingInstituteName" class="form-control h-auto"
-                (change)="onTrainingInstituteChange()" [class.is-invalid]="
+              <select
+                id="trainingInstituteName"
+                formControlName="trainingInstituteName"
+                class="form-control h-auto"
+                (change)="onTrainingInstituteChange()"
+                [class.is-invalid]="
                   trainingForm.get('trainingInstituteName')?.invalid &&
                   trainingForm.get('trainingInstituteName')?.touched
-                ">
+                "
+              >
                 <option value="">
                   {{ "Enter Training Institute Name here" | translate }}
                 </option>
-                <option *ngFor="let institute of instituteNames" [ngValue]="institute">
+                <option
+                  *ngFor="let institute of instituteNames"
+                  [ngValue]="institute"
+                >
                   {{ institute.trainingInstituteName }}
                 </option>
               </select>
-              <div *ngIf="
+              <div
+                *ngIf="
                   trainingForm.get('trainingInstituteName')?.invalid &&
                   trainingForm.get('trainingInstituteName')?.touched
-                " class="invalid-feedback">
-                <small *ngIf="
-                    trainingForm.get('trainingInstituteName')?.errors?.['required']
-                  " class="text-danger">
+                "
+                class="invalid-feedback"
+              >
+                <small
+                  *ngIf="
+                    trainingForm.get('trainingInstituteName')?.errors?.[
+                      'required'
+                    ]
+                  "
+                  class="text-danger"
+                >
                   {{ "This field is required" | translate }}
                 </small>
               </div>
@@ -150,42 +211,67 @@
 
           <div class="form-row">
             <div class="form-group third-width">
-              <select formControlName="venueState" class="form-control h-auto"
-                (change)="onStateSelected($any($event.target).value)" [class.is-invalid]="
+              <select
+                formControlName="venueState"
+                class="form-control h-auto"
+                (change)="onStateSelected($any($event.target).value)"
+                [class.is-invalid]="
                   trainingForm.get('venueState')?.invalid &&
                   trainingForm.get('venueState')?.touched
-                ">
+                "
+              >
                 <option value="">{{ "Select State" | translate }}</option>
                 <option *ngFor="let state of states" [value]="state.id">
                   {{ state.stateName }}
                 </option>
               </select>
-              <div *ngIf="
+              <div
+                *ngIf="
                   trainingForm.get('venueState')?.invalid &&
                   trainingForm.get('venueState')?.touched
-                " class="invalid-feedback">
-                <small *ngIf="trainingForm.get('venueState')?.errors?.['required']" class="text-danger">
+                "
+                class="invalid-feedback"
+              >
+                <small
+                  *ngIf="trainingForm.get('venueState')?.errors?.['required']"
+                  class="text-danger"
+                >
                   {{ "This field is required" | translate }}
                 </small>
               </div>
             </div>
 
             <div class="form-group third-width">
-              <select formControlName="venueDistrict" class="form-control h-auto"
-                (change)="onDistrictSelect($any($event.target).value)" [class.is-invalid]="
+              <select
+                formControlName="venueDistrict"
+                class="form-control h-auto"
+                (change)="onDistrictSelect($any($event.target).value)"
+                [class.is-invalid]="
                   trainingForm.get('venueDistrict')?.invalid &&
                   trainingForm.get('venueDistrict')?.touched
-                ">
+                "
+              >
                 <option value="">{{ "Select District" | translate }}</option>
-                <option *ngFor="let district of districts" [value]="district.id">
+                <option
+                  *ngFor="let district of districts"
+                  [value]="district.id"
+                >
                   {{ district.districtName }}
                 </option>
               </select>
-              <div *ngIf="
+              <div
+                *ngIf="
                   trainingForm.get('venueDistrict')?.invalid &&
                   trainingForm.get('venueDistrict')?.touched
-                " class="invalid-feedback">
-                <small *ngIf="trainingForm.get('venueDistrict')?.errors?.['required']" class="text-danger">
+                "
+                class="invalid-feedback"
+              >
+                <small
+                  *ngIf="
+                    trainingForm.get('venueDistrict')?.errors?.['required']
+                  "
+                  class="text-danger"
+                >
                   {{ "This field is required" | translate }}
                 </small>
               </div>
@@ -209,16 +295,28 @@
                 {{ "Address" | translate }}
                 <span style="color: red">*</span>
               </label>
-              <textarea id="venueAddress" formControlName="venueAddress" [placeholder]="'Enter Address' | translate"
-                class="form-control textarea" rows="3" [class.is-invalid]="
+              <textarea
+                id="venueAddress"
+                formControlName="venueAddress"
+                [placeholder]="'Enter Address' | translate"
+                class="form-control textarea"
+                rows="3"
+                [class.is-invalid]="
                   trainingForm.get('venueAddress')?.invalid &&
                   trainingForm.get('venueAddress')?.touched
-                "></textarea>
-              <div *ngIf="
+                "
+              ></textarea>
+              <div
+                *ngIf="
                   trainingForm.get('venueAddress')?.invalid &&
                   trainingForm.get('venueAddress')?.touched
-                " class="invalid-feedback">
-                <small *ngIf="trainingForm.get('venueAddress')?.errors?.['required']" class="text-danger">
+                "
+                class="invalid-feedback"
+              >
+                <small
+                  *ngIf="trainingForm.get('venueAddress')?.errors?.['required']"
+                  class="text-danger"
+                >
                   {{ "This field is required" | translate }}
                 </small>
               </div>
@@ -229,33 +327,58 @@
           <div class="date-ranges-container">
             <!-- Dynamic Date Ranges -->
             <div formArrayName="dateRanges">
-              <div class="form-row" *ngFor="let group of dateRanges.controls; let i = index" [formGroupName]="i">
+              <div
+                class="form-row"
+                *ngFor="let group of dateRanges.controls; let i = index"
+                [formGroupName]="i"
+              >
                 <div class="form-group half-width">
                   <label>
                     {{ "Start Date" | translate }}
                     <span style="color: red">*</span>
                   </label>
-                  <input type="date" formControlName="startDate" placeholder="dd-mm-yyyy" class="form-control"
-                    (keydown)="$event.preventDefault()" [class.is-invalid]="
+                  <input
+                    type="date"
+                    formControlName="startDate"
+                    placeholder="dd-mm-yyyy"
+                    class="form-control"
+                    (keydown)="$event.preventDefault()"
+                    [class.is-invalid]="
                       group.get('startDate')?.invalid &&
                       group.get('startDate')?.touched
-                    " />
-                  <div *ngIf="
+                    "
+                  />
+                  <div
+                    *ngIf="
                       group.get('startDate')?.invalid &&
                       group.get('startDate')?.touched
-                    " class="invalid-feedback">
-                    <small *ngIf="group.get('startDate')?.errors?.['required']" class="text-danger">
+                    "
+                    class="invalid-feedback"
+                  >
+                    <small
+                      *ngIf="group.get('startDate')?.errors?.['required']"
+                      class="text-danger"
+                    >
                       {{ "This field is required" | translate }}
                     </small>
-                    <small *ngIf="group.get('startDate')?.errors?.['invalidDateRange']" class="text-danger">
+                    <small
+                      *ngIf="
+                        group.get('startDate')?.errors?.['invalidDateRange']
+                      "
+                      class="text-danger"
+                    >
                       {{
-                      "Please select a date within the past 45 days or a future date"
-                      | translate
+                        "Please select a date within the past 45 days or a future date"
+                          | translate
                       }}
                     </small>
-                    <small *ngIf="group.get('startDate')?.errors?.['rangeOverlap']" class="text-danger">
+                    <small
+                      *ngIf="group.get('startDate')?.errors?.['rangeOverlap']"
+                      class="text-danger"
+                    >
                       {{
-                      "This date range overlaps with another range" | translate
+                        "This date range overlaps with another range"
+                          | translate
                       }}
                     </small>
                   </div>
@@ -266,29 +389,54 @@
                     {{ "End Date" | translate }}
                     <span style="color: red">*</span>
                   </label>
-                  <input type="date" formControlName="endDate" placeholder="dd-mm-yyyy" class="form-control"
-                    (keydown)="$event.preventDefault()" [class.is-invalid]="
+                  <input
+                    type="date"
+                    formControlName="endDate"
+                    placeholder="dd-mm-yyyy"
+                    class="form-control"
+                    (keydown)="$event.preventDefault()"
+                    [class.is-invalid]="
                       group.get('endDate')?.invalid &&
                       group.get('endDate')?.touched
-                    " />
-                  <div *ngIf="
+                    "
+                  />
+                  <div
+                    *ngIf="
                       group.get('endDate')?.invalid &&
                       group.get('endDate')?.touched
-                    " class="invalid-feedback">
-                    <small *ngIf="group.get('endDate')?.errors?.['required']" class="text-danger">
+                    "
+                    class="invalid-feedback"
+                  >
+                    <small
+                      *ngIf="group.get('endDate')?.errors?.['required']"
+                      class="text-danger"
+                    >
                       {{ "This field is required" | translate }}
                     </small>
-                    <small *ngIf="group.get('endDate')?.errors?.['endBeforeStart']" class="text-danger">
+                    <small
+                      *ngIf="group.get('endDate')?.errors?.['endBeforeStart']"
+                      class="text-danger"
+                    >
                       {{ "End Date cannot be before Start Date" | translate }}
                     </small>
-                    <small *ngIf="group.get('endDate')?.errors?.['rangeOverlap']" class="text-danger">
+                    <small
+                      *ngIf="group.get('endDate')?.errors?.['rangeOverlap']"
+                      class="text-danger"
+                    >
                       {{
-                      "This date range overlaps with another range" | translate
+                        "This date range overlaps with another range"
+                          | translate
                       }}
                     </small>
                   </div>
-                  <button type="button" class="btn btn-link text-danger btn-sm" (click)="removeDateRange(i)"
-                    *ngIf="i > 0" [attr.title]="'Remove this date range' | translate" style="margin-top: 6px">
+                  <button
+                    type="button"
+                    class="btn btn-link text-danger btn-sm"
+                    (click)="removeDateRange(i)"
+                    *ngIf="i > 0"
+                    [attr.title]="'Remove this date range' | translate"
+                    style="margin-top: 6px"
+                  >
                     <i class="bi bi-trash"></i> {{ "Remove" | translate }}
                   </button>
                 </div>
@@ -297,8 +445,13 @@
 
             <!-- Add more date ranges below all fields -->
             <div class="form-row date-range-actions" style="margin-top: 8px">
-              <button *ngIf="!populate" type="button" class="btn btn-outline-primary btn-sm" (click)="addDateRange()"
-                [attr.title]="'Add another date range' | translate">
+              <button
+                *ngIf="!populate"
+                type="button"
+                class="btn btn-outline-primary btn-sm"
+                (click)="addDateRange()"
+                [attr.title]="'Add another date range' | translate"
+              >
                 <i class="bi bi-plus-circle"></i>
                 {{ "Add Date Range" | translate }}
               </button>
@@ -312,20 +465,50 @@
                 {{ "Duration" | translate }}
                 <span style="color: red">*</span>
               </label>
-              <input type="number" id="duration" formControlName="duration" [placeholder]="'xx' | translate"
-                class="form-control" [class.is-invalid]="
+              <input
+                type="number"
+                id="duration"
+                formControlName="duration"
+                [placeholder]="'xx' | translate"
+                max="24"
+                class="form-control"
+                [class.is-invalid]="
                   trainingForm.get('duration')?.invalid &&
                   trainingForm.get('duration')?.touched
-                " />
-              <div *ngIf="
+                "
+              />
+              <div
+                *ngIf="
                   trainingForm.get('duration')?.invalid &&
                   trainingForm.get('duration')?.touched
-                " class="invalid-feedback">
-                <small *ngIf="trainingForm.get('duration')?.errors?.['required']" class="text-danger">
+                "
+                class="invalid-feedback"
+              >
+                <small
+                  *ngIf="trainingForm.get('duration')?.errors?.['required']"
+                  class="text-danger"
+                >
                   {{ "This field is required" | translate }}
                 </small>
-                <small *ngIf="trainingForm.get('duration')?.errors?.['invalidDuration']" class="text-danger">
+                <small
+                  *ngIf="
+                    trainingForm.get('duration')?.errors?.['invalidDuration']
+                  "
+                  class="text-danger"
+                >
                   {{ "Duration must be a positive number" | translate }}
+                </small>
+                <small
+                  *ngIf="
+                    trainingForm.get('duration')?.errors?.[
+                      'maxDurationExceeded'
+                    ]
+                  "
+                  class="text-danger"
+                >
+                  {{
+                    "Training duration cannot be more than 24 hours" | translate
+                  }}
                 </small>
               </div>
             </div>
@@ -334,9 +517,15 @@
               <label for="durationType">
                 {{ "Duration Type" | translate }}
               </label>
-              <select id="durationType" formControlName="durationType" class="form-control h-auto">
+              <select
+                id="durationType"
+                formControlName="durationType"
+                class="form-control h-auto"
+              >
                 <!-- <option value="Days">{{ "Days" | translate }}</option> -->
-                <option selected value="Hours">{{ "Hours" | translate }}</option>
+                <option selected value="Hours">
+                  {{ "Hours" | translate }}
+                </option>
                 <!-- <option value="Weeks">{{ "Weeks" | translate }}</option> -->
               </select>
             </div>
@@ -349,20 +538,44 @@
                 {{ "About the Training" | translate }}
                 <span style="color: red">*</span>
               </label>
-              <textarea id="trainingDescription" formControlName="trainingDescription" [placeholder]="
+              <textarea
+                id="trainingDescription"
+                formControlName="trainingDescription"
+                [placeholder]="
                   'Brief Description ( Maximum 100 Words )' | translate
-                " class="form-control textarea" rows="4" [class.is-invalid]="
+                "
+                class="form-control textarea"
+                rows="4"
+                [class.is-invalid]="
                   trainingForm.get('trainingDescription')?.invalid &&
                   trainingForm.get('trainingDescription')?.touched
-                "></textarea>
-              <div *ngIf="
+                "
+              ></textarea>
+              <div
+                *ngIf="
                   trainingForm.get('trainingDescription')?.invalid &&
                   trainingForm.get('trainingDescription')?.touched
-                " class="invalid-feedback">
-                <small *ngIf="trainingForm.get('trainingDescription')?.errors?.['required']" class="text-danger">
+                "
+                class="invalid-feedback"
+              >
+                <small
+                  *ngIf="
+                    trainingForm.get('trainingDescription')?.errors?.[
+                      'required'
+                    ]
+                  "
+                  class="text-danger"
+                >
                   {{ "This field is required" | translate }}
                 </small>
-                <small *ngIf="trainingForm.get('trainingDescription')?.errors?.['maxlength']" class="text-danger">
+                <small
+                  *ngIf="
+                    trainingForm.get('trainingDescription')?.errors?.[
+                      'maxlength'
+                    ]
+                  "
+                  class="text-danger"
+                >
                   {{ "Maximum 100 characters allowed" | translate }}
                 </small>
               </div>
@@ -373,10 +586,15 @@
                 {{ "Type of Training" | translate }}
                 <span style="color: red">*</span>
               </label>
-              <select id="trainingType" formControlName="trainingType" class="form-control h-auto" [class.is-invalid]="
+              <select
+                id="trainingType"
+                formControlName="trainingType"
+                class="form-control h-auto"
+                [class.is-invalid]="
                   trainingForm.get('trainingType')?.invalid &&
                   trainingForm.get('trainingType')?.touched
-                ">
+                "
+              >
                 <option value="" disabled>
                   {{ "Select training type" | translate }}
                 </option>
@@ -384,14 +602,43 @@
                   {{ type.trainingTypeName }}
                 </option>
               </select>
-              <div *ngIf="
+              <div
+                *ngIf="
                   trainingForm.get('trainingType')?.invalid &&
                   trainingForm.get('trainingType')?.touched
-                " class="invalid-feedback">
-                <small *ngIf="trainingForm.get('trainingType')?.errors?.['required']" class="text-danger">
+                "
+                class="invalid-feedback"
+              >
+                <small
+                  *ngIf="trainingForm.get('trainingType')?.errors?.['required']"
+                  class="text-danger"
+                >
                   {{ "This field is required" | translate }}
                 </small>
               </div>
+            </div>
+
+            <div class="form-group full-width checkbox-right">
+              <label for="includeInstituteName">
+                <span>{{
+                  "Want to add Training Institute Name on Certificate"
+                    | translate
+                }}</span>
+                <span style="color: red">*</span>
+
+                <input
+                  id="includeInstituteName"
+                  type="checkbox"
+                  class="form-check-input ms-2"
+                  style="
+                    width: 1.2rem;
+                    height: 1.2rem;
+                    border: 2px solid #ced4da;
+                  "
+                  formControlName="includeInstituteName"
+                  (change)="onCheckboxChange($event)"
+                />
+              </label>
             </div>
 
             <div class="form-group third-width">
@@ -450,10 +697,7 @@
                     formControlName="trainingRegion"
                     value="D"
                   />
-                  <label
-                    class="form-check-label"
-                    for="trainingRegionDomestic"
-                  >
+                  <label class="form-check-label" for="trainingRegionDomestic">
                     {{ "Domestic" | translate }}
                   </label>
                 </div>
@@ -480,10 +724,7 @@
                     formControlName="trainingRegion"
                     value="C"
                   />
-                  <label
-                    class="form-check-label"
-                    for="trainingRegionCombined"
-                  >
+                  <label class="form-check-label" for="trainingRegionCombined">
                     {{ "Combined" | translate }}
                   </label>
                 </div>
@@ -512,12 +753,40 @@
               <label for="trainingSchedule">
                 {{ "Upload Training schedule" | translate }}
                 <span style="color: red">*</span>
-                <small class="text-muted">({{ "pdf/word only" | translate }})</small>
+                <small class="text-muted"
+                  >({{ "pdf/word only" | translate }})</small
+                >
               </label>
-              <app-file-upload [acceptedFileTypes]="'.pdf,.doc,.docx'"
+              <app-file-upload
+                [acceptedFileTypes]="'.pdf,.doc,.docx'"
                 [uploadText]="'Drag and Drop the Training Schedule here'"
-                (fileSelected)="onTrainingScheduleSelect($event)" (fileRemoved)="onTrainingScheduleRemove()"
-                [filePath]="existingTrainingSchedulePath"></app-file-upload>
+                (fileSelected)="onTrainingScheduleSelect($event)"
+                (fileRemoved)="onTrainingScheduleRemove()"
+                (filePathRemoved)="onTrainingScheduleRemove()"
+                [filePath]="existingTrainingSchedulePath"
+              ></app-file-upload>
+              <div
+                class="training-schedule-actions"
+                *ngIf="
+                  trainingSchedulePreviewUrl &&
+                  (trainingScheduleFile || existingTrainingSchedulePath)
+                "
+              >
+                <button
+                  type="button"
+                  class="btn btn-outline-primary btn-sm"
+                  (click)="openTrainingSchedulePreview()"
+                >
+                  Preview
+                </button>
+                <button
+                  type="button"
+                  class="btn btn-primary btn-sm"
+                  (click)="downloadTrainingSchedule()"
+                >
+                  Download
+                </button>
+              </div>
               <div *ngIf="showScheduleError" class="text-danger small mt-1">
                 {{ "Training schedule file is required" | translate }}
               </div>
@@ -528,76 +797,127 @@
         <!-- Upload Signature Section -->
         <div class="form-section">
           <h3 class="section-title">
-            {{ "Upload Signature ( Maximum 2)" | translate }}<span class="required">*</span>
+            {{ "Upload Signature ( Maximum 2)" | translate
+            }}<span class="required">*</span>
           </h3>
 
-          <div class="signature-section" *ngFor="let signature of signatures; let i = index">
+          <div
+            class="signature-section"
+            *ngFor="let signature of signatures; let i = index"
+          >
             <!-- Section Title -->
             <h4 class="signature-section-title" *ngIf="i === 0">
               {{ "Institute Head's Section" | translate }}
             </h4>
             <h4 class="signature-section-title" *ngIf="i === 1">
-              {{ "State Head's Section" | translate }}
+              {{ secondarySignatureSectionTitle }}
             </h4>
 
             <div class="form-row">
               <div class="form-group third-width">
-                <label>{{ "Signatory Name" | translate }}
-                  <span class="text-danger">*</span></label>
-                <input type="text" [value]="signature.name" (input)="onSignatureNameChange($event, i)"
-                  [placeholder]="'Enter the Name of Signatory here' | translate" class="form-control"
-                  [class.is-invalid]="signatureFieldErrors[i]?.name" />
-                <div *ngIf="signatureFieldErrors[i]?.name" class="invalid-feedback">
+                <label
+                  >{{ "Signatory Name" | translate }}
+                  <span class="text-danger" *ngIf="i === 0">*</span></label
+                >
+                <input
+                  type="text"
+                  [value]="signature.name"
+                  (input)="onSignatureNameChange($event, i)"
+                  [placeholder]="'Enter the Name of Signatory here' | translate"
+                  class="form-control"
+                  [class.is-invalid]="signatureFieldErrors[i]?.name"
+                />
+                <div
+                  *ngIf="signatureFieldErrors[i]?.name"
+                  class="invalid-feedback"
+                >
                   <small class="text-danger">{{
                     "Signatory name is required" | translate
-                    }}</small>
+                  }}</small>
                 </div>
               </div>
               <div class="form-group third-width">
-                <label>{{ "Signatory Designation" | translate }}
-                  <span class="text-danger">*</span></label>
-                <input type="text" [value]="signature.designation" (input)="onSignatureDesignationChange($event, i)"
+                <label
+                  >{{ "Signatory Designation" | translate }}
+                  <span class="text-danger" *ngIf="i === 0">*</span></label
+                >
+                <input
+                  type="text"
+                  [value]="signature.designation"
+                  (input)="onSignatureDesignationChange($event, i)"
                   [placeholder]="
                     'Enter the Designation of Signatory here' | translate
-                  " class="form-control" [class.is-invalid]="signatureFieldErrors[i]?.designation" />
-                <div *ngIf="signatureFieldErrors[i]?.designation" class="invalid-feedback">
+                  "
+                  class="form-control"
+                  [class.is-invalid]="signatureFieldErrors[i]?.designation"
+                />
+                <div
+                  *ngIf="signatureFieldErrors[i]?.designation"
+                  class="invalid-feedback"
+                >
                   <small class="text-danger">{{
                     "Signatory designation is required" | translate
-                    }}</small>
+                  }}</small>
                 </div>
               </div>
               <div class="form-group third-width">
-                <label>{{ "Signatory Organization" | translate }}
-                  <span class="text-danger">*</span></label>
-                <input type="text" [value]="signature.organization" (input)="onSignatureOrganizationChange($event, i)"
+                <label
+                  >{{ "Signatory Organization" | translate }}
+                  <span class="text-danger" *ngIf="i === 0">*</span></label
+                >
+                <input
+                  type="text"
+                  [value]="signature.organization"
+                  (input)="onSignatureOrganizationChange($event, i)"
                   [placeholder]="
                     'Enter the Organization of Signatory here' | translate
-                  " class="form-control" [class.is-invalid]="signatureFieldErrors[i]?.organization" />
-                <div *ngIf="signatureFieldErrors[i]?.organization" class="invalid-feedback">
+                  "
+                  class="form-control"
+                  [class.is-invalid]="signatureFieldErrors[i]?.organization"
+                />
+                <div
+                  *ngIf="signatureFieldErrors[i]?.organization"
+                  class="invalid-feedback"
+                >
                   <small class="text-danger">{{
                     "Signatory organization is required" | translate
-                    }}</small>
+                  }}</small>
                 </div>
               </div>
             </div>
 
             <div class="form-row">
-              <app-file-upload [acceptedFileTypes]="'.png,.jpg,.jpeg'" [maxFileSizeMB]="2"
-                [uploadText]="'Drag and Drop the Signature here'" (fileSelected)="onFileSelect($event, 'signature', i)"
-                (fileRemoved)="removeSignature(i)" [filePath]="mySelectedFile[i]" [showFileInfo]="false"
-                [enableImagePreview]="true" [showRemoveButton]="populate !== 'true'">
+              <app-file-upload
+                [acceptedFileTypes]="'.png,.jpg,.jpeg'"
+                [maxFileSizeMB]="2"
+                [uploadText]="'Drag and Drop the Signature here'"
+                (fileSelected)="onFileSelect($event, 'signature', i)"
+                (fileRemoved)="removeSignature(i)"
+                (filePathRemoved)="removeSignature(i)"
+                [filePath]="mySelectedFile[i]"
+                [showFileInfo]="false"
+                [enableImagePreview]="true"
+                [showRemoveButton]="true"
+              >
               </app-file-upload>
             </div>
           </div>
 
           <div class="add-more-section" *ngIf="signatures.length < 2">
-            <button type="button" class="btn btn-link add-more-btn" (click)="addMoreSignature()">
+            <button
+              type="button"
+              class="btn btn-link add-more-btn"
+              (click)="addMoreSignature()"
+            >
               <i class="bi bi-plus-circle"></i> Add More
             </button>
           </div>
 
           <!-- Signature Validation Error -->
-          <div *ngIf="signatureValidationError" class="validation-error-section">
+          <div
+            *ngIf="signatureValidationError"
+            class="validation-error-section"
+          >
             <small class="text-danger">
               {{ signatureValidationError }}
             </small>
@@ -607,7 +927,7 @@
         <!-- Upload Logo Section -->
         <div class="form-section">
           <h3 class="section-title">
-            {{ "Upload Logo ( Maximum 3)" | translate }}<span class="required">*</span>
+            {{ "Upload Logo ( Maximum 3)" | translate}}
           </h3>
 
           <div class="logo-upload-container">
@@ -616,10 +936,18 @@
                 <span class="logo-slot-title">Left Logo</span>
               </div>
               <div class="logo-slot-body">
-                <app-file-upload [acceptedFileTypes]="'.png,.jpg,.jpeg'" [maxFileSizeMB]="2"
-                  [uploadText]="'Drag and Drop your logo here'" (fileSelected)="onFileSelect($event, 'logo', 0)"
-                  (fileRemoved)="removeLogo(0)" [filePath]="mySelectedLogo[0]" [showFileInfo]="false"
-                  [enableImagePreview]="true" [showRemoveButton]="populate !== 'true'">
+                <app-file-upload
+                  [acceptedFileTypes]="'.png,.jpg,.jpeg'"
+                  [maxFileSizeMB]="2"
+                  [uploadText]="'Drag and Drop your logo here'"
+                  (fileSelected)="onFileSelect($event, 'logo', 0)"
+                  (fileRemoved)="removeLogo(0)"
+                  (filePathRemoved)="removeLogo(0)"
+                  [filePath]="mySelectedLogo[0]"
+                  [showFileInfo]="false"
+                  [enableImagePreview]="true"
+                  [showRemoveButton]="true"
+                >
                 </app-file-upload>
               </div>
             </div>
@@ -632,10 +960,18 @@
                 </span>
               </div>
               <div class="logo-slot-body">
-                <app-file-upload [acceptedFileTypes]="'.png,.jpg,.jpeg'" [maxFileSizeMB]="2"
-                  [uploadText]="'Drag and Drop your logo here'" (fileSelected)="onFileSelect($event, 'logo', 1)"
-                  (fileRemoved)="removeLogo(1)" [filePath]="mySelectedLogo[1]" [showFileInfo]="false"
-                  [enableImagePreview]="true" [showRemoveButton]="populate !== 'true'">
+                <app-file-upload
+                  [acceptedFileTypes]="'.png,.jpg,.jpeg'"
+                  [maxFileSizeMB]="2"
+                  [uploadText]="'Drag and Drop your logo here'"
+                  (fileSelected)="onFileSelect($event, 'logo', 1)"
+                  (fileRemoved)="removeLogo(1)"
+                  (filePathRemoved)="removeLogo(1)"
+                  [filePath]="mySelectedLogo[1]"
+                  [showFileInfo]="false"
+                  [enableImagePreview]="true"
+                  [showRemoveButton]="true"
+                >
                 </app-file-upload>
               </div>
             </div>
@@ -645,10 +981,18 @@
                 <span class="logo-slot-title">Right Logo</span>
               </div>
               <div class="logo-slot-body">
-                <app-file-upload [acceptedFileTypes]="'.png,.jpg,.jpeg'" [maxFileSizeMB]="2"
-                  [uploadText]="'Drag and Drop your logo here'" (fileSelected)="onFileSelect($event, 'logo', 2)"
-                  (fileRemoved)="removeLogo(2)" [filePath]="mySelectedLogo[2]" [showFileInfo]="false"
-                  [enableImagePreview]="true" [showRemoveButton]="populate !== 'true'">
+                <app-file-upload
+                  [acceptedFileTypes]="'.png,.jpg,.jpeg'"
+                  [maxFileSizeMB]="2"
+                  [uploadText]="'Drag and Drop your logo here'"
+                  (fileSelected)="onFileSelect($event, 'logo', 2)"
+                  (fileRemoved)="removeLogo(2)"
+                  (filePathRemoved)="removeLogo(2)"
+                  [filePath]="mySelectedLogo[2]"
+                  [showFileInfo]="false"
+                  [enableImagePreview]="true"
+                  [showRemoveButton]="true"
+                >
                 </app-file-upload>
               </div>
             </div>
@@ -666,12 +1010,24 @@
           <i class="fas fa-spinner fa-spin me-1"></i>Scheduling Training...
         </div>
         <div class="form-actions">
-          <button type="button" class="btn btn-outline-primary btn-lg me-2" (click)="openPreview()">
+          <button
+            type="button"
+            class="btn btn-outline-primary btn-lg me-2"
+            (click)="openPreview()"
+          >
             {{ "Preview Certificate" | translate }}
           </button>
-          <button type="submit" class="btn btn-primary btn-lg" [disabled]="isSpinner">
-            <span *ngIf="isSpinner" class="spinner-border spinner-border-sm me-2" role="status"
-              aria-hidden="true"></span>
+          <button
+            type="submit"
+            class="btn btn-primary btn-lg"
+            [disabled]="isSpinner"
+          >
+            <span
+              *ngIf="isSpinner"
+              class="spinner-border spinner-border-sm me-2"
+              role="status"
+              aria-hidden="true"
+            ></span>
             {{ isSpinner ? "Submitting..." : ("submit details" | translate) }}
           </button>
         </div>
@@ -680,19 +1036,45 @@
   </div>
 </div>
 
+<app-image-cropper-modal
+  [visible]="showImageCropper"
+  [imageFile]="cropperInputFile"
+  [title]="cropperTargetType === 'signature' ? 'Crop Signature' : 'Crop Logo'"
+  [defaultAspectMode]="
+    cropperTargetType === 'signature' ? 'panoramic' : 'rectangle'
+  "
+  [outputFormat]="'png'"
+  [resizeToWidth]="1200"
+  (loadFailed)="onCropperLoadFailed()"
+  (canceled)="cancelImageCrop()"
+  (cropped)="onImageCropApplied($event)"
+></app-image-cropper-modal>
+
 <div class="modal-backdrop fade show" *ngIf="showPreview"></div>
 
-<div class="modal d-block certificate-preview-modal" tabindex="-1" role="dialog" *ngIf="showPreview">
+<div
+  class="modal d-block certificate-preview-modal"
+  tabindex="-1"
+  role="dialog"
+  *ngIf="showPreview"
+>
   <div class="modal-dialog modal-xl modal-dialog-centered" role="document">
     <div class="modal-content p-3">
       <div class="modal-header">
         <h5 class="modal-title">{{ "Certificate Preview" | translate }}</h5>
-        <button type="button" class="btn-close" aria-label="Close" (click)="closePreview()"></button>
+        <button
+          type="button"
+          class="btn-close"
+          aria-label="Close"
+          (click)="closePreview()"
+        ></button>
       </div>
       <div class="modal-body">
         <ng-container *ngIf="previewData">
-          <app-latest-certificate-layout [data]="previewData"
-            [uniqueId]="previewUniqueId"></app-latest-certificate-layout>
+          <app-latest-certificate-layout
+            [data]="previewData"
+            [uniqueId]="previewUniqueId"
+          ></app-latest-certificate-layout>
         </ng-container>
       </div>
     </div>

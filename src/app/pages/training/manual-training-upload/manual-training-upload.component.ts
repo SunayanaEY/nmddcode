@@ -20,6 +20,10 @@ import {
 } from '../../../components/table/table.component';
 import { TrainingService } from '../../../pages/training/services/training.service';
 import { AdminService } from '../services/training-admin.service';
+import {
+  CroppedImageResult,
+  ImageCropperModalComponent,
+} from '../../../components/image-cropper-modal/image-cropper-modal.component';
 
 interface Participant {
   name: string;
@@ -43,6 +47,7 @@ interface Participant {
     ReactiveFormsModule,
     BreadcrumbComponent,
     TableComponent,
+    ImageCropperModalComponent,
   ],
   templateUrl: './manual-training-upload.component.html',
   styleUrl: './manual-training-upload.component.css',
@@ -52,6 +57,7 @@ export class ManualTrainingUploadComponent implements OnInit {
   participants: Participant[] = [];
   editingIndex: number = -1;
   alphabetError: boolean = false;
+  selectedPrefix: string = '';
   // aadharError: boolean = false;
   emailError: boolean = false;
   selectedParticipant: Participant | null = null;
@@ -67,6 +73,9 @@ export class ManualTrainingUploadComponent implements OnInit {
   photoId: number | null = null;
   photoError: string = '';
   selectedFile: File | null = null;
+  showImageCropper = false;
+  cropperInputFile: File | null = null;
+  cropperOriginalFileName = 'trainee-photo.jpg';
 
   breadcrumbItems: BreadcrumbItem[] = [
     { label: 'Dashboard', url: '/admin/role-dashboard' },
@@ -98,7 +107,7 @@ export class ManualTrainingUploadComponent implements OnInit {
     private adminService: AdminService,
     private toastr: ToastrService,
     private route: ActivatedRoute,
-    private router: Router
+    private router: Router,
   ) {
     this.initializeForm();
   }
@@ -134,7 +143,6 @@ export class ManualTrainingUploadComponent implements OnInit {
   //   this.getTrainingDetails(this.trainingId);
   // }
 
-
   initializeForm(): void {
     this.participantForm = this.fb.group({
       name: [
@@ -155,6 +163,8 @@ export class ManualTrainingUploadComponent implements OnInit {
           Validators.pattern(/^[0-9]+$/),
         ],
       ],
+      prefix: ['Mr', Validators.required],
+
       gender: ['', Validators.required],
       contactNumber: [
         '',
@@ -202,45 +212,76 @@ export class ManualTrainingUploadComponent implements OnInit {
     });
   }
   onPhotoSelect(event: any) {
-    const file = event.target.files[0];
+    const file = event?.target?.files?.[0] || null;
+    if (event?.target) {
+      event.target.value = '';
+    }
 
     if (file) {
-      // Validate file type
       if (!file.type.startsWith('image/')) {
         this.photoError = 'Please select a valid image file.';
         return;
       }
 
-      // Validate file size (e.g., max 2MB)
       if (file.size > 2 * 1024 * 1024) {
         this.photoError = 'Image size should not exceed 2MB.';
         return;
       }
 
       this.photoError = '';
-      this.selectedFile = file;
-
-      // Preview the image
-      const reader = new FileReader();
-      reader.onload = (e: any) => {
-        this.photoPreview = e.target.result;
-      };
-      reader.readAsDataURL(file);
-      this.trainingService.uploadTraineeImage(file, 'trainee').subscribe({
-        next: (response) => {
-          this.isSpinning = false;
-          this.toastr.success('Image uploaded successfully!', 'Success');
-          this.photoId = response.data.photoId;
-        },
-        error: (error) => {
-          this.isSpinning = false;
-          this.toastr.error(
-            'Failed to upload trainee image. Try again !',
-            'Error'
-          );
-        },
-      });
+      this.cropperOriginalFileName = file.name || 'trainee-photo.jpg';
+      this.cropperInputFile = file;
+      this.showImageCropper = true;
     }
+  }
+
+  onPhotoCropCanceled(): void {
+    this.showImageCropper = false;
+    this.cropperInputFile = null;
+  }
+
+  onPhotoCropLoadFailed(): void {
+    this.photoError = 'Please select a valid image file.';
+    this.onPhotoCropCanceled();
+  }
+
+  onPhotoCropApplied(event: CroppedImageResult): void {
+    const croppedFile = new File(
+      [event.blob],
+      this.createCroppedFileName(this.cropperOriginalFileName, event.mimeType),
+      { type: event.mimeType },
+    );
+
+    this.selectedFile = croppedFile;
+    this.photoPreview = event.previewUrl;
+    this.photoError = '';
+    this.showImageCropper = false;
+    this.cropperInputFile = null;
+    this.isSpinning = true;
+
+    this.trainingService.uploadTraineeImage(croppedFile, 'trainee').subscribe({
+      next: (response) => {
+        this.isSpinning = false;
+        this.toastr.success('Image uploaded successfully!', 'Success');
+        this.photoId = response.data.photoId;
+      },
+      error: () => {
+        this.isSpinning = false;
+        this.toastr.error('Failed to upload trainee image. Try again !', 'Error');
+      },
+    });
+  }
+
+  private createCroppedFileName(originalFileName: string, mimeType: string): string {
+    const baseName =
+      originalFileName.replace(/\.[^/.]+$/, '') || 'trainee-photo';
+    if (mimeType.includes('jpeg') || mimeType.includes('jpg')) {
+      return `${baseName}-cropped.jpg`;
+    }
+    if (mimeType.includes('webp')) {
+      return `${baseName}-cropped.webp`;
+    }
+    return `${baseName}-cropped.png`;
   }
 
   getTrainingDetails(trainingId: number) {
@@ -282,7 +323,7 @@ export class ManualTrainingUploadComponent implements OnInit {
       try {
         this.isLoadingSchedule = true;
         this.trainingScheduleUrl = await this.toBlobUrl(
-          this.trainingDetails.trainingScheduleDetail
+          this.trainingDetails.trainingScheduleDetail,
         );
       } catch (error) {
         console.error('Failed to load training schedule:', error);
@@ -297,6 +338,12 @@ export class ManualTrainingUploadComponent implements OnInit {
     if (!isEdit) {
       this.editingIndex = -1;
       this.participantForm.reset();
+      this.photoPreview = null;
+      this.photoId = null;
+      this.selectedFile = null;
+      this.photoError = '';
+      this.showImageCropper = false;
+      this.cropperInputFile = null;
     }
 
     const modalElement = document.getElementById('addParticipantModal');
@@ -326,8 +373,9 @@ export class ManualTrainingUploadComponent implements OnInit {
       const formValue = this.participantForm.getRawValue();
 
       // Mask sensitive data for display
+      this.selectedPrefix = formValue.prefix;
       const participant: Participant = {
-        name: formValue.name,
+        name: `${formValue.prefix} ${formValue.name}`.trim(),
         age: formValue.age,
         gender: formValue.gender,
         contactNumber: this.maskContactNumber(formValue.contactNumber),
@@ -359,7 +407,7 @@ export class ManualTrainingUploadComponent implements OnInit {
       const formValue = this.participantForm.getRawValue();
 
       const updatedParticipant: Participant = {
-        name: formValue.name,
+        name: `${formValue.prefix} ${formValue.name}`.trim(),
         age: formValue.age,
         gender: formValue.gender,
         contactNumber: this.maskContactNumber(formValue.contactNumber),
@@ -369,6 +417,7 @@ export class ManualTrainingUploadComponent implements OnInit {
         category: formValue.category,
         educationQualification: formValue.educationQualification,
         recommendedByOrganization: formValue.recommendedByOrganization,
+        photoId: this.photoId ?? null,
       };
 
       this.participants[this.editingIndex] = updatedParticipant;
@@ -429,6 +478,22 @@ export class ManualTrainingUploadComponent implements OnInit {
     }
   }
 
+  getNameOnly(fullName: string): string {
+    const ALLOWED_PREFIXES = new Set(['Mr', 'Ms', 'Mrs', 'Dr', 'Prof']);
+    if (!fullName) return '';
+    const trimmed = fullName.trim();
+
+    // Split only once on the first space
+    const firstSpace = trimmed.indexOf(' ');
+    if (firstSpace === -1) return trimmed; // no space → no prefix to remove
+
+    const firstToken = trimmed.slice(0, firstSpace);
+    const rest = trimmed.slice(firstSpace + 1).trim();
+
+    // If the first token is a known prefix, drop it; otherwise keep the full name
+    return ALLOWED_PREFIXES.has(firstToken) ? rest : trimmed;
+  }
+
   editParticipant(index: number): void {
     this.editingIndex = index;
     const participant = this.participants[index];
@@ -438,7 +503,8 @@ export class ManualTrainingUploadComponent implements OnInit {
     this.openAddModal(true);
 
     this.participantForm.patchValue({
-      name: participant.name,
+      prefix: this.selectedPrefix,
+      name: this.getNameOnly(participant.name),
       age: participant.age,
       dob: participant.dob,
       gender: participant.gender,

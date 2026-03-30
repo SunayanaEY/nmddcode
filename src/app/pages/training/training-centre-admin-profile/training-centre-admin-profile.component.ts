@@ -1,4 +1,11 @@
-import { Component, OnInit, Output, EventEmitter } from '@angular/core';
+import {
+  Component,
+  OnInit,
+  Output,
+  EventEmitter,
+  ElementRef,
+  ViewChild,
+} from '@angular/core';
 import { CommonModule } from '@angular/common';
 import {
   FormBuilder,
@@ -23,6 +30,10 @@ import { AuthService } from '../../../services/auth.service';
 import { AdminService } from '../services/training-admin.service';
 import * as pdfjsLib from 'pdfjs-dist';
 import { TranslateModule } from '@ngx-translate/core';
+import {
+  CroppedImageResult,
+  ImageCropperModalComponent,
+} from '../../../components/image-cropper-modal/image-cropper-modal.component';
 
 @Component({
   selector: 'app-training-centre-admin-profile',
@@ -32,12 +43,15 @@ import { TranslateModule } from '@ngx-translate/core';
     ReactiveFormsModule,
     // BreadcrumbComponent,
     TranslateModule,
+    ImageCropperModalComponent,
   ],
   templateUrl: './training-centre-admin-profile.component.html',
   styleUrls: ['./training-centre-admin-profile.component.css'],
 })
 export class TrainingCentreAdminProfileComponent implements OnInit {
   @Output() formSubmitted = new EventEmitter<void>();
+  @ViewChild('docFileInput') docFileInputRef?: ElementRef<HTMLInputElement>;
+  @ViewChild('imageFileInput') imageFileInputRef?: ElementRef<HTMLInputElement>;
 
   profileForm: FormGroup;
   selectedFile: File | null = null;
@@ -64,6 +78,9 @@ export class TrainingCentreAdminProfileComponent implements OnInit {
   today: string | undefined;
   organizations: any[] = [];
   instituteImageUrl: string | null = null;
+  showImageCropper = false;
+  cropperInputFile: File | null = null;
+  cropperOriginalFileName = 'institute-image.jpg';
 
   // Location data
   states: State[] = [];
@@ -493,14 +510,6 @@ export class TrainingCentreAdminProfileComponent implements OnInit {
         this.profileForm.get('instituteType')?.value === 'Other Organizations'
       ) {
         const organizationTypeCode = this.getSelectedOrganizationTypeCode();
-        if (!organizationTypeCode) {
-          this.isLoading = false;
-          this.toastr.error(
-            'Unable to determine organization type for selected organization',
-            'Error'
-          );
-          return;
-        }
 
         instituteDetails = {
           instituteName:
@@ -536,12 +545,14 @@ export class TrainingCentreAdminProfileComponent implements OnInit {
       }
 
       // Append instituteDetails as JSON string with explicit content type
-      const instituteDetailsBlob = new Blob(
-        [JSON.stringify(instituteDetails)],
-        {
-          type: 'application/json',
-        }
+      const instituteDetailsString = JSON.stringify(instituteDetails);
+      console.log(
+        `[TrainingInstitute/Create] endpoint: trainingInstitutes/create/${this.userId}`
       );
+      console.log('[TrainingInstitute/Create] payload string:', instituteDetailsString);
+      const instituteDetailsBlob = new Blob([instituteDetailsString], {
+        type: 'application/json',
+      });
       formData.append('data', instituteDetailsBlob);
 
       // Append image file
@@ -560,7 +571,7 @@ export class TrainingCentreAdminProfileComponent implements OnInit {
             this.selectedImagePreview = null;
 
             this.toastr.success(
-              `Training Centre Admin profile created successfully! Registration ID: ${registrationId}`,
+              `Training Centre Admin profile created successfully! `,
               'Success'
             );
 
@@ -635,25 +646,7 @@ export class TrainingCentreAdminProfileComponent implements OnInit {
   onFileSelected(event: Event) {
     const input = event.target as HTMLInputElement;
     if (input.files && input.files[0]) {
-      const file = input.files[0];
-
-      if (file.size > 5 * 1024 * 1024) {
-        this.toastr.error('File size must be less than 5MB', 'File Error');
-        return;
-      }
-
-      if (!file.type.startsWith('image/')) {
-        this.toastr.error('Please select a valid image file', 'File Error');
-        return;
-      }
-
-      this.selectedFile = file;
-
-      const reader = new FileReader();
-      reader.onload = (e) => {
-        this.selectedImagePreview = e.target?.result as string;
-      };
-      reader.readAsDataURL(file);
+      this.processImageFile(input.files[0]);
     }
   }
 
@@ -708,16 +701,11 @@ export class TrainingCentreAdminProfileComponent implements OnInit {
   }
 
   triggerFileInput() {
-    const fileInput = document.querySelector(
-      'input[type="file"]'
-    ) as HTMLInputElement;
-    fileInput?.click();
+    this.docFileInputRef?.nativeElement?.click();
   }
 
   triggerFileInputImage() {
-    const fileInputs = document.querySelectorAll('input[type="file"]');
-    const secondFileInput = fileInputs[1] as HTMLInputElement;
-    secondFileInput?.click();
+    this.imageFileInputRef?.nativeElement?.click();
   }
 
   onDragOver(event: DragEvent) {
@@ -746,25 +734,7 @@ export class TrainingCentreAdminProfileComponent implements OnInit {
 
     const files = event.dataTransfer?.files;
     if (files && files[0]) {
-      const file = files[0];
-
-      if (file.size > 5 * 1024 * 1024) {
-        this.toastr.error('File size must be less than 5MB', 'File Error');
-        return;
-      }
-
-      if (!file.type.startsWith('image/')) {
-        this.toastr.error('Please select a valid image file', 'File Error');
-        return;
-      }
-
-      this.selectedFile = file;
-
-      const reader = new FileReader();
-      reader.onload = (e) => {
-        this.selectedImagePreview = e.target?.result as string;
-      };
-      reader.readAsDataURL(file);
+      this.processImageFile(files[0]);
     }
   }
 
@@ -797,12 +767,10 @@ export class TrainingCentreAdminProfileComponent implements OnInit {
     event.stopPropagation();
     this.selectedFile = null;
     this.selectedImagePreview = null;
-
-    const fileInput = document.querySelector(
-      'input[type="file"]'
-    ) as HTMLInputElement;
-    if (fileInput) {
-      fileInput.value = '';
+    this.showImageCropper = false;
+    this.resetCropperState();
+    if (this.imageFileInputRef?.nativeElement) {
+      this.imageFileInputRef.nativeElement.value = '';
     }
   }
 
@@ -811,13 +779,70 @@ export class TrainingCentreAdminProfileComponent implements OnInit {
     this.selectedFileDoc = null;
     this.selectedDocPreview = null;
     this.pdfPreviewUrl = null;
-
-    const fileInput = document.querySelector(
-      'input[type="file"]'
-    ) as HTMLInputElement;
-    if (fileInput) {
-      fileInput.value = '';
+    if (this.docFileInputRef?.nativeElement) {
+      this.docFileInputRef.nativeElement.value = '';
     }
+  }
+
+  processImageFile(file: File) {
+    if (file.size > 5 * 1024 * 1024) {
+      this.toastr.error('File size must be less than 5MB', 'File Error');
+      return;
+    }
+
+    if (!file.type.startsWith('image/')) {
+      this.toastr.error('Please select a valid image file', 'File Error');
+      return;
+    }
+
+    this.cropperOriginalFileName = file.name || 'institute-image.jpg';
+    this.cropperInputFile = file;
+    this.showImageCropper = true;
+  }
+
+  cancelImageCrop() {
+    this.showImageCropper = false;
+    this.resetCropperState();
+    if (this.imageFileInputRef?.nativeElement) {
+      this.imageFileInputRef.nativeElement.value = '';
+    }
+  }
+
+  onImageCropApplied(event: CroppedImageResult) {
+    if (!event.blob) {
+      this.toastr.error('Unable to crop selected image', 'Image Error');
+      return;
+    }
+
+    const mimeType = event.mimeType || 'image/png';
+    this.selectedFile = new File(
+      [event.blob],
+      this.createCroppedFileName(this.cropperOriginalFileName, mimeType),
+      { type: mimeType }
+    );
+    this.selectedImagePreview = event.previewUrl;
+    this.showImageCropper = false;
+    this.resetCropperState();
+  }
+
+  onCropperLoadFailed() {
+    this.toastr.error('Please select a valid image file', 'File Error');
+    this.cancelImageCrop();
+  }
+
+  private createCroppedFileName(originalFileName: string, mimeType: string) {
+    const baseName = originalFileName.replace(/\.[^/.]+$/, '') || 'institute-image';
+    if (mimeType.includes('jpeg') || mimeType.includes('jpg')) {
+      return `${baseName}-cropped.jpg`;
+    }
+    if (mimeType.includes('webp')) {
+      return `${baseName}-cropped.webp`;
+    }
+    return `${baseName}-cropped.png`;
+  }
+
+  private resetCropperState() {
+    this.cropperInputFile = null;
   }
 
   togglePassword() {
@@ -850,4 +875,5 @@ export class TrainingCentreAdminProfileComponent implements OnInit {
     this.hasNumber = /\d/.test(password);
     this.hasSpecialChar = /[@$!%*?&]/.test(password);
   }
+
 }

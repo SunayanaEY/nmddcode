@@ -5,6 +5,7 @@ import { catchError, map, tap } from 'rxjs/operators';
 import { environment } from '../../environments/environment';
 import { Router } from '@angular/router';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import { HeartbeatService } from '../pages/training/services/heartbeat-service.service';
 
 interface LoginResponse {
   data: {
@@ -53,17 +54,22 @@ export class AuthService {
   private lastActivityTime: number = Date.now();
   private isLoggingOut: boolean = false;
 
-  constructor(private http: HttpClient, private router: Router, private ngbModal: NgbModal) {
+  constructor(
+    private http: HttpClient,
+    private router: Router,
+    private ngbModal: NgbModal,
+    private heartbeatService: HeartbeatService
+  ) {
     this.setupActivityListeners();
-    // Only start session monitoring if user is already logged in (e.g., page refresh)
     if (this.isLoggedIn()) {
       this.startSessionMonitoring();
+      this.heartbeatService.startHeartbeat();
     }
   }
 
-  login(email: string, password: string): Observable<LoginResponse> {
+  login(username: string, password: string): Observable<LoginResponse> {
     return this.http
-      .post<LoginResponse>(`${this.apiUrl}api/auth/login`, { email, password })
+      .post<LoginResponse>(`${this.apiUrl}api/auth/login`, { username, password })
       .pipe(
         tap((response) => {
           if (response && response.data) {
@@ -74,6 +80,7 @@ export class AuthService {
             this.user = response.data;
             this.lastActivityTime = loginTime;
             this.startSessionMonitoring();
+            this.heartbeatService.startHeartbeat();
           }
         }),
         catchError((error) => {
@@ -95,13 +102,7 @@ export class AuthService {
         return of(null);
       }),
       tap(() => {
-        // Clear local session data
-        this.user = null;
-        sessionStorage.removeItem('user');
-        sessionStorage.removeItem('loginTime');
-        this.stopSessionMonitoring();
-        // Close any open modals from ng-bootstrap or Bootstrap JS
-        this.closeAllOpenModals();
+        this.clearSessionData();
       })
     );
   }
@@ -138,12 +139,12 @@ export class AuthService {
   }
 
   private clearSessionData(): void {
-    // Clear local session data
     this.user = null;
     sessionStorage.removeItem('user');
     sessionStorage.removeItem('loginTime');
+    localStorage.removeItem('authToken');
     this.stopSessionMonitoring();
-    // Ensure all modals are closed
+    this.heartbeatService.stopHeartbeat();
     this.closeAllOpenModals();
   }
 
@@ -312,6 +313,12 @@ export class AuthService {
           });
         })
       );
+  }
+
+  checkUsername(username: string): Observable<any> {
+    return this.http.get<any>(`${this.apiUrl}api/auth/check-username`, {
+      params: { username },
+    });
   }
 
   // Session timeout management methods

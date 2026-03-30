@@ -10,9 +10,13 @@
     </button>
   </div>
 
-  <div *ngIf="showForm" class="organization-form-wrapper">
-    <app-organization-admin-profile></app-organization-admin-profile>
+  <div *ngIf="showForm" class="organization-form-wrapper" id="organizationFormSection">
+    <app-organization-admin-profile
+      [editData]="selectedOrganization"
+      (formSubmissionSuccess)="onFormSubmissionSuccess()"
+      (formCanceled)="onFormCancel()"
+    ></app-organization-admin-profile>
   </div>
 
-  <app-organization-table-data></app-organization-table-data>
+  <app-organization-table-data (editRequested)="onEditFromTable($event)"></app-organization-table-data>
 </div>

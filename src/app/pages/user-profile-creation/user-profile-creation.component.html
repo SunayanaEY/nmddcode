@@ -18,7 +18,7 @@
           </h3>
 
           <div class="form-row">
-            <div class="form-group half-width">
+            <div class="form-group third-width">
               <label for="operatorName"
                 >{{ "USER_PROFILE_CREATION.MANAGER_NAME" | translate }}
                 <span class="required">*</span></label
@@ -47,7 +47,7 @@
                 {{ "USER_PROFILE_CREATION.MANAGER_NAME_REQUIRED" | translate }}
               </div>
             </div>
-            <div class="form-group half-width">
+            <div class="form-group third-width">
               <label for="designation"
                 >{{ "USER_PROFILE_CREATION.DESIGNATION" | translate }}
                 <span class="required">*</span></label
@@ -317,7 +317,10 @@
             type="submit"
             class="btn btn-lg"
             [ngClass]="isEditMode ? 'btn-warning' : 'btn-primary'"
-            [disabled]="isLoading || profileForm.invalid"
+            [disabled]="
+              isLoading ||
+              profileForm.invalid
+            "
           >
             <span
               *ngIf="isLoading"
