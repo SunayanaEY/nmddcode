@@ -126,6 +126,7 @@
               class="form-select"
               formControlName="trainingInstituteId"
               [disabled]="isLoadingTrainingInstitutes"
+              [(ngModel)]="instituteId"
             >
               <option value="" selected>
                 {{ "All Training Institutes" | translate }}
@@ -453,6 +454,7 @@
           [selectedState]="selectedState"
           (stateSelected)="onStateSelected($event)"
           [organizationId]="organizationId"
+          [instituteId]="instituteId"
           [instituteType]="selectedInstituteType"
         >
         </app-india-map>
@@ -556,7 +558,10 @@
   </div>
 
   <!-- Private Institute Type Chart -->
-  <div class="col-lg-6" *ngIf="userRole !== 6 && selectedInstituteType === 'Other Organizations'">
+  <div
+    class="col-lg-6"
+    *ngIf="userRole !== 6 && selectedInstituteType === 'Other Organizations'"
+  >
     <div class="card">
       <div class="card-header">
         <h5 class="card-title mb-0">

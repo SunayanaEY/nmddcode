@@ -45,6 +45,7 @@ export class IndiaMapComponent
   @Input() selectedState: StateData | null = null;
   @Input() isLoading = false;
   @Input() organizationId: number | null = null;
+  @Input() instituteId: string | null = null;
   @Input() instituteType: string | null = null;
   @Input() variant: 'default' | 'login' = 'default';
   @Output() stateSelected = new EventEmitter<StateData | null>();
@@ -124,17 +125,28 @@ export class IndiaMapComponent
     if (changes['selectedState']) {
       const next = changes['selectedState'].currentValue as StateData | null;
       if (next && next.stateName) {
+        this.loadInstituteData();
         const topoPath = this.getStateTopoJsonPath(next.stateName);
         if (topoPath && this.svg && this.g) {
           this.loadAndRenderStateMap(topoPath, next.stateName);
         }
       } else if (!next && this.isStateView && this.svg && this.g) {
         this.backToIndia();
+        this.loadInstituteData();
+        this.selectedState = null;
       }
     }
 
     if (changes['organizationId'] || changes['instituteType']) {
       this.loadInstituteData();
+    }
+    if (changes['instituteId']) {
+      if (this.instituteId != '') {
+        const data = this.institutes.filter((i) => i.id == this.instituteId);
+        this.addInstituteMarkers(data);
+      } else {
+        this.addInstituteMarkers(this.institutes);
+      }
     }
   }
 
@@ -159,6 +171,7 @@ export class IndiaMapComponent
   private loadInstituteData(): void {
     this.dashboardService
       .getInstituteLocations(
+        Number(this.selectedState?.stateId) || undefined,
         this.organizationId || undefined,
         this.instituteType || undefined,
       )
@@ -175,7 +188,7 @@ export class IndiaMapComponent
           }));
           // Re-render markers if map is already initialized
           if (this.g) {
-            this.addInstituteMarkers();
+            this.addInstituteMarkers(this.institutes);
           }
         },
         error: (error) => {
@@ -292,12 +305,12 @@ export class IndiaMapComponent
       const geoData = await response.json();
 
       this.createMapFromGeoJSON(geoData);
-      this.addInstituteMarkers();
+      this.addInstituteMarkers(this.institutes);
     } catch (error) {
       const errorObj = error as Error;
 
       this.createSimplifiedIndiaMap();
-      this.addInstituteMarkers();
+      this.addInstituteMarkers(this.institutes);
     }
   }
 
@@ -494,7 +507,7 @@ export class IndiaMapComponent
       );
 
       this.renderStateGeoJSON(featureCollection);
-      this.addInstituteMarkers();
+      this.addInstituteMarkers(this.institutes);
     } catch (err) {
       console.error('Error loading state topojson:', err);
     }
@@ -660,7 +673,7 @@ export class IndiaMapComponent
       });
   }
 
-  private addInstituteMarkers(): void {
+  private addInstituteMarkers(data: any): void {
     // Remove existing markers group to recreate it (ensures it's on top)
     this.g.select('.markers-group').remove();
 
@@ -670,7 +683,7 @@ export class IndiaMapComponent
     // Add institute markers to the markers group
     const markerSelection = markersGroup
       .selectAll('.institute-marker-group') // Changed selection class
-      .data(this.institutes);
+      .data(data);
 
     const markerEnter = markerSelection
       .enter()
