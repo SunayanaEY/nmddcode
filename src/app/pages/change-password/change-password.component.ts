@@ -21,12 +21,13 @@ import { TranslateModule } from '@ngx-translate/core';
 })
 export class ChangePasswordComponent {
   type: string | null = null;
-  // forgetPasswordForm: FormGroup;
   resetPasswordForm: FormGroup;
   showPassword = false;
   showoldPassword = false;
   errorMessage = '';
   isLoading = false;
+  showSuccessModal = false;
+  isLoggingOut = false;
 
   // Password validation properties
   hasMinLength = false;
@@ -42,12 +43,8 @@ export class ChangePasswordComponent {
     private router: Router,
     private route: ActivatedRoute
   ) {
-    // this.forgetPasswordForm = this.fb.group({
-    //   newPassword: ['', [Validators.required, Validators.email]],
-    //   confirmPassword: ['', [Validators.required, Validators.minLength(6)]],
-    // });
     this.resetPasswordForm = this.fb.group({
-      email: ['', [Validators.required, Validators.email]],
+      userName: ['', [Validators.required, Validators.minLength(3)]],
       newPassword: ['', [Validators.required, Validators.minLength(6)]],
       oldPassword: ['', [Validators.required]],
     });
@@ -82,18 +79,18 @@ export class ChangePasswordComponent {
     this.isLoading = true;
     this.errorMessage = '';
 
-    const { email, oldPassword, newPassword } = this.resetPasswordForm.value;
+    const { userName, oldPassword, newPassword } = this.resetPasswordForm.value;
 
-    this.authService.changePassword(email, oldPassword, newPassword).subscribe({
+    this.authService.changePassword(userName, oldPassword, newPassword).subscribe({
       next: (response) => {
         this.isLoading = false;
         if (response && response.status == 200) {
-          this.toastr.success('Password Changed successfully!');
-          this.router.navigate(['admin/training-module']);
+          this.toastr.success('Password changed successfully!');
+          this.showSuccessModal = true;
         } else {
-          this.errorMessage = 'Invalid email or password';
+          this.errorMessage = 'Invalid username or password';
           this.toastr.error(
-            'Invalid email or password',
+            'Invalid username or password',
             'Password Change Failed'
           );
         }
@@ -102,6 +99,24 @@ export class ChangePasswordComponent {
         this.isLoading = false;
         this.errorMessage = 'Password not Changed. Please try again.';
         this.toastr.error('Password not Changed. Please try again.', 'Error');
+      },
+    });
+  }
+  onReloginNow() {
+    if (this.isLoggingOut) {
+      return;
+    }
+    this.isLoggingOut = true;
+    this.authService.logout().subscribe({
+      next: () => {
+        this.isLoggingOut = false;
+        this.showSuccessModal = false;
+        this.router.navigate(['/login']);
+      },
+      error: () => {
+        this.isLoggingOut = false;
+        this.showSuccessModal = false;
+        this.router.navigate(['/login']);
       },
     });
   }

@@ -429,31 +429,31 @@ export class AuthService {
     }
   }
   changePassword(
-    email: string,
+    userName: string,
     oldPassword: string,
     newPassword: string
   ): Observable<any> {
     const body = {
-      email: email,
+      username: userName,
       oldPassword: oldPassword,
       newPassword: newPassword,
     };
 
     return this.http.post<any>(this.apiUrl + 'api/auth/reset-password', body);
   }
-  forgetPasswordOTP(email: string): Observable<any> {
+  forgetPasswordOTP(userName: string): Observable<any> {
     const body = {
-      email: email,
+      username: userName,
     };
     return this.http.post<any>(this.apiUrl + 'api/auth/forgot-password', body);
   }
   forgetPassword(
-    email: string,
+    userName: string,
     otp: number,
     newPassword: string
   ): Observable<any> {
     const body = {
-      email: email,
+      username: userName,
       otp: otp,
       newPassword: newPassword,
     };
