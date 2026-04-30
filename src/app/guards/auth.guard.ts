@@ -7,6 +7,11 @@ export const AuthGuard: CanActivateFn = (route, state) => {
   const router = inject(Router);
 
   if (authService.isLoggedIn()) {
+    if (!authService.canAccessDuringFirstTimeLogin(state.url)) {
+      router.navigate(['/admin/change-password']);
+      return false;
+    }
+
     return true;
   } else {
     // Redirect to login page with return url

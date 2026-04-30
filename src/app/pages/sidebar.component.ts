@@ -120,6 +120,10 @@ export class SidebarComponent {
     return this.authService.hasRole([3, 4]);
   }
 
+  isFirstTimeLoginRestricted(): boolean {
+    return this.authService.isFirstTimeLoginRestrictedUser();
+  }
+
   // Check if user has role 1 (from session storage)
   isRole1User(): boolean {
     const roleId = sessionStorage.getItem('user');

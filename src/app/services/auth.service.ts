@@ -9,6 +9,7 @@ import { HeartbeatService } from '../pages/training/services/heartbeat-service.s
 
 interface LoginResponse {
   data: {
+    firstTimeLogin?: boolean;
     role: number;
     authData: string;
     id: number;
@@ -190,6 +191,19 @@ export class AuthService {
 
   isDataEntryOperator(): boolean {
     return this.getUserRole() === 4;
+  }
+
+  isFirstTimeLoginRestrictedUser(): boolean {
+    const user = this.getUser();
+    return !!user && user.role !== 1 && user.firstTimeLogin === true;
+  }
+
+  canAccessDuringFirstTimeLogin(targetUrl: string): boolean {
+    if (!this.isFirstTimeLoginRestrictedUser()) {
+      return true;
+    }
+
+    return targetUrl.startsWith('/admin/change-password');
   }
 
   register(formData: FormData): Observable<RegisterResponse> {

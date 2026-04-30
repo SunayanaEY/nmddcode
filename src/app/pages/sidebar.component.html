@@ -46,6 +46,7 @@
   <!-- Menu Items -->
   <div class="nav-container">
     <nav class="flex-grow-1">
+      <ng-container *ngIf="!isFirstTimeLoginRestricted(); else restrictedPasswordMenu">
       <!-- Common Dashboard -->
       <a
         class="sidebar-link d-flex align-items-center mb-2 fw-bold"
@@ -364,6 +365,21 @@
           "Update Profile" | translate
         }}</span>
       </a>
+      </ng-container>
+
+      <ng-template #restrictedPasswordMenu>
+        <a
+          class="sidebar-link d-flex align-items-center mb-2 fw-bold"
+          [routerLink]="['change-password']"
+          routerLinkActive="active"
+          [attr.title]="collapsed ? 'Change Password' : null"
+        >
+          <i class="bi bi-key me-2"></i>
+          <span class="sidebar-label" *ngIf="!collapsed">{{
+            "Change Password" | translate
+          }}</span>
+        </a>
+      </ng-template>
 
       <!-- Central Admin Only Features -->
       <!-- <a class="sidebar-link d-flex align-items-center mb-2"

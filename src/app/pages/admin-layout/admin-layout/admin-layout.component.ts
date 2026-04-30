@@ -14,18 +14,30 @@ import { SessionTimeoutWarningComponent } from '../../../components/session-time
   styleUrl: './admin-layout.component.css'
 })
 export class AdminLayoutComponent {
-collapsed = false;
+  collapsed = false;
+  public href: string = '';
 
-
-
-  public href: string = "";
-  constructor(private router: Router,public auth: AuthService) { }
+  constructor(
+    private router: Router,
+    public auth: AuthService
+  ) {}
 
   ngOnInit() {
+    this.enforceFirstTimeLoginRoute(this.router.url);
+
     this.router.events.subscribe((event) => {
       if (event instanceof NavigationEnd) {
         this.href = event.url;
+        this.enforceFirstTimeLoginRoute(event.urlAfterRedirects || event.url);
       }
     });
+  }
+
+  private enforceFirstTimeLoginRoute(currentUrl: string): void {
+    if (this.auth.canAccessDuringFirstTimeLogin(currentUrl)) {
+      return;
+    }
+
+    this.router.navigate(['/admin/change-password']);
   }
 }

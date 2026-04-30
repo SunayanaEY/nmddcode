@@ -27,6 +27,7 @@ export class ChangePasswordComponent {
   errorMessage = '';
   isLoading = false;
   showSuccessModal = false;
+  showFirstLoginModal = false;
   isLoggingOut = false;
 
   // Password validation properties
@@ -53,6 +54,14 @@ export class ChangePasswordComponent {
     this.route.queryParams.subscribe((params) => {
       this.type = params['type'];
     });
+
+    const user = this.authService.getUser();
+    if (user?.firstTimeLogin === true) {
+      this.showFirstLoginModal = true;
+      if (!this.resetPasswordForm.get('userName')?.value && user.username) {
+        this.resetPasswordForm.patchValue({ userName: user.username });
+      }
+    }
 
     // Subscribe to password changes for validation
     setTimeout(() => {
@@ -120,6 +129,11 @@ export class ChangePasswordComponent {
       },
     });
   }
+
+  closeFirstLoginModal(): void {
+    this.showFirstLoginModal = false;
+  }
+
   markFormGroupTouched(formGroup: FormGroup) {
     Object.keys(formGroup.controls).forEach((key) => {
       const control = formGroup.get(key);

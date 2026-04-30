@@ -103,7 +103,10 @@ export class LoginComponent implements OnInit {
           this.toastr.success('Login successful!', 'Welcome');
           localStorage.setItem('username', response.data.username);
           localStorage.setItem('roleId', response.data.role.toString());
-          this.redirectBasedOnRole(response.data.role);
+          this.redirectBasedOnRole(
+            response.data.role,
+            response.data.firstTimeLogin
+          );
         } else {
           this.errorMessage = 'Invalid username or password';
           this.toastr.error('Invalid username or password', 'Login Failed');
@@ -124,7 +127,12 @@ export class LoginComponent implements OnInit {
     });
   }
 
-  private redirectBasedOnRole(role: number): void {
+  private redirectBasedOnRole(role: number, firstTimeLogin?: boolean): void {
+    if (firstTimeLogin === true && role !== 1) {
+      this.router.navigate(['/admin/change-password']);
+      return;
+    }
+
     switch (role) {
       case 1:
       case 5:
