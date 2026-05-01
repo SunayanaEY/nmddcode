@@ -15,6 +15,7 @@
   [columns]="tableColumnsPending"
   [data]="trainingsList3"
   [actions]="tableActionsPending"
+  [isLoading]="isLoadingPendingTrainings"
   (actionClick)="handleTableAction($event)"
   [isExportCSV]="isExportCSV"
   [isExportPDF]="isExportPdf"
@@ -40,6 +41,7 @@
     [columns]="tableColumnsApproved"
     [data]="trainingsList"
     [actions]="tableActions"
+    [isLoading]="isLoadingApprovedTrainings"
     (actionClick)="handleTableAction($event)"
     [isExportCSV]="isExportCSV"
     [isExportPDF]="isExportPdf"
@@ -67,6 +69,7 @@
     [columns]="tableColumnsRejected"
     [data]="trainingsList2"
     [actions]="tableActions2"
+    [isLoading]="isLoadingRejectedTrainings"
     (actionClick)="handleTableAction($event)"
     [isExportCSV]="isExportCSV"
     [isExportPDF]="isExportPdf"
@@ -180,7 +183,12 @@
           </h4>
           <!-- <p class="my-auto mb-0"> {{complaintDetail.title}}</p> -->
           <p class="my-auto mb-0 form-control">
-            {{ this.trainingDetails.duration }}
+            {{
+              getTrainingDurationInDays(
+                this.trainingDetails.startDate,
+                this.trainingDetails.endDate
+              )
+            }}
           </p>
         </div>
       </div>
@@ -302,6 +310,7 @@
         [columns]="tableColumnsTrainee"
         [data]="traineeList"
         [actions]="tableActionsTrainee"
+        [isLoading]="isLoadingTrainees"
         (actionClick)="handleTableAction($event)"
         [isExportCSV]="isExportCSV"
         [isExportPDF]="isExportPdf"

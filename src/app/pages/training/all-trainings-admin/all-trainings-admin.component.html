@@ -257,7 +257,13 @@
             { label: 'Trainer Name', value: trainingDetails.trainerName },
             { label: 'Start Date', value: trainingDetails.startDate },
             { label: 'End Date', value: trainingDetails.endDate },
-            { label: 'Training Duration', value: trainingDetails.duration },
+            {
+              label: 'Training Duration',
+              value: getTrainingDurationInDays(
+                trainingDetails.startDate,
+                trainingDetails.endDate
+              ),
+            },
             {
               label: 'Mode of Training',
               value: trainingDetails.modeOfTraining,

@@ -355,7 +355,14 @@
           <label class="detail-label"
             >{{ "Training Duration" | translate }}:</label
           >
-          <div class="detail-value">{{ trainingDetails?.duration }}</div>
+          <div class="detail-value">
+            {{
+              getTrainingDurationInDays(
+                trainingDetails?.startDate,
+                trainingDetails?.endDate
+              )
+            }}
+          </div>
         </div>
       </div>
 

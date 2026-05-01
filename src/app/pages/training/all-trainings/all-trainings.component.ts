@@ -408,6 +408,54 @@ export class AllTrainingsComponent {
       .join(', ');
   }
 
+  getTrainingDurationInDays(
+    startDate: string | null | undefined,
+    endDate: string | null | undefined
+  ): string {
+    const start = this.parseTrainingDurationDate(startDate);
+    const end = this.parseTrainingDurationDate(endDate);
+
+    if (!start || !end) {
+      return '-';
+    }
+
+    const millisecondsPerDay = 24 * 60 * 60 * 1000;
+    const diffInDays =
+      Math.floor((end.getTime() - start.getTime()) / millisecondsPerDay) + 1;
+
+    if (diffInDays <= 0) {
+      return '-';
+    }
+
+    return `${diffInDays} ${diffInDays === 1 ? 'Day' : 'Days'}`;
+  }
+
+  private parseTrainingDurationDate(
+    value: string | null | undefined
+  ): Date | null {
+    const raw = (value || '').trim();
+    if (!raw) {
+      return null;
+    }
+
+    const formattedDateMatch = raw.match(/^(\d{2})\/(\d{2})\/(\d{4})$/);
+    if (formattedDateMatch) {
+      const [, day, month, year] = formattedDateMatch;
+      return new Date(Number(year), Number(month) - 1, Number(day));
+    }
+
+    const parsed = new Date(raw);
+    if (Number.isNaN(parsed.getTime())) {
+      return null;
+    }
+
+    return new Date(
+      parsed.getFullYear(),
+      parsed.getMonth(),
+      parsed.getDate()
+    );
+  }
+
   reset() {}
 
   open() {}

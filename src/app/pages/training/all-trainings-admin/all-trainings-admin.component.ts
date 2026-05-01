@@ -1224,6 +1224,53 @@ export class AllTrainingsAdminComponent {
     return null;
   }
 
+  getTrainingDurationInDays(
+    startDate: string | null | undefined,
+    endDate: string | null | undefined,
+  ): string {
+    const start = this.parseTrainingDurationDate(startDate);
+    const end = this.parseTrainingDurationDate(endDate);
+
+    if (!start || !end) {
+      return '-';
+    }
+
+    const millisecondsPerDay = 24 * 60 * 60 * 1000;
+    const diffInDays =
+      Math.floor((end.getTime() - start.getTime()) / millisecondsPerDay) + 1;
+
+    if (diffInDays <= 0) {
+      return '-';
+    }
+
+    return `${diffInDays} ${diffInDays === 1 ? 'Day' : 'Days'}`;
+  }
+
+  private parseTrainingDurationDate(
+    value: string | null | undefined,
+  ): Date | null {
+    const raw = (value || '').trim();
+    if (!raw) {
+      return null;
+    }
+
+    const formattedDate = this.parseDateString(raw);
+    if (formattedDate) {
+      return formattedDate;
+    }
+
+    const parsed = new Date(raw);
+    if (Number.isNaN(parsed.getTime())) {
+      return null;
+    }
+
+    return new Date(
+      parsed.getFullYear(),
+      parsed.getMonth(),
+      parsed.getDate(),
+    );
+  }
+
   parseFilterDate(dateStr: string): Date | null {
     if (!dateStr) return null;
     const parts = dateStr.split('-');

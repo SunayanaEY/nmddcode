@@ -17,9 +17,9 @@
         <div class="label">Mode</div>
         <div class="value">{{ sm.raw?.modeOfTraining || '—' }}</div>
       </div>
-      <div class="item" *ngIf="sm.raw?.duration && sm.raw?.durationType">
+      <div class="item" *ngIf="sm.start && sm.end">
         <div class="label">Duration</div>
-        <div class="value">{{ sm.raw.duration }} {{ sm.raw.durationType }}</div>
+        <div class="value">{{ getDurationInDays(sm.start, sm.end) }}</div>
       </div>
       <div class="item">
         <div class="label">Dates</div>
@@ -221,7 +221,7 @@
         <div class="card-row" *ngIf="t.trainingInstituteName"><span class="label">Institute:</span> <span>{{ t.trainingInstituteName }}</span></div>
         <div class="card-row" *ngIf="t.scheme"><span class="label">Scheme:</span> <span>{{ t.scheme }}</span></div>
         <div class="card-row"><span class="label">Mode:</span> <span>{{ t.modeOfTraining }}</span></div>
-        <div class="card-row" *ngIf="t.duration && t.durationType"><span class="label">Duration:</span> <span>{{ t.duration }} {{ t.durationType }}</span></div>
+        <div class="card-row" *ngIf="t.startDate && t.endDate"><span class="label">Duration:</span> <span>{{ getDurationInDays(t.startDate, t.endDate) }}</span></div>
         <div class="card-row"><span class="label">Dates:</span> <span>{{ t.startDate | date:'d MMM, y' }} - {{ t.endDate | date:'d MMM, y' }}</span></div>
         <div class="card-row">
           <span class="label">Training Schedule:</span>
