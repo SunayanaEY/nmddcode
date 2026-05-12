@@ -198,9 +198,9 @@ export class TrainingCertificateGenerationComponent
     const today = new Date();
     today.setHours(0, 0, 0, 0); // Reset time to start of day
 
-    // Allow dates from past 45 days up to any future date
+    // Allow dates from past 60 days up to any future date
     const pastLimit = new Date(today);
-    pastLimit.setDate(pastLimit.getDate() - 45);
+    pastLimit.setDate(pastLimit.getDate() - 60);
 
     if (selectedDate < pastLimit) {
       return { invalidDateRange: true };
@@ -1192,6 +1192,7 @@ export class TrainingCertificateGenerationComponent
       startDate: startDate,
       endDate: endDate,
       trainingInstituteName,
+      venueAddress: formValue.venueAddress,
       includeInstituteName: !!formValue.includeInstituteName,
       instituteType: this.instituteType,
       logoPath1: logoPaths[0],

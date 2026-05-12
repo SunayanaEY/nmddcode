@@ -95,9 +95,9 @@ export class LatestCertificateLayoutComponent implements OnInit, OnChanges {
   get rightSignatureTitle(): string {
     const instituteType = this.getInstituteTypeValue();
     if (instituteType === 'other organizations') {
-      return 'Other Organization Head Signature';
+      return 'Other Organization Head';
     }
-    return 'State Head Signature';
+    return 'State Head';
   }
 
   private getInstituteTypeValue(): string {

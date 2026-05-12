@@ -7,7 +7,17 @@
     </div>
 
     <!-- Form Content -->
-    <div class="form-content">
+    <div class="form-content" style="position: relative;">
+      <!-- Loading Spinner Overlay -->
+      <div *ngIf="isSpinner" class="spinner-overlay">
+        <div class="spinner-container">
+          <div class="spinner-border text-primary" role="status">
+            <span class="visually-hidden">Loading...</span>
+          </div>
+          <p class="mt-3 text-primary">{{ "Loading training data..." | translate }}</p>
+        </div>
+      </div>
+
       <form [formGroup]="trainingForm" (ngSubmit)="onManualUpload()">
         <!-- General Training Info Section -->
         <div class="form-section">
@@ -368,7 +378,7 @@
                       class="text-danger"
                     >
                       {{
-                        "Please select a date within the past 45 days or a future date"
+                        "Please select a date within the past 60 days or a future date"
                           | translate
                       }}
                     </small>

@@ -6,28 +6,27 @@
     <div class="corner bottom-left"></div>
     <div class="corner bottom-right"></div>
 
-    <!-- Top meta -->
-    <div class="certificate-header" aria-label="Header">
-      <div class="col-3">
-        <div class="certificate-ref">UIN No- {{ finalUniqueId }}</div>
-        <div class="certificate-ref" *ngIf="data?.trainingRefCode">
-          Ref: {{ data?.trainingRefCode }}
-        </div>
+    <!-- Training Centre Name at Top -->
+    <div
+      class="training-centre-name"
+      *ngIf="
+        data &&
+        data.includeInstituteName !== undefined &&
+        data.includeInstituteName
+      "
+    >
+      {{ data?.trainingInstituteName }}
+      <div class="venue-address" *ngIf="data?.venueAddress">
+        {{ data?.venueAddress }}
       </div>
-      <div
-        class="col-5"
-        style="font-size: 1.3rem; text-align: center"
-        *ngIf="
-          data &&
-          data.includeInstituteName !== undefined &&
-          data.includeInstituteName
-        "
-      >
-        <div class="certificate-issuer">{{ data?.trainingInstituteName }}</div>
+      <div class="government-line">
+        DEPARTMENT OF ANIMAL HUSBANDRY & DAIRYING, GOVERNMENT OF INDIA
       </div>
-      <div class="certificate-date col-3">
-        Date: {{ data?.certificateDate | date: "dd.MM.yyyy" }}
-      </div>
+    </div>
+
+    <!-- Trainee Photo at Top Right -->
+    <div class="trainee-photo-top" *ngIf="traineePhotoUrl || validPhotoUrl">
+      <img [src]="traineePhotoUrl" crossorigin="anonymous" />
     </div>
 
     <!-- Logo Row -->
@@ -54,24 +53,30 @@
       />
     </div>
 
-    <!-- QR Code (Center) + Trainee Photo (Right) Row -->
-    <div class="qr-photo-row" aria-label="QR Code and Trainee Photo">
+    <!-- QR Code with UIN/Ref and Date Row -->
+    <div class="qr-meta-row" aria-label="QR Code and Metadata">
+      <div class="meta-left">
+        <div class="certificate-ref">UIN No- {{ finalUniqueId }}</div>
+        <div class="certificate-ref" *ngIf="data?.trainingRefCode">
+          Ref: {{ data?.trainingRefCode }}
+        </div>
+      </div>
       <div class="qr-code">
         <qrcode
           [qrdata]="qrData"
           [width]="100"
           [errorCorrectionLevel]="'M'"
         ></qrcode>
-        <!-- <p class="uid">UIN: {{ finalUniqueId }}</p> -->
       </div>
-      <div class="trainee-photo" *ngIf="traineePhotoUrl || validPhotoUrl">
-        <!-- -        <img [src]="validPhotoUrl" crossorigin="anonymous" /> -->
-        <img [src]="traineePhotoUrl" crossorigin="anonymous" />
+      <div class="meta-right">
+        <div class="certificate-date">
+          Date: {{ data?.certificateDate | date: "dd.MM.yyyy" }}
+        </div>
       </div>
     </div>
 
     <!-- Certificate Heading -->
-    <h1 class="certificate-heading">प्रमाणपत्र/Certificate</h1>
+    <h1 class="certificate-heading">Certificate</h1>
 
     <!-- Body -->
     <section class="certificate-body" aria-label="Certificate Body">
@@ -103,7 +108,7 @@
             data?.organizationName ||
             (data?.location ?? data?.venueState)
         }}</span>
-        accredited by Government of India.
+        <!-- accredited by Government of India. -->
       </p>
     </section>
 
@@ -122,15 +127,15 @@
                 crossorigin="anonymous"
               />
             </p>
-            <p>_____________________</p>
+            <p class="signature-line">_____________________</p>
             <p class="signature-name">{{ data.signatures[0].signatoryName }}</p>
             <p>{{ data.signatures[0].signatoryDesignation }}</p>
-            <p>{{ data.signatures[0].signatoryOrganization }}</p>
-            <p class="signature-title">Institute Head Signature</p>
+            <!-- <p>{{ data.signatures[0].signatoryOrganization }}</p> -->
+            <p class="signature-title">Institute Head</p>
           </ng-container>
           <ng-template #emptyLeft>
             <div class="signature-placeholder" aria-hidden="true"></div>
-            <p class="signature-title">Institute Head Signature</p>
+            <p class="signature-title">Institute Head</p>
           </ng-template>
         </div>
 
@@ -146,10 +151,10 @@
                 crossorigin="anonymous"
               />
             </p>
-            <p>_____________________</p>
+            <p class="signature-line">_____________________</p>
             <p class="signature-name">{{ data.signatures[1].signatoryName }}</p>
             <p>{{ data.signatures[1].signatoryDesignation }}</p>
-            <p>{{ data.signatures[1].signatoryOrganization }}</p>
+            <!-- <p>{{ data.signatures[1].signatoryOrganization }}</p> -->
             <p class="signature-title">{{ rightSignatureTitle }}</p>
           </ng-container>
           <ng-template #emptyRight>
