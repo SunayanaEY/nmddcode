@@ -79,6 +79,7 @@ export class AllTrainingsComponent {
     'Training Venue',
     'Start Date',
     'End Date',
+    'Status',
   ];
   columnKeys: Array<string> = [
     'trainingTitle',
@@ -89,6 +90,7 @@ export class AllTrainingsComponent {
     'venueAddress',
     'startDate',
     'endDate',
+    'status',
   ];
   breadcrumbItems: BreadcrumbItem[] = [
     { label: 'Training Module', url: '/admin/training-module' },
@@ -113,6 +115,7 @@ export class AllTrainingsComponent {
     { key: 'venueAddress', header: 'Training Venue' },
     { key: 'startDate', header: 'Start Date' },
     { key: 'endDate', header: 'End Date' },
+    { key: 'status', header: 'Status' },
   ];
 
   tableActions: TableAction[] = [
@@ -122,6 +125,7 @@ export class AllTrainingsComponent {
       icon: 'bi bi-pencil-fill',
       class: 'btn-info',
       title: 'Edit',
+      condition: (row: any) => row.status !== 'Certificate Approved / Rejected',
     },
     {
       name: 'downloadAllCertificates',
