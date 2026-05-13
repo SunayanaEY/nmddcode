@@ -1,9 +1,13 @@
+/* Import Google Fonts */
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Montserrat:wght@500;600;700&display=swap');
+
 /* Container */
 .nddb-certificate {
   display: flex;
   flex-direction: column;
   align-items: center;
   padding: 16px;
+  font-family: 'Georgia', 'Times New Roman', serif;
 }
 .certificate-date {
  padding-left: 12%;
@@ -72,6 +76,41 @@
   transform: rotate(0deg);
 }
 
+/* UIN and Ref at Top Left */
+.uin-ref-top-left {
+  position: absolute;
+  top: 50px;
+  left: 40px;
+  text-align: left;
+  font-size: 13px;
+  font-weight: 600;
+  font-family: 'Arial', sans-serif;
+  z-index: 10;
+}
+
+.uin-ref-top-left .certificate-ref {
+  margin-bottom: 4px;
+  color: #1a1a1a;
+}
+
+/* Date at Top Right */
+.date-top-right {
+  position: absolute;
+  top: 50px;
+  right: 40px;
+  text-align: right;
+  font-size: 13px;
+  font-weight: 600;
+  font-family: 'Arial', sans-serif;
+  z-index: 10;
+  white-space: nowrap;
+}
+
+.date-top-right .certificate-date {
+  margin-bottom: 4px;
+  color: #1a1a1a;
+  white-space: nowrap;
+}
 
 /* Training Centre Name at Top */
 .training-centre-name {
@@ -79,20 +118,25 @@
   font-size: 32px;
   font-weight: 700;
   color: #1e3a8a;
+  margin-top: 40px;
   margin-bottom: 12px;
   padding: 8px 0;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+  font-family: 'Montserrat', 'Arial', sans-serif;
+  letter-spacing: 0.5px;
 }
 
 .venue-address {
-  font-size: 16px;
-  font-weight: 500;
+  font-size: 20px;
+  font-weight: 700;
   color: #333;
   margin-top: 6px;
   white-space: normal;
   line-height: 1.4;
+  font-family: 'Georgia', 'Times New Roman', serif;
+  font-style: italic;
 }
 
 .government-line {
@@ -102,22 +146,9 @@
   margin-top: 8px;
   white-space: normal;
   line-height: 1.4;
-}
-
-/* Trainee Photo at Top Right */
-.trainee-photo-top {
-  position: absolute;
-  top: 50px;
-  right: 40px;
-  z-index: 10;
-}
-
-.trainee-photo-top img {
-  width: 110px;
-  height: 130px;
-  object-fit: cover;
-  border: 1px solid #999;
-  border-radius: 4px;
+  font-family: 'Georgia', 'Times New Roman', serif;
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
 }
 
 /* Titles */
@@ -150,21 +181,13 @@
   object-fit: contain;
 }
 
-/* QR Code with UIN/Ref and Date Row */
-.qr-meta-row {
-  position: relative;
+/* QR Code Row with Trainee Photo */
+.qr-code-row {
   display: flex;
-  justify-content: space-between;
+  justify-content: center;
   align-items: center;
   margin: 8px 0 12px 0;
-  padding: 0 20px;
-}
-
-.meta-left {
-  flex: 1;
-  text-align: left;
-  font-size: 13px;
-  font-weight: 600;
+  position: relative;
 }
 
 .qr-code {
@@ -174,11 +197,37 @@
   flex-shrink: 0;
 }
 
-.meta-right {
-  flex: 1;
-  text-align: right;
-  font-size: 13px;
-  font-weight: 600;
+.qr-code .uid {
+  font-size: 12px;
+  margin-top: 6px;
+}
+
+.trainee-photo-inline {
+  position: absolute;
+  right: 10px;
+}
+
+.trainee-photo-inline img {
+  width: 110px;
+  height: 130px;
+  object-fit: cover;
+  border: 1px solid #999;
+  border-radius: 4px;
+}
+
+/* Certificate Heading Centered */
+.certificate-heading-centered {
+  text-align: center;
+  font-size: 32px;
+  color: #1e3a8a;
+  text-decoration: underline;
+  margin: 10px 0 18px 0;
+  line-height: 1.2;
+  font-family: 'Playfair Display', 'Georgia', serif;
+  font-weight: 700;
+  letter-spacing: 1px;
+  text-decoration-thickness: 2px;
+  text-underline-offset: 4px;
 }
 
 .certificate-ref {
@@ -189,38 +238,18 @@
   margin-bottom: 4px;
 }
 
-.qr-code .uid {
-  font-size: 12px;
-  margin-top: 6px;
-}
-
-/* Logos */
-.brand-row {
-  margin-top: 12px;
-  margin-bottom: 25px;
-  display: grid;
-  grid-template-columns: 1fr auto 1fr;
-  align-items: center;
-}
-.certificate-heading {
-  text-align: center;
-  font-size: 28px;
-  color: #1e3a8a;
-  text-decoration: underline;
-  margin: 10px 0 18px 0;
-}
-
 /* Body */
 .certificate-body {
-  font-size: 16px;
-  line-height: 1.75;
+  font-size: 17px;
+  line-height: 1.8;
   color: #1a1a1a;
   margin: 0 10px 24px 10px;
   text-align: center;
+  font-family: 'Georgia', 'Times New Roman', serif;
 }
 
 .certificate-body p {
-  margin: 10px 0;
+  margin: 4px 0;
 }
 
 .label {
@@ -229,14 +258,20 @@
 
 .name {
   font-weight: 700;
+  font-size: 18px;
+  color: #1a1a1a;
+  font-family: 'Montserrat', 'Arial', sans-serif;
 }
 
 .emphasis {
   font-weight: 700;
+  color: #1a1a1a;
+  font-family: 'Montserrat', 'Arial', sans-serif;
 }
 
 .date {
   font-weight: 600;
+  color: #1a1a1a;
 }
 
 /* Footer / Signatures */
@@ -260,6 +295,7 @@
   text-align: center;
   font-size: 13px;
   margin-bottom: 0;
+  font-family: 'Georgia', 'Times New Roman', serif;
 }
 
 .signature p {
@@ -279,6 +315,7 @@
   margin: 0;
   padding: 0;
   line-height: 1;
+  font-family: 'Arial', sans-serif;
 }
 
 .signature-placeholder {
@@ -291,11 +328,17 @@
   margin-top: 4px;
   margin-bottom: 0;
   color: #3b3b3b;
+  font-weight: 600;
+  font-family: 'Arial', sans-serif;
+  font-size: 12px;
 }
 
 .signature-name {
   font-weight: 700;
   margin-bottom: 0;
+  font-size: 14px;
+  color: #1e3a8a;
+  font-family: 'Montserrat', 'Arial', sans-serif;
 }
 
 /* Actions */
@@ -335,24 +378,28 @@
     font-size: 14px;
   }
 
-  .trainee-photo-top {
-    top: 30px;
-    right: 20px;
+  .trainee-photo-inline {
+    position: static;
+    margin-top: 12px;
   }
 
-  .trainee-photo-top img {
+  .trainee-photo-inline img {
     width: 90px;
     height: 110px;
   }
 
-  .qr-meta-row {
+  .certificate-heading-row {
     flex-direction: column;
-    gap: 12px;
+    gap: 8px;
     padding: 0 10px;
   }
 
-  .meta-left,
-  .meta-right {
+  .heading-left,
+  .heading-right {
     text-align: center;
+  }
+
+  .certificate-heading {
+    order: -1;
   }
 }

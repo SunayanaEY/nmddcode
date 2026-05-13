@@ -6,6 +6,21 @@
     <div class="corner bottom-left"></div>
     <div class="corner bottom-right"></div>
 
+    <!-- UIN and Ref at Top Left -->
+    <div class="uin-ref-top-left">
+      <div class="certificate-ref">UIN No- {{ finalUniqueId }}</div>
+      <div class="certificate-ref" *ngIf="data?.trainingRefCode">
+        Ref: {{ data?.trainingRefCode }}
+      </div>
+    </div>
+
+    <!-- Date at Top Right -->
+    <div class="date-top-right">
+      <div class="certificate-date">
+        Date: {{ data?.certificateDate | date: "dd.MM.yyyy" }}
+      </div>
+    </div>
+
     <!-- Training Centre Name at Top -->
     <div
       class="training-centre-name"
@@ -22,11 +37,6 @@
       <div class="government-line">
         DEPARTMENT OF ANIMAL HUSBANDRY & DAIRYING, GOVERNMENT OF INDIA
       </div>
-    </div>
-
-    <!-- Trainee Photo at Top Right -->
-    <div class="trainee-photo-top" *ngIf="traineePhotoUrl || validPhotoUrl">
-      <img [src]="traineePhotoUrl" crossorigin="anonymous" />
     </div>
 
     <!-- Logo Row -->
@@ -53,14 +63,8 @@
       />
     </div>
 
-    <!-- QR Code with UIN/Ref and Date Row -->
-    <div class="qr-meta-row" aria-label="QR Code and Metadata">
-      <div class="meta-left">
-        <div class="certificate-ref">UIN No- {{ finalUniqueId }}</div>
-        <div class="certificate-ref" *ngIf="data?.trainingRefCode">
-          Ref: {{ data?.trainingRefCode }}
-        </div>
-      </div>
+    <!-- QR Code Row with Trainee Photo -->
+    <div class="qr-code-row" aria-label="QR Code and Trainee Photo">
       <div class="qr-code">
         <qrcode
           [qrdata]="qrData"
@@ -68,15 +72,13 @@
           [errorCorrectionLevel]="'M'"
         ></qrcode>
       </div>
-      <div class="meta-right">
-        <div class="certificate-date">
-          Date: {{ data?.certificateDate | date: "dd.MM.yyyy" }}
-        </div>
+      <div class="trainee-photo-inline" *ngIf="traineePhotoUrl || validPhotoUrl">
+        <img [src]="traineePhotoUrl" crossorigin="anonymous" />
       </div>
     </div>
 
     <!-- Certificate Heading -->
-    <h1 class="certificate-heading">Certificate</h1>
+    <h1 class="certificate-heading-centered">Certificate</h1>
 
     <!-- Body -->
     <section class="certificate-body" aria-label="Certificate Body">
