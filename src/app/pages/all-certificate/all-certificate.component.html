@@ -135,80 +135,118 @@
           aria-label="Close"
         ></button>
       </div>
-      <div class="modal-body bg-light rounded-3 p-4">
-        <div class="d-flex align-items-center mb-4">
-          <div class="profile-avatar me-3">
-            <i
-              class="bi bi-person-circle text-primary"
-              style="font-size: 3rem"
-            ></i>
-          </div>
-
-          <div>
-            <h5 class="mb-0">{{ selectedItem?.name }}</h5>
-            <small class="text-muted">{{ selectedItem?.course }}</small>
-          </div>
-
-          <div class="ms-auto me-5">
-            <img
-              *ngIf="photoPreviewUrl"
-              [src]="photoPreviewUrl"
-              width="120"
-              height="130"
-            />
-          </div>
-        </div>
-
-        <div class="row g-3 mb-3">
-          <div class="col-md-6">
-            <div class="p-3 bg-white rounded-3 shadow-sm h-100">
-              <strong>{{ "Email" | translate }}:</strong>
-              <span class="text-muted ms-3">{{ selectedItem?.email }}</span>
+      <div class="modal-body trainee-detail-modal">
+        <div class="trainee-profile-card">
+          <div class="trainee-profile-top">
+          <div class="trainee-identity">
+            <div class="profile-avatar">
+              <img
+                *ngIf="photoPreviewUrl"
+                [src]="photoPreviewUrl"
+                alt="Trainee photo"
+              />
+              <i *ngIf="!photoPreviewUrl" class="bi bi-person-circle"></i>
             </div>
-          </div>
 
-          <div class="col-md-6">
-            <div class="p-3 bg-white rounded-3 shadow-sm h-100">
-              <strong>{{ "Phone" | translate }}:</strong>
-              <span class="text-muted ms-3">{{
-                selectedItem?.contactNumber
-              }}</span>
+            <div class="trainee-top-details">
+              <h5>{{ selectedItem?.name || "-" }}</h5>
+              <div class="trainee-chip-row">
+                <span class="badge bg-primary">{{ selectedItem?.status || "-" }}</span>
+                <span class="badge bg-secondary">UIN: {{ selectedItem?.uin || "-" }}</span>
+              </div>
             </div>
           </div>
         </div>
-        <div class="row g-3 mb-3">
-          <div class="col-md-6">
-            <div class="p-3 bg-white rounded-3 shadow-sm h-100">
-              <strong>{{ "Gender" | translate }}:</strong>
-              <span class="text-muted ms-3">{{ selectedItem?.gender }}</span>
-            </div>
-          </div>
 
-          <div class="col-md-6">
-            <div class="p-3 bg-white rounded-3 shadow-sm h-100">
-              <strong>{{ "Age" | translate }}:</strong>
-              <span style="margin-left: 10px" class="text-muted">{{
-                selectedItem?.age
-              }}</span>
+          <section class="trainee-detail-section">
+            <h6>Personal Information</h6>
+            <div class="trainee-detail-grid">
+              <div class="detail-card">
+                <label>Name</label>
+                <div>{{ selectedItem?.name || "-" }}</div>
+              </div>
+              <div class="detail-card">
+                <label>Father's Name</label>
+                <div>{{ selectedItem?.fatherName || "-" }}</div>
+              </div>
+              <div class="detail-card">
+                <label>Gender</label>
+                <div>{{ selectedItem?.gender || "-" }}</div>
+              </div>
+              <div class="detail-card">
+                <label>Age</label>
+                <div>{{ selectedItem?.age || "-" }}</div>
+              </div>
+              <div class="detail-card">
+                <label>Date of Birth</label>
+                <div>
+                  {{
+                    selectedItem?.dob
+                      ? (selectedItem?.dob | date : "dd-MM-yyyy")
+                      : "-"
+                  }}
+                </div>
+              </div>
+              <div class="detail-card">
+                <label>Category</label>
+                <div>{{ selectedItem?.category || "-" }}</div>
+              </div>
+              <div class="detail-card detail-card-wide">
+                <label>Educational Qualification</label>
+                <div>{{ selectedItem?.educationalQualification || "-" }}</div>
+              </div>
+              <div class="detail-card detail-card-wide">
+                <label>Recommended By</label>
+                <div>{{ selectedItem?.recommendedBy || "-" }}</div>
+              </div>
             </div>
-          </div>
-        </div>
-        <div class="row g-3 mb-3">
-          <div class="col-md-6">
-            <div class="p-3 bg-white rounded-3 shadow-sm h-100">
-              <strong>{{ "UIN" | translate }}:</strong>
-              <span class="text-muted ms-3">{{ selectedItem?.uin }}</span>
-            </div>
-          </div>
+          </section>
 
-          <div class="col-md-6">
-            <div class="p-3 bg-white rounded-3 shadow-sm h-100">
-              <strong>{{ "Father's Name" | translate }}:</strong>
-              <span class="text-muted ms-3">{{
-                selectedItem?.fatherName
-              }}</span>
+          <section class="trainee-detail-section">
+            <h6>Contact Details</h6>
+            <div class="trainee-detail-grid">
+              <div class="detail-card">
+                <label>Email</label>
+                <div>{{ selectedItem?.email || "-" }}</div>
+              </div>
+              <div class="detail-card">
+                <label>Phone</label>
+                <div>{{ selectedItem?.contactNumber || "-" }}</div>
+              </div>
             </div>
-          </div>
+          </section>
+
+          <section class="trainee-detail-section">
+            <h6>Training & Approval</h6>
+            <div class="trainee-detail-grid">
+              <div class="detail-card">
+                <label>Status</label>
+                <div>{{ selectedItem?.status || "-" }}</div>
+              </div>
+              <div class="detail-card">
+                <label>UIN</label>
+                <div>{{ selectedItem?.uin || "-" }}</div>
+              </div>
+              <div class="detail-card">
+                <label>Training Reference ID</label>
+                <div>{{ selectedItem?.trainingReferenceId || "-" }}</div>
+              </div>
+              <div class="detail-card">
+                <label>Certificate Date</label>
+                <div>
+                  {{
+                    selectedItem?.certificateDate
+                      ? (selectedItem?.certificateDate | date : "dd-MM-yyyy")
+                      : "-"
+                  }}
+                </div>
+              </div>
+              <div class="detail-card">
+                <label>Rejection Remarks</label>
+                <div>{{ selectedItem?.rejectionRemarks || "-" }}</div>
+              </div>
+            </div>
+          </section>
         </div>
       </div>
 

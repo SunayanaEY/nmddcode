@@ -233,7 +233,8 @@ export class LatestCertificateLayoutComponent implements OnInit, OnChanges {
       backgroundColor: '#ffffff'
     }).then((canvas) => {
       const imgData = canvas.toDataURL('image/png');
-      const pdf = new jsPDF('portrait', 'mm', 'a4');
+      const orientation = rect.width >= rect.height ? 'landscape' : 'portrait';
+      const pdf = new jsPDF(orientation, 'mm', 'a4');
       const pdfWidth = pdf.internal.pageSize.getWidth();
       const pdfHeight = pdf.internal.pageSize.getHeight();
       const imgProps = pdf.getImageProperties(imgData);

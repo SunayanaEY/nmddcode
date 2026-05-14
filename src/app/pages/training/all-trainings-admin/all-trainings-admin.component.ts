@@ -954,7 +954,7 @@ export class AllTrainingsAdminComponent {
             ? (trainingData as any).signatories
             : [];
 
-      const pdf = new jsPDF('portrait', 'mm', 'a4');
+      const pdf = new jsPDF('landscape', 'mm', 'a4');
       const pdfWidth = pdf.internal.pageSize.getWidth();
       const pdfHeight = pdf.internal.pageSize.getHeight();
 
@@ -993,10 +993,17 @@ export class AllTrainingsAdminComponent {
         ) {
           const element =
             this.hiddenCertificate.certificateContent.nativeElement;
+          const rect = element.getBoundingClientRect();
           const canvas = await html2canvas(element, {
             useCORS: true,
+            allowTaint: false,
             scale: 2,
-            allowTaint: true,
+            width: rect.width,
+            height: rect.height,
+            windowWidth: Math.ceil(rect.width),
+            windowHeight: Math.ceil(rect.height),
+            scrollX: 0,
+            scrollY: 0,
             backgroundColor: '#ffffff',
           });
 
