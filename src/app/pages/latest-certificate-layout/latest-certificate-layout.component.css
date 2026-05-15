@@ -94,17 +94,26 @@
   font-family: Cinzel, 'Playfair Display', serif;
   font-size: clamp(23px, 3.85vw, 45px);
   font-weight: 700;
-  line-height: 1.05;
+  line-height: 1.08;
   color: #14336e;
   letter-spacing: 0;
   text-transform: uppercase;
+  display: -webkit-box;
+  max-height: calc(1.08em * 2);
+  overflow: hidden;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  overflow-wrap: anywhere;
 }
 
 .venue-address {
   margin-top: 8px;
-  font-size: clamp(15px, 1.75vw, 30px);
+  font-size: 20px;
   color: #202020;
   font-style: italic;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: clip;
 }
 
 .government-line {
@@ -187,7 +196,7 @@
 
 .visual-card-center {
   align-items: center;
-  gap: 20px;
+  gap: 8px;
 }
 
 .visual-card-right {
@@ -201,17 +210,18 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  width: clamp(92px, 10.8vw, 124px);
-  height: clamp(92px, 10.8vw, 124px);
+  width: clamp(78px, 8vw, 96px);
+  height: clamp(78px, 8vw, 96px);
   background: transparent;
-  overflow: visible;
+  overflow: hidden;
 }
 
 .logo-inside-circle,
 .logo-inside-square,
 .logo-inside-third {
-  max-width: 100%;
-  max-height: 100%;
+  display: block;
+  width: 100%;
+  height: 100%;
   object-fit: contain;
 }
 
@@ -220,7 +230,7 @@
 }
 
 .qr-frame-centered {
-  margin-top: -50px;
+  margin-top: 0;
 }
 
 .qr-frame ::ng-deep canvas,
@@ -236,7 +246,6 @@
   width: clamp(78px, 8.7vw, 80px);
   height: clamp(102px, 11.6vw, 100px);
   overflow: hidden;
-  border: 1.5px solid #c9902c;
   border-radius: 8px;
   background: rgba(255, 255, 255, 0.72);
 }
@@ -275,7 +284,8 @@
   top: 61.5%;
   left: 12%;
   right: 12%;
-  text-align: center;
+  text-align: justify;
+  text-align-last: left;
   color: #1d1d1d;
 }
 

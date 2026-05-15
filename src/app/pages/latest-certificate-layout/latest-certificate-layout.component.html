@@ -31,17 +31,27 @@
       </div>
 
       <div class="header-title-block">
-        <div class="training-centre-name">
+        <div
+          *ngIf="data?.includeInstituteName !== false"
+          class="training-centre-name"
+          #trainingCentreNameElement
+          [style.fontSize.px]="titleFontSizePx"
+        >
           {{
-            (data?.includeInstituteName !== false &&
-            (data?.trainingInstituteName || data?.organizationName)) ||
+            data?.trainingInstituteName ||
+              data?.organizationName ||
               "TECHNICAL TRAINING CENTRE"
           }}
         </div>
-        <div class="venue-address" *ngIf="data?.venueAddress">
+        <div
+          class="venue-address"
+          *ngIf="data?.venueAddress"
+          #venueAddressElement
+          [style.fontSize.px]="addressFontSizePx"
+        >
           {{ data?.venueAddress }}
         </div>
-        <div class="government-line" *ngIf="data?.includeInstituteName !== false">
+        <div class="government-line">
           Accredited by Department of Animal Husbandry & Dairying, GOVT. of India for AI Training
         </div>
       </div>
@@ -143,7 +153,7 @@
             data?.location ||
             data?.venueState ||
             "________________"
-        }}</span>
+        }}</span>.
       </div>
     </section>
 
@@ -161,12 +171,10 @@
             <div class="signature-line"></div>
             <p class="signature-name">{{ data.signatures[0].signatoryName }}</p>
             <p>{{ data.signatures[0].signatoryDesignation }}</p>
-            <p class="signature-title">Institute Head</p>
           </ng-container>
           <ng-template #emptyLeft>
             <div class="signature-art signature-placeholder" aria-hidden="true"></div>
             <div class="signature-line"></div>
-            <p class="signature-title">Institute Head</p>
           </ng-template>
         </div>
 
@@ -184,12 +192,10 @@
             <div class="signature-line"></div>
             <p class="signature-name">{{ data.signatures[1].signatoryName }}</p>
             <p>{{ data.signatures[1].signatoryDesignation }}</p>
-            <p class="signature-title">{{ rightSignatureTitle }}</p>
           </ng-container>
           <ng-template #emptyRight>
             <div class="signature-art signature-placeholder" aria-hidden="true"></div>
             <div class="signature-line"></div>
-            <p class="signature-title">{{ rightSignatureTitle }}</p>
           </ng-template>
         </div>
       </div>
