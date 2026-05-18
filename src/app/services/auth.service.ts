@@ -9,6 +9,7 @@ import { HeartbeatService } from '../pages/training/services/heartbeat-service.s
 
 interface LoginResponse {
   data: {
+    firstTimeLogin?: boolean;
     role: number;
     authData: string;
     id: number;
@@ -190,6 +191,19 @@ export class AuthService {
 
   isDataEntryOperator(): boolean {
     return this.getUserRole() === 4;
+  }
+
+  isFirstTimeLoginRestrictedUser(): boolean {
+    const user = this.getUser();
+    return !!user && user.role !== 1 && user.firstTimeLogin === true;
+  }
+
+  canAccessDuringFirstTimeLogin(targetUrl: string): boolean {
+    if (!this.isFirstTimeLoginRestrictedUser()) {
+      return true;
+    }
+
+    return targetUrl.startsWith('/admin/change-password');
   }
 
   register(formData: FormData): Observable<RegisterResponse> {
@@ -429,31 +443,31 @@ export class AuthService {
     }
   }
   changePassword(
-    email: string,
+    userName: string,
     oldPassword: string,
     newPassword: string
   ): Observable<any> {
     const body = {
-      email: email,
+      username: userName,
       oldPassword: oldPassword,
       newPassword: newPassword,
     };
 
     return this.http.post<any>(this.apiUrl + 'api/auth/reset-password', body);
   }
-  forgetPasswordOTP(email: string): Observable<any> {
+  forgetPasswordOTP(userName: string): Observable<any> {
     const body = {
-      email: email,
+      username: userName,
     };
     return this.http.post<any>(this.apiUrl + 'api/auth/forgot-password', body);
   }
   forgetPassword(
-    email: string,
+    userName: string,
     otp: number,
     newPassword: string
   ): Observable<any> {
     const body = {
-      email: email,
+      username: userName,
       otp: otp,
       newPassword: newPassword,
     };

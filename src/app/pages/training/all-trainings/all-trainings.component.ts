@@ -79,6 +79,7 @@ export class AllTrainingsComponent {
     'Training Venue',
     'Start Date',
     'End Date',
+    'Status',
   ];
   columnKeys: Array<string> = [
     'trainingTitle',
@@ -89,6 +90,7 @@ export class AllTrainingsComponent {
     'venueAddress',
     'startDate',
     'endDate',
+    'status',
   ];
   breadcrumbItems: BreadcrumbItem[] = [
     { label: 'Training Module', url: '/admin/training-module' },
@@ -113,6 +115,7 @@ export class AllTrainingsComponent {
     { key: 'venueAddress', header: 'Training Venue' },
     { key: 'startDate', header: 'Start Date' },
     { key: 'endDate', header: 'End Date' },
+    { key: 'status', header: 'Status' },
   ];
 
   tableActions: TableAction[] = [
@@ -122,6 +125,7 @@ export class AllTrainingsComponent {
       icon: 'bi bi-pencil-fill',
       class: 'btn-info',
       title: 'Edit',
+      condition: (row: any) => row.status !== 'Certificate Approved / Rejected',
     },
     {
       name: 'downloadAllCertificates',
@@ -408,6 +412,54 @@ export class AllTrainingsComponent {
       .join(', ');
   }
 
+  getTrainingDurationInDays(
+    startDate: string | null | undefined,
+    endDate: string | null | undefined
+  ): string {
+    const start = this.parseTrainingDurationDate(startDate);
+    const end = this.parseTrainingDurationDate(endDate);
+
+    if (!start || !end) {
+      return '-';
+    }
+
+    const millisecondsPerDay = 24 * 60 * 60 * 1000;
+    const diffInDays =
+      Math.floor((end.getTime() - start.getTime()) / millisecondsPerDay) + 1;
+
+    if (diffInDays <= 0) {
+      return '-';
+    }
+
+    return `${diffInDays} ${diffInDays === 1 ? 'Day' : 'Days'}`;
+  }
+
+  private parseTrainingDurationDate(
+    value: string | null | undefined
+  ): Date | null {
+    const raw = (value || '').trim();
+    if (!raw) {
+      return null;
+    }
+
+    const formattedDateMatch = raw.match(/^(\d{2})\/(\d{2})\/(\d{4})$/);
+    if (formattedDateMatch) {
+      const [, day, month, year] = formattedDateMatch;
+      return new Date(Number(year), Number(month) - 1, Number(day));
+    }
+
+    const parsed = new Date(raw);
+    if (Number.isNaN(parsed.getTime())) {
+      return null;
+    }
+
+    return new Date(
+      parsed.getFullYear(),
+      parsed.getMonth(),
+      parsed.getDate()
+    );
+  }
+
   reset() {}
 
   open() {}
@@ -495,7 +547,7 @@ export class AllTrainingsComponent {
           ? (trainingData as any).signatories
           : [];
 
-      const pdf = new jsPDF('portrait', 'mm', 'a4');
+      const pdf = new jsPDF('landscape', 'mm', 'a4');
       const pdfWidth = pdf.internal.pageSize.getWidth();
       const pdfHeight = pdf.internal.pageSize.getHeight();
 
@@ -534,10 +586,18 @@ export class AllTrainingsComponent {
         ) {
           const element = this.hiddenCertificate.certificateContent
             .nativeElement;
+          const rect = element.getBoundingClientRect();
+          
           const canvas = await html2canvas(element, {
             useCORS: true,
+            allowTaint: false,
             scale: 2,
-            allowTaint: true,
+            width: rect.width,
+            height: rect.height,
+            windowWidth: Math.ceil(rect.width),
+            windowHeight: Math.ceil(rect.height),
+            scrollX: 0,
+            scrollY: 0,
             backgroundColor: '#ffffff',
           });
 

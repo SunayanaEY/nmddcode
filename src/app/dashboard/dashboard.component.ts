@@ -28,7 +28,6 @@ import {
   TrainingInstitute,
 } from './services/dashboard-api.service';
 import { ExcelService } from '../_services/Excel/excel.service';
-import { AdminService } from '../pages/training/services/training-admin.service';
 
 @Component({
   selector: 'app-dashboard',
@@ -143,7 +142,6 @@ export class DashboardComponent {
     private cdr: ChangeDetectorRef,
     private dashboardApiService: DashboardApiService,
     private excelService: ExcelService,
-    private adminService: AdminService,
   ) {
     this.filterForm = this.fb.group({
       stateId: [''],
@@ -582,38 +580,34 @@ export class DashboardComponent {
 
     // Fetch data and export to Excel with current filter values
     if (kpiType == 'totalInstituteDetails') {
-      let instituteObservable;
-      if (this.organizationId) {
-        instituteObservable =
-          this.adminService.getTrainingInstitutesOrganization(
-            this.organizationId,
-          );
-      } else {
-        instituteObservable = this.adminService.getTrainingInstitutes();
-      }
-
-      instituteObservable.subscribe({
-        next: (response: any) => {
-          const data = Array.isArray(response) ? response : response.data || [];
+      this.dashboardApiService
+        .getTrainingDetailsByType(
+          'totalInstitute',
+          this.selectedStateId || undefined,
+          this.selectedDistrictId || undefined,
+          this.selectedTrainingInstituteId || undefined,
+          this.organizationId || undefined,
+          this.selectedInstituteType || undefined,
+        )
+        .subscribe({
+          next: (response) => {
+            const data = Array.isArray(response?.data) ? response.data : [];
           if (data.length > 0) {
-            // Transform data for Excel export
             const excelData = data.map((item: any, index: number) => ({
               'S.No.': index + 1,
-              State: item.state,
-              District: item.district,
-              Address: item.address,
-              'Institute Name': item.trainingInstituteName,
-              'Institute Type': item.instituteType,
-              'Registration No.': item.registrationId,
-              'Registration Validity': this.formatDate(item.expiryDate),
+              State: item.stateName || item.state || item.venueState || '',
+              District: item.districtName || item.district || item.venueDistrict || '',
+              Address: item.address || item.venueAddress || '',
+              'Institute Name': item.trainingInstituteName || '',
+              'Institute Type': item.instituteType || item.trainingInstituteType || '',
+              'Registration No.': item.registrationId || '',
+              'Registration Validity': this.formatDate(item.expiryDate || ''),
               Status: item.status,
             }));
 
-            // Generate filename with timestamp
             const timestamp = new Date().toISOString().split('T')[0];
             const filename = `${kpiType}_${timestamp}`;
 
-            // Export to Excel
             this.excelService.exportAsExcelFile(excelData, filename);
 
             console.log(
@@ -624,19 +618,17 @@ export class DashboardComponent {
             alert('No data available for export');
           }
 
-          // Reset button state
           button.innerHTML = originalText;
           button.disabled = false;
-        },
-        error: (error) => {
-          console.error('Error downloading KPI data:', error);
-          alert('Error downloading data. Please try again.');
+          },
+          error: (error) => {
+            console.error('Error downloading KPI data:', error);
+            alert('Error downloading data. Please try again.');
 
-          // Reset button state
-          button.innerHTML = originalText;
-          button.disabled = false;
-        },
-      });
+            button.innerHTML = originalText;
+            button.disabled = false;
+          },
+        });
     } else if (kpiType == 'totalTrainingsConducted') {
       this.dashboardApiService
         .getTrainingDetailsByType(

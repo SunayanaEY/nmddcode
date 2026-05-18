@@ -13,6 +13,11 @@ export const RoleGuard: CanActivateFn = (route, state) => {
     return false;
   }
 
+  if (!authService.canAccessDuringFirstTimeLogin(state.url)) {
+    router.navigate(['/admin/change-password']);
+    return false;
+  }
+
   // Get allowed roles from route data
   const allowedRoles = route.data?.['allowedRoles'] as number[];
   

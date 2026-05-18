@@ -35,7 +35,7 @@ export class ForgetPasswordComponent {
     private route: ActivatedRoute
   ) {
     this.forgetPasswordForm = this.fb.group({
-      email: ['', [Validators.required, Validators.email]],
+      userName: ['', [Validators.required, Validators.minLength(3)]],
       otp: ['', [Validators.required]],
       newPassword: ['', [Validators.required]],
     });
@@ -49,23 +49,23 @@ export class ForgetPasswordComponent {
     this.showPassword = !this.showPassword;
   }
   sendOTP() {
-    if (this.forgetPasswordForm.get('email')?.invalid) {
-      this.forgetPasswordForm.get('email')?.markAsTouched();
-      this.toastr.error('Please enter a valid email', 'Validation Error');
+    if (this.forgetPasswordForm.get('userName')?.invalid) {
+      this.forgetPasswordForm.get('userName')?.markAsTouched();
+      this.toastr.error('Please enter a valid username', 'Validation Error');
       return;
     }
 
     this.isLoading = true;
-    const email = this.forgetPasswordForm.get('email')?.value;
+    const userName = this.forgetPasswordForm.get('userName')?.value;
 
-    this.authService.forgetPasswordOTP(email).subscribe({
+    this.authService.forgetPasswordOTP(userName).subscribe({
       next: (response) => {
         this.isLoading = false;
         if (response) {
           this.toastr.success('OTP Sent Successfully!');
         } else {
-          this.errorMessage = 'Invalid email';
-          this.toastr.error('Invalid email');
+          this.errorMessage = 'Invalid username';
+          this.toastr.error('Invalid username');
         }
       },
       error: (error) => {
@@ -89,17 +89,17 @@ export class ForgetPasswordComponent {
     this.isLoading = true;
     this.errorMessage = '';
 
-    const { email, otp, newPassword } = this.forgetPasswordForm.value;
+    const { userName, otp, newPassword } = this.forgetPasswordForm.value;
 
-    this.authService.forgetPassword(email, otp, newPassword).subscribe({
+    this.authService.forgetPassword(userName, otp, newPassword).subscribe({
       next: (response) => {
         this.isLoading = false;
         if (response && response.status == 200) {
           this.toastr.success('Password Set Successfully!');
           this.router.navigate(['/login']);
         } else {
-          this.errorMessage = 'Invalid Email, OTP or Password';
-          this.toastr.error('Invalid Email, OTP or Password');
+          this.errorMessage = 'Invalid username, OTP or Password';
+          this.toastr.error('Invalid username, OTP or Password');
         }
       },
       error: (error) => {

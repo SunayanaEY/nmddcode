@@ -48,6 +48,10 @@ export class ApprovedRejectedTrainingsComponent {
   userRole: number | null = null;
   trainingScheduleUrl: string | null = null;
   isLoadingSchedule: boolean = false;
+  isLoadingPendingTrainings: boolean = false;
+  isLoadingApprovedTrainings: boolean = false;
+  isLoadingRejectedTrainings: boolean = false;
+  isLoadingTrainees: boolean = false;
   @ViewChild('trainingDetailsModal')
   trainingDetailsModal!: ElementRef;
   @ViewChild('certificateModal')
@@ -165,6 +169,7 @@ export class ApprovedRejectedTrainingsComponent {
 
   pdfHeadersTrainee: Array<string> = [
     'Sr.No.',
+    'UIN',
     'Name',
     'Age',
     'Gender',
@@ -174,6 +179,7 @@ export class ApprovedRejectedTrainingsComponent {
     'Rejection Remark',
   ];
   columnKeysTrainee: Array<string> = [
+    'uin',
     'name',
     'age',
     'gender',
@@ -184,6 +190,7 @@ export class ApprovedRejectedTrainingsComponent {
   ];
 
   tableColumnsTrainee: TableColumn[] = [
+    { key: 'uin', header: 'UIN' },
     { key: 'name', header: 'Name' },
     { key: 'age', header: 'Age' },
     { key: 'gender', header: 'Gender' },
@@ -231,6 +238,7 @@ export class ApprovedRejectedTrainingsComponent {
       comment: ['', [Validators.required]],
       status: ['', [Validators.required]],
     });
+    this.isLoadingPendingTrainings = true;
     this.trainingsService.getAllInitialStageTrainings().subscribe({
       next: (res) => {
         this.trainingsList3 = res;
@@ -254,12 +262,15 @@ export class ApprovedRejectedTrainingsComponent {
           this.trainingsList3[index] = ele;
           index++;
         });
+        this.isLoadingPendingTrainings = false;
       },
       error: (err) => {
+        this.isLoadingPendingTrainings = false;
         this.toastr.error('Error while fetching data!');
       },
     });
 
+    this.isLoadingApprovedTrainings = true;
     this.trainingsService.getApprovedTrainings().subscribe({
       next: (res) => {
         this.trainingsList = res;
@@ -283,12 +294,15 @@ export class ApprovedRejectedTrainingsComponent {
           this.trainingsList[index] = ele;
           index++;
         });
+        this.isLoadingApprovedTrainings = false;
       },
       error: (err) => {
+        this.isLoadingApprovedTrainings = false;
         this.toastr.error('Error while fetching data!');
       },
     });
 
+    this.isLoadingRejectedTrainings = true;
     this.trainingsService.getRejectedTrainings().subscribe({
       next: (res) => {
         this.trainingsList2 = res;
@@ -312,8 +326,10 @@ export class ApprovedRejectedTrainingsComponent {
           this.trainingsList2[index] = ele;
           index++;
         });
+        this.isLoadingRejectedTrainings = false;
       },
       error: (err) => {
+        this.isLoadingRejectedTrainings = false;
         this.toastr.error('Error while fetching data!');
       },
     });
@@ -349,6 +365,7 @@ export class ApprovedRejectedTrainingsComponent {
       // Handle view action
 
       this.traineeList = [];
+      this.isLoadingTrainees = true;
       this.trainingDetails = event.item;
       this.prepareTrainingScheduleUrl();
       this.fileNameTrainees = this.traineesFile;
@@ -360,8 +377,15 @@ export class ApprovedRejectedTrainingsComponent {
         '_';
       this.trainingsService
         .getTraineeList(this.trainingDetails.id)
-        .subscribe((res) => {
-          this.traineeList = res.data;
+        .subscribe({
+          next: (res) => {
+            this.traineeList = res.data;
+            this.isLoadingTrainees = false;
+          },
+          error: () => {
+            this.isLoadingTrainees = false;
+            this.toastr.error('Error while fetching trainee data!');
+          },
         });
 
       this.modalService.open(this.trainingDetailsModal, {
@@ -453,6 +477,54 @@ export class ApprovedRejectedTrainingsComponent {
       .join(', ');
   }
 
+  getTrainingDurationInDays(
+    startDate: string | null | undefined,
+    endDate: string | null | undefined
+  ): string {
+    const start = this.parseTrainingDate(startDate);
+    const end = this.parseTrainingDate(endDate);
+
+    if (!start || !end) {
+      return '-';
+    }
+
+    const millisecondsPerDay = 24 * 60 * 60 * 1000;
+    const diffInDays =
+      Math.floor((end.getTime() - start.getTime()) / millisecondsPerDay) + 1;
+
+    if (diffInDays <= 0) {
+      return '-';
+    }
+
+    return `${diffInDays} ${diffInDays === 1 ? 'Day' : 'Days'}`;
+  }
+
+  private parseTrainingDate(
+    value: string | null | undefined
+  ): Date | null {
+    const raw = (value || '').trim();
+    if (!raw) {
+      return null;
+    }
+
+    const formattedDateMatch = raw.match(/^(\d{2})\/(\d{2})\/(\d{4})$/);
+    if (formattedDateMatch) {
+      const [, day, month, year] = formattedDateMatch;
+      return new Date(Number(year), Number(month) - 1, Number(day));
+    }
+
+    const parsed = new Date(raw);
+    if (Number.isNaN(parsed.getTime())) {
+      return null;
+    }
+
+    return new Date(
+      parsed.getFullYear(),
+      parsed.getMonth(),
+      parsed.getDate()
+    );
+  }
+
   reset() {}
 
   open() {}
@@ -521,7 +593,8 @@ export class ApprovedRejectedTrainingsComponent {
     return (
       status === 'approved by state head' ||
       status === 'approved by organization' ||
-      status === 'approved by organisation'
+      status === 'approved by organisation' ||
+      status === 'certificate issued & downloaded'
     );
   }
 

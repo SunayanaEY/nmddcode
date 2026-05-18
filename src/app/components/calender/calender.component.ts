@@ -308,6 +308,48 @@ export class CalenderComponent {
     return date.toLocaleDateString(undefined, { day: '2-digit', month: 'short', year: 'numeric' });
   }
 
+  getDurationInDays(
+    start: Date | string | null | undefined,
+    end: Date | string | null | undefined,
+  ): string {
+    const startDate = this.normalizeDate(start);
+    const endDate = this.normalizeDate(end);
+
+    if (!startDate || !endDate) {
+      return '-';
+    }
+
+    const millisecondsPerDay = 24 * 60 * 60 * 1000;
+    const diffInDays =
+      Math.floor((endDate.getTime() - startDate.getTime()) / millisecondsPerDay) +
+      1;
+
+    if (diffInDays <= 0) {
+      return '-';
+    }
+
+    return `${diffInDays} ${diffInDays === 1 ? 'Day' : 'Days'}`;
+  }
+
+  private normalizeDate(
+    value: Date | string | null | undefined,
+  ): Date | null {
+    if (!value) {
+      return null;
+    }
+
+    const parsed = value instanceof Date ? value : new Date(value);
+    if (isNaN(parsed.getTime())) {
+      return null;
+    }
+
+    return new Date(
+      parsed.getFullYear(),
+      parsed.getMonth(),
+      parsed.getDate(),
+    );
+  }
+
   normalizeUrl(u: any): string | null {
     if (!u) return null;
     const s = String(u).trim();

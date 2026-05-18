@@ -257,7 +257,13 @@
             { label: 'Trainer Name', value: trainingDetails.trainerName },
             { label: 'Start Date', value: trainingDetails.startDate },
             { label: 'End Date', value: trainingDetails.endDate },
-            { label: 'Training Duration', value: trainingDetails.duration },
+            {
+              label: 'Training Duration',
+              value: getTrainingDurationInDays(
+                trainingDetails.startDate,
+                trainingDetails.endDate
+              ),
+            },
             {
               label: 'Mode of Training',
               value: trainingDetails.modeOfTraining,
@@ -485,7 +491,7 @@
 
 <ng-template #traineeProfileModal let-modal>
   <div class="modal-header trainee-profile-header">
-    <h5 class="modal-title">Trainee Profile</h5>
+    <h5 class="modal-title">Trainee Details</h5>
     <button
       type="button"
       class="btn-close"
@@ -497,85 +503,112 @@
   <div class="modal-body">
     <div class="trainee-profile-card">
       <div class="trainee-profile-top">
-        <div class="trainee-photo-wrap">
-          <img
-            *ngIf="selectedTraineePhotoUrl"
-            [src]="selectedTraineePhotoUrl"
-            alt="Trainee Photo"
-            class="trainee-photo"
-          />
-          <div *ngIf="!selectedTraineePhotoUrl" class="trainee-photo-placeholder">
-            <i class="bi bi-person"></i>
+        <div class="trainee-identity">
+          <div class="trainee-avatar-wrap">
+            <img
+              *ngIf="selectedTraineePhotoUrl"
+              [src]="selectedTraineePhotoUrl"
+              alt="Trainee Photo"
+            />
+            <i *ngIf="!selectedTraineePhotoUrl" class="bi bi-person-circle"></i>
           </div>
-          <div *ngIf="isLoadingSelectedTraineePhoto" class="trainee-photo-loading">
-            <span class="spinner-border spinner-border-sm" role="status"></span>
-          </div>
-        </div>
 
-        <div class="trainee-top-details">
-          <h4 class="mb-1">{{ selectedTraineeProfile?.name || '-' }}</h4>
-          <div class="trainee-chip-row">
-            <span class="badge bg-primary">{{ selectedTraineeProfile?.status || '-' }}</span>
-            <span class="badge bg-secondary">UIN: {{ selectedTraineeProfile?.uin || '-' }}</span>
+          <div class="trainee-top-details">
+            <h4 class="mb-1">{{ selectedTraineeProfile?.name || '-' }}</h4>
+            <div class="trainee-chip-row">
+              <span class="badge bg-primary">{{ selectedTraineeProfile?.status || '-' }}</span>
+              <span class="badge bg-secondary">UIN: {{ selectedTraineeProfile?.uin || '-' }}</span>
+            </div>
           </div>
         </div>
       </div>
 
-      <div class="trainee-profile-grid">
-        <div class="profile-item">
-          <label>Gender</label>
-          <div>{{ selectedTraineeProfile?.gender || '-' }}</div>
-        </div>
-        <div class="profile-item">
-          <label>Age</label>
-          <div>{{ selectedTraineeProfile?.age || '-' }}</div>
-        </div>
-        <div class="profile-item">
-          <label>Date of Birth</label>
-          <div>
-            {{
-              selectedTraineeProfile?.dob
-                ? (selectedTraineeProfile?.dob | date : "dd-MM-yyyy")
-                : "-"
-            }}
+      <div class="trainee-profile-section">
+        <h6>Personal Information</h6>
+        <div class="trainee-profile-grid">
+          <div class="profile-item">
+            <label>Full Name</label>
+            <div>{{ selectedTraineeProfile?.name || '-' }}</div>
+          </div>
+          <div class="profile-item">
+            <label>Father's Name</label>
+            <div>{{ selectedTraineeProfile?.fatherName || '-' }}</div>
+          </div>
+          <div class="profile-item">
+            <label>Gender</label>
+            <div>{{ selectedTraineeProfile?.gender || '-' }}</div>
+          </div>
+          <div class="profile-item">
+            <label>Age</label>
+            <div>{{ selectedTraineeProfile?.age || '-' }}</div>
+          </div>
+          <div class="profile-item">
+            <label>Date of Birth</label>
+            <div>
+              {{
+                selectedTraineeProfile?.dob
+                  ? (selectedTraineeProfile?.dob | date : "dd-MM-yyyy")
+                  : "-"
+              }}
+            </div>
+          </div>
+          <div class="profile-item">
+            <label>Category</label>
+            <div>{{ selectedTraineeProfile?.category || '-' }}</div>
+          </div>
+          <div class="profile-item profile-item-wide">
+            <label>Educational Qualification</label>
+            <div>{{ selectedTraineeProfile?.educationalQualification || '-' }}</div>
+          </div>
+          <div class="profile-item profile-item-wide">
+            <label>Recommended By</label>
+            <div>{{ selectedTraineeProfile?.recommendedBy || '-' }}</div>
           </div>
         </div>
-        <div class="profile-item">
-          <label>Father's Name</label>
-          <div>{{ selectedTraineeProfile?.fatherName || '-' }}</div>
+      </div>
+
+      <div class="trainee-profile-section">
+        <h6>Contact Details</h6>
+        <div class="trainee-profile-grid">
+          <div class="profile-item">
+            <label>Email</label>
+            <div>{{ selectedTraineeProfile?.email || '-' }}</div>
+          </div>
+          <div class="profile-item">
+            <label>Contact Number</label>
+            <div>{{ selectedTraineeProfile?.contactNumber || '-' }}</div>
+          </div>
         </div>
-        <div class="profile-item">
-          <label>Category</label>
-          <div>{{ selectedTraineeProfile?.category || '-' }}</div>
-        </div>
-        <div class="profile-item">
-          <label>Educational Qualification</label>
-          <div>{{ selectedTraineeProfile?.educationalQualification || '-' }}</div>
-        </div>
-        <div class="profile-item">
-          <label>Recommended By</label>
-          <div>{{ selectedTraineeProfile?.recommendedBy || '-' }}</div>
-        </div>
-        <div class="profile-item">
-          <label>Contact Number</label>
-          <div>{{ selectedTraineeProfile?.contactNumber || '-' }}</div>
-        </div>
-        <div class="profile-item">
-          <label>Email</label>
-          <div>{{ selectedTraineeProfile?.email || '-' }}</div>
-        </div>
-        <div class="profile-item">
-          <label>Created By</label>
-          <div>{{ selectedTraineeProfile?.createdBy || '-' }}</div>
-        </div>
-        <div class="profile-item">
-          <label>Created Date</label>
-          <div>
-            {{
-              selectedTraineeProfile?.createDate
-                ? (selectedTraineeProfile?.createDate | date : "dd-MM-yyyy")
-                : "-"
-            }}
+      </div>
+
+      <div class="trainee-profile-section">
+        <h6>Training & Approval</h6>
+        <div class="trainee-profile-grid">
+          <div class="profile-item">
+            <label>Status</label>
+            <div>{{ selectedTraineeProfile?.status || '-' }}</div>
+          </div>
+          <div class="profile-item">
+            <label>UIN</label>
+            <div>{{ selectedTraineeProfile?.uin || '-' }}</div>
+          </div>
+          <div class="profile-item">
+            <label>Training Reference ID</label>
+            <div>{{ selectedTraineeProfile?.trainingReferenceId || '-' }}</div>
+          </div>
+          <div class="profile-item">
+            <label>Certificate Date</label>
+            <div>
+              {{
+                selectedTraineeProfile?.certificateDate
+                  ? (selectedTraineeProfile?.certificateDate | date : "dd-MM-yyyy")
+                  : "-"
+              }}
+            </div>
+          </div>
+          <div class="profile-item">
+            <label>Rejection Remarks</label>
+            <div>{{ selectedTraineeProfile?.rejectionRemarks || '-' }}</div>
           </div>
         </div>
       </div>
@@ -595,7 +628,7 @@
 </ng-template>
 
 <!-- Hidden Certificate Component for Bulk Generation -->
-<div style="position: absolute; left: -9999px; top: -9999px">
+<div class="bulk-certificate-renderer">
   <app-latest-certificate-layout
     #hiddenCertificate
     [data]="certificateDataForBulk"

@@ -954,7 +954,7 @@ export class AllTrainingsAdminComponent {
             ? (trainingData as any).signatories
             : [];
 
-      const pdf = new jsPDF('portrait', 'mm', 'a4');
+      const pdf = new jsPDF('landscape', 'mm', 'a4');
       const pdfWidth = pdf.internal.pageSize.getWidth();
       const pdfHeight = pdf.internal.pageSize.getHeight();
 
@@ -993,10 +993,17 @@ export class AllTrainingsAdminComponent {
         ) {
           const element =
             this.hiddenCertificate.certificateContent.nativeElement;
+          const rect = element.getBoundingClientRect();
           const canvas = await html2canvas(element, {
             useCORS: true,
+            allowTaint: false,
             scale: 2,
-            allowTaint: true,
+            width: rect.width,
+            height: rect.height,
+            windowWidth: Math.ceil(rect.width),
+            windowHeight: Math.ceil(rect.height),
+            scrollX: 0,
+            scrollY: 0,
             backgroundColor: '#ffffff',
           });
 
@@ -1222,6 +1229,53 @@ export class AllTrainingsAdminComponent {
       return new Date(year, month, day);
     }
     return null;
+  }
+
+  getTrainingDurationInDays(
+    startDate: string | null | undefined,
+    endDate: string | null | undefined,
+  ): string {
+    const start = this.parseTrainingDurationDate(startDate);
+    const end = this.parseTrainingDurationDate(endDate);
+
+    if (!start || !end) {
+      return '-';
+    }
+
+    const millisecondsPerDay = 24 * 60 * 60 * 1000;
+    const diffInDays =
+      Math.floor((end.getTime() - start.getTime()) / millisecondsPerDay) + 1;
+
+    if (diffInDays <= 0) {
+      return '-';
+    }
+
+    return `${diffInDays} ${diffInDays === 1 ? 'Day' : 'Days'}`;
+  }
+
+  private parseTrainingDurationDate(
+    value: string | null | undefined,
+  ): Date | null {
+    const raw = (value || '').trim();
+    if (!raw) {
+      return null;
+    }
+
+    const formattedDate = this.parseDateString(raw);
+    if (formattedDate) {
+      return formattedDate;
+    }
+
+    const parsed = new Date(raw);
+    if (Number.isNaN(parsed.getTime())) {
+      return null;
+    }
+
+    return new Date(
+      parsed.getFullYear(),
+      parsed.getMonth(),
+      parsed.getDate(),
+    );
   }
 
   parseFilterDate(dateStr: string): Date | null {

@@ -275,7 +275,7 @@
   </app-table>
 </div>
 
-<div style="position: absolute; left: -9999px; top: -9999px;">
+<div class="bulk-certificate-renderer">
   <app-latest-certificate-layout
     #hiddenCertificate
     [data]="certificateDataForBulk"
@@ -355,7 +355,14 @@
           <label class="detail-label"
             >{{ "Training Duration" | translate }}:</label
           >
-          <div class="detail-value">{{ trainingDetails?.duration }}</div>
+          <div class="detail-value">
+            {{
+              getTrainingDurationInDays(
+                trainingDetails?.startDate,
+                trainingDetails?.endDate
+              )
+            }}
+          </div>
         </div>
       </div>
 

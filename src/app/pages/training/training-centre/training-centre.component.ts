@@ -86,12 +86,6 @@ export class TrainingCentreComponent implements OnInit {
     { value: 'Other Organizations', label: 'Other Organizations' },
   ];
   instituteGrades: string[] = ['A', 'B', 'A+'];
-  instituteOwnedByOptions: string[] = [
-    'NDDB',
-    'Co-operative',
-    'NGO',
-    'Private',
-  ];
   organizations: any[] = [];
   constructor(
     private adminService: AdminService,
@@ -538,9 +532,6 @@ export class TrainingCentreComponent implements OnInit {
       designation: this.normalizeString(centre.designation),
       instituteType: this.normalizeString(centre.instituteType),
       instituteGrade: this.normalizeString(centre.instituteGrade),
-      instituteOwnedBy: this.mapInstituteOwnedByCodeToLabel(
-        this.normalizeString(centre.instituteOwnedBy),
-      ),
       organizationId:
         centre.organizationId !== undefined && centre.organizationId !== null
           ? centre.organizationId
@@ -572,7 +563,6 @@ export class TrainingCentreComponent implements OnInit {
     console.log('[TrainingCentre/EditModal] option sets', {
       instituteTypes: this.instituteTypes.map((t) => t.value),
       instituteGrades: this.instituteGrades,
-      instituteOwnedByOptions: this.instituteOwnedByOptions,
       organizationsCount: this.organizations?.length || 0,
     });
     this.logDropdownValueMatch(
@@ -584,11 +574,6 @@ export class TrainingCentreComponent implements OnInit {
       'instituteGrade',
       this.editForm.instituteGrade,
       this.instituteGrades,
-    );
-    this.logDropdownValueMatch(
-      'instituteOwnedBy',
-      this.editForm.instituteOwnedBy,
-      this.instituteOwnedByOptions,
     );
 
     if (centre.instituteImageUrl) {
@@ -668,7 +653,6 @@ export class TrainingCentreComponent implements OnInit {
     this.editForm.instituteType = value;
     console.log('[TrainingCentre/EditModal] instituteType change', value);
     if (this.editForm.instituteType !== 'Other Organizations') {
-      this.editForm.instituteOwnedBy = '';
       this.editForm.organizationId = null;
       console.log(
         '[TrainingCentre/EditModal] cleared org fields for non-other type',
@@ -816,36 +800,6 @@ export class TrainingCentreComponent implements OnInit {
       return value.includes('T') ? value.split('T')[0] : value;
     }
     return '';
-  }
-
-  private mapInstituteOwnedByCodeToLabel(code: string): string {
-    switch (code) {
-      case 'COOP':
-        return 'Co-operative';
-      case 'NGOS':
-        return 'NGO';
-      case 'PRVT':
-        return 'Private';
-      case 'NDDB':
-        return 'NDDB';
-      default:
-        return code;
-    }
-  }
-
-  private mapInstituteOwnedByLabelToCode(label: string): string {
-    switch (label) {
-      case 'Co-operative':
-        return 'COOP';
-      case 'NGO':
-        return 'NGOS';
-      case 'Private':
-        return 'PRVT';
-      case 'NDDB':
-        return 'NDDB';
-      default:
-        return label;
-    }
   }
 
   private logDropdownValueMatch(field: string, value: any, options: any[]) {
@@ -1034,6 +988,15 @@ export class TrainingCentreComponent implements OnInit {
 
     const finalStateId = newStateId || originalStateId;
     const finalDistrictId = newDistrictId || originalDistrictId;
+
+    let finalInstituteOwnedBy = null;
+    if (updatedData.instituteType !== 'Government Owned' && updatedData.organizationId) {
+      const selectedOrg = this.organizations?.find(
+        (org: any) => org.id === updatedData.organizationId
+      );
+      finalInstituteOwnedBy = selectedOrg ? selectedOrg.organizationType : (this.selectedCentre.instituteOwnedBy || null);
+    }
+
     const instituteDetails = {
       id: this.selectedCentre.id,
       // username: this.selectedCentre.username || 'user1', // Add username field
@@ -1052,17 +1015,17 @@ export class TrainingCentreComponent implements OnInit {
       longitude: updatedData.longitude ?? null,
       instituteType: updatedData.instituteType || '',
       instituteGrade: updatedData.instituteGrade || '',
-      instituteOwnedBy: this.mapInstituteOwnedByLabelToCode(
-        updatedData.instituteOwnedBy || '',
-      ),
+      instituteOwnedBy: finalInstituteOwnedBy,
       organizationId:
-        updatedData.organizationId !== undefined &&
-        updatedData.organizationId !== null
-          ? updatedData.organizationId
-          : null,
+        updatedData.instituteType === 'Government Owned'
+          ? null
+          : updatedData.organizationId !== undefined &&
+            updatedData.organizationId !== null
+            ? updatedData.organizationId
+            : null,
     };
 
-    console.log('[TrainingCentre/EditModal] update payload=', instituteDetails);
+    console.log('[TrainingCentre/EditModal] update payload stringified =', JSON.stringify(instituteDetails, null, 2));
 
     // Create a Blob for instituteDetails with proper content type
     const instituteDetailsBlob = new Blob([JSON.stringify(instituteDetails)], {

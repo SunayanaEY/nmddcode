@@ -342,29 +342,6 @@
               </select>
             </div>
 
-            <div
-              class="col-12 col-md-6 mb-3"
-              *ngIf="editForm.instituteType === 'Other Organizations'"
-            >
-              <label for="instituteOwnedBy" class="form-label"
-                >Institute Owned By</label
-              >
-              <select
-                id="instituteOwnedBy"
-                class="form-control"
-                [(ngModel)]="editForm.instituteOwnedBy"
-                (ngModelChange)="onEditFieldChange('instituteOwnedBy', $event)"
-              >
-                <option value="" disabled>Select Institute Owned By</option>
-                <option
-                  *ngFor="let owner of instituteOwnedByOptions"
-                  [value]="owner"
-                >
-                  {{ owner }}
-                </option>
-              </select>
-            </div>
-
             <div class="col-12 col-md-6 mb-3">
               <label for="instituteGrade" class="form-label"
                 >Institute Grade <span class="text-red">*</span></label

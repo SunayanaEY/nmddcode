@@ -252,3 +252,13 @@
   padding: 6px 12px;
   border: 1px solid #d0d7e2;
 }
+
+.bulk-certificate-renderer {
+  position: fixed;
+  left: -10000px;
+  top: 0;
+  width: 1120px;
+  height: auto;
+  overflow: visible;
+  pointer-events: none;
+}

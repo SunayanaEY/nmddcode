@@ -1,4 +1,13 @@
-import { Component, Input, ViewChild, ElementRef, OnInit, OnChanges, SimpleChanges } from '@angular/core';
+import {
+  AfterViewInit,
+  Component,
+  Input,
+  ViewChild,
+  ElementRef,
+  OnInit,
+  OnChanges,
+  SimpleChanges,
+} from '@angular/core';
 import { CommonModule, DatePipe } from '@angular/common';
 import { QRCodeComponent } from 'angularx-qrcode';
 import jsPDF from 'jspdf';
@@ -15,7 +24,7 @@ import { TrainingService } from '../training/services/training.service';
   templateUrl: './latest-certificate-layout.component.html',
   styleUrls: ['./latest-certificate-layout.component.css']
 })
-export class LatestCertificateLayoutComponent implements OnInit, OnChanges {
+export class LatestCertificateLayoutComponent implements OnInit, OnChanges, AfterViewInit {
   @Input() data: any;
   @Input() uniqueId: string = 'UIN2025345780991';
   certificateUrl = environment.certificateUrl;
@@ -23,6 +32,10 @@ export class LatestCertificateLayoutComponent implements OnInit, OnChanges {
 
   @ViewChild('certificateContent', { static: false })
   certificateContent!: ElementRef;
+  @ViewChild('trainingCentreNameElement', { static: false })
+  trainingCentreNameElement!: ElementRef<HTMLElement>;
+  @ViewChild('venueAddressElement', { static: false })
+  venueAddressElement!: ElementRef<HTMLElement>;
 
   logo1Url: string | null = null;
   logo2Url: string | null = null;
@@ -30,7 +43,11 @@ export class LatestCertificateLayoutComponent implements OnInit, OnChanges {
   signatureUrls: (string | null)[] = [];
   private createdBlobUrls: string[] = [];
   traineePhotoUrl: string | null = null;
-   isReady: boolean = false;
+  isReady: boolean = false;
+  titleFontSizePx: number | null = null;
+  addressFontSizePx: number | null = null;
+  private resizeObserver?: ResizeObserver;
+  private fitTitleFrame: number | null = null;
 
   constructor(private http: HttpClient, private trainingService: TrainingService) {}
 
@@ -38,10 +55,19 @@ export class LatestCertificateLayoutComponent implements OnInit, OnChanges {
     this.initData();
   }
 
+  ngAfterViewInit(): void {
+    this.scheduleCertificateHeaderFit();
+    if (typeof ResizeObserver !== 'undefined' && this.certificateContent?.nativeElement) {
+      this.resizeObserver = new ResizeObserver(() => this.scheduleCertificateHeaderFit());
+      this.resizeObserver.observe(this.certificateContent.nativeElement);
+    }
+  }
+
   ngOnChanges(changes: SimpleChanges) {
     if (changes['data'] && !changes['data'].firstChange) {
       this.revokeUrls();
       this.initData();
+      this.scheduleCertificateHeaderFit();
     }
   }
 
@@ -66,6 +92,7 @@ export class LatestCertificateLayoutComponent implements OnInit, OnChanges {
       ]);
     } finally {
       this.isReady = true;
+      this.scheduleCertificateHeaderFit();
     }
   }
 
@@ -95,9 +122,9 @@ export class LatestCertificateLayoutComponent implements OnInit, OnChanges {
   get rightSignatureTitle(): string {
     const instituteType = this.getInstituteTypeValue();
     if (instituteType === 'other organizations') {
-      return 'Other Organization Head Signature';
+      return 'Other Organization Head';
     }
-    return 'State Head Signature';
+    return 'State Head';
   }
 
   private getInstituteTypeValue(): string {
@@ -220,6 +247,8 @@ export class LatestCertificateLayoutComponent implements OnInit, OnChanges {
     const element = this.certificateContent?.nativeElement;
     if (!element) return;
 
+    this.fitInstituteNameToTwoLines();
+    this.fitVenueAddressToOneLine();
     const rect = element.getBoundingClientRect();
 
     html2canvas(element, {
@@ -233,7 +262,8 @@ export class LatestCertificateLayoutComponent implements OnInit, OnChanges {
       backgroundColor: '#ffffff'
     }).then((canvas) => {
       const imgData = canvas.toDataURL('image/png');
-      const pdf = new jsPDF('portrait', 'mm', 'a4');
+      const orientation = rect.width >= rect.height ? 'landscape' : 'portrait';
+      const pdf = new jsPDF(orientation, 'mm', 'a4');
       const pdfWidth = pdf.internal.pageSize.getWidth();
       const pdfHeight = pdf.internal.pageSize.getHeight();
       const imgProps = pdf.getImageProperties(imgData);
@@ -254,6 +284,11 @@ export class LatestCertificateLayoutComponent implements OnInit, OnChanges {
   }
 
   ngOnDestroy(): void {
+    if (this.fitTitleFrame !== null) {
+      cancelAnimationFrame(this.fitTitleFrame);
+      this.fitTitleFrame = null;
+    }
+    this.resizeObserver?.disconnect();
     this.revokeUrls();
   }
 
@@ -272,6 +307,75 @@ export class LatestCertificateLayoutComponent implements OnInit, OnChanges {
     }
     // Fallback to any direct URL provided
     this.traineePhotoUrl = this.validPhotoUrl;
+  }
+
+  public fitInstituteNameToTwoLines(): void {
+    const element = this.trainingCentreNameElement?.nativeElement;
+    if (!element) {
+      return;
+    }
+
+    const sheetWidth = this.certificateContent?.nativeElement?.getBoundingClientRect().width || 1120;
+    const maxFontSize = Math.min(45, Math.max(23, sheetWidth * 0.0402));
+    const minFontSize = Math.max(18, sheetWidth * 0.018);
+    let fontSize = maxFontSize;
+
+    element.style.display = 'block';
+    element.style.setProperty('-webkit-line-clamp', 'unset');
+    element.style.setProperty('-webkit-box-orient', 'unset');
+    element.style.fontSize = `${fontSize}px`;
+    element.style.maxHeight = 'none';
+
+    while (fontSize > minFontSize && this.isInstituteNameMoreThanTwoLines(element)) {
+      fontSize -= 1;
+      element.style.fontSize = `${fontSize}px`;
+    }
+
+    this.titleFontSizePx = fontSize;
+    element.style.display = '';
+    element.style.removeProperty('-webkit-line-clamp');
+    element.style.removeProperty('-webkit-box-orient');
+    element.style.fontSize = `${fontSize}px`;
+    element.style.maxHeight = `${fontSize * 1.08 * 2}px`;
+  }
+
+  public fitVenueAddressToOneLine(): void {
+    const element = this.venueAddressElement?.nativeElement;
+    if (!element) {
+      return;
+    }
+
+    const sheetWidth = this.certificateContent?.nativeElement?.getBoundingClientRect().width || 1120;
+    const maxFontSize = 20;
+    const minFontSize = Math.max(12, sheetWidth * 0.012);
+    let fontSize = maxFontSize;
+
+    element.style.fontSize = `${fontSize}px`;
+
+    while (fontSize > minFontSize && element.scrollWidth > element.clientWidth + 1) {
+      fontSize -= 1;
+      element.style.fontSize = `${fontSize}px`;
+    }
+
+    this.addressFontSizePx = fontSize;
+    element.style.fontSize = `${fontSize}px`;
+  }
+
+  private scheduleCertificateHeaderFit(): void {
+    if (this.fitTitleFrame !== null) {
+      cancelAnimationFrame(this.fitTitleFrame);
+    }
+
+    this.fitTitleFrame = requestAnimationFrame(() => {
+      this.fitTitleFrame = null;
+      this.fitInstituteNameToTwoLines();
+      this.fitVenueAddressToOneLine();
+    });
+  }
+
+  private isInstituteNameMoreThanTwoLines(element: HTMLElement): boolean {
+    const lineHeight = parseFloat(getComputedStyle(element).lineHeight);
+    return element.scrollHeight > lineHeight * 2 + 2;
   }
 }
 

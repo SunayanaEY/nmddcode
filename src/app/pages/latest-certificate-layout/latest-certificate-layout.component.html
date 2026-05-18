@@ -1,160 +1,201 @@
 <div class="nddb-certificate" role="document">
   <div class="sheet" #certificateContent aria-label="NDDB Certificate">
-    <!-- Corners -->
-    <div class="corner top-left"></div>
-    <div class="corner top-right"></div>
-    <div class="corner bottom-left"></div>
-    <div class="corner bottom-right"></div>
+    <img
+      class="certificate-background"
+      src="assets/certificate/certificate-background.png"
+      alt=""
+      aria-hidden="true"
+    />
 
-    <!-- Top meta -->
-    <div class="certificate-header" aria-label="Header">
-      <div class="col-3">
-        <div class="certificate-ref">UIN No- {{ finalUniqueId }}</div>
-        <div class="certificate-ref" *ngIf="data?.trainingRefCode">
-          Ref: {{ data?.trainingRefCode }}
+    <header class="certificate-header">
+      <div class="header-meta">
+        <div class="meta-group meta-group-left">
+          <div class="meta-line">
+            <span class="meta-label">UIN No:</span>
+            <span class="meta-value">{{ finalUniqueId }}</span>
+          </div>
+          <div class="meta-line">
+            <span class="meta-label">Ref:</span>
+            <span class="meta-value">{{ data?.trainingRefCode || "________________" }}</span>
+          </div>
+        </div>
+
+        <div class="meta-group meta-group-right">
+          <div class="meta-line">
+            <span class="meta-label">Date:</span>
+            <span class="meta-value">{{
+              (data?.certificateDate | date: "dd.MM.yyyy") || "________________"
+            }}</span>
+          </div>
         </div>
       </div>
-      <div
-        class="col-5"
-        style="font-size: 1.3rem; text-align: center"
-        *ngIf="
-          data &&
-          data.includeInstituteName !== undefined &&
-          data.includeInstituteName
-        "
-      >
-        <div class="certificate-issuer">{{ data?.trainingInstituteName }}</div>
-      </div>
-      <div class="certificate-date col-3">
-        Date: {{ data?.certificateDate | date: "dd.MM.yyyy" }}
-      </div>
-    </div>
 
-    <!-- Logo Row -->
-    <div class="brand-row" aria-label="Branding">
-      <img
-        class="logo-small"
-        [src]="logo1Url || data?.logoPath1"
-        alt=""
-        crossorigin="anonymous"
-      />
-      <img
-        class="logo-center"
-        *ngIf="logo2Url || data?.logoPath2"
-        [src]="logo2Url || data?.logoPath2"
-        alt=""
-        crossorigin="anonymous"
-      />
-      <img
-        class="logo-small logo-small-right"
-        *ngIf="data?.logoPath3 || logo3Url"
-        [src]="logo3Url || data?.logoPath3"
-        alt=""
-        crossorigin="anonymous"
-      />
-    </div>
-
-    <!-- QR Code (Center) + Trainee Photo (Right) Row -->
-    <div class="qr-photo-row" aria-label="QR Code and Trainee Photo">
-      <div class="qr-code">
-        <qrcode
-          [qrdata]="qrData"
-          [width]="100"
-          [errorCorrectionLevel]="'M'"
-        ></qrcode>
-        <!-- <p class="uid">UIN: {{ finalUniqueId }}</p> -->
+      <div class="header-title-block">
+        <div
+          *ngIf="data?.includeInstituteName !== false"
+          class="training-centre-name"
+          #trainingCentreNameElement
+          [style.fontSize.px]="titleFontSizePx"
+        >
+          {{
+            data?.trainingInstituteName ||
+              data?.organizationName ||
+              "TECHNICAL TRAINING CENTRE"
+          }}
+        </div>
+        <div
+          class="venue-address"
+          *ngIf="data?.venueAddress"
+          #venueAddressElement
+          [style.fontSize.px]="addressFontSizePx"
+        >
+          {{ data?.venueAddress }}
+        </div>
+        <div class="government-line">
+          Accredited by Department of Animal Husbandry & Dairying, GOVT. of India for AI Training
+        </div>
       </div>
-      <div class="trainee-photo" *ngIf="traineePhotoUrl || validPhotoUrl">
-        <!-- -        <img [src]="validPhotoUrl" crossorigin="anonymous" /> -->
-        <img [src]="traineePhotoUrl" crossorigin="anonymous" />
+
+      <div class="primary-divider" aria-hidden="true">
+        <span></span>
+        <i></i>
+        <span></span>
       </div>
-    </div>
 
-    <!-- Certificate Heading -->
-    <h1 class="certificate-heading">प्रमाणपत्र/Certificate</h1>
+      <div class="secondary-divider" aria-hidden="true">
+        <span></span>
+        <i></i>
+        <span></span>
+      </div>
+    </header>
 
-    <!-- Body -->
+    <section class="visual-row" aria-label="Certificate Branding">
+      <div class="visual-card visual-card-left">
+        <div class="circle-frame logo-frame">
+          <img
+            *ngIf="logo1Url || data?.logoPath1"
+            class="logo-inside-circle"
+            [src]="logo1Url || data?.logoPath1"
+            alt=""
+            crossorigin="anonymous"
+          />
+        </div>
+      </div>
+
+      <div class="visual-card visual-card-center">
+        <div class="square-logo-frame square-logo-frame-top">
+          <img
+            *ngIf="logo2Url || data?.logoPath2"
+            class="logo-inside-square"
+            [src]="logo2Url || data?.logoPath2"
+            alt=""
+            crossorigin="anonymous"
+          />
+        </div>
+
+        <div class="circle-frame qr-frame qr-frame-centered">
+          <qrcode
+            [qrdata]="qrData"
+            [width]="82"
+            [errorCorrectionLevel]="'M'"
+          ></qrcode>
+        </div>
+      </div>
+
+      <div class="visual-card visual-card-right">
+        <div class="third-logo-frame">
+          <img
+            *ngIf="logo3Url || data?.logoPath3"
+            class="logo-inside-third"
+            [src]="logo3Url || data?.logoPath3"
+            alt=""
+            crossorigin="anonymous"
+          />
+        </div>
+        <div class="photo-frame">
+          <img
+            *ngIf="traineePhotoUrl || validPhotoUrl"
+            [src]="traineePhotoUrl || validPhotoUrl"
+            alt=""
+            crossorigin="anonymous"
+          />
+        </div>
+      </div>
+    </section>
+
+    <section class="certificate-heading-block">
+      <h1 class="certificate-heading-centered">CERTIFICATE</h1>
+      <div class="heading-divider" aria-hidden="true">
+        <span></span>
+        <i></i>
+        <span></span>
+      </div>
+    </section>
+
     <section class="certificate-body" aria-label="Certificate Body">
-      <p>
-        This is to certify that 
-        <!-- <span class="label">Mr/Mrs/Ms</span> -->
-        <span class="name"> &nbsp;{{ data?.name }}</span>
+      <div class="body-line body-line-lg">
+        This is to certify that <span class="name">{{ data?.name || "________________" }}</span>
         has successfully completed the training program
-        <span class="emphasis">{{ data?.trainingTitle }}</span
-        >.
-      </p>
-
-      <p>
+        <span class="emphasis">{{ data?.trainingTitle || "________________" }}</span>.
         Total duration of training was for
         <span class="emphasis">
-          {{ totalDurationDays !== null ? totalDurationDays : data?.duration }}
+          {{ totalDurationDays !== null ? totalDurationDays : data?.duration || "____" }}
         </span>
-        <span>
-          &nbsp;{{ totalDurationDays !== null ? "Days" : data?.durationType }}
-        </span>
-        <ng-container>
-          from
-          <span class="date">{{ data?.startDate | date: "dd-MM-yyyy" }}</span>
-          to <span class="date">{{ data?.endDate | date: "dd-MM-yyyy" }}</span>
-        </ng-container>
+        <span>{{
+          totalDurationDays !== null ? "Days" : data?.durationType || ""
+        }}</span>
+        from <span class="date">{{ data?.startDate | date: "dd-MM-yyyy" }}</span>
+        to <span class="date">{{ data?.endDate | date: "dd-MM-yyyy" }}</span>
         conducted at
         <span class="emphasis">{{
           data?.trainingInstituteName ||
             data?.organizationName ||
-            (data?.location ?? data?.venueState)
-        }}</span>
-        accredited by Government of India.
-      </p>
+            data?.location ||
+            data?.venueState ||
+            "________________"
+        }}</span>.
+      </div>
     </section>
 
-    <!-- Footer Signatures -->
     <footer class="certificate-footer" aria-label="Signatures">
       <div class="signatures">
-        <!-- Left Signature -->
         <div class="signature" aria-label="Institute Head Signature">
           <ng-container *ngIf="data?.signatures?.length > 0; else emptyLeft">
-            <p>
+            <div class="signature-art">
               <img
-                [src]="
-                  signatureUrls[0] || data.signatures[0].signatorySignaturePath
-                "
+                [src]="signatureUrls[0] || data.signatures[0].signatorySignaturePath"
                 alt=""
                 crossorigin="anonymous"
               />
-            </p>
-            <p>_____________________</p>
+            </div>
+            <div class="signature-line"></div>
             <p class="signature-name">{{ data.signatures[0].signatoryName }}</p>
             <p>{{ data.signatures[0].signatoryDesignation }}</p>
-            <p>{{ data.signatures[0].signatoryOrganization }}</p>
-            <p class="signature-title">Institute Head Signature</p>
           </ng-container>
           <ng-template #emptyLeft>
-            <div class="signature-placeholder" aria-hidden="true"></div>
-            <p class="signature-title">Institute Head Signature</p>
+            <div class="signature-art signature-placeholder" aria-hidden="true"></div>
+            <div class="signature-line"></div>
           </ng-template>
         </div>
 
-        <!-- Right Signature -->
+        <div class="signature signature-center-spacer" aria-hidden="true"></div>
+
         <div class="signature" [attr.aria-label]="rightSignatureTitle">
           <ng-container *ngIf="data?.signatures?.length > 1; else emptyRight">
-            <p>
+            <div class="signature-art">
               <img
-                [src]="
-                  signatureUrls[1] || data.signatures[1].signatorySignaturePath
-                "
+                [src]="signatureUrls[1] || data.signatures[1].signatorySignaturePath"
                 alt=""
                 crossorigin="anonymous"
               />
-            </p>
-            <p>_____________________</p>
+            </div>
+            <div class="signature-line"></div>
             <p class="signature-name">{{ data.signatures[1].signatoryName }}</p>
             <p>{{ data.signatures[1].signatoryDesignation }}</p>
-            <p>{{ data.signatures[1].signatoryOrganization }}</p>
-            <p class="signature-title">{{ rightSignatureTitle }}</p>
           </ng-container>
           <ng-template #emptyRight>
-            <div class="signature-placeholder" aria-hidden="true"></div>
-            <p class="signature-title">{{ rightSignatureTitle }}</p>
+            <div class="signature-art signature-placeholder" aria-hidden="true"></div>
+            <div class="signature-line"></div>
           </ng-template>
         </div>
       </div>

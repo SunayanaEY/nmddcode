@@ -81,16 +81,7 @@ export class BulkTrainingUploadComponent implements OnInit {
 
   get paginatedData(): any[] {
     const startIndex = (this.currentPage - 1) * this.pageSize;
-    this.prefixArray = new Array(this.pageSize).fill('Mr');
-    const data = this.excelData.slice(startIndex, startIndex + this.pageSize);
-    if (this.prefixSet) {
-      return data;
-    }
-    data.forEach((item) => {
-      item.Name = `Mr ${item.Name}`;
-    });
-    this.prefixSet = true;
-    return data;
+    return this.excelData.slice(startIndex, startIndex + this.pageSize);
   }
 
   constructor(
@@ -1092,7 +1083,6 @@ export class BulkTrainingUploadComponent implements OnInit {
     this.uploadProgress = 0;
     this.excelData = [];
     this.showFileUpload = false;
-    this.prefixSet = false;
     setTimeout(() => {
       this.showFileUpload = true;
     }, 0);

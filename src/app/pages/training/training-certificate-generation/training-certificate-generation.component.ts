@@ -65,7 +65,7 @@ export class TrainingCertificateGenerationComponent
   logo2!: File;
   logo3!: File;
 
-  includeInstituteName: boolean = false;
+  includeInstituteName: boolean = true;
 
   signatures: any[] = [
     {
@@ -198,9 +198,9 @@ export class TrainingCertificateGenerationComponent
     const today = new Date();
     today.setHours(0, 0, 0, 0); // Reset time to start of day
 
-    // Allow dates from past 45 days up to any future date
+    // Allow dates from past 60 days up to any future date
     const pastLimit = new Date(today);
-    pastLimit.setDate(pastLimit.getDate() - 45);
+    pastLimit.setDate(pastLimit.getDate() - 60);
 
     if (selectedDate < pastLimit) {
       return { invalidDateRange: true };
@@ -221,27 +221,6 @@ export class TrainingCertificateGenerationComponent
     const value = Number(control.value);
     if (isNaN(value) || value <= 0) {
       return { invalidDuration: true };
-    }
-
-    return null;
-  }
-
-  maxDurationValidator(control: AbstractControl): ValidationErrors | null {
-    if (
-      control.value === null ||
-      control.value === undefined ||
-      control.value === ''
-    ) {
-      return null;
-    }
-
-    const value = Number(control.value);
-    if (isNaN(value)) {
-      return null;
-    }
-
-    if (value > 24) {
-      return { maxDurationExceeded: true };
     }
 
     return null;
@@ -309,21 +288,14 @@ export class TrainingCertificateGenerationComponent
         venueDistrict: ['', Validators.required],
         venueBlock: [''],
         venueAddress: ['', Validators.required],
-        duration: [
-          '',
-          [
-            Validators.required,
-            this.positiveDurationValidator.bind(this),
-            this.maxDurationValidator.bind(this),
-          ],
-        ],
-        durationType: ['Hours', Validators.required],
+        duration: ['', [this.positiveDurationValidator.bind(this)]],
+        durationType: [''],
         trainingDescription: [
           '',
           [Validators.required, Validators.maxLength(100)],
         ],
         trainingType: ['', Validators.required],
-        includeInstituteName: [false],
+        includeInstituteName: [true],
         modeOfTraining: ['', Validators.required],
         trainingRegion: ['D', Validators.required],
         dateRanges: this.fb.array(
@@ -965,6 +937,9 @@ export class TrainingCertificateGenerationComponent
       delete data['trainingType'];
     }
 
+    delete data['duration'];
+    delete data['durationType'];
+
     // Include endDate in payload for API to store end date
     if (data.hasOwnProperty('endDate')) {
       data['endDate'] = data['endDate'];
@@ -1214,11 +1189,10 @@ export class TrainingCertificateGenerationComponent
     const previewPayload: any = {
       name: 'Trainee Name',
       trainingTitle: formValue.trainingTitle,
-      duration: formValue.duration,
-      durationType: formValue.durationType,
       startDate: startDate,
       endDate: endDate,
       trainingInstituteName,
+      venueAddress: formValue.venueAddress,
       includeInstituteName: !!formValue.includeInstituteName,
       instituteType: this.instituteType,
       logoPath1: logoPaths[0],
