@@ -235,8 +235,8 @@
 
 .qr-frame ::ng-deep canvas,
 .qr-frame ::ng-deep img {
-  width: clamp(68px, 7.3vw, 82px) !important;
-  height: clamp(68px, 7.3vw, 82px) !important;
+  width: clamp(105px, 11vw, 130px) !important;
+  height: clamp(105px, 11vw, 130px) !important;
 }
 
 .photo-frame {
@@ -264,7 +264,7 @@
 }
 
 .certificate-heading-block {
-  top: 50%;
+  top: 53%;
   left: 12%;
   right: 12%;
   text-align: center;
@@ -273,7 +273,7 @@
 .certificate-heading-centered {
   margin: 0;
   font-family: Cinzel, 'Playfair Display', serif;
-  font-size: clamp(29px, 4.15vw, 50px);
+  font-size: clamp(29px, 4.15vw, 30px);
   font-weight: 700;
   line-height: 1;
   color: #15336d;
@@ -281,7 +281,7 @@
 }
 
 .certificate-body {
-  top: 61.5%;
+  top: 62%;
   left: 12%;
   right: 12%;
   text-align: justify;
@@ -298,7 +298,7 @@
 .name,
 .emphasis,
 .date {
-  font-weight: 700;
+  font-weight: 400;
   color: #000000;
 }
 
@@ -369,10 +369,17 @@
   font-size: clamp(10px, 1.15vw, 13px);
   font-weight: 700;
   color: #17356f;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .signature p {
   margin: 2px 0;
+  font-size: clamp(10px, 1.15vw, 13px);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .signature-title {
