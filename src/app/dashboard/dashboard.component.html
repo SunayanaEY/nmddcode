@@ -126,7 +126,6 @@
               class="form-select"
               formControlName="trainingInstituteId"
               [disabled]="isLoadingTrainingInstitutes"
-              [(ngModel)]="instituteId"
             >
               <option value="" selected>
                 {{ "All Training Institutes" | translate }}
@@ -454,7 +453,7 @@
           [selectedState]="selectedState"
           (stateSelected)="onStateSelected($event)"
           [organizationId]="organizationId"
-          [instituteId]="instituteId"
+          [instituteId]="selectedTrainingInstituteId"
           [instituteType]="selectedInstituteType"
         >
         </app-india-map>

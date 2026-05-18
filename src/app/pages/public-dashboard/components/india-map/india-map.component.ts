@@ -141,7 +141,7 @@ export class IndiaMapComponent
       this.loadInstituteData();
     }
     if (changes['instituteId']) {
-      if (this.instituteId != '') {
+      if (this.instituteId && this.instituteId !== '') {
         const data = this.institutes.filter((i) => i.id == this.instituteId);
         this.addInstituteMarkers(data);
       } else {
