@@ -65,7 +65,7 @@ export class TrainingCertificateGenerationComponent
   logo2!: File;
   logo3!: File;
 
-  includeInstituteName: boolean = false;
+  includeInstituteName: boolean = true;
 
   signatures: any[] = [
     {
@@ -295,7 +295,7 @@ export class TrainingCertificateGenerationComponent
           [Validators.required, Validators.maxLength(100)],
         ],
         trainingType: ['', Validators.required],
-        includeInstituteName: [false],
+        includeInstituteName: [true],
         modeOfTraining: ['', Validators.required],
         trainingRegion: ['D', Validators.required],
         dateRanges: this.fb.array(
