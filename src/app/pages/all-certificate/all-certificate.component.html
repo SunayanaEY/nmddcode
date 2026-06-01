@@ -42,17 +42,39 @@
     >
   </div> -->
 
-  <app-table
-    [columns]="tableColumns"
-    [data]="filteredTableData"
-    [actions]="tableActions"
-    [isExportCSV]="isExportCSV"
-    [isExportPDF]="isExportPdf"
-    [pdfHeaders]="pdfHeaders"
-    [columnKeys]="columnKeys"
-    (actionClick)="handleTableAction($event)"
-  >
-  </app-table>
+  <div *ngIf="approvedTableData.length > 0" class="mb-4">
+    <div class="page-header">
+      <h2>Approved Trainees</h2>
+    </div>
+    <app-table
+      [columns]="tableColumns"
+      [data]="approvedTableData"
+      [actions]="tableActions"
+      [isExportCSV]="isExportCSV"
+      [isExportPDF]="isExportPdf"
+      [pdfHeaders]="pdfHeaders"
+      [columnKeys]="columnKeys"
+      (actionClick)="handleTableAction($event)"
+    >
+    </app-table>
+  </div>
+
+  <div *ngIf="rejectedTableData.length > 0" class="mb-4">
+    <div class="page-header">
+      <h2>Rejected Trainees</h2>
+    </div>
+    <app-table
+      [columns]="tableColumns"
+      [data]="rejectedTableData"
+      [actions]="tableActions"
+      [isExportCSV]="isExportCSV"
+      [isExportPDF]="isExportPdf"
+      [pdfHeaders]="pdfHeaders"
+      [columnKeys]="columnKeys"
+      (actionClick)="handleTableAction($event)"
+    >
+    </app-table>
+  </div>
 
   <div
     class="mt-4 p-4 bg-white rounded-3 shadow-sm d-flex justify-content-between align-items-center"

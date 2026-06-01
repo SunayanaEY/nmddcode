@@ -37,6 +37,7 @@ interface Participant {
   educationQualification?: string;
   recommendedByOrganization?: string;
   photoId?: number | null;
+  address?: string;
 }
 
 @Component({
@@ -93,6 +94,7 @@ export class ManualTrainingUploadComponent implements OnInit {
     { key: 'contactNumber', header: 'Contact Number' },
     { key: 'fatherName', header: "Father's Name" },
     { key: 'email', header: 'Email(Optional)' },
+    { key: 'address', header: 'Address' },
   ];
   tableActions: TableAction[] = [
     { name: 'edit', icon: 'bi-pencil', class: 'btn-edit', title: 'Edit' },
@@ -184,6 +186,7 @@ export class ManualTrainingUploadComponent implements OnInit {
       recommendedByOrganization: ['', [Validators.maxLength(100)]],
       email: ['', [Validators.email]],
       dob: ['', [Validators.required, this.dateValidator]],
+      address: ['', [Validators.maxLength(200)]],
     });
 
     // Disable age; auto-populate from DOB
@@ -386,6 +389,7 @@ export class ManualTrainingUploadComponent implements OnInit {
         educationQualification: formValue.educationQualification,
         recommendedByOrganization: formValue.recommendedByOrganization,
         photoId: this.photoId ?? null,
+        address: formValue.address,
       };
 
       this.participants.push(participant);
@@ -418,6 +422,7 @@ export class ManualTrainingUploadComponent implements OnInit {
         educationQualification: formValue.educationQualification,
         recommendedByOrganization: formValue.recommendedByOrganization,
         photoId: this.photoId ?? null,
+        address: formValue.address,
       };
 
       this.participants[this.editingIndex] = updatedParticipant;
@@ -517,6 +522,7 @@ export class ManualTrainingUploadComponent implements OnInit {
         participant.email && participant.email.includes('xxxx')
           ? 'user@example.com'
           : participant.email,
+      address: participant.address ?? '',
     });
     this.photoId = participant.photoId ?? null;
     if (this.photoId != null) {
@@ -541,8 +547,9 @@ export class ManualTrainingUploadComponent implements OnInit {
   submitTraineesData() {
     const trainingId = this.trainingId;
     const trainingInstituteId = this.trainingInstituteId;
-    const payload = this.participants.map((participant) => ({
+    const payload = this.participants.map(({ address, ...participant }) => ({
       ...participant,
+      traineeAddress: address ?? '',
       trainingId: trainingId,
       trainingInstituteId: trainingInstituteId,
       photoId: participant.photoId ?? null,

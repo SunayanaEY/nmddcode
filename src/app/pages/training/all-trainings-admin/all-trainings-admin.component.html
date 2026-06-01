@@ -392,26 +392,50 @@
         trainingDetails.status !== 'Approved by State Head'
       "
     >
-      <app-table
-        #traineeTable
-        [tableName]="'Trainee-List'"
-        [columns]="tableColumnsTrainee"
-        [data]="traineeList"
-        [selectedItems]="selectedItems"
-        [actions]="tableActionsTrainee"
-        (actionClick)="handleTableAction($event)"
-        [enableMultiSelect]="enableMultiSelectTrainee"
-        [bulkActions]="bulkActionsTrainee"
-        (bulkActionClick)="handleBulkAction($event)"
-        [isExportCSV]="isExportCSV"
-        [isExportPDF]="isExportPdf"
-        [pdfHeaders]="pdfHeadersTrainee"
-        [columnKeys]="columnKeysTrainee"
-        [fileName]="fileNameTrainees"
-        [isLoading]="isTableLoading"
-        [userRole]="userRole"
-      >
-      </app-table>
+      <div *ngIf="nonRejectedTraineeList.length > 0">
+        <app-table
+          #traineeTable
+          [tableName]="'Trainee-List'"
+          [columns]="tableColumnsTrainee"
+          [data]="nonRejectedTraineeList"
+          [selectedItems]="selectedItems"
+          [actions]="tableActionsTrainee"
+          (actionClick)="handleTableAction($event)"
+          [enableMultiSelect]="enableMultiSelectTrainee"
+          [bulkActions]="bulkActionsTrainee"
+          (bulkActionClick)="handleBulkAction($event)"
+          [isExportCSV]="isExportCSV"
+          [isExportPDF]="isExportPdf"
+          [pdfHeaders]="pdfHeadersTrainee"
+          [columnKeys]="columnKeysTrainee"
+          [fileName]="fileNameTrainees"
+          [isLoading]="isTableLoading"
+          [userRole]="userRole"
+        >
+        </app-table>
+      </div>
+
+      <div *ngIf="rejectedTraineeList.length > 0" class="mt-4">
+        <div class="card-header col-12 mb-3 bg-danger">
+          <h4 class="mb-0 text-white">{{ "Rejected Trainees" | translate }}</h4>
+        </div>
+        <app-table
+          [tableName]="'Rejected-Trainee-List'"
+          [columns]="tableColumnsTrainee"
+          [data]="rejectedTraineeList"
+          [actions]="rejectedTableActionsTrainee"
+          (actionClick)="handleTableAction($event)"
+          [enableMultiSelect]="false"
+          [isExportCSV]="isExportCSV"
+          [isExportPDF]="isExportPdf"
+          [pdfHeaders]="pdfHeadersTrainee"
+          [columnKeys]="columnKeysTrainee"
+          [fileName]="fileNameTrainees + 'Rejected_'"
+          [isLoading]="isTableLoading"
+          [userRole]="userRole"
+        >
+        </app-table>
+      </div>
     </div>
   </div>
 
@@ -577,6 +601,15 @@
           <div class="profile-item">
             <label>Contact Number</label>
             <div>{{ selectedTraineeProfile?.contactNumber || '-' }}</div>
+          </div>
+          <div class="profile-item profile-item-wide">
+            <label>Trainee Address</label>
+            <div>
+              {{
+                selectedTraineeProfile?.traineeAddress ||
+                  selectedTraineeProfile?.address || '-'
+              }}
+            </div>
           </div>
         </div>
       </div>

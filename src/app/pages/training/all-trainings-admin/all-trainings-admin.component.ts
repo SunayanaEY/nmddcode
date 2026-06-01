@@ -183,6 +183,11 @@ export class AllTrainingsAdminComponent {
 
   trainingsList: TrainingsList[] = [];
   traineeList: TraineeDetails[] = [];
+  readonly rejectedTraineeStatuses: string[] = [
+    'Rejected by Institute Head',
+    'Rejected by State Head',
+    'Rejected by Organization',
+  ];
 
   pdfHeadersTrainee: Array<string> = [
     'Sr.No.',
@@ -271,6 +276,14 @@ export class AllTrainingsAdminComponent {
         row.status === 'APPROVED BY ORGANIZATION' ||
         row.status === 'Approved by Organization' ||
         row.status === 'Certificate Issued & downloaded',
+    },
+  ];
+  rejectedTableActionsTrainee: TableAction[] = [
+    {
+      name: 'viewRecord',
+      icon: 'bi bi-person-vcard',
+      class: 'btn-primary',
+      title: 'View record',
     },
   ];
 
@@ -1577,6 +1590,19 @@ export class AllTrainingsAdminComponent {
         this.traineeList = res.data;
       });
     this.selectedItems = new Set();
+  }
+
+  get nonRejectedTraineeList(): TraineeDetails[] {
+    return this.traineeList.filter(
+      (trainee: any) =>
+        !this.rejectedTraineeStatuses.includes((trainee?.status || '').trim()),
+    );
+  }
+
+  get rejectedTraineeList(): TraineeDetails[] {
+    return this.traineeList.filter((trainee: any) =>
+      this.rejectedTraineeStatuses.includes((trainee?.status || '').trim()),
+    );
   }
 
   downloadCertificate(trainee: any): void {

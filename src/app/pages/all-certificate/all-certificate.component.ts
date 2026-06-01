@@ -32,6 +32,15 @@ import { TranslateModule } from '@ngx-translate/core';
   styleUrl: './all-certificate.component.css',
 })
 export class AllCertificateComponent {
+  readonly rejectedTraineeStatuses: string[] = [
+    'Rejected by Institute Head',
+    'Rejected by State Head',
+    'Rejected by Organization',
+    'REJECTED BY ORGANIZATION',
+    'REJECTED',
+    'Rejected',
+  ];
+
   constructor(
     private router: Router,
     private trainingsService: TrainingService
@@ -75,6 +84,7 @@ export class AllCertificateComponent {
 
                 return {
                   ...item,
+                  address: item.traineeAddress ?? item.address ?? '',
                   fatherName: fatherName, // replace with corrected format
                   trainingDate: this.trainingDate, // formatted from API
                   location: locationParts.join(', '),
@@ -109,6 +119,7 @@ export class AllCertificateComponent {
     'Age',
     'Email',
     "Father's Name",
+    'Address',
     'Contact No.',
     'Status',
   ];
@@ -119,6 +130,7 @@ export class AllCertificateComponent {
     'age',
     'email',
     'fatherName',
+    'address',
     'contactNumber',
     'status',
   ];
@@ -148,6 +160,7 @@ export class AllCertificateComponent {
     { key: 'age', header: 'Age' },
     { key: 'email', header: 'Email' },
     { key: 'fatherName', header: "Father's Name" },
+    { key: 'address', header: 'Address' },
     { key: 'contactNumber', header: 'Contact No.' },
     { key: 'status', header: 'Status' },
   ];
@@ -197,6 +210,20 @@ export class AllCertificateComponent {
       }
     );
   }
+
+  get approvedTableData(): any[] {
+    return this.filteredTableData.filter(
+      (item: any) =>
+        !this.rejectedTraineeStatuses.includes((item?.status || '').trim())
+    );
+  }
+
+  get rejectedTableData(): any[] {
+    return this.filteredTableData.filter((item: any) =>
+      this.rejectedTraineeStatuses.includes((item?.status || '').trim())
+    );
+  }
+
   onManualUpload() {
     this.router.navigate(['/admin/manual-training-upload'], {
       queryParams: { trainingId: this.trainingId },

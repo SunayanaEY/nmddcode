@@ -238,6 +238,7 @@
           <tr>
             <th style="width: 70px">#</th>
             <th style="width: 100px">Row</th>
+            <th style="min-width: 320px">Record</th>
             <th style="width: 200px">Column</th>
             <th>Error Message</th>
           </tr>
@@ -251,6 +252,9 @@
                 </td>
                 <td *ngIf="j === 0" [attr.rowspan]="group.errors.length" class="text-center">
                   {{ group.row }}
+                </td>
+                <td *ngIf="j === 0" [attr.rowspan]="group.errors.length">
+                  {{ group.errors[0]?.record || "-" }}
                 </td>
                 <td>{{ err.column }}</td>
                 <td>{{ err.errorMessage }}</td>

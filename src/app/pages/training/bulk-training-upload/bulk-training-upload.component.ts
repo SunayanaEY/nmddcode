@@ -381,6 +381,7 @@ export class BulkTrainingUploadComponent implements OnInit {
         key: 'recommendedBy',
         width: 30,
       },
+      { header: 'Address', key: 'address', width: 35 },
     ];
 
     // Header styling
@@ -736,6 +737,23 @@ export class BulkTrainingUploadComponent implements OnInit {
     this.previewRowErrors = {};
   }
 
+  private getValidationRecordSummary(rowNumber: number, fallbackName = ''): string {
+    const row = this.excelData[rowNumber - 1];
+    if (!row) {
+      return fallbackName || '-';
+    }
+
+    const dobHeader = this.getDobHeaderFromRow(row);
+    const recordParts = [
+      `Name: ${row['Name'] || fallbackName || '-'}`,
+      `Father's Name: ${row["Father's Name"] || '-'}`,
+      `DOB: ${(dobHeader ? row[dobHeader] : '') || '-'}`,
+      `Contact: ${row['Contact Number'] || '-'}`,
+    ];
+
+    return recordParts.join(' | ');
+  }
+
   private syncServerValidationReportFromPreviewErrors(): void {
     const rows = Object.keys(this.previewRowErrors)
       .map((row) => Number(row))
@@ -750,6 +768,7 @@ export class BulkTrainingUploadComponent implements OnInit {
       }
       serverValidationErrors.push({
         row,
+        record: this.getValidationRecordSummary(row),
         column: 'Server Validation',
         errorMessage: messages.join(' | '),
       });
@@ -832,6 +851,10 @@ export class BulkTrainingUploadComponent implements OnInit {
       this.previewRowErrors[rowNumber] = [...existing, ...messages];
       serverValidationErrors.push({
         row: rowNumber,
+        record: this.getValidationRecordSummary(
+          rowNumber,
+          (item?.name || '').toString().trim(),
+        ),
         column: 'Server Validation',
         errorMessage: messages.join(' | '),
       });
@@ -970,6 +993,7 @@ export class BulkTrainingUploadComponent implements OnInit {
       if (rowErrors.length > 0) {
         rawErrors.push({
           row: excelRow,
+          record: this.getValidationRecordSummary(excelRow),
           column: rowErrors.map((e) => e.column).join(', '),
           errorMessage: rowErrors.map((e) => e.message).join('. ') + '.',
         });
@@ -1034,6 +1058,7 @@ export class BulkTrainingUploadComponent implements OnInit {
         category: row['Category (GN, OBC, SC, ST)'] || '',
         educationalQualification: row['Educational Qualification'] || '',
         recommendedBy: row['Recommended by (Organization)'] || '',
+        traineeAddress: row['Address'] || '',
         photoId: row['photoId'] || null,
         trainingId: trainingId,
         trainingInstituteId: trainingInstituteId,
