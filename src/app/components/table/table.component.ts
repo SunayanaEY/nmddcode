@@ -69,6 +69,7 @@ export class TableComponent {
   @Input() isBulkCertDownload: Boolean = false;
   @Input() excelData: Array<any> = [];
   @Input() fileName: String = '';
+  @Input() paginationId: string = 'pagination2';
   public searchTextActive: string = '';
   @Output() viewClicked: EventEmitter<{ field: string; data: any }> =
     new EventEmitter();

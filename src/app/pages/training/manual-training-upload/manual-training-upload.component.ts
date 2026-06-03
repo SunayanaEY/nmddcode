@@ -34,8 +34,8 @@ interface Participant {
   email: string;
   dob: Date;
   category?: string;
-  educationQualification?: string;
-  recommendedByOrganization?: string;
+  educationalQualification?: string;
+  recommendedBy?: string;
   photoId?: number | null;
   address?: string;
 }
@@ -182,8 +182,8 @@ export class ManualTrainingUploadComponent implements OnInit {
         ],
       ],
       category: ['', Validators.required],
-      educationQualification: ['', [Validators.maxLength(100)]],
-      recommendedByOrganization: ['', [Validators.maxLength(100)]],
+      educationalQualification: ['', [Validators.maxLength(100)]],
+      recommendedBy: ['', [Validators.maxLength(100)]],
       email: ['', [Validators.email]],
       dob: ['', [Validators.required, this.dateValidator]],
       address: ['', [Validators.maxLength(200)]],
@@ -386,8 +386,8 @@ export class ManualTrainingUploadComponent implements OnInit {
         email: this.maskEmail(formValue.email),
         dob: formValue.dob,
         category: formValue.category,
-        educationQualification: formValue.educationQualification,
-        recommendedByOrganization: formValue.recommendedByOrganization,
+        educationalQualification: formValue.educationalQualification,
+        recommendedBy: formValue.recommendedBy,
         photoId: this.photoId ?? null,
         address: formValue.address,
       };
@@ -419,8 +419,8 @@ export class ManualTrainingUploadComponent implements OnInit {
         email: this.maskEmail(formValue.email),
         dob: formValue.dob,
         category: formValue.category,
-        educationQualification: formValue.educationQualification,
-        recommendedByOrganization: formValue.recommendedByOrganization,
+        educationalQualification: formValue.educationalQualification,
+        recommendedBy: formValue.recommendedBy,
         photoId: this.photoId ?? null,
         address: formValue.address,
       };
@@ -516,8 +516,8 @@ export class ManualTrainingUploadComponent implements OnInit {
       contactNumber: participant.contactNumber, // Original unmasked value
       fatherName: participant.fatherName, // Original unmasked value
       category: participant.category ?? '',
-      educationQualification: participant.educationQualification ?? '',
-      recommendedByOrganization: participant.recommendedByOrganization ?? '',
+      educationalQualification: participant.educationalQualification ?? '',
+      recommendedBy: participant.recommendedBy ?? '',
       email:
         participant.email && participant.email.includes('xxxx')
           ? 'user@example.com'

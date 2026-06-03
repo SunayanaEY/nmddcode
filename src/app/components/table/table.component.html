@@ -122,7 +122,7 @@
             let item of data
               | tableSearch : searchTextActive
               | paginate
-                : { id: 'pagination2', itemsPerPage: 10, currentPage: p };
+                : { id: paginationId, itemsPerPage: 10, currentPage: p };
             let i = index
           "
           [class.odd-row]="i % 2 === 0"
@@ -332,7 +332,7 @@
   >
     <nav aria-label="..." class="text-right">
       <pagination-controls
-        id="pagination2"
+        [id]="paginationId"
         (pageChange)="p = $event"
       ></pagination-controls>
     </nav>

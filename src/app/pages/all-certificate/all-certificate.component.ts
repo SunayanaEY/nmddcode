@@ -68,10 +68,12 @@ export class AllCertificateComponent {
       // alert('Training insitutre Id : ' + trainingData.trainingCenterId);
       // alert('getting called!' + this.trainingInstituteId);
 
+      this.isLoading = true;
       this.trainingsService
         .getAllTrainees('ALL', this.trainingInstituteId, this.trainingId)
         .subscribe({
           next: (res) => {
+            this.isLoading = false;
             if (res && res.data) {
               this.tableData = res.data.map((item: any) => {
                 let fatherName = item.fatherName;
@@ -102,6 +104,7 @@ export class AllCertificateComponent {
             }
           },
           error: (err) => {
+            this.isLoading = false;
             console.error('Error fetching trainees:', err);
           },
         });
@@ -109,6 +112,7 @@ export class AllCertificateComponent {
   }
   photoPreviewUrl: string | null = null;
   private imageSubscription: Subscription | null = null;
+  isLoading: boolean = false;
   isExportCSV: Boolean = true;
   isExportPdf: Boolean = true;
   pdfHeaders: Array<string> = [

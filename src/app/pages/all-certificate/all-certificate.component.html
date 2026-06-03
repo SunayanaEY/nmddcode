@@ -50,10 +50,12 @@
       [columns]="tableColumns"
       [data]="approvedTableData"
       [actions]="tableActions"
+      [isLoading]="isLoading"
       [isExportCSV]="isExportCSV"
       [isExportPDF]="isExportPdf"
       [pdfHeaders]="pdfHeaders"
       [columnKeys]="columnKeys"
+      [paginationId]="'approvedPagination'"
       (actionClick)="handleTableAction($event)"
     >
     </app-table>
@@ -67,10 +69,12 @@
       [columns]="tableColumns"
       [data]="rejectedTableData"
       [actions]="tableActions"
+      [isLoading]="isLoading"
       [isExportCSV]="isExportCSV"
       [isExportPDF]="isExportPdf"
       [pdfHeaders]="pdfHeaders"
       [columnKeys]="columnKeys"
+      [paginationId]="'rejectedPagination'"
       (actionClick)="handleTableAction($event)"
     >
     </app-table>
