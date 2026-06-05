@@ -29,16 +29,16 @@
             <div class="id-trainee-name">
               {{ data?.name }}
             </div>
-            <div class="id-trainee-role">
+            <!-- <div class="id-trainee-role">
               Trainee
-            </div>
+            </div> -->
             <div class="id-detail-row">
               <span class="id-detail-label">UIN:</span>
               <span class="id-detail-value">{{ finalUniqueId }}</span>
             </div>
-            <div class="id-detail-row">
+            <div class="id-detail-row" *ngIf="data?.trainingRefCode">
               <span class="id-detail-label">Ref ID:</span>
-              <span class="id-detail-value">REF-001</span>
+              <span class="id-detail-value">{{ data.trainingRefCode }}</span>
             </div>
             <div class="id-detail-row">
               <span class="id-detail-label">Duration:</span>
