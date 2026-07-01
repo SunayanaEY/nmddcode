@@ -171,26 +171,50 @@
     color: #111827;
 }
 
-.uin-display {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.5rem;
-    padding: 0.5rem 1rem;
-    background: #f3f4f6;
-    border-radius: 6px;
-    border: 1px solid #e5e7eb;
+/* Trainee Meta Grid */
+.trainee-meta-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.75rem;
+    margin-top: 1rem;
+    text-align: left;
 }
 
-.uin-display .label {
-    font-size: 0.875rem;
-    font-weight: 600;
+.meta-item {
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    padding: 0.625rem 0.875rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.2rem;
+}
+
+.meta-item--full {
+    grid-column: 1 / -1;
+}
+
+.meta-label {
+    font-size: 0.7rem;
+    font-weight: 700;
     color: #6b7280;
+    text-transform: uppercase;
+    letter-spacing: 0.6px;
 }
 
-.uin-display .value {
+.meta-value {
     font-size: 0.875rem;
     font-weight: 500;
     color: #111827;
+    word-break: break-word;
+    line-height: 1.4;
+}
+
+.meta-value.uin-badge {
+    font-family: 'Courier New', monospace;
+    font-weight: 700;
+    color: #1e40af;
+    letter-spacing: 0.5px;
 }
 
 /* Section Divider */
@@ -372,6 +396,10 @@
 
     .detail-card {
         padding: 1.25rem;
+    }
+
+    .trainee-meta-grid {
+        grid-template-columns: 1fr;
     }
 }
 

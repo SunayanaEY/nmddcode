@@ -30,7 +30,9 @@ interface Participant {
   age: number;
   gender: string;
   contactNumber: string;
-  fatherName: string;
+  maritalStatus: string;
+  fatherName: string | null;
+  husbandName?: string | null;
   email: string;
   dob: Date;
   category?: string;
@@ -92,7 +94,12 @@ export class ManualTrainingUploadComponent implements OnInit {
     { key: 'gender', header: 'Gender' },
     { key: 'dob', header: 'DOB' },
     { key: 'contactNumber', header: 'Contact Number' },
-    { key: 'fatherName', header: "Father's Name" },
+    {
+      key: 'fatherName',
+      header: "Father/Husband's Name",
+      transform: (value: string | null, item: Participant) =>
+        item.husbandName || value || '-',
+    },
     { key: 'email', header: 'Email(Optional)' },
     { key: 'address', header: 'Address' },
   ];
@@ -168,6 +175,7 @@ export class ManualTrainingUploadComponent implements OnInit {
       prefix: ['Mr', Validators.required],
 
       gender: ['', Validators.required],
+      maritalStatus: ['', Validators.required],
       contactNumber: [
         '',
         [Validators.required, Validators.pattern(/^[6-9][0-9]{9}$/)],
@@ -213,6 +221,57 @@ export class ManualTrainingUploadComponent implements OnInit {
       if (age > 120) age = 120;
       ageControl?.setValue(age, { emitEvent: false });
     });
+  }
+
+  get guardianNameLabel(): string {
+    return this.shouldUseHusbandName(
+      this.participantForm.get('gender')?.value,
+      this.participantForm.get('maritalStatus')?.value,
+    )
+      ? "Husband's Name"
+      : "Father's Name";
+  }
+
+  get guardianNamePlaceholder(): string {
+    return `Enter ${this.guardianNameLabel}`;
+  }
+
+  get guardianNameRequiredMessage(): string {
+    return `${this.guardianNameLabel} is required.`;
+  }
+
+  private shouldUseHusbandName(
+    gender: string | null | undefined,
+    maritalStatus: string | null | undefined,
+  ): boolean {
+    return (
+      (gender || '').toLowerCase() === 'female' &&
+      (maritalStatus || '').toLowerCase() === 'married'
+    );
+  }
+
+  private buildParticipantFromForm(formValue: any): Participant {
+    const useHusbandName = this.shouldUseHusbandName(
+      formValue.gender,
+      formValue.maritalStatus,
+    );
+
+    return {
+      name: `${formValue.prefix} ${formValue.name}`.trim(),
+      age: formValue.age,
+      gender: formValue.gender,
+      maritalStatus: formValue.maritalStatus,
+      contactNumber: this.maskContactNumber(formValue.contactNumber),
+      fatherName: useHusbandName ? null : formValue.fatherName,
+      husbandName: useHusbandName ? formValue.fatherName : null,
+      email: this.maskEmail(formValue.email),
+      dob: formValue.dob,
+      category: formValue.category,
+      educationalQualification: formValue.educationalQualification,
+      recommendedBy: formValue.recommendedBy,
+      photoId: this.photoId ?? null,
+      address: formValue.address,
+    };
   }
   onPhotoSelect(event: any) {
     const file = event?.target?.files?.[0] || null;
@@ -340,7 +399,7 @@ export class ManualTrainingUploadComponent implements OnInit {
   openAddModal(isEdit: boolean): void {
     if (!isEdit) {
       this.editingIndex = -1;
-      this.participantForm.reset();
+      this.participantForm.reset({ prefix: 'Mr', gender: '', maritalStatus: '' });
       this.photoPreview = null;
       this.photoId = null;
       this.selectedFile = null;
@@ -377,27 +436,14 @@ export class ManualTrainingUploadComponent implements OnInit {
 
       // Mask sensitive data for display
       this.selectedPrefix = formValue.prefix;
-      const participant: Participant = {
-        name: `${formValue.prefix} ${formValue.name}`.trim(),
-        age: formValue.age,
-        gender: formValue.gender,
-        contactNumber: this.maskContactNumber(formValue.contactNumber),
-        fatherName: formValue.fatherName,
-        email: this.maskEmail(formValue.email),
-        dob: formValue.dob,
-        category: formValue.category,
-        educationalQualification: formValue.educationalQualification,
-        recommendedBy: formValue.recommendedBy,
-        photoId: this.photoId ?? null,
-        address: formValue.address,
-      };
+      const participant = this.buildParticipantFromForm(formValue);
 
       this.participants.push(participant);
       this.photoId = null;
 
       this.closeModal();
       this.photoPreview = null;
-      this.participantForm.reset();
+      this.participantForm.reset({ prefix: 'Mr', gender: '', maritalStatus: '' });
       this.toastr.success('Participant added successfully!');
     } else {
       // Mark all fields as touched to show validation errors
@@ -410,27 +456,14 @@ export class ManualTrainingUploadComponent implements OnInit {
     if (this.participantForm.valid && this.editingIndex >= 0) {
       const formValue = this.participantForm.getRawValue();
 
-      const updatedParticipant: Participant = {
-        name: `${formValue.prefix} ${formValue.name}`.trim(),
-        age: formValue.age,
-        gender: formValue.gender,
-        contactNumber: this.maskContactNumber(formValue.contactNumber),
-        fatherName: formValue.fatherName,
-        email: this.maskEmail(formValue.email),
-        dob: formValue.dob,
-        category: formValue.category,
-        educationalQualification: formValue.educationalQualification,
-        recommendedBy: formValue.recommendedBy,
-        photoId: this.photoId ?? null,
-        address: formValue.address,
-      };
+      const updatedParticipant = this.buildParticipantFromForm(formValue);
 
       this.participants[this.editingIndex] = updatedParticipant;
       this.editingIndex = -1;
 
       this.closeModal();
       this.photoPreview = null;
-      this.participantForm.reset();
+      this.participantForm.reset({ prefix: 'Mr', gender: '', maritalStatus: '' });
       this.toastr.success('Participant updated successfully!');
     } else {
       // Mark all fields as touched to show validation errors
@@ -513,8 +546,9 @@ export class ManualTrainingUploadComponent implements OnInit {
       age: participant.age,
       dob: participant.dob,
       gender: participant.gender,
+      maritalStatus: participant.maritalStatus,
       contactNumber: participant.contactNumber, // Original unmasked value
-      fatherName: participant.fatherName, // Original unmasked value
+      fatherName: participant.husbandName || participant.fatherName, // Original unmasked value
       category: participant.category ?? '',
       educationalQualification: participant.educationalQualification ?? '',
       recommendedBy: participant.recommendedBy ?? '',
@@ -549,6 +583,8 @@ export class ManualTrainingUploadComponent implements OnInit {
     const trainingInstituteId = this.trainingInstituteId;
     const payload = this.participants.map(({ address, ...participant }) => ({
       ...participant,
+      fatherName: participant.husbandName ? null : participant.fatherName,
+      husbandName: participant.husbandName ?? null,
       traineeAddress: address ?? '',
       trainingId: trainingId,
       trainingInstituteId: trainingInstituteId,

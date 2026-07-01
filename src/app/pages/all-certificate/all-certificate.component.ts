@@ -76,7 +76,7 @@ export class AllCertificateComponent {
             this.isLoading = false;
             if (res && res.data) {
               this.tableData = res.data.map((item: any) => {
-                let fatherName = item.fatherName;
+                const guardianName = item.husbandName || item.fatherName || '';
 
                 const locationParts = [
                   item.venueBlock,
@@ -87,7 +87,7 @@ export class AllCertificateComponent {
                 return {
                   ...item,
                   address: item.traineeAddress ?? item.address ?? '',
-                  fatherName: fatherName, // replace with corrected format
+                  guardianName,
                   trainingDate: this.trainingDate, // formatted from API
                   location: locationParts.join(', '),
                   trainingInstituteName: this.trainingInstituteName,
@@ -122,7 +122,7 @@ export class AllCertificateComponent {
     'Gender',
     'Age',
     'Email',
-    "Father's Name",
+    "Father/Husband's Name",
     'Address',
     'Contact No.',
     'Status',
@@ -133,7 +133,7 @@ export class AllCertificateComponent {
     'gender',
     'age',
     'email',
-    'fatherName',
+    'guardianName',
     'address',
     'contactNumber',
     'status',
@@ -163,7 +163,7 @@ export class AllCertificateComponent {
     { key: 'gender', header: 'Gender' },
     { key: 'age', header: 'Age' },
     { key: 'email', header: 'Email' },
-    { key: 'fatherName', header: "Father's Name" },
+    { key: 'guardianName', header: "Father/Husband's Name" },
     { key: 'address', header: 'Address' },
     { key: 'contactNumber', header: 'Contact No.' },
     { key: 'status', header: 'Status' },

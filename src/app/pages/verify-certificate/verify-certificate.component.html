@@ -41,9 +41,19 @@
             <span>👤</span>
           </div>
           <h3 class="trainee-name">{{ certificateData?.name || 'N/A' }}</h3>
-          <div class="uin-display">
-            <span class="label">UIN:</span>
-            <span class="value">{{ uniqueId }}</span>
+          <div class="trainee-meta-grid">
+            <div class="meta-item">
+              <span class="meta-label">UIN</span>
+              <span class="meta-value uin-badge">{{ uniqueId }}</span>
+            </div>
+            <div class="meta-item" *ngIf="certificateData?.fatherName">
+              <span class="meta-label">Father's Name</span>
+              <span class="meta-value">{{ certificateData?.fatherName }}</span>
+            </div>
+            <div class="meta-item meta-item--full" *ngIf="certificateData?.address">
+              <span class="meta-label">📍 Address</span>
+              <span class="meta-value">{{ certificateData?.address }}</span>
+            </div>
           </div>
         </div>
 
