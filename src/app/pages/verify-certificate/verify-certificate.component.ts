@@ -65,6 +65,14 @@ export class VerifyCertificateComponent implements OnInit, OnDestroy {
     return diffDays > 0 ? diffDays : null;
   }
 
+  get guardianNameLabel(): string {
+    return this.certificateData?.fatherName ? "Father's Name" : "Husband's Name";
+  }
+
+  get guardianNameValue(): string {
+    return this.certificateData?.fatherName || this.certificateData?.husbandName || '';
+  }
+
   private async loadCertificate(): Promise<void> {
     if (!this.uniqueId) return;
     this.isLoading = true;

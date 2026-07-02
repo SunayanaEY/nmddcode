@@ -322,10 +322,49 @@
             </div>
           </div>
           <div class="row">
-            <div class="col-md-5 ps-2">
+            <div class="col-md-3 ps-2">
+              <div class="mb-3">
+                <label for="maritalStatus" class="form-label"
+                  >Marital Status <span class="text-danger">*</span></label
+                >
+                <select
+                  class="form-select"
+                  [class.is-invalid]="
+                    participantForm.get('maritalStatus')?.invalid &&
+                    participantForm.get('maritalStatus')?.touched
+                  "
+                  id="maritalStatus"
+                  formControlName="maritalStatus"
+                >
+                  <option value="" disabled>Select Marital Status</option>
+                  <option value="Married">Married</option>
+                  <option value="Unmarried">Unmarried</option>
+                </select>
+                <div
+                  class="invalid-feedback"
+                  *ngIf="
+                    participantForm.get('maritalStatus')?.invalid &&
+                    participantForm.get('maritalStatus')?.touched
+                  "
+                >
+                  <div
+                    *ngIf="
+                      participantForm.get('maritalStatus')?.errors?.[
+                        'required'
+                      ]
+                    "
+                  >
+                    Marital status is required.
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="col-md-3">
               <div class="mb-3">
                 <label for="fatherName" class="form-label"
-                  >Father's Name <span class="text-danger">*</span></label
+                  >{{ guardianNameLabel }}
+                  <span class="text-danger">*</span></label
                 >
                 <input
                   type="text"
@@ -336,7 +375,7 @@
                   "
                   id="fatherName"
                   formControlName="fatherName"
-                  placeholder="Enter Father's Name"
+                  [placeholder]="guardianNamePlaceholder"
                 />
                 <div
                   class="invalid-feedback"
@@ -350,33 +389,33 @@
                       participantForm.get('fatherName')?.errors?.['required']
                     "
                   >
-                    Father's name is required.
+                    {{ guardianNameRequiredMessage }}
                   </div>
                   <div
                     *ngIf="
                       participantForm.get('fatherName')?.errors?.['minlength']
                     "
                   >
-                    Father's name must be at least 2 characters long.
+                    {{ guardianNameLabel }} must be at least 2 characters long.
                   </div>
                   <div
                     *ngIf="
                       participantForm.get('fatherName')?.errors?.['maxlength']
                     "
                   >
-                    Father's name cannot exceed 50 characters.
+                    {{ guardianNameLabel }} cannot exceed 50 characters.
                   </div>
                   <div
                     *ngIf="
                       participantForm.get('fatherName')?.errors?.['pattern']
                     "
                   >
-                    Father's name can only contain letters and spaces.
+                    {{ guardianNameLabel }} can only contain letters and spaces.
                   </div>
                 </div>
               </div>
             </div>
-            <div class="col-md-4">
+            <div class="col-md-3">
               <div class="mb-3">
                 <label for="contactNumber" class="form-label"
                   >Contact Number <span class="text-danger">*</span></label
@@ -684,7 +723,10 @@
           <strong>Contact:</strong> {{ selectedParticipant?.contactNumber }}
         </p>
         <p>
-          <strong>Father's Name:</strong> {{ selectedParticipant?.fatherName }}
+          <strong>{{
+            selectedParticipant?.husbandName ? "Husband's Name:" : "Father's Name:"
+          }}</strong>
+          {{ selectedParticipant?.husbandName || selectedParticipant?.fatherName }}
         </p>
         <p><strong>Email:</strong> {{ selectedParticipant?.email }}</p>
         <p><strong>Address:</strong> {{ selectedParticipant?.address || '-' }}</p>

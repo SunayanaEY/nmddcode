@@ -555,8 +555,17 @@
             <div>{{ selectedTraineeProfile?.name || '-' }}</div>
           </div>
           <div class="profile-item">
-            <label>Father's Name</label>
-            <div>{{ selectedTraineeProfile?.fatherName || '-' }}</div>
+            <label>{{
+              selectedTraineeProfile?.husbandName
+                ? "Husband's Name"
+                : "Father's Name"
+            }}</label>
+            <div>
+              {{
+                selectedTraineeProfile?.husbandName ||
+                  selectedTraineeProfile?.fatherName || '-'
+              }}
+            </div>
           </div>
           <div class="profile-item">
             <label>Gender</label>

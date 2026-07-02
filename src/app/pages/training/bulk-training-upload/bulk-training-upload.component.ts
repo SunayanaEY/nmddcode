@@ -367,6 +367,7 @@ export class BulkTrainingUploadComponent implements OnInit {
       { header: 'Gender', key: 'gender', width: 12 },
       { header: 'Contact Number', key: 'contact', width: 18 },
       { header: "Father's Name", key: 'fatherName', width: 20 },
+      { header: 'Husband Name', key: 'husbandName', width: 20 },
       { header: 'Email', key: 'email', width: 25 },
       // 🔁 Updated header to reflect both allowed formats
       {
@@ -424,12 +425,12 @@ export class BulkTrainingUploadComponent implements OnInit {
       // Keep as text so leading zeros (if ever needed) are preserved visually
       worksheet.getCell(`C${row}`).numFmt = '@';
 
-      // Email (Column E) - basic sanity check
-      worksheet.getCell(`E${row}`).dataValidation = {
+      // Email (Column F) - basic sanity check
+      worksheet.getCell(`F${row}`).dataValidation = {
         type: 'custom',
         allowBlank: false,
         formulae: [
-          `AND(ISNUMBER(SEARCH("@",E${row})),ISNUMBER(SEARCH(".",E${row})),LEN(E${row})>5)`,
+          `AND(ISNUMBER(SEARCH("@",F${row})),ISNUMBER(SEARCH(".",F${row})),LEN(F${row})>5)`,
         ],
         showErrorMessage: true,
         errorStyle: 'error',
@@ -438,10 +439,10 @@ export class BulkTrainingUploadComponent implements OnInit {
       };
 
       // Keep DOB as text so Excel doesn't auto-convert/reformat
-      worksheet.getCell(`F${row}`).numFmt = '@';
+      worksheet.getCell(`G${row}`).numFmt = '@';
 
-      // Category (Column G) - List
-      worksheet.getCell(`G${row}`).dataValidation = {
+      // Category (Column H) - List
+      worksheet.getCell(`H${row}`).dataValidation = {
         type: 'list',
         allowBlank: false,
         formulae: ['"GN,OBC,SC,ST"'],
@@ -747,6 +748,7 @@ export class BulkTrainingUploadComponent implements OnInit {
     const recordParts = [
       `Name: ${row['Name'] || fallbackName || '-'}`,
       `Father's Name: ${row["Father's Name"] || '-'}`,
+      `Husband Name: ${row['Husband Name'] || '-'}`,
       `DOB: ${(dobHeader ? row[dobHeader] : '') || '-'}`,
       `Contact: ${row['Contact Number'] || '-'}`,
     ];
@@ -918,9 +920,15 @@ export class BulkTrainingUploadComponent implements OnInit {
         });
       }
 
-      // Father's Name validation
+      // Father's/Husband Name validation
       const fatherName = (row["Father's Name"] || '').toString().trim();
-      if (!fatherName) {
+      const husbandName = (row['Husband Name'] || '').toString().trim();
+      if (husbandName && gender !== 'female') {
+        rowErrors.push({
+          column: 'Husband Name',
+          message: 'Husband Name is only allowed for female trainees',
+        });
+      } else if (!husbandName && !fatherName) {
         rowErrors.push({
           column: "Father's Name",
           message: "Father's Name is required",
@@ -1047,12 +1055,17 @@ export class BulkTrainingUploadComponent implements OnInit {
 
       const convertedData = this.excelData.map((row: any) => {
         const dobHeader = this.getDobHeaderFromRow(row);
+        const gender = (row['Gender'] || '').toString().toLowerCase().trim();
+        const fatherName = row["Father's Name"] || '';
+        const husbandName = row['Husband Name'] || '';
+        const useHusbandName = gender === 'female' && !!husbandName;
         return ({
         name: row['Name'] || '',
         age: row['Age'] || 0,
         gender: row['Gender'] || '',
         contactNumber: row['Contact Number'] || '',
-        fatherName: row["Father's Name"] || '',
+        fatherName: useHusbandName ? null : fatherName,
+        husbandName: useHusbandName ? husbandName : null,
         email: row['Email'] || '',
         dob: this.convertDateFormat(dobHeader ? row[dobHeader] : ''),
         category: row['Category (GN, OBC, SC, ST)'] || '',
