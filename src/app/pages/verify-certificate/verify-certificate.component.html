@@ -46,9 +46,9 @@
               <span class="meta-label">UIN</span>
               <span class="meta-value uin-badge">{{ uniqueId }}</span>
             </div>
-            <div class="meta-item" *ngIf="certificateData?.fatherName">
-              <span class="meta-label">Father's Name</span>
-              <span class="meta-value">{{ certificateData?.fatherName }}</span>
+            <div class="meta-item" *ngIf="guardianNameValue">
+              <span class="meta-label">{{ guardianNameLabel }}</span>
+              <span class="meta-value">{{ guardianNameValue }}</span>
             </div>
             <div class="meta-item meta-item--full" *ngIf="certificateData?.address">
               <span class="meta-label">📍 Address</span>
