@@ -8,7 +8,6 @@ import { autoTable, applyPlugin } from 'jspdf-autotable';
 import { NgxPaginationModule } from 'ngx-pagination';
 import { PaginationModule } from 'ngx-bootstrap/pagination';
 import { ToastrService } from 'ngx-toastr';
-import { table } from 'node:console';
 import { TranslateModule } from '@ngx-translate/core';
 applyPlugin(jsPDF);
 //require('jspdf-autotable');
@@ -47,6 +46,8 @@ export interface TableAction {
   styleUrls: ['./table.component.css'],
 })
 export class TableComponent {
+  private static paginationInstanceCount = 0;
+
   @Input() data: any[] = [];
   @Input() tableName: string = '';
   @Input() isLoading: boolean = false;
@@ -69,7 +70,8 @@ export class TableComponent {
   @Input() isBulkCertDownload: Boolean = false;
   @Input() excelData: Array<any> = [];
   @Input() fileName: String = '';
-  @Input() paginationId: string = 'pagination2';
+  @Input() paginationId: string =
+    `tablePagination${++TableComponent.paginationInstanceCount}`;
   public searchTextActive: string = '';
   @Output() viewClicked: EventEmitter<{ field: string; data: any }> =
     new EventEmitter();

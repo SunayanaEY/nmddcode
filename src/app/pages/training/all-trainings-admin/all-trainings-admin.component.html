@@ -201,6 +201,7 @@
   </div>
 
   <app-table
+    paginationId="allTrainingsAdminPagination"
     [columns]="tableColumns"
     [data]="filteredData"
     [actions]="tableActions"
@@ -395,6 +396,7 @@
       <div *ngIf="nonRejectedTraineeList.length > 0">
         <app-table
           #traineeTable
+          paginationId="allTrainingsAdminTraineePagination"
           [tableName]="'Trainee-List'"
           [columns]="tableColumnsTrainee"
           [data]="nonRejectedTraineeList"
@@ -420,6 +422,7 @@
           <h4 class="mb-0 text-white">{{ "Rejected Trainees" | translate }}</h4>
         </div>
         <app-table
+          paginationId="allTrainingsAdminRejectedTraineePagination"
           [tableName]="'Rejected-Trainee-List'"
           [columns]="tableColumnsTrainee"
           [data]="rejectedTraineeList"
