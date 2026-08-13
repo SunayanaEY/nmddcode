@@ -52,6 +52,8 @@ export class ApprovedRejectedTrainingsComponent {
   isLoadingApprovedTrainings: boolean = false;
   isLoadingRejectedTrainings: boolean = false;
   isLoadingTrainees: boolean = false;
+  activeTab: 'pending' | 'approved' | 'rejected' = 'pending';
+  private loadedTabs: Set<string> = new Set();
   @ViewChild('trainingDetailsModal')
   trainingDetailsModal!: ElementRef;
   @ViewChild('certificateModal')
@@ -239,6 +241,11 @@ export class ApprovedRejectedTrainingsComponent {
       comment: ['', [Validators.required]],
       status: ['', [Validators.required]],
     });
+    this.loadPendingTrainings();
+  }
+
+  private loadPendingTrainings(): void {
+    if (this.loadedTabs.has('pending')) return;
     this.isLoadingPendingTrainings = true;
     this.trainingsService.getAllInitialStageTrainings().subscribe({
       next: (res) => {
@@ -252,25 +259,23 @@ export class ApprovedRejectedTrainingsComponent {
             ele['venueDistrict'],
             ele['venueState']
           );
-          ele['startDate'] = datePipe.transform(
-            ele['startDate'],
-            'dd/MM/yyyy'
-          )!;
-          ele['endDate'] = datePipe.transform(
-            ele['endDate'],
-            'dd/MM/yyyy'
-          )!;
+          ele['startDate'] = datePipe.transform(ele['startDate'], 'dd/MM/yyyy')!;
+          ele['endDate'] = datePipe.transform(ele['endDate'], 'dd/MM/yyyy')!;
           this.trainingsList3[index] = ele;
           index++;
         });
         this.isLoadingPendingTrainings = false;
+        this.loadedTabs.add('pending');
       },
-      error: (err) => {
+      error: () => {
         this.isLoadingPendingTrainings = false;
-        this.toastr.error('Error while fetching data!');
+        this.toastr.error('Error while fetching pending trainings!');
       },
     });
+  }
 
+  private loadApprovedTrainings(): void {
+    if (this.loadedTabs.has('approved')) return;
     this.isLoadingApprovedTrainings = true;
     this.trainingsService.getApprovedTrainings().subscribe({
       next: (res) => {
@@ -284,30 +289,27 @@ export class ApprovedRejectedTrainingsComponent {
             ele['venueDistrict'],
             ele['venueState']
           );
-          ele['startDate'] = datePipe.transform(
-            ele['startDate'],
-            'dd/MM/yyyy'
-          )!;
-          ele['endDate'] = datePipe.transform(
-            ele['endDate'],
-            'dd/MM/yyyy'
-          )!;
+          ele['startDate'] = datePipe.transform(ele['startDate'], 'dd/MM/yyyy')!;
+          ele['endDate'] = datePipe.transform(ele['endDate'], 'dd/MM/yyyy')!;
           this.trainingsList[index] = ele;
           index++;
         });
         this.isLoadingApprovedTrainings = false;
+        this.loadedTabs.add('approved');
       },
-      error: (err) => {
+      error: () => {
         this.isLoadingApprovedTrainings = false;
-        this.toastr.error('Error while fetching data!');
+        this.toastr.error('Error while fetching approved trainings!');
       },
     });
+  }
 
+  private loadRejectedTrainings(): void {
+    if (this.loadedTabs.has('rejected')) return;
     this.isLoadingRejectedTrainings = true;
     this.trainingsService.getRejectedTrainings().subscribe({
       next: (res) => {
         this.trainingsList2 = res;
-        //this.filteredData = [...this.trainingsList];
         let index = 0;
         this.trainingsList2.forEach((ele) => {
           const datePipe = new DatePipe('en-US');
@@ -316,22 +318,17 @@ export class ApprovedRejectedTrainingsComponent {
             ele['venueDistrict'],
             ele['venueState']
           );
-          ele['startDate'] = datePipe.transform(
-            ele['startDate'],
-            'dd/MM/yyyy'
-          )!;
-          ele['endDate'] = datePipe.transform(
-            ele['endDate'],
-            'dd/MM/yyyy'
-          )!;
+          ele['startDate'] = datePipe.transform(ele['startDate'], 'dd/MM/yyyy')!;
+          ele['endDate'] = datePipe.transform(ele['endDate'], 'dd/MM/yyyy')!;
           this.trainingsList2[index] = ele;
           index++;
         });
         this.isLoadingRejectedTrainings = false;
+        this.loadedTabs.add('rejected');
       },
-      error: (err) => {
+      error: () => {
         this.isLoadingRejectedTrainings = false;
-        this.toastr.error('Error while fetching data!');
+        this.toastr.error('Error while fetching rejected trainings!');
       },
     });
   }
@@ -553,6 +550,13 @@ export class ApprovedRejectedTrainingsComponent {
   }
 
   reset() {}
+
+  setActiveTab(tab: 'pending' | 'approved' | 'rejected') {
+    this.activeTab = tab;
+    if (tab === 'pending') this.loadPendingTrainings();
+    if (tab === 'approved') this.loadApprovedTrainings();
+    if (tab === 'rejected') this.loadRejectedTrainings();
+  }
 
   open() {}
   get formControls() {

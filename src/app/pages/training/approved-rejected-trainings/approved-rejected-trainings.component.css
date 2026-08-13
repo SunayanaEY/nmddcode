@@ -1,64 +1,99 @@
-.approved-certificate-container {
-  padding: 20px;
-}
-
-.page-header h2 {
-  font-size: 24px;
-  font-weight: bold;
+/* ── Tab Navigation ── */
+.tab-nav-container {
+  display: flex;
+  gap: 8px;
+  padding: 16px 0 0 0;
   margin-bottom: 20px;
+  border-bottom: 2px solid #e2e8f0;
+  flex-wrap: wrap;
+  overflow: visible;
 }
 
-.filter-container {
-  display: flex;
-  justify-content: space-between;
+.tab-btn {
+  display: inline-flex;
   align-items: center;
-  margin-bottom: 18px;
-  background-color: #f8f9fa;
-  padding: 5px;
-  border-radius: 8px;
-  height: 46px;
-}
-textarea {
-  text-align: left !important;
-  direction: ltr !important;
-}
-
-.filter-controls {
-  display: flex;
-  gap: 10px;
-  align-items: center;
-}
-
-.filter-controls .form-control {
-  height: 38px;
-}
-
-.filter-controls .form-check {
-  display: flex;
-  align-items: center;
-  gap: 5px;
-}
-
-.action-buttons {
-  display: flex;
-  gap: 10px;
-}
-
-.trainings-summary {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  margin-bottom: 20px;
-}
-
-.trainings-summary h4 {
-  margin: 0;
-  font-size: 18px;
-}
-
-.trainings-summary .badge {
+  gap: 6px;
+  padding: 10px 22px;
   font-size: 14px;
+  font-weight: 600;
+  border: none;
+  border-bottom: 3px solid transparent;
+  border-radius: 0;
+  background: transparent;
+  color: #64748b;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  margin-bottom: -2px;
 }
+
+.tab-btn:hover {
+  color: #155e91;
+  border-bottom-color: #93c5fd;
+  background: #f0f7ff;
+  border-radius: 6px 6px 0 0;
+}
+
+.tab-btn.active {
+  color: #155e91;
+  border-bottom: 3px solid #155e91;
+  background: #f0f7ff;
+  border-radius: 6px 6px 0 0;
+  font-weight: 700;
+}
+
+
+/* ── Count Badges ── */
+.tab-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 22px;
+  height: 22px;
+  padding: 0 7px;
+  border-radius: 20px;
+  font-size: 11px;
+  font-weight: 700;
+  background: #e2e8f0;
+  color: #475569;
+  transition: all 0.22s ease;
+}
+
+.tab-btn.active .tab-badge {
+  background: #155e91;
+  color: #ffffff;
+}
+
+/* ── Panel ── */
+.tab-panel {
+  background: #ffffff;
+  border-radius: 0 12px 12px 12px;
+  padding: 20px;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.06);
+  animation: fadeIn 0.2s ease;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(6px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.panel-header {
+  margin-bottom: 18px;
+  padding-bottom: 14px;
+  border-bottom: 1px solid #f1f5f9;
+}
+
+.panel-title {
+  font-size: 20px;
+  font-weight: 700;
+  color: #155e91;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 0;
+}
+
+
 
 .custom-ng-select .custom-option {
   color: #4caf50; /* Green text */

@@ -1,42 +1,69 @@
 <app-breadcrumb [items]="breadcrumbItems"></app-breadcrumb>
 
-<div class="page-header" id="pendingTable">
-  <h2>{{ "Pending Trainings" | translate }}</h2>
+<!-- Tab Navigation -->
+<div class="tab-nav-container">
+  <button
+    class="tab-btn"
+    [class.active]="activeTab === 'pending'"
+    (click)="setActiveTab('pending')"
+    id="tab-pending"
+  >
+    <i class="bi bi-hourglass-split me-2"></i>
+    Pending Trainings
+  </button>
+
+  <button
+    class="tab-btn"
+    [class.active]="activeTab === 'approved'"
+    (click)="setActiveTab('approved')"
+    id="tab-approved"
+  >
+    <i class="bi bi-check-circle me-2"></i>
+    Approved Trainings
+  </button>
+
+  <button
+    class="tab-btn"
+    [class.active]="activeTab === 'rejected'"
+    (click)="setActiveTab('rejected')"
+    id="tab-rejected"
+  >
+    <i class="bi bi-x-circle me-2"></i>
+    Rejected Trainings
+  </button>
 </div>
-<div class="trainings-summary">
-  <!-- <h4>All Trainings</h4> -->
-  <!-- <span class="badge bg-secondary"
-    >{{ "Total" | translate }} - {{ trainingsList.length }}
-    {{ "Trainings" | translate }}</span
-  > -->
+
+<!-- Pending Trainings Panel -->
+<div class="tab-panel" *ngIf="activeTab === 'pending'" id="pendingTable">
+  <div class="panel-header">
+    <h2 class="panel-title">
+      <i class="bi bi-hourglass-split"></i>
+      Pending Trainings
+    </h2>
+  </div>
+  <app-table
+    [columns]="tableColumnsPending"
+    [data]="trainingsList3"
+    [actions]="tableActionsPending"
+    [isLoading]="isLoadingPendingTrainings"
+    (actionClick)="handleTableAction($event)"
+    [isExportCSV]="isExportCSV"
+    [isExportPDF]="isExportPdf"
+    [pdfHeaders]="pdfHeaders"
+    [columnKeys]="columnKeys"
+    [fileName]="fileName"
+  >
+  </app-table>
 </div>
 
-<app-table
-  [columns]="tableColumnsPending"
-  [data]="trainingsList3"
-  [actions]="tableActionsPending"
-  [isLoading]="isLoadingPendingTrainings"
-  (actionClick)="handleTableAction($event)"
-  [isExportCSV]="isExportCSV"
-  [isExportPDF]="isExportPdf"
-  [pdfHeaders]="pdfHeaders"
-  [columnKeys]="columnKeys"
-  [fileName]="fileName"
->
-</app-table>
-
-<div class="approved-certificate-container" id="approvedTable">
-  <div class="page-header">
-    <h2>{{ "Approved Trainings" | translate }}</h2>
+<!-- Approved Trainings Panel -->
+<div class="tab-panel" *ngIf="activeTab === 'approved'" id="approvedTable">
+  <div class="panel-header">
+    <h2 class="panel-title">
+      <i class="bi bi-check-circle"></i>
+      Approved Trainings
+    </h2>
   </div>
-  <div class="trainings-summary">
-    <!-- <h4>All Trainings</h4> -->
-    <!-- <span class="badge bg-secondary"
-      >{{ "Total" | translate }} - {{ trainingsList.length }}
-      {{ "Trainings" | translate }}</span
-    > -->
-  </div>
-
   <app-table
     [columns]="tableColumnsApproved"
     [data]="trainingsList"
@@ -52,19 +79,14 @@
   </app-table>
 </div>
 
-<!--Rejected Trainings start-->
-<div class="approved-certificate-container" id="rejectedTable">
-  <div class="page-header">
-    <h2>{{ "Rejected Trainings" | translate }}</h2>
+<!-- Rejected Trainings Panel -->
+<div class="tab-panel" *ngIf="activeTab === 'rejected'" id="rejectedTable">
+  <div class="panel-header">
+    <h2 class="panel-title">
+      <i class="bi bi-x-circle"></i>
+      Rejected Trainings
+    </h2>
   </div>
-  <div class="trainings-summary">
-    <!-- <h4>All Trainings</h4> -->
-    <!-- <span class="badge bg-secondary"
-      >{{ "Total" | translate }} - {{ trainingsList.length }}
-      {{ "Trainings" | translate }}</span
-    > -->
-  </div>
-
   <app-table
     [columns]="tableColumnsRejected"
     [data]="trainingsList2"
@@ -79,8 +101,6 @@
   >
   </app-table>
 </div>
-
-<!--Rejected trainings end-->
 
 <ng-template #trainingDetailsModal let-modal>
   <!-- <div class="modal fade" #trainingDetailsModal id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
