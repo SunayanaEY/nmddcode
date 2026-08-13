@@ -214,4 +214,8 @@ export class TrainingService {
   getRejectedTrainings(): Observable<any> {
     return this.http.get<any>(this.url + `training/getAllRejectedTrainings`);
   }
+
+  deleteTraining(trainingId: number): Observable<any> {
+    return this.http.get<any>(this.url + `training/delete/${trainingId}`);
+  }
 }

@@ -145,6 +145,7 @@ export class ApprovedRejectedTrainingsComponent {
   ];
   tableActionsPending: TableAction[] = [
     { name: 'view', icon: 'bi bi-eye', class: 'btn-info', title: 'View' },
+    { name: 'delete', icon: 'bi bi-trash-fill', class: 'btn-danger', title: 'Delete Training' },
   ];
 
   tableActions: TableAction[] = [
@@ -359,6 +360,32 @@ export class ApprovedRejectedTrainingsComponent {
 
     if (event.action === 'edit') {
       this.openTrainingDetails(event.item);
+    }
+
+    if (event.action === 'delete') {
+      const confirmed = window.confirm(
+        `Are you sure you want to delete the training "${event.item.trainingTitle}"? This action cannot be undone.`
+      );
+      if (!confirmed) return;
+
+      const trainingId = event.item.id;
+      this.trainingsService.deleteTraining(trainingId).subscribe({
+        next: (res) => {
+          if (res && res.success) {
+            this.toastr.success('Training deleted successfully!');
+            this.trainingsList3 = this.trainingsList3.filter(
+              (t: any) => t.id !== trainingId
+            );
+          } else {
+            this.toastr.error(res?.message || 'Failed to delete training.');
+          }
+        },
+        error: (err) => {
+          const msg = err?.error?.message || 'Error while deleting training!';
+          this.toastr.error(msg);
+        },
+      });
+      return;
     }
 
     if (event.action === 'view') {
