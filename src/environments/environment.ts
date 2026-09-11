@@ -5,5 +5,4 @@ export const environment = {
   apiUrl: '/api/', //for prod
   // apiUrl: 'https://vidyapeethuat.ndlm.co.in/api/',//for uat
   certificateUrl: 'https://dahdvidyapeeth.ndlm.co.in/',
-  // certificateUrl: 'https://vidyapeethuat.ndlm.co.in/',
 };

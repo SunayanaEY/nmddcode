@@ -375,7 +375,7 @@ export class BulkTrainingUploadComponent implements OnInit {
         key: 'dob',
         width: 30,
       },
-      { header: 'Category (GN, OBC, SC, ST)', key: 'category', width: 25 },
+      { header: 'Category (GN, OBC, SC, ST, NT)', key: 'category', width: 25 },
       { header: 'Educational Qualification', key: 'education', width: 30 },
       {
         header: 'Recommended by (Organization)',
@@ -445,11 +445,11 @@ export class BulkTrainingUploadComponent implements OnInit {
       worksheet.getCell(`H${row}`).dataValidation = {
         type: 'list',
         allowBlank: false,
-        formulae: ['"GN,OBC,SC,ST"'],
+        formulae: ['"GN,OBC,SC,ST,NT"'],
         showErrorMessage: true,
         errorStyle: 'error',
         errorTitle: 'Invalid Category',
-        error: 'Select GN, OBC, SC, or ST',
+        error: 'Select GN, OBC, SC, ST or NT',
       };
     }
 
@@ -965,14 +965,14 @@ export class BulkTrainingUploadComponent implements OnInit {
       }
 
       // Category validation
-      const category = (row['Category (GN, OBC, SC, ST)'] || '')
+      const category = (row['Category (GN, OBC, SC, ST, NT)'] || '')
         .toString()
         .trim()
         .toUpperCase();
-      if (!['GN', 'OBC', 'SC', 'ST'].includes(category)) {
+      if (!['GN', 'OBC', 'SC', 'ST', 'NT'].includes(category)) {
         rowErrors.push({
           column: 'Category',
-          message: 'Category must be GN, OBC, SC, or ST',
+          message: 'Category must be GN, OBC, SC, ST or NT',
         });
       }
 
@@ -1060,22 +1060,23 @@ export class BulkTrainingUploadComponent implements OnInit {
         const husbandName = row['Husband Name'] || '';
         const useHusbandName = gender === 'female' && !!husbandName;
         return ({
-        name: row['Name'] || '',
-        age: row['Age'] || 0,
-        gender: row['Gender'] || '',
-        contactNumber: row['Contact Number'] || '',
-        fatherName: useHusbandName ? null : fatherName,
-        husbandName: useHusbandName ? husbandName : null,
-        email: row['Email'] || '',
-        dob: this.convertDateFormat(dobHeader ? row[dobHeader] : ''),
-        category: row['Category (GN, OBC, SC, ST)'] || '',
-        educationalQualification: row['Educational Qualification'] || '',
-        recommendedBy: row['Recommended by (Organization)'] || '',
-        traineeAddress: row['Address'] || '',
-        photoId: row['photoId'] || null,
-        trainingId: trainingId,
-        trainingInstituteId: trainingInstituteId,
-      })});
+          name: row['Name'] || '',
+          age: row['Age'] || 0,
+          gender: row['Gender'] || '',
+          contactNumber: row['Contact Number'] || '',
+          fatherName: useHusbandName ? null : fatherName,
+          husbandName: useHusbandName ? husbandName : null,
+          email: row['Email'] || '',
+          dob: this.convertDateFormat(dobHeader ? row[dobHeader] : ''),
+          category: row['Category (GN, OBC, SC, ST, NT)'] || '',
+          educationalQualification: row['Educational Qualification'] || '',
+          recommendedBy: row['Recommended by (Organization)'] || '',
+          traineeAddress: row['Address'] || '',
+          photoId: row['photoId'] || null,
+          trainingId: trainingId,
+          trainingInstituteId: trainingInstituteId,
+        })
+      });
 
       this.isSpinning = true;
       this.trainingService.submitTrainees(convertedData).subscribe({

@@ -22,7 +22,7 @@
         <span class="label">trainingDetails Institute:</span>
         <span class="value">{{
           trainingDetails?.trainingInstituteName || "-"
-        }}</span>
+          }}</span>
       </div>
 
       <div class="detail-item">
@@ -42,13 +42,13 @@
         <span class="label">Start Date:</span>
         <span class="value">{{
           trainingDetails?.startDate | date: "dd-MM-yyyy"
-        }}</span>
+          }}</span>
       </div>
       <div class="detail-item">
         <span class="label">End Date:</span>
         <span class="value">{{
           trainingDetails?.endDate | date: "dd-MM-yyyy"
-        }}</span>
+          }}</span>
       </div>
 
       <div class="detail-item">
@@ -75,26 +75,16 @@
             <span class="text-muted">Loading...</span>
           </ng-container>
           <ng-container *ngIf="!isLoadingSchedule">
-            <a
-              *ngIf="trainingScheduleUrl"
-              [href]="trainingScheduleUrl"
-              target="_blank"
-              class="text-primary text-decoration-underline"
-            >
+            <a *ngIf="trainingScheduleUrl" [href]="trainingScheduleUrl" target="_blank"
+              class="text-primary text-decoration-underline">
               View Schedule
             </a>
-            <span
-              *ngIf="
+            <span *ngIf="
                 !trainingScheduleUrl && trainingDetails?.trainingScheduleDetail
-              "
-              class="text-danger"
-            >
+              " class="text-danger">
               Failed to Load
             </span>
-            <span
-              *ngIf="!trainingDetails?.trainingScheduleDetail"
-              class="text-muted"
-            >
+            <span *ngIf="!trainingDetails?.trainingScheduleDetail" class="text-muted">
               Not Uploaded
             </span>
           </ng-container>
@@ -116,11 +106,7 @@
       <h1 class="page-title">Manual Training Upload</h1>
     </div>
     <div class="header-right">
-      <button
-        type="button"
-        class="btn btn-new-row"
-        (click)="openAddModal(false)"
-      >
+      <button type="button" class="btn btn-new-row" (click)="openAddModal(false)">
         <i class="bi bi-plus"></i>
         New Row
       </button>
@@ -128,82 +114,52 @@
   </div>
 
   <!-- Data Table -->
-  <app-table
-    [data]="participants"
-    [columns]="tableColumns"
-    [actions]="tableActions"
-    (actionClick)="handleTableAction($event)"
-  ></app-table>
+  <app-table [data]="participants" [columns]="tableColumns" [actions]="tableActions"
+    (actionClick)="handleTableAction($event)"></app-table>
 
   <!-- Action Buttons -->
   <div class="form-actions">
     <!-- <button type="button" class="btn btn-outline-secondary btn-lg me-3">
       Save Draft
     </button> -->
-    <button
-      type="button"
-      class="btn btn-primary btn-lg"
-      (click)="submitTraineesData()"
-    >
+    <button type="button" class="btn btn-primary btn-lg" (click)="submitTraineesData()">
       Submit for Verification
     </button>
   </div>
 </div>
 
 <!-- Add Participant Modal -->
-<div
-  class="modal fade"
-  id="addParticipantModal"
-  tabindex="-1"
-  aria-labelledby="addParticipantModalLabel"
-  aria-hidden="true"
->
+<div class="modal fade" id="addParticipantModal" tabindex="-1" aria-labelledby="addParticipantModalLabel"
+  aria-hidden="true">
   <div class="modal-dialog modal-lg">
     <div class="modal-content">
       <div class="modal-header">
         <h5 class="modal-title" id="addParticipantModalLabel">
           {{ editingIndex === -1 ? "Add Participant" : "Update Participant" }}
         </h5>
-        <button
-          type="button"
-          class="btn-close"
-          data-bs-dismiss="modal"
-          aria-label="Close"
-        ></button>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
       <div class="modal-body">
         <form [formGroup]="participantForm" (ngSubmit)="addParticipant()">
           <div class="row">
             <div class="col-md-2">
               <div class="mb-3 mt-4">
-                <label for="name" class="form-label"
-                  >Honorifics <span class="text-danger">*</span></label
-                >
-                <select
-                  class="form-control"
-                  id="prefix"
-                  formControlName="prefix"
-                  [class.is-invalid]="
+                <label for="name" class="form-label">Honorifics <span class="text-danger">*</span></label>
+                <select class="form-control" id="prefix" formControlName="prefix" [class.is-invalid]="
                     participantForm.get('prefix')?.invalid &&
                     participantForm.get('prefix')?.touched
-                  "
-                >
+                  ">
                   <option selected value="Mr">Mr</option>
                   <option value="Ms">Ms</option>
                   <option value="Mrs">Mrs</option>
                   <option value="Dr">Dr</option>
                   <option value="Prof">Prof</option>
                 </select>
-                <div
-                  class="invalid-feedback"
-                  *ngIf="
+                <div class="invalid-feedback" *ngIf="
                     participantForm.get('prefix')?.invalid &&
                     participantForm.get('prefix')?.touched
-                  "
-                >
-                  <div
-                    *ngIf="participantForm.get('prefix')?.errors?.['required']"
-                  >
+                  ">
+                  <div *ngIf="participantForm.get('prefix')?.errors?.['required']">
                     Honorifics is required.
                   </div>
                 </div>
@@ -211,40 +167,22 @@
             </div>
             <div class="col-md-4">
               <div class="mb-3 mt-4">
-                <label for="name" class="form-label"
-                  >Name <span class="text-danger">*</span></label
-                >
-                <input
-                  type="text"
-                  class="form-control"
-                  [class.is-invalid]="
+                <label for="name" class="form-label">Name <span class="text-danger">*</span></label>
+                <input type="text" class="form-control" [class.is-invalid]="
                     participantForm.get('name')?.invalid &&
                     participantForm.get('name')?.touched
-                  "
-                  id="name"
-                  formControlName="name"
-                  placeholder="Enter Name"
-                />
-                <div
-                  class="invalid-feedback"
-                  *ngIf="
+                  " id="name" formControlName="name" placeholder="Enter Name" />
+                <div class="invalid-feedback" *ngIf="
                     participantForm.get('name')?.invalid &&
                     participantForm.get('name')?.touched
-                  "
-                >
-                  <div
-                    *ngIf="participantForm.get('name')?.errors?.['required']"
-                  >
+                  ">
+                  <div *ngIf="participantForm.get('name')?.errors?.['required']">
                     Name is required.
                   </div>
-                  <div
-                    *ngIf="participantForm.get('name')?.errors?.['minlength']"
-                  >
+                  <div *ngIf="participantForm.get('name')?.errors?.['minlength']">
                     Name must be at least 2 characters long.
                   </div>
-                  <div
-                    *ngIf="participantForm.get('name')?.errors?.['maxlength']"
-                  >
+                  <div *ngIf="participantForm.get('name')?.errors?.['maxlength']">
                     Name cannot exceed 50 characters.
                   </div>
                   <div *ngIf="participantForm.get('name')?.errors?.['pattern']">
@@ -256,33 +194,21 @@
 
             <div class="col-md-3">
               <div class="mb-3 mt-4 ms-2">
-                <label for="gender" class="form-label"
-                  >Gender <span class="text-danger">*</span></label
-                >
-                <select
-                  class="form-select"
-                  [class.is-invalid]="
+                <label for="gender" class="form-label">Gender <span class="text-danger">*</span></label>
+                <select class="form-select" [class.is-invalid]="
                     participantForm.get('gender')?.invalid &&
                     participantForm.get('gender')?.touched
-                  "
-                  id="gender"
-                  formControlName="gender"
-                >
+                  " id="gender" formControlName="gender">
                   <option value="" disabled>Select Gender</option>
                   <option value="Male">Male</option>
                   <option value="Female">Female</option>
                   <option value="Other">Other</option>
                 </select>
-                <div
-                  class="invalid-feedback"
-                  *ngIf="
+                <div class="invalid-feedback" *ngIf="
                     participantForm.get('gender')?.invalid &&
                     participantForm.get('gender')?.touched
-                  "
-                >
-                  <div
-                    *ngIf="participantForm.get('gender')?.errors?.['required']"
-                  >
+                  ">
+                  <div *ngIf="participantForm.get('gender')?.errors?.['required']">
                     Gender is required.
                   </div>
                 </div>
@@ -294,26 +220,17 @@
                 <label for="photo" class="form-label">Photo</label>
                 <div class="photo-upload-container">
                   <div class="photo-preview" (click)="fileInput.click()">
-                    <img
-                      [src]="photoPreview || 'assets/imgs/default-avatar.png'"
-                      alt="Trainee Photo"
-                      class="uploaded-photo"
-                    />
+                    <img [src]="photoPreview || 'assets/imgs/default-avatar.png'" alt="Trainee Photo"
+                      class="uploaded-photo" />
                     <div class="upload-overlay">
                       <i class="bi bi-camera"></i>
                       <span>{{
                         photoPreview ? "Change Photo" : "Upload Photo"
-                      }}</span>
+                        }}</span>
                     </div>
                   </div>
-                  <input
-                    #fileInput
-                    type="file"
-                    class="d-none"
-                    id="photo"
-                    accept="image/*"
-                    (change)="onPhotoSelect($event)"
-                  />
+                  <input #fileInput type="file" class="d-none" id="photo" accept="image/*"
+                    (change)="onPhotoSelect($event)" />
                   <div class="invalid-feedback d-block" *ngIf="photoError">
                     {{ photoError }}
                   </div>
@@ -324,36 +241,24 @@
           <div class="row">
             <div class="col-md-3 ps-2">
               <div class="mb-3">
-                <label for="maritalStatus" class="form-label"
-                  >Marital Status <span class="text-danger">*</span></label
-                >
-                <select
-                  class="form-select"
-                  [class.is-invalid]="
+                <label for="maritalStatus" class="form-label">Marital Status <span class="text-danger">*</span></label>
+                <select class="form-select" [class.is-invalid]="
                     participantForm.get('maritalStatus')?.invalid &&
                     participantForm.get('maritalStatus')?.touched
-                  "
-                  id="maritalStatus"
-                  formControlName="maritalStatus"
-                >
+                  " id="maritalStatus" formControlName="maritalStatus">
                   <option value="" disabled>Select Marital Status</option>
                   <option value="Married">Married</option>
                   <option value="Unmarried">Unmarried</option>
                 </select>
-                <div
-                  class="invalid-feedback"
-                  *ngIf="
+                <div class="invalid-feedback" *ngIf="
                     participantForm.get('maritalStatus')?.invalid &&
                     participantForm.get('maritalStatus')?.touched
-                  "
-                >
-                  <div
-                    *ngIf="
+                  ">
+                  <div *ngIf="
                       participantForm.get('maritalStatus')?.errors?.[
                         'required'
                       ]
-                    "
-                  >
+                    ">
                     Marital status is required.
                   </div>
                 </div>
@@ -362,54 +267,34 @@
 
             <div class="col-md-3">
               <div class="mb-3">
-                <label for="fatherName" class="form-label"
-                  >{{ guardianNameLabel }}
-                  <span class="text-danger">*</span></label
-                >
-                <input
-                  type="text"
-                  class="form-control"
-                  [class.is-invalid]="
+                <label for="fatherName" class="form-label">{{ guardianNameLabel }}
+                  <span class="text-danger">*</span></label>
+                <input type="text" class="form-control" [class.is-invalid]="
                     participantForm.get('fatherName')?.invalid &&
                     participantForm.get('fatherName')?.touched
-                  "
-                  id="fatherName"
-                  formControlName="fatherName"
-                  [placeholder]="guardianNamePlaceholder"
-                />
-                <div
-                  class="invalid-feedback"
-                  *ngIf="
+                  " id="fatherName" formControlName="fatherName" [placeholder]="guardianNamePlaceholder" />
+                <div class="invalid-feedback" *ngIf="
                     participantForm.get('fatherName')?.invalid &&
                     participantForm.get('fatherName')?.touched
-                  "
-                >
-                  <div
-                    *ngIf="
+                  ">
+                  <div *ngIf="
                       participantForm.get('fatherName')?.errors?.['required']
-                    "
-                  >
+                    ">
                     {{ guardianNameRequiredMessage }}
                   </div>
-                  <div
-                    *ngIf="
+                  <div *ngIf="
                       participantForm.get('fatherName')?.errors?.['minlength']
-                    "
-                  >
+                    ">
                     {{ guardianNameLabel }} must be at least 2 characters long.
                   </div>
-                  <div
-                    *ngIf="
+                  <div *ngIf="
                       participantForm.get('fatherName')?.errors?.['maxlength']
-                    "
-                  >
+                    ">
                     {{ guardianNameLabel }} cannot exceed 50 characters.
                   </div>
-                  <div
-                    *ngIf="
+                  <div *ngIf="
                       participantForm.get('fatherName')?.errors?.['pattern']
-                    "
-                  >
+                    ">
                     {{ guardianNameLabel }} can only contain letters and spaces.
                   </div>
                 </div>
@@ -417,53 +302,34 @@
             </div>
             <div class="col-md-3">
               <div class="mb-3">
-                <label for="contactNumber" class="form-label"
-                  >Contact Number <span class="text-danger">*</span></label
-                >
-                <input
-                  type="text"
-                  class="form-control"
-                  [class.is-invalid]="
+                <label for="contactNumber" class="form-label">Contact Number <span class="text-danger">*</span></label>
+                <input type="text" class="form-control" [class.is-invalid]="
                     participantForm.get('contactNumber')?.invalid &&
                     participantForm.get('contactNumber')?.touched
-                  "
-                  id="contactNumber"
-                  formControlName="contactNumber"
-                  placeholder="Enter Contact Number"
-                  pattern="[0-9]{10}"
-                  (keypress)="allowOnlyNumbers($event)"
-                />
-                <div
-                  class="invalid-feedback"
-                  *ngIf="
+                  " id="contactNumber" formControlName="contactNumber" placeholder="Enter Contact Number"
+                  pattern="[0-9]{10}" (keypress)="allowOnlyNumbers($event)" />
+                <div class="invalid-feedback" *ngIf="
                     participantForm.get('contactNumber')?.invalid &&
                     participantForm.get('contactNumber')?.touched
-                  "
-                >
-                  <div
-                    *ngIf="
+                  ">
+                  <div *ngIf="
                       participantForm.get('contactNumber')?.errors?.['required']
-                    "
-                  >
+                    ">
                     Contact number is required.
                   </div>
-                  <div
-                    *ngIf="
+                  <div *ngIf="
                       participantForm.get('contactNumber')?.errors?.['pattern']
-                    "
-                  >
+                    ">
                     Contact number must be exactly 10 digits.
                   </div>
-                  <div
-                    *ngIf="
+                  <div *ngIf="
                       participantForm.get('contactNumber')?.errors?.[
                         'minlength'
                       ] ||
                       participantForm.get('contactNumber')?.errors?.[
                         'maxlength'
                       ]
-                    "
-                  >
+                    ">
                     Contact number must be exactly 10 digits.
                   </div>
                 </div>
@@ -472,27 +338,15 @@
 
             <div class="col-md-3">
               <div class="mb-3">
-                <label for="age" class="form-label"
-                  >Age <span class="text-danger">*</span></label
-                >
-                <input
-                  type="number"
-                  class="form-control"
-                  [class.is-invalid]="
+                <label for="age" class="form-label">Age <span class="text-danger">*</span></label>
+                <input type="number" class="form-control" [class.is-invalid]="
                     participantForm.get('age')?.invalid &&
                     participantForm.get('age')?.touched
-                  "
-                  id="age"
-                  formControlName="age"
-                  placeholder="Enter Age"
-                />
-                <div
-                  class="invalid-feedback"
-                  *ngIf="
+                  " id="age" formControlName="age" placeholder="Enter Age" />
+                <div class="invalid-feedback" *ngIf="
                     participantForm.get('age')?.invalid &&
                     participantForm.get('age')?.touched
-                  "
-                >
+                  ">
                   <div *ngIf="participantForm.get('age')?.errors?.['required']">
                     Age is required.
                   </div>
@@ -514,54 +368,34 @@
             <div class="col-md-4">
               <div class="mb-3">
                 <label for="category" class="form-label">Category<span class="text-danger">*</span></label>
-                <select
-                  class="form-select"
-                  id="category"
-                  formControlName="category"
-                >
+                <select class="form-select" id="category" formControlName="category">
                   <option value="" disabled>Select Category</option>
                   <option value="GN">GN</option>
                   <option value="OBC">OBC</option>
                   <option value="SC">SC</option>
                   <option value="ST">ST</option>
+                  <option value="NT">NT</option>
                 </select>
-                <div
-                  *ngIf="
+                <div *ngIf="
                     participantForm.get('category')?.invalid &&
                     participantForm.get('category')?.touched
-                  "
-                  class="text-danger"
-                >
+                  " class="text-danger">
                   Category is required.
                 </div>
               </div>
             </div>
             <div class="col-md-4">
               <div class="mb-3">
-                <label for="educationalQualification" class="form-label"
-                  >Educational Qualification</label
-                >
-                <input
-                  type="text"
-                  class="form-control"
-                  id="educationalQualification"
-                  formControlName="educationalQualification"
-                  placeholder="Enter Educational Qualification"
-                />
+                <label for="educationalQualification" class="form-label">Educational Qualification</label>
+                <input type="text" class="form-control" id="educationalQualification"
+                  formControlName="educationalQualification" placeholder="Enter Educational Qualification" />
               </div>
             </div>
             <div class="col-md-4">
               <div class="mb-3">
-                <label for="recommendedBy" class="form-label"
-                  >Recommended by (Organization)</label
-                >
-                <input
-                  type="text"
-                  class="form-control"
-                  id="recommendedBy"
-                  formControlName="recommendedBy"
-                  placeholder="Enter Organization"
-                />
+                <label for="recommendedBy" class="form-label">Recommended by (Organization)</label>
+                <input type="text" class="form-control" id="recommendedBy" formControlName="recommendedBy"
+                  placeholder="Enter Organization" />
               </div>
             </div>
           </div>
@@ -571,24 +405,14 @@
             <div class="col-md-6">
               <div class="mb-3">
                 <label for="email" class="form-label">Email</label>
-                <input
-                  type="email"
-                  class="form-control"
-                  [class.is-invalid]="
+                <input type="email" class="form-control" [class.is-invalid]="
                     participantForm.get('email')?.invalid &&
                     participantForm.get('email')?.touched
-                  "
-                  id="email"
-                  formControlName="email"
-                  placeholder="Enter Email"
-                />
-                <div
-                  class="invalid-feedback"
-                  *ngIf="
+                  " id="email" formControlName="email" placeholder="Enter Email" />
+                <div class="invalid-feedback" *ngIf="
                     participantForm.get('email')?.invalid &&
                     participantForm.get('email')?.touched
-                  "
-                >
+                  ">
                   <div *ngIf="participantForm.get('email')?.errors?.['email']">
                     Please enter a valid email address.
                   </div>
@@ -597,34 +421,21 @@
             </div>
             <div class="col-md-6">
               <div class="mb-3">
-                <label for="dob" class="form-label"
-                  >Date of Birth <span class="text-danger">*</span></label
-                >
-                <input
-                  type="date"
-                  class="form-control"
-                  id="dob"
-                  formControlName="dob"
-                  placeholder="dd-mm-yyyy"
+                <label for="dob" class="form-label">Date of Birth <span class="text-danger">*</span></label>
+                <input type="date" class="form-control" id="dob" formControlName="dob" placeholder="dd-mm-yyyy"
                   [class.is-invalid]="
                     participantForm.get('dob')?.invalid &&
                     participantForm.get('dob')?.touched
-                  "
-                />
+                  " />
 
-                <div
-                  class="invalid-feedback"
-                  *ngIf="
+                <div class="invalid-feedback" *ngIf="
                     participantForm.get('dob')?.invalid &&
                     participantForm.get('dob')?.touched
-                  "
-                >
+                  ">
                   <div *ngIf="participantForm.get('dob')?.errors?.['required']">
                     Date of birth is required.
                   </div>
-                  <div
-                    *ngIf="participantForm.get('dob')?.errors?.['futureDate']"
-                  >
+                  <div *ngIf="participantForm.get('dob')?.errors?.['futureDate']">
                     Date of birth cannot be in the future.
                   </div>
                   <div *ngIf="participantForm.get('dob')?.errors?.['tooYoung']">
@@ -641,23 +452,13 @@
             <div class="col-12">
               <div class="mb-3">
                 <label for="address" class="form-label">Address</label>
-                <textarea
-                  class="form-control"
-                  id="address"
-                  formControlName="address"
-                  placeholder="Enter Address"
-                  rows="3"
-                ></textarea>
-                <div
-                  class="invalid-feedback"
-                  *ngIf="
+                <textarea class="form-control" id="address" formControlName="address" placeholder="Enter Address"
+                  rows="3"></textarea>
+                <div class="invalid-feedback" *ngIf="
                     participantForm.get('address')?.invalid &&
                     participantForm.get('address')?.touched
-                  "
-                >
-                  <div
-                    *ngIf="participantForm.get('address')?.errors?.['maxlength']"
-                  >
+                  ">
+                  <div *ngIf="participantForm.get('address')?.errors?.['maxlength']">
                     Address cannot exceed 200 characters.
                   </div>
                 </div>
@@ -671,21 +472,11 @@
           Cancel
         </button>
 
-        <button
-          *ngIf="editingIndex === -1"
-          type="button"
-          class="btn btn-primary"
-          (click)="addParticipant()"
-        >
+        <button *ngIf="editingIndex === -1" type="button" class="btn btn-primary" (click)="addParticipant()">
           Submit
         </button>
 
-        <button
-          *ngIf="editingIndex !== -1"
-          type="button"
-          class="btn btn-warning"
-          (click)="updateParticipant()"
-        >
+        <button *ngIf="editingIndex !== -1" type="button" class="btn btn-warning" (click)="updateParticipant()">
           Update
         </button>
       </div>
@@ -694,25 +485,15 @@
 </div>
 <!--View Participant Modal-->
 <!-- View Participant Modal -->
-<div
-  class="modal fade"
-  id="viewParticipantModal"
-  tabindex="-1"
-  aria-labelledby="viewParticipantLabel"
-  aria-hidden="true"
->
+<div class="modal fade" id="viewParticipantModal" tabindex="-1" aria-labelledby="viewParticipantLabel"
+  aria-hidden="true">
   <div class="modal-dialog modal-dialog-centered">
     <div class="modal-content rounded-4 shadow">
       <div class="modal-header bg-primary text-white rounded-top-4">
         <h5 class="modal-title text-white" id="viewParticipantLabel">
           Participant Details
         </h5>
-        <button
-          type="button"
-          class="btn-close btn-close-white"
-          data-bs-dismiss="modal"
-          aria-label="Close"
-        ></button>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
       <div class="modal-body p-4">
         <p><strong>Name:</strong> {{ selectedParticipant?.name }}</p>
@@ -725,41 +506,25 @@
         <p>
           <strong>{{
             selectedParticipant?.husbandName ? "Husband's Name:" : "Father's Name:"
-          }}</strong>
+            }}</strong>
           {{ selectedParticipant?.husbandName || selectedParticipant?.fatherName }}
         </p>
         <p><strong>Email:</strong> {{ selectedParticipant?.email }}</p>
         <p><strong>Address:</strong> {{ selectedParticipant?.address || '-' }}</p>
       </div>
       <div class="modal-footer">
-        <button
-          type="button"
-          class="btn btn-outline-secondary"
-          data-bs-dismiss="modal"
-        >
+        <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">
           Close
         </button>
       </div>
     </div>
   </div>
 </div>
-<app-image-cropper-modal
-  [visible]="showImageCropper"
-  [imageFile]="cropperInputFile"
-  [title]="'Crop Trainee Photo'"
-  [defaultAspectMode]="'square'"
-  [outputFormat]="'jpeg'"
-  [resizeToWidth]="800"
-  (loadFailed)="onPhotoCropLoadFailed()"
-  (canceled)="onPhotoCropCanceled()"
-  (cropped)="onPhotoCropApplied($event)"
-></app-image-cropper-modal>
+<app-image-cropper-modal [visible]="showImageCropper" [imageFile]="cropperInputFile" [title]="'Crop Trainee Photo'"
+  [defaultAspectMode]="'square'" [outputFormat]="'jpeg'" [resizeToWidth]="800" (loadFailed)="onPhotoCropLoadFailed()"
+  (canceled)="onPhotoCropCanceled()" (cropped)="onPhotoCropApplied($event)"></app-image-cropper-modal>
 <div *ngIf="isSpinning" class="spinner-overlay">
-  <div
-    class="spinner-border text-primary"
-    role="status"
-    style="width: 3rem; height: 3rem"
-  >
+  <div class="spinner-border text-primary" role="status" style="width: 3rem; height: 3rem">
     <span class="visually-hidden">Loading...</span>
   </div>
 </div>
