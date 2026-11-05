@@ -901,7 +901,11 @@
                     <i class="fas fa-file-pdf pdf-icon"></i>
                     <span class="pdf-name">{{ selectedDocPreview }}</span>
                   </div>
-                  <div *ngIf="pdfPreviewUrl" class="pdf-preview">
+                  <div *ngIf="isLoadingPdfPreview" class="pdf-loading">
+                    <i class="fas fa-spinner fa-spin me-2"></i>
+                    <span>Loading preview...</span>
+                  </div>
+                  <div *ngIf="pdfPreviewUrl && !isLoadingPdfPreview" class="pdf-preview">
                     <img
                       [src]="pdfPreviewUrl"
                       alt="PDF Preview"

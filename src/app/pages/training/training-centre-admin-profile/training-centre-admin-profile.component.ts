@@ -5,6 +5,7 @@ import {
   EventEmitter,
   ElementRef,
   ViewChild,
+  ChangeDetectorRef,
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import {
@@ -59,6 +60,7 @@ export class TrainingCentreAdminProfileComponent implements OnInit {
   selectedImagePreview: string | null = null;
   selectedDocPreview: string | null = null;
   pdfPreviewUrl: string | null = null;
+  isLoadingPdfPreview: boolean = false;
   isDragOver = false;
   isDragOverDoc = false;
   showPassword = false;
@@ -122,10 +124,10 @@ export class TrainingCentreAdminProfileComponent implements OnInit {
     private locationService: LocationService,
     private authService: AuthService,
     private adminService: AdminService,
-    private route: ActivatedRoute
+    private route: ActivatedRoute,
+    private cdr: ChangeDetectorRef
   ) {
-    // Configure PDF.js worker to use bundled version
-    pdfjsLib.GlobalWorkerOptions.workerSrc = 'assets/pdf.worker.min.js';
+    this.configurePdfWorker();
 
     this.getRole();
     if (this.userRole == 5 || this.userRole == 6) {
@@ -246,6 +248,18 @@ export class TrainingCentreAdminProfileComponent implements OnInit {
         },
         { validators: this.passwordMatchValidator.bind(this) }
       );
+    }
+  }
+
+  private configurePdfWorker(): void {
+    if (typeof window === 'undefined') return;
+    try {
+      const baseHref = document.querySelector('base')?.getAttribute('href') || '/';
+      const baseUrl = new URL(baseHref, window.location.origin).href;
+      // Configure PDF.js worker with absolute URL to prevent 404s on sub-routes
+      pdfjsLib.GlobalWorkerOptions.workerSrc = new URL('assets/pdf.worker.min.mjs', baseUrl).href;
+    } catch {
+      pdfjsLib.GlobalWorkerOptions.workerSrc = '/assets/pdf.worker.min.mjs';
     }
   }
 
@@ -569,6 +583,10 @@ export class TrainingCentreAdminProfileComponent implements OnInit {
             this.profileForm.reset();
             this.selectedFile = null;
             this.selectedImagePreview = null;
+            this.selectedFileDoc = null;
+            this.selectedDocPreview = null;
+            this.pdfPreviewUrl = null;
+            this.isLoadingPdfPreview = false;
 
             this.toastr.success(
               `Training Centre Admin profile created successfully! `,
@@ -660,7 +678,8 @@ export class TrainingCentreAdminProfileComponent implements OnInit {
         return;
       }
 
-      if (!file.type.startsWith('application/pdf')) {
+      const isPdf = file.type === 'application/pdf' || file.name.toLowerCase().endsWith('.pdf');
+      if (!isPdf) {
         this.toastr.error('Please select a valid PDF file', 'File Error');
         return;
       }
@@ -673,30 +692,63 @@ export class TrainingCentreAdminProfileComponent implements OnInit {
   }
 
   async generatePdfPreview(file: File) {
-    try {
-      const arrayBuffer = await file.arrayBuffer();
-      const pdf = await pdfjsLib.getDocument({ data: arrayBuffer }).promise;
-      const page = await pdf.getPage(1);
+    this.isLoadingPdfPreview = true;
+    this.pdfPreviewUrl = null;
+    this.cdr.markForCheck();
 
+    try {
+      this.configurePdfWorker();
+      const arrayBuffer = await file.arrayBuffer();
+      await this.renderPdfFromBuffer(arrayBuffer);
+    } catch (error) {
+      console.warn('Initial PDF preview generation failed, attempting fallback worker:', error);
+      try {
+        const baseHref = (typeof document !== 'undefined' && document.querySelector('base')?.getAttribute('href')) || '/';
+        const baseUrl = typeof window !== 'undefined' ? new URL(baseHref, window.location.origin).href : '/';
+        pdfjsLib.GlobalWorkerOptions.workerSrc = new URL('assets/pdf.worker.min.js', baseUrl).href;
+
+        const arrayBuffer = await file.arrayBuffer();
+        await this.renderPdfFromBuffer(arrayBuffer);
+      } catch (fallbackError) {
+        console.error('Error generating PDF preview:', fallbackError);
+        this.toastr.error('Error generating PDF preview', 'Preview Error');
+      }
+    } finally {
+      this.isLoadingPdfPreview = false;
+      this.cdr.markForCheck();
+    }
+  }
+
+  private async renderPdfFromBuffer(arrayBuffer: ArrayBuffer): Promise<void> {
+    const uint8Array = new Uint8Array(arrayBuffer);
+    const loadingTask = pdfjsLib.getDocument({
+      data: uint8Array,
+    });
+    const pdf = await loadingTask.promise;
+    try {
+      const page = await pdf.getPage(1);
       const scale = 1.5;
       const viewport = page.getViewport({ scale });
 
       const canvas = document.createElement('canvas');
       const context = canvas.getContext('2d');
+      if (!context) {
+        throw new Error('Canvas 2D context is not available');
+      }
+
       canvas.height = viewport.height;
       canvas.width = viewport.width;
 
       const renderContext = {
-        canvasContext: context!,
+        canvasContext: context,
         viewport: viewport,
         canvas: canvas,
       };
 
       await page.render(renderContext).promise;
-      this.pdfPreviewUrl = canvas.toDataURL();
-    } catch (error) {
-      console.error('Error generating PDF preview:', error);
-      this.toastr.error('Error generating PDF preview', 'Preview Error');
+      this.pdfPreviewUrl = canvas.toDataURL('image/png');
+    } finally {
+      await pdf.destroy();
     }
   }
 
@@ -751,7 +803,8 @@ export class TrainingCentreAdminProfileComponent implements OnInit {
         return;
       }
 
-      if (!file.type.startsWith('application/pdf')) {
+      const isPdf = file.type === 'application/pdf' || file.name.toLowerCase().endsWith('.pdf');
+      if (!isPdf) {
         this.toastr.error('Please select a valid document file', 'File Error');
         return;
       }
@@ -779,9 +832,11 @@ export class TrainingCentreAdminProfileComponent implements OnInit {
     this.selectedFileDoc = null;
     this.selectedDocPreview = null;
     this.pdfPreviewUrl = null;
+    this.isLoadingPdfPreview = false;
     if (this.docFileInputRef?.nativeElement) {
       this.docFileInputRef.nativeElement.value = '';
     }
+    this.cdr.markForCheck();
   }
 
   processImageFile(file: File) {
